@@ -1,0 +1,20 @@
+DbHosts:
+  - localhost:27017
+DbUser: ""
+DbPasswd: ""
+PasswordSet: false    # 对于GSSAPI，如果指定了密码，则此值必须为true，即使密码是空字符串，并且 如果未指定密码，则为false，表示应从运行的上下文中获取密码 过程。对于其他机制，此字段将被忽略。
+Database: ginger_db
+
+AutoEncryptionOptions: false #作用于collection的自动加密
+Compressors: # 通信数据压缩器,可多选
+  - "zstd"
+ConnectTimeout: 5 #接超时时间,单位秒
+Direct: true #是否单机直连
+HeartbeatInterval: 5  #定期连接心跳检查,不设置默认10s
+LocalThreshold: 10000 #指定“延迟窗口”的宽度：在为一个操作选择多个合适的服务器时，这是最短和最长平均往返时间之间可接受的非负增量。延迟窗口中的服务器是随机选择的。默认值为15毫秒。
+MinPoolSize: 100 #最小连接池连接数
+MaxPoolSize: 100 #最大连接池连接数
+MaxConnIdleTime: 3600 #连接池闲置连结束最大保持时间,0时表示无限制保持闲置连接状态
+ReplicaSet: "" #指定群集的副本集名称。如果指定，集群将被视为副本集，驱动程序将自动发现集中的所有服务器，从通过ApplyURI或SetHosts指定的节点开始。副本集中的所有节点必须具有相同的副本集名称，否则客户端不会将它们视为该集的一部分。
+RetryWrites: true #指定是否应在某些错误（如网络）上重试一次受支持的写入操作
+RetryReads: true #指定是否应在某些错误（如网络）上重试一次受支持的读操作

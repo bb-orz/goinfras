@@ -1,0 +1,42 @@
+#AllowAllOrigins设置是否允许所有来源
+AllowAllOrigins: false
+
+#AllowOrigins设置的地址是可以被执行的跨域请求来源。如果特殊值(*)出现在列表中,所有的跨域将被允许，它是一个列表
+AllowOrigins:
+  - http://localhost:3000
+
+#AllowMethods 设置客户端允许使用的跨域请求的方法列表，如不设置默认值是简单方法(GET and POST)，它是一个列表
+AllowMethods:
+  - GET
+  - POST
+  - PUT
+  - PATCH
+  - DELETE
+  - HEAD
+  - OPTIONS
+
+#AllowHeaders 设置客户端允许使用的非简单跨域请求的请求头字段，它是一个列表
+AllowHeaders:
+  - Origin
+  - Authorization
+  - Content-Length
+  - Content-Type
+
+# AllowCredentials 显示请求可以包含用户凭证，如cookies,HTTP authentication或客户端SSL证书。它是一个布尔值
+AllowCredentials: true
+
+#ExposedHeaders指示哪些头可以安全地公开给CORS API，它是一个列表
+ExposeHeaders:
+  - Content-Length
+
+#MaxAge指示可以缓存预检请求的结果的时间（秒）
+MaxAge: 3600
+
+#是否允许添加源，如http://some domain/*、https://api.*或http://some.*.subdomain.com
+#AllowWildcard: true
+
+#允许使用流行的浏览器扩展模式
+#AllowBrowserExtensions: true
+
+# 设置允许websocket协议
+#AllowWebSockets: true

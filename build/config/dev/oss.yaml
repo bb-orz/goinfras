@@ -1,0 +1,29 @@
+Qiniu:
+  Switch: false
+  AccessKey: "yourAccessKey"
+  SecretKey: "yourSecretKey"
+  Bucket: "yourBucketName"
+  UseHTTPS: false                       #是否使用https域名
+  UseCdnDomains: false                  #上传是否使用CDN上传加速
+  UpTokenExpires: 7200                  #上传凭证2小时有效期
+  CallbackURL: ""                       #上传回调地址
+  CallbackBodyType: "application/json"  #上传回调信息格式
+  EndUser: ""                           #唯一宿主标识
+  FsizeMin: 1024                        #限定上传文件大小最小值，单位Byte。
+  FsizeLimit: 10485760                  #限定上传文件大小最大值，单位Byte。超过限制上传文件大小的最大值会被判为上传失败，返回 413 状态码。
+  MimeLimit: "image/jpeg;image/png;image/gif"  #限定上传类型
+Aliyun:
+  Switch: false
+  AccessKeyId: "yourAccessKeyId"
+  AccessKeySecret: "yourAccessKeySecret"
+  BucketName: "yourBucketName"
+  Endpoint: "http://oss-cn-shenzhen.aliyuncs.com" #CDN空间机房
+  UseCname: false             #是否使用自定义域名CNAME
+  ConnTimeout:  10            #请求超时时间，包括连接超时、Socket读写超时，单位秒,默认连接超时30秒，读写超时60秒
+  RwTimeout: 120
+  SecurityToken: ""           #临时用户的SecurityToken
+  EnableMD5: false            #是否开启MD5校验。推荐使用CRC校验，CRC的效率高于MD5
+  EnableCRC: true             #是否开启CRC校验
+  Proxy: ""                   #代理服务器，如http://8.8.8.8:3128
+  AuthProxy: ""               #带账号密码的代理服务器
+

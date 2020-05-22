@@ -1,0 +1,28 @@
+#日志级别
+DebugLevelSwitch:    false      #调试日志级别开关
+InfoLevelSwitch:    true        #信息日志级别开关
+WarnLevelSwitch:    true        #警告日志级别开关
+ErrorLevelSwitch:    true       #错误日志级别开关
+DPanicLevelSwitch:    true      #调试时恐慌日志级别开关panic()
+PanicLevelSwitch:    false      #恐慌日志级别开关 panic()
+FatalLevelSwitch:    true       #致命日志级别开关,os.Exit(1)
+# 选择日志记录方案
+SimpleZapCore:        true      # 简单日志输出:stdout + info.log + error.log
+RotateZapCore:        false     # 归档日志输出:stdout + info[date].log + error[date].log
+SyncZapCore:          false     # 远程异步日志输出:stdout + (mq/sql db/ nosql db)
+# 标准输出设置
+StdoutLogSwitch:       true     #标准输出开关
+# 文件日志输出设置
+LogDir:               ./log     #日志文件输出文件目录
+# 归档文件日志输出设置
+RetateLogSwitch:       false     #按日期归档输出开关
+MaxDayCount:            30      #日志数据最多保留的日志天数
+WithRotationTime:       1       #多久做一次归档，单位天
+
+# 异步日志输出设置
+SyncLogSwitch:          false    # 异步日志输出开关
+
+# mongo日志输出设置
+MongoLogSwitch:         false               #启用mongo数据库记录日志数据的开关
+MongoLogCollection:     ginger_log         #mongo的日志数据collection
+MongoLogExpire:         0               #mongo日志指定时间间隔后自动过期,0为不设置

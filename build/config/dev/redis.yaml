@@ -1,0 +1,7 @@
+DbHost: localhost #redis主机
+DbPort: 6379      #端口号
+DbAuth: FALSE     #是否开启鉴权
+DbPasswd: 123456  #鉴权密码
+MaxActive: 0      #最大活动链接数。0为无限
+MaxIdle: 50       #最大闲置链接数，0为无限
+IdleTimeout: 60   #闲置链接超时时间
