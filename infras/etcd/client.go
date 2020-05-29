@@ -2,14 +2,13 @@ package etcd
 
 import (
 	"GoWebScaffold/infras"
-	"GoWebScaffold/infras/config"
 	"context"
 	"go.etcd.io/etcd/clientv3"
 	"go.uber.org/zap"
 	"time"
 )
 
-func NewEtcdClient(ctx context.Context, appConf *config.AppConfig, zapLoggerConf *zap.Config) (cli *clientv3.Client, err error) {
+func NewEtcdClient(ctx context.Context, appConf *base.AppConfig, zapLoggerConf *zap.Config) (cli *clientv3.Client, err error) {
 
 	etcdConfig := clientv3.Config{
 		Endpoints:            appConf.EtcdConf.Endpoints,                                         // 单机或集群主机地址

@@ -6,7 +6,7 @@ import (
 	aliOss "github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 
-func Init(appConf *config.AppConfig) *aliOss.Client {
+func Init(appConf *base.AppConfig) *aliOss.Client {
 	// Aliyun OSS初始化
 	if appConf.OssConf.Aliyun.Switch {
 		var err error

@@ -4,7 +4,7 @@
 
 ```
 GoWebScaffold       项目
-|-- core            核心业务：应用层、领域层、持久层
+|-- core            核心业务：服务层业务逻辑、领域层、持久层
 |-- apis            用户接口层
 |-- build           构建程序文件：makefile、dockerfile、sh、ini... 
 |-- docs            项目文档
@@ -32,6 +32,8 @@ GoWebScaffold       项目
  
 #### infras
 基础设施层
+infra包可成独立库，包含应用启动器，应用组件（即拿即用，组件已封装好初始化，包括数据库通用dao，etcd，日志，mq，oss，oauth2等常用组件），组件注册，算法实现
+
 
 - algo 算法实现
 - boot 应用初始化相关

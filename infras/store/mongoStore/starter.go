@@ -1,0 +1,46 @@
+package mongoStore
+
+import (
+	"GoWebScaffold/infras"
+	"github.com/tietang/props/kvs"
+	"go.mongodb.org/mongo-driver/mongo"
+)
+
+var mClient *mongo.Client
+
+func MongoClient() *mongo.Client {
+	infras.Check(mClient)
+	return mClient
+}
+
+type MongoDBStarter struct {
+	infras.BaseStarter
+	cfg *mongoConfig
+}
+
+func (s *MongoDBStarter) Init(sctx *infras.StarterContext) {
+	configs := sctx.Configs()
+	define := mongoConfig{}
+	err := kvs.Unmarshal(configs, &define, "Mongodb")
+	if err != nil {
+		panic(err.Error())
+	}
+	s.cfg = &define
+}
+
+// 检查该组件的前置依赖
+func (s *MongoDBStarter) Setup(sctx *infras.StarterContext) {}
+
+// 启动该资源组件
+func (s *MongoDBStarter) Start(sctx *infras.StarterContext) {
+	var err error
+	mClient, err = NewMongoClient(s.cfg)
+	if err != nil {
+		panic(err.Error())
+	}
+}
+
+// 停止服务
+func (s *MongoDBStarter) Stop(sctx *infras.StarterContext) {
+
+}
