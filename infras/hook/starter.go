@@ -1,4 +1,4 @@
-package base
+package hook
 
 import (
 	"GoWebScaffold/infras"
