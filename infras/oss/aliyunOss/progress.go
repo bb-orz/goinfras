@@ -1,13 +1,13 @@
 package aliyunOss
 
 import (
+	"GoWebScaffold/infras"
 	"fmt"
 	aliOss "github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 
 // 定义进度条监听器。
-type OssProgressListener struct {
-}
+type OssProgressListener struct{}
 
 // 定义进度变更事件处理函数。
 func (listener *OssProgressListener) ProgressChanged(event *aliOss.ProgressEvent) {
@@ -31,14 +31,14 @@ func (listener *OssProgressListener) ProgressChanged(event *aliOss.ProgressEvent
 // 上传使用进度条
 func ProgressUpload(bucketName, objectKeyName, localFilePath string) error {
 	// 获取存储空间
-	bucket, err := oss.Aliyun.Bucket(bucketName)
-	if !e.Ec(err) {
+	bucket, err := AliyunOssClient().Bucket(bucketName)
+	if !infras.ErrorHandler(err) {
 		return err
 	}
 
 	// 带进度条的上传。
 	err = bucket.PutObjectFromFile(objectKeyName, localFilePath, aliOss.Progress(&OssProgressListener{}))
-	if !e.Ec(err) {
+	if !infras.ErrorHandler(err) {
 		return err
 	}
 
@@ -48,14 +48,14 @@ func ProgressUpload(bucketName, objectKeyName, localFilePath string) error {
 // 下载使用进度条
 func ProgressDownload(bucketName, objectKeyName, dstFilePath string) error {
 	// 获取存储空间
-	bucket, err := oss.Aliyun.Bucket(bucketName)
-	if !e.Ec(err) {
+	bucket, err := AliyunOssClient().Bucket(bucketName)
+	if !infras.ErrorHandler(err) {
 		return err
 	}
 
 	// 带进度条的下载。
 	err = bucket.GetObjectToFile(objectKeyName, dstFilePath, aliOss.Progress(&OssProgressListener{}))
-	if !e.Ec(err) {
+	if !infras.ErrorHandler(err) {
 		return err
 	}
 	return nil

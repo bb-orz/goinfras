@@ -10,12 +10,12 @@ func SimpleUpload(bucket string) (upToken string) {
 	putPolicy := storage.PutPolicy{
 		Scope:      bucket,
 		ReturnBody: `{"key":"$(key)","hash":"$(etag)","fsize":$(fsize),"bucket":"$(bucket)","name":"$(x:name)"}`,
-		Expires:    uint64(config.OssConf.Qiniu.UpTokenExpires),
-		MimeLimit:  config.OssConf.Qiniu.MimeLimit,
-		FsizeMin:   int64(config.OssConf.Qiniu.FsizeMin),
-		FsizeLimit: int64(config.OssConf.Qiniu.FsizeMax),
+		Expires:    uint64(QiniuOssCfg().UpTokenExpires),
+		MimeLimit:  QiniuOssCfg().MimeLimit,
+		FsizeMin:   int64(QiniuOssCfg().FsizeMin),
+		FsizeLimit: int64(QiniuOssCfg().FsizeMax),
 	}
-	upToken = putPolicy.UploadToken(oss.Qiniu)
+	upToken = putPolicy.UploadToken(QiniuOssClient())
 	return
 }
 
@@ -25,12 +25,12 @@ func OverwriteUpload(bucket, keyToOverwrite string) (upToken string) {
 	putPolicy := storage.PutPolicy{
 		Scope:      fmt.Sprintf("%s:%s", bucket, keyToOverwrite),
 		ReturnBody: `{"key":"$(key)","hash":"$(etag)","fsize":$(fsize),"bucket":"$(bucket)","name":"$(x:name)"}`,
-		Expires:    uint64(config.OssConf.Qiniu.UpTokenExpires),
-		MimeLimit:  config.OssConf.Qiniu.MimeLimit,
-		FsizeMin:   int64(config.OssConf.Qiniu.FsizeMin),
-		FsizeLimit: int64(config.OssConf.Qiniu.FsizeMax),
+		Expires:    uint64(QiniuOssCfg().UpTokenExpires),
+		MimeLimit:  QiniuOssCfg().MimeLimit,
+		FsizeMin:   int64(QiniuOssCfg().FsizeMin),
+		FsizeLimit: int64(QiniuOssCfg().FsizeMax),
 	}
-	upToken = putPolicy.UploadToken(oss.Qiniu)
+	upToken = putPolicy.UploadToken(QiniuOssClient())
 	return
 }
 
@@ -38,14 +38,14 @@ func OverwriteUpload(bucket, keyToOverwrite string) (upToken string) {
 func CallbackUpload(bucket string) (upToken string) {
 	putPolicy := storage.PutPolicy{
 		Scope:            bucket,
-		CallbackURL:      config.OssConf.Qiniu.CallbackURL,
+		CallbackURL:      QiniuOssCfg().CallbackURL,
 		CallbackBody:     `{"key":"$(key)","hash":"$(etag)","fsize":$(fsize),"bucket":"$(bucket)","name":"$(x:name)"}`,
-		CallbackBodyType: config.OssConf.Qiniu.CallbackBodyType,
-		Expires:          uint64(config.OssConf.Qiniu.UpTokenExpires),
-		MimeLimit:        config.OssConf.Qiniu.MimeLimit,
-		FsizeMin:         int64(config.OssConf.Qiniu.FsizeMin),
-		FsizeLimit:       int64(config.OssConf.Qiniu.FsizeMax),
+		CallbackBodyType: QiniuOssCfg().CallbackBodyType,
+		Expires:          uint64(QiniuOssCfg().UpTokenExpires),
+		MimeLimit:        QiniuOssCfg().MimeLimit,
+		FsizeMin:         int64(QiniuOssCfg().FsizeMin),
+		FsizeLimit:       int64(QiniuOssCfg().FsizeMax),
 	}
-	upToken = putPolicy.UploadToken(oss.Qiniu)
+	upToken = putPolicy.UploadToken(QiniuOssClient())
 	return
 }

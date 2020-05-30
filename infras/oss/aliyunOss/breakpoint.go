@@ -7,7 +7,7 @@ import (
 
 func BreakPointUpload(bucketName, objectKeyName, localFilePath string) error {
 	// 获取存储空间。
-	bucket, err := oss.Aliyun.Bucket(bucketName)
+	bucket, err := AliyunOssClient().Bucket(bucketName)
 	if !e.Ec(err) {
 		return err
 	}
@@ -23,7 +23,7 @@ func BreakPointUpload(bucketName, objectKeyName, localFilePath string) error {
 
 func BreakPointDownload(bucketName, objectKeyName, dstFilePath string) error {
 	// 获取存储空间。
-	bucket, err := oss.Aliyun.Bucket(bucketName)
+	bucket, err := AliyunOssClient().Bucket(bucketName)
 	if !e.Ec(err) {
 		return err
 	}

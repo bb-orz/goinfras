@@ -2,8 +2,6 @@ package redisPubSub
 
 import redigo "github.com/garyburd/redigo/redis"
 
-var RedisQueue *RedisList
-
 // 实现GingerQueue接口的entity,使用redis list数据结构
 type RedisList struct {
 	conn redigo.Conn

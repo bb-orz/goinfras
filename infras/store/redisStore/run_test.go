@@ -1,4 +1,4 @@
-package RedisStore
+package redisStore
 
 import "testing"
 

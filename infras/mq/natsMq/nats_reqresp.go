@@ -29,11 +29,11 @@ c.Subscribe("help", func(subj, reply string, msg string) {
 })
 */
 func Request(subject string, v interface{}, replyPtr interface{}, timeout time.Duration) error {
-	conn, err := NatsMqConnPool.Get()
+	conn, err := NatsMQPool().Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMqConnPool.Put(conn)
+	defer NatsMQPool().Put(conn)
 
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {
@@ -47,11 +47,11 @@ func Request(subject string, v interface{}, replyPtr interface{}, timeout time.D
 RequestWithContext将创建一个收件箱，并使用提供的取消上下文和数据v的收件箱回复执行请求。响应将被解码为vPtrResponse。
 */
 func RequestWithContext(ctx context.Context, subject string, msg interface{}, respPtr interface{}, timeout time.Duration) error {
-	conn, err := NatsMqConnPool.Get()
+	conn, err := NatsMQPool().Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMqConnPool.Put(conn)
+	defer NatsMQPool().Put(conn)
 
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {
@@ -62,17 +62,15 @@ func RequestWithContext(ctx context.Context, subject string, msg interface{}, re
 
 }
 
-
-
 // 针对Request 主题的响应处理函数，RequestMsgHandler函数需向请求收件箱的reply主题发布一个响应消息，可使用PublishRequest处理
 type RequestMsgHandler func(subject, reply string, msg interface{})
 
 func SubscribeForRequest(subject string, f RequestMsgHandler) error {
-	conn, err := NatsMqConnPool.Get()
+	conn, err := NatsMQPool().Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMqConnPool.Put(conn)
+	defer NatsMQPool().Put(conn)
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {
 		return err
@@ -84,4 +82,3 @@ func SubscribeForRequest(subject string, f RequestMsgHandler) error {
 
 	return nil
 }
-

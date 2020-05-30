@@ -1,4 +1,4 @@
-package RedisStore
+package redisStore
 
 import (
 	"fmt"
@@ -20,7 +20,7 @@ func NewRedisPool(cfg *redisConfig) (pool *redis.Pool, err error) {
 		// 连接池的连接拨号
 		Dial: func() (redis.Conn, error) {
 			// 连接
-			redisAddr := cfg.DbHost + ":" + strconv.Itoa(int(cfg.DbPort))
+			redisAddr := cfg.DbHost + ":" + strconv.Itoa(cfg.DbPort)
 			conn, err := redis.Dial("tcp", redisAddr)
 			if err != nil {
 				fmt.Println("redis dial fatal:", err.Error())

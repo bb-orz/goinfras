@@ -12,24 +12,24 @@ import (
 @param fileKey string 文件唯一key
 @param localFilePath string 本地文件路径
 */
-func FormUploadWithLocalFile(bucket, localFilePath, fileKey string) (storage.PutRet, error) {
+func (client *QnClient) FormUploadWithLocalFile(bucket, localFilePath, fileKey string) (storage.PutRet, error) {
 	putPolicy := storage.PutPolicy{
 		Scope:      bucket,
 		ReturnBody: `{"key":"$(key)","hash":"$(etag)","fsize":$(fsize),"bucket":"$(bucket)","name":"$(x:name)"}`,
-		Expires:    uint64(config.OssConf.Qiniu.UpTokenExpires),
-		MimeLimit:  config.OssConf.Qiniu.MimeLimit,
-		FsizeMin:   int64(config.OssConf.Qiniu.FsizeMin),
-		FsizeLimit: int64(config.OssConf.Qiniu.FsizeMax),
+		Expires:    uint64(client.cfg.UpTokenExpires),
+		MimeLimit:  client.cfg.MimeLimit,
+		FsizeMin:   int64(client.cfg.FsizeMin),
+		FsizeLimit: int64(client.cfg.FsizeMax),
 	}
-	upToken := putPolicy.UploadToken(oss.Qiniu)
+	upToken := putPolicy.UploadToken(client.mac)
 
 	cfg := storage.Config{}
 	// 空间对应的机房
 	cfg.Zone = &storage.ZoneHuanan
 	// 是否使用https域名
-	cfg.UseHTTPS = config.OssConf.Qiniu.UseHTTPS
+	cfg.UseHTTPS = client.cfg.UseHTTPS
 	// 上传是否使用CDN上传加速
-	cfg.UseCdnDomains = config.OssConf.Qiniu.UseCdnDomains
+	cfg.UseCdnDomains = client.cfg.UseCdnDomains
 	// 构建表单上传的对象
 	formUploader := storage.NewFormUploader(&cfg)
 
@@ -45,24 +45,24 @@ func FormUploadWithLocalFile(bucket, localFilePath, fileKey string) (storage.Put
 }
 
 // 字节数组上传
-func FormUploadWithByteSlice(bucket, fileKey string, data []byte) (storage.PutRet, error) {
+func (client *QnClient) FormUploadWithByteSlice(bucket, fileKey string, data []byte) (storage.PutRet, error) {
 	putPolicy := storage.PutPolicy{
 		Scope:      bucket,
 		ReturnBody: `{"key":"$(key)","hash":"$(etag)","fsize":$(fsize),"bucket":"$(bucket)","name":"$(x:name)"}`,
-		Expires:    uint64(config.OssConf.Qiniu.UpTokenExpires),
-		MimeLimit:  config.OssConf.Qiniu.MimeLimit,
-		FsizeMin:   int64(config.OssConf.Qiniu.FsizeMin),
-		FsizeLimit: int64(config.OssConf.Qiniu.FsizeMax),
+		Expires:    uint64(client.cfg.UpTokenExpires),
+		MimeLimit:  client.cfg.MimeLimit,
+		FsizeMin:   int64(client.cfg.FsizeMin),
+		FsizeLimit: int64(client.cfg.FsizeMax),
 	}
-	upToken := putPolicy.UploadToken(oss.Qiniu)
+	upToken := putPolicy.UploadToken(client.mac)
 
 	cfg := storage.Config{}
 	// 空间对应的机房
 	cfg.Zone = &storage.ZoneHuanan
 	// 是否使用https域名
-	cfg.UseHTTPS = config.OssConf.Qiniu.UseHTTPS
+	cfg.UseHTTPS = client.cfg.UseHTTPS
 	// 上传是否使用CDN上传加速
-	cfg.UseCdnDomains = config.OssConf.Qiniu.UseCdnDomains
+	cfg.UseCdnDomains = client.cfg.UseCdnDomains
 	// 构建表单上传的对象
 	formUploader := storage.NewFormUploader(&cfg)
 

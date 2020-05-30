@@ -12,11 +12,11 @@ import (
 @param msg interface{} 发布的消息
 */
 func Publish(subject string, msg interface{}) error {
-	conn, err := NatsMqConnPool.Get()
+	conn, err := NatsMQPool().Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMqConnPool.Put(conn)
+	defer NatsMQPool().Put(conn)
 
 	switch reflect.TypeOf(msg).Kind() {
 	case reflect.Struct, reflect.Map, reflect.Slice, reflect.Ptr:
@@ -68,11 +68,11 @@ handler := func(subject, reply string, o *obj)   for Request() reply
 */
 
 func Subscribe(subject string, handler nats.MsgHandler) error {
-	conn, err := NatsMqConnPool.Get()
+	conn, err := NatsMQPool().Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMqConnPool.Put(conn)
+	defer NatsMQPool().Put(conn)
 
 	_, err = conn.Subscribe(subject, handler)
 	if err != nil {
@@ -82,20 +82,18 @@ func Subscribe(subject string, handler nats.MsgHandler) error {
 	return nil
 }
 
-
-
 /*
 接收已编码消息的订阅，用于订阅发布go类型数据消息的主题
 除接收处理函数不同，其他都一样，请自定义接收消息的数据类型，消息用json编码发送
 */
 type EncodedMsgHandler func(subject string, goDataMsg interface{})
 
-func SubscribeForEncodedMsg(subject string, handler EncodedMsgHandler) error{
-	conn, err := NatsMqConnPool.Get()
+func SubscribeForEncodedMsg(subject string, handler EncodedMsgHandler) error {
+	conn, err := NatsMQPool().Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMqConnPool.Put(conn)
+	defer NatsMQPool().Put(conn)
 
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {
@@ -115,11 +113,11 @@ func SubscribeForEncodedMsg(subject string, handler EncodedMsgHandler) error{
 param subject/subjects string 已订阅的主题
 */
 func Unsubscribe(subjects ...string) error {
-	conn, err := NatsMqConnPool.Get()
+	conn, err := NatsMQPool().Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMqConnPool.Put(conn)
+	defer NatsMQPool().Put(conn)
 
 	for _, subject := range subjects {
 		sub, err := conn.Subscribe(subject, nil)

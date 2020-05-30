@@ -30,20 +30,20 @@ type ProgressRecord struct {
 @param recordKey string 指定的进度文件保存目录，实际情况下，请确保该目录存在，而且只用于记录进度文件
 
 */
-func BreakPointUpload(bucket, fileKey, localFilePath, recordDir string) {
+func (client *QnClient) BreakPointUpload(bucket, fileKey, localFilePath, recordDir string) {
 
 	putPolicy := storage.PutPolicy{
 		Scope: bucket,
 	}
-	upToken := putPolicy.UploadToken(oss.Qiniu)
+	upToken := putPolicy.UploadToken(client.mac)
 
 	cfg := storage.Config{}
 	// 空间对应的机房
 	cfg.Zone = &storage.ZoneHuanan
 	// 是否使用https域名
-	cfg.UseHTTPS = config.OssConf.Qiniu.UseHTTPS
+	cfg.UseHTTPS = client.cfg.UseHTTPS
 	// 上传是否使用CDN上传加速
-	cfg.UseCdnDomains = config.OssConf.Qiniu.UseCdnDomains
+	cfg.UseCdnDomains = client.cfg.UseCdnDomains
 
 	// 必须仔细选择一个能标志上传唯一性的 recordKey 用来记录上传进度
 	// 我们这里采用 md5(bucket+key+local_path+local_file_last_modified)+".progress" 作为记录上传进度的文件名

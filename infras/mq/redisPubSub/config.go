@@ -1,12 +1,12 @@
 package redisPubSub
 
 type redisPubSubConfig struct {
-	Switch      bool   `yaml:"Switch"`
-	MaxActive   int    `yaml:"MaxActive"`
-	MaxIdle     int    `yaml:"MaxIdle"`
-	IdleTimeout int    `yaml:"IdleTimeout"`
-	DbHost      string `yaml:"DbHost"`
-	DbPort      int    `yaml:"DbPort"`
-	DbAuth      bool   `yaml:"DbAuth"`
-	DbPasswd    int    `yaml:"DbPasswd"`
+	Switch      bool   `val:"false"`
+	DbHost      string `val:"127.0.0.1"`
+	DbPort      int    `val:"6379"`
+	DbAuth      bool   `val:"false"`
+	DbPasswd    string
+	MaxActive   int64 `val:"0"`
+	MaxIdle     int64 `val:"50"`
+	IdleTimeout int64 `val:"60"`
 }

@@ -11,19 +11,19 @@ import (
 @param fileKey string 文件唯一key
 @param localFilePath string 本地文件路径
 */
-func MultipartUpload(bucket, localFilePath, fileKey string) (storage.PutRet, error) {
+func (client *QnClient) MultipartUpload(bucket, localFilePath, fileKey string) (storage.PutRet, error) {
 	putPolicy := storage.PutPolicy{
 		Scope: bucket,
 	}
-	upToken := putPolicy.UploadToken(oss.Qiniu)
+	upToken := putPolicy.UploadToken(client.mac)
 
 	cfg := storage.Config{}
 	// 空间对应的机房
 	cfg.Zone = &storage.ZoneHuanan
 	// 是否使用https域名
-	cfg.UseHTTPS = config.OssConf.Qiniu.UseHTTPS
+	cfg.UseHTTPS = client.cfg.UseHTTPS
 	// 上传是否使用CDN上传加速
-	cfg.UseCdnDomains = config.OssConf.Qiniu.UseCdnDomains
+	cfg.UseCdnDomains = client.cfg.UseCdnDomains
 	resumeUploader := storage.NewResumeUploader(&cfg)
 	ret := storage.PutRet{}
 	putExtra := storage.RputExtra{}

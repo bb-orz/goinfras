@@ -1,8 +1,10 @@
 package redisPubSub
 
 import (
+	"GoWebScaffold/infras/logger"
 	"fmt"
 	redigo "github.com/garyburd/redigo/redis"
+	"go.uber.org/zap"
 	"time"
 )
 
@@ -30,7 +32,7 @@ func Subscribe(recMsgFuncs map[string]RecSubMsgFunc, channels ...interface{}) er
 		fmt.Println("Redis Subscribe Receive Waiting...")
 		for {
 			receiveTimes++
-			fmt.Printf("receiveTimes:%d \n", receiveTimes)
+			logger.CommonLogger().Info("receiveTimes:", zap.Int("times", receiveTimes))
 			switch res := conn.Receive().(type) {
 			case redigo.Message:
 				// 每接收一个已发布消息开一个协程执行消息处理函数
@@ -43,7 +45,7 @@ func Subscribe(recMsgFuncs map[string]RecSubMsgFunc, channels ...interface{}) er
 
 			case redigo.Subscription:
 				// 订阅与取消订阅的消息
-				logger.InfoLog("redis SubReceiver", fmt.Sprintf("%s: %s %d\n", res.Kind, res.Channel, res.Count))
+				logger.CommonLogger().Info("redis SubReceiver:", zap.String("receive kind", res.Kind), zap.String("receive Channel", res.Channel), zap.Int("receive Count", res.Count))
 				if res.Count == 0 {
 					done <- nil
 				}
@@ -64,7 +66,7 @@ func Subscribe(recMsgFuncs map[string]RecSubMsgFunc, channels ...interface{}) er
 			return err
 		case <-tick.C:
 			if err := conn.Ping(""); err != nil {
-				logger.WarmLog(err.Error())
+
 				return err
 			}
 		}
