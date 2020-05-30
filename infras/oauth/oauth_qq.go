@@ -1,4 +1,4 @@
-package oauth2
+package oauth
 
 import (
 	"encoding/json"
@@ -11,13 +11,20 @@ const qqOpenIdUrl = "https://graph.qq.com/oauth2.0/me"
 const qqGetUserInfoUrl = "https://graph.qq.com/user/get_user_info"
 
 // 实现QQOAuth2鉴权
-type QQOAuth struct {
+type QQOAuthManager struct {
 	appKey      string
 	appSecret   string
 	redirectUrl string
 }
 
-func (oauth *QQOAuth) Authorize(code string) OAuthResult {
+func NewQQOauthManager(cfg *oAuthConfig) *QQOAuthManager {
+	return &QQOAuthManager{
+		appKey:    cfg.QQOAuth2AppKey,
+		appSecret: cfg.QQOAuth2AppSecret,
+	}
+}
+
+func (oauth *QQOAuthManager) Authorize(code string) OAuthResult {
 	// 先获取accessToken
 	accessTokenResp := oauth.getAccessToken(code)
 	if accessTokenResp == nil {
@@ -58,7 +65,7 @@ func (oauth *QQOAuth) Authorize(code string) OAuthResult {
 	}}
 }
 
-func (oauth *QQOAuth) getAccessToken(code string) map[string]interface{} {
+func (oauth *QQOAuthManager) getAccessToken(code string) map[string]interface{} {
 
 	params := req.Param{
 		"grant_type":    "authorization_code",
@@ -81,7 +88,7 @@ func (oauth *QQOAuth) getAccessToken(code string) map[string]interface{} {
 	return map[string]interface{}{"access_token": accessToken}
 }
 
-func (oauth *QQOAuth) getOpenId(accessToken string) map[string]interface{} {
+func (oauth *QQOAuthManager) getOpenId(accessToken string) map[string]interface{} {
 	params := req.Param{
 		"access_token": accessToken,
 		"unionid":      1,
@@ -122,7 +129,7 @@ func (oauth *QQOAuth) getOpenId(accessToken string) map[string]interface{} {
 "is_yellow_year_vip":"1"
 }
 */
-func (oauth *QQOAuth) getUserInfo(accessToken string, openId string) map[string]interface{} {
+func (oauth *QQOAuthManager) getUserInfo(accessToken string, openId string) map[string]interface{} {
 	params := req.Param{
 		"access_token":       accessToken,
 		"oauth_consumer_key": oauth.appKey,

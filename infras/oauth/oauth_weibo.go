@@ -1,4 +1,4 @@
-package oauth2
+package oauth
 
 import (
 	"github.com/imroc/req"
@@ -8,13 +8,20 @@ const weiboGetAccessTokenUrl = "https://api.weibo.com/oauth2/access_token"
 const weiboGetUserInfoUrl = "https://api.weibo.com/2/users/show.json"
 
 // 实现微博 OAuth2鉴权
-type WeiboOAuth struct {
+type WeiboOAuthManager struct {
 	appKey      string
 	appSecret   string
 	redirectUrl string
 }
 
-func (oauth *WeiboOAuth) Authorize(code string) OAuthResult {
+func NewWeiboOAuthManager(cfg *oAuthConfig) *WeiboOAuthManager {
+	return &WeiboOAuthManager{
+		appKey:    cfg.WeiboOAuth2AppKey,
+		appSecret: cfg.WeiboOAuth2AppSecret,
+	}
+}
+
+func (oauth *WeiboOAuthManager) Authorize(code string) OAuthResult {
 	accessTokenResp := oauth.getAccessToken(code)
 	if accessTokenResp == nil {
 		return OAuthResult{false, nil}
@@ -61,7 +68,7 @@ func (oauth *WeiboOAuth) Authorize(code string) OAuthResult {
 	}}
 }
 
-func (oauth *WeiboOAuth) getAccessToken(code string) map[string]interface{} {
+func (oauth *WeiboOAuthManager) getAccessToken(code string) map[string]interface{} {
 	params := req.Param{
 		"client_id":     oauth.appKey,
 		"client_secret": oauth.appSecret,
@@ -120,7 +127,7 @@ bi_followers_count	int	用户的互粉数
 lang	string	用户当前的语言版本，zh-cn：简体中文，zh-tw：繁体中文，en：英语
 
 */
-func (oauth *WeiboOAuth) getUserInfo(accessToken string, openId string) map[string]interface{} {
+func (oauth *WeiboOAuthManager) getUserInfo(accessToken string, openId string) map[string]interface{} {
 	params := req.Param{
 		"access_token": accessToken,
 		"uid":          openId,

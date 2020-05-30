@@ -34,6 +34,8 @@ func (s *RedisStarter) Start(sctx *infras.StarterContext) {
 	var err error
 	rPool, err = NewRedisPool(s.cfg, sctx.Logger())
 	infras.FailHandler(err)
+	sctx.Logger().Info("Redis Pool Start Up ...")
+
 }
 
 // 停止服务

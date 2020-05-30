@@ -26,6 +26,7 @@ func (s *CronStarter) Setup(sctx *infras.StarterContext) {}
 
 func (s *CronStarter) Start(sctx *infras.StarterContext) {
 	Do(s.cfg, sctx.Logger())
+	sctx.Logger().Info("Cron Start Up ...")
 }
 
 func (s *CronStarter) Stop(sctx *infras.StarterContext) {

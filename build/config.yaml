@@ -29,6 +29,20 @@ Cors:
   #AllowBrowserExtensions: true  #允许使用流行的浏览器扩展模式
   #AllowWebSockets: true         # 设置允许websocket协议
 
+Cron:
+  Location: local
+
+Oauth:
+  WechatSignSwitch: false
+  WechatOAuth2AppKey:
+  WechatOAuth2AppSecret:
+  WeiboSignSwitch: false
+  WeiboOAuth2AppKey:
+  WeiboOAuth2AppSecret:
+  QQSignSwitch: false
+  QQOAuth2AppKey:
+  QQOAuth2AppSecret:
+
 # Etcd配置
 Etcd:
   Endpoints:                # 单机或集群主机地址

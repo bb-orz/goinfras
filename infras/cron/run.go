@@ -33,7 +33,7 @@ func Do(cfg *cronConfig, logger *zap.Logger) {
 	// Add Schedules and Jobs
 	for _, t := range taskList {
 		entryID, err := c.AddJob(t.spec, t.job)
-		if infras.ErrorHandler(err) {
+		if err != nil {
 			logger.Info("[Cron Add Task]", zap.Int("Entry ID", int(entryID)))
 		}
 	}

@@ -34,6 +34,7 @@ func (s *MongoDBStarter) Start(sctx *infras.StarterContext) {
 	var err error
 	mClient, err = NewMongoClient(s.cfg)
 	infras.FailHandler(err)
+	sctx.Logger().Info("MongoDb Client Start Up ...")
 }
 
 // 停止服务

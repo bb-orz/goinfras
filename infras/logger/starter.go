@@ -40,6 +40,7 @@ func (s *LoggerStarter) Start(sctx *infras.StarterContext) {
 	commonLogger = NewCommonLogger(s.cfg, s.Writers...)
 	syncErrorLogger = NewSyncErrorLogger(s.cfg)
 	sctx.SetLogger(commonLogger)
+	sctx.Logger().Info("Logger Start Up ...")
 }
 
 // 优先级为最优先启动

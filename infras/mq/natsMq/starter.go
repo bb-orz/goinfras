@@ -32,6 +32,7 @@ func (s *NatsMQStarter) Start(sctx *infras.StarterContext) {
 	var err error
 	natsMQPool, err = GetNatsMqPool(s.cfg, sctx.Logger())
 	infras.FailHandler(err)
+	sctx.Logger().Info("NatsMq Start Up ...")
 }
 
 func (s *NatsMQStarter) Stop(sctx *infras.StarterContext) {

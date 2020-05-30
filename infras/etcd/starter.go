@@ -33,6 +33,7 @@ func (s *EtcdStarter) Start(sctx *infras.StarterContext) {
 	var err error
 	etcdClient, err = NewEtcdClient(context.TODO(), s.cfg, nil)
 	infras.FailHandler(err)
+	sctx.Logger().Info("Etcd Start Up ...")
 }
 
 func (s *EtcdStarter) Stop(sctx *infras.StarterContext) {

@@ -32,6 +32,8 @@ func (s *AliyunOssStarter) Start(sctx *infras.StarterContext) {
 	var err error
 	aliyunOssClient, err = NewClient(s.cfg)
 	infras.FailHandler(err)
+	sctx.Logger().Info("AliyunOss Start Up ...")
+
 }
 
 func (s *AliyunOssStarter) Stop(ctx *infras.StarterContext) {

@@ -1,4 +1,4 @@
-package oauth2
+package oauth
 
 import (
 	"github.com/imroc/req"
@@ -8,13 +8,20 @@ const wechatGetAccessTokenUrl = "https://api.weixin.qq.com/sns/oauth2/access_tok
 const wechatGetUserInfoUrl = "https://api.weixin.qq.com/sns/userinfo"
 
 // 实现 微信 OAuth2鉴权
-type WechatOAuth struct {
+type WechatOAuthManager struct {
 	appKey      string
 	appSecret   string
 	redirectUrl string
 }
 
-func (oauth *WechatOAuth) Authorize(code string) OAuthResult {
+func NewWechatOAuthManager(cfg *oAuthConfig) *WechatOAuthManager {
+	return &WechatOAuthManager{
+		appKey:    cfg.WechatOAuth2AppKey,
+		appSecret: cfg.WechatOAuth2AppSecret,
+	}
+}
+
+func (oauth *WechatOAuthManager) Authorize(code string) OAuthResult {
 	accessTokenResp := oauth.getAccessToken(code)
 	if accessTokenResp == nil {
 		return OAuthResult{false, nil}
@@ -49,7 +56,7 @@ func (oauth *WechatOAuth) Authorize(code string) OAuthResult {
 	}}
 }
 
-func (oauth *WechatOAuth) getAccessToken(code string) map[string]interface{} {
+func (oauth *WechatOAuthManager) getAccessToken(code string) map[string]interface{} {
 	params := req.Param{
 		"appid":      oauth.appKey,
 		"secret":     oauth.appSecret,
@@ -87,7 +94,7 @@ func (oauth *WechatOAuth) getAccessToken(code string) map[string]interface{} {
 
 }
 */
-func (oauth *WechatOAuth) getUserInfo(accessToken string, openId string) map[string]interface{} {
+func (oauth *WechatOAuthManager) getUserInfo(accessToken string, openId string) map[string]interface{} {
 	params := req.Param{
 		"access_token": accessToken,
 		"openid":       openId,

@@ -36,6 +36,7 @@ func (s *MysqlStarter) Start(sctx *infras.StarterContext) {
 	var err error
 	mysqlClient, err = NewMysqlClient(s.cfg)
 	infras.FailHandler(err)
+	sctx.Logger().Info("Mysql Client Start Up ...")
 }
 
 // 停止服务
