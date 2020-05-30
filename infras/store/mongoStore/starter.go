@@ -22,9 +22,7 @@ func (s *MongoDBStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
 	define := mongoConfig{}
 	err := kvs.Unmarshal(configs, &define, "Mongodb")
-	if err != nil {
-		panic(err.Error())
-	}
+	infras.FailHandler(err)
 	s.cfg = &define
 }
 
@@ -35,9 +33,7 @@ func (s *MongoDBStarter) Setup(sctx *infras.StarterContext) {}
 func (s *MongoDBStarter) Start(sctx *infras.StarterContext) {
 	var err error
 	mClient, err = NewMongoClient(s.cfg)
-	if err != nil {
-		panic(err.Error())
-	}
+	infras.FailHandler(err)
 }
 
 // 停止服务

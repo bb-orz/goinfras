@@ -22,9 +22,7 @@ func (s *RedisStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
 	define := redisConfig{}
 	err := kvs.Unmarshal(configs, &define, "Redis")
-	if err != nil {
-		panic(err.Error())
-	}
+	infras.FailHandler(err)
 	s.cfg = &define
 }
 
@@ -34,10 +32,8 @@ func (s *RedisStarter) Setup(sctx *infras.StarterContext) {}
 // 启动该资源组件
 func (s *RedisStarter) Start(sctx *infras.StarterContext) {
 	var err error
-	rPool, err = NewRedisPool(s.cfg)
-	if err != nil {
-		panic(err.Error())
-	}
+	rPool, err = NewRedisPool(s.cfg, sctx.Logger())
+	infras.FailHandler(err)
 }
 
 // 停止服务

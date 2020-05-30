@@ -1,9 +1,8 @@
 package redisPubSub
 
 import (
-	"GoWebScaffold/infras/logger"
-	"fmt"
 	redigo "github.com/garyburd/redigo/redis"
+	"go.uber.org/zap"
 	"strconv"
 	"time"
 )
@@ -14,7 +13,7 @@ RedisPubSub用于实时性较高的消息推送，并不保证可靠,实现实�
 Tips：原则上用于缓存的redis机器与用于pubsub的redis机器分开较好，如实在用同一个，只需在config配置填写一样即可。
 */
 
-func GetRedisPubsubPool(cfg *redisPubSubConfig) *redigo.Pool {
+func GetRedisPubsubPool(cfg *redisPubSubConfig, logger *zap.Logger) *redigo.Pool {
 	// 配置并获得一个连接池对象的指针
 	redisPubSubPool := &redigo.Pool{
 		// 最大活动链接数。0为无限
@@ -29,13 +28,13 @@ func GetRedisPubsubPool(cfg *redisPubSubConfig) *redigo.Pool {
 			redisAddr := cfg.DbHost + ":" + strconv.Itoa(cfg.DbPort)
 			conn, err := redigo.Dial("tcp", redisAddr)
 			if err != nil {
-				fmt.Println("redis dial fatal:", err.Error())
+				logger.Error("redis dial fatal:", zap.Error(err))
 				return nil, err
 			}
 			// 权限认证
 			if cfg.DbAuth {
 				if _, err := conn.Do("Auth", cfg.DbPasswd); err != nil {
-					fmt.Println("redis auth fatal:", err.Error())
+					logger.Error("redis auth fatal:", zap.Error(err))
 					conn.Close()
 					return nil, err
 				}
@@ -50,13 +49,11 @@ func GetRedisPubsubPool(cfg *redisPubSubConfig) *redigo.Pool {
 			}
 			_, err := conn.Do("Ping")
 			if err != nil {
-				logger.CommonLogger().Warn("Redis PubSub Server Disconnect")
+				logger.Warn("Redis PubSub Server Disconnect")
 			}
 			return err
 		},
 	}
-
-	fmt.Println("Redis PubSub Connect ready!")
 
 	return redisPubSubPool
 }

@@ -2,7 +2,6 @@ package mysqlStore
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/didi/gendry/manager"
 	_ "github.com/go-sql-driver/mysql"
 	"time"
@@ -23,13 +22,10 @@ func NewMysqlClient(config *mysqlConfig) (db *sql.DB, err error) {
 	db.SetConnMaxLifetime(time.Duration(config.ConnMaxLifetime) * time.Second) // 设置最大的连接时间，1分钟
 	db.SetMaxIdleConns(int(config.MaxIdleConns))                               // 设置最大的闲置连接数
 	db.SetMaxOpenConns(int(config.MaxOpenConns))                               // 设置最大的连接数
-	fmt.Println("Mysql pool init ready!")
 
 	err = db.Ping()
 	if err != nil {
-		fmt.Println(err.Error())
-	} else {
-		fmt.Println("Mysql Connect Successful!")
+		return nil, err
 	}
 
 	return db, nil

@@ -1,8 +1,6 @@
 package aliyunOss
 
 import (
-	"GoWebScaffold/infras"
-	"fmt"
 	aliOss "github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"os"
 )
@@ -25,17 +23,16 @@ OSS计算上传数据的MD5值，并与SDK计算的MD5值比较，如果不一�
 所有分片上传完成后，调用Bucket.CompleteMultipartUpload方法将所有分片合并成完整的文件。
 */
 
-func MultipartUpload(bucketName, objectKeyName, localFilePath string) error {
+func MultipartUpload(bucketName, objectKeyName, localFilePath string) (*aliOss.CompleteMultipartUploadResult, error) {
 	// 获取存储空间。
 	bucket, err := AliyunOssClient().Bucket(bucketName)
-	if !infras.ErrorHandler(err) {
-		return err
+	if err != nil {
+		return nil, err
 	}
-
 	chunks, err := aliOss.SplitFileByPartNum(localFilePath, 3)
 	fd, err := os.Open(localFilePath)
-	if !infras.ErrorHandler(err) {
-		return err
+	if err != nil {
+		return nil, err
 	}
 	defer fd.Close()
 
@@ -46,8 +43,8 @@ func MultipartUpload(bucketName, objectKeyName, localFilePath string) error {
 
 	// 步骤1：初始化一个分片上传事件，指定存储类型为标准存储。
 	imur, err := bucket.InitiateMultipartUpload(objectKeyName, storageType)
-	if !infras.ErrorHandler(err) {
-		return err
+	if err != nil {
+		return nil, err
 	}
 	// 步骤2：上传分片。
 	var parts []aliOss.UploadPart
@@ -55,8 +52,8 @@ func MultipartUpload(bucketName, objectKeyName, localFilePath string) error {
 		fd.Seek(chunk.Offset, os.SEEK_SET)
 		// 对每个分片调用UploadPart方法上传。
 		part, err := bucket.UploadPart(imur, fd, chunk.Size, chunk.Number)
-		if !infras.ErrorHandler(err) {
-			return err
+		if err != nil {
+			return nil, err
 		}
 		parts = append(parts, part)
 	}
@@ -65,30 +62,28 @@ func MultipartUpload(bucketName, objectKeyName, localFilePath string) error {
 	objectAcl := aliOss.ObjectACL(aliOss.ACLPublicRead)
 
 	// 步骤3：完成分片上传，指定访问权限为公共读。
-	cmur, err := bucket.CompleteMultipartUpload(imur, parts, objectAcl)
-	if !infras.ErrorHandler(err) {
-		return err
+	uploadResult, err := bucket.CompleteMultipartUpload(imur, parts, objectAcl)
+	if err != nil {
+		return nil, err
 	}
-	fmt.Println("cmur:", cmur)
-	return nil
+	return &uploadResult, nil
 }
 
 // 取消分片上传
 func CancelMultipartUpload(bucketName, objectKeyName string) error {
 	// 获取存储空间。
 	bucket, err := AliyunOssClient().Bucket(bucketName)
-	if !infras.ErrorHandler(err) {
+	if err != nil {
 		return err
 	}
-
 	// 初始化一个分片上传事件。
 	imur, err := bucket.InitiateMultipartUpload(objectKeyName)
-	if !infras.ErrorHandler(err) {
+	if err != nil {
 		return err
 	}
 	// 取消分片上传。
 	err = bucket.AbortMultipartUpload(imur)
-	if !infras.ErrorHandler(err) {
+	if err != nil {
 		return err
 	}
 	return nil

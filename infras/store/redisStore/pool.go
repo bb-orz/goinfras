@@ -1,13 +1,13 @@
 package redisStore
 
 import (
-	"fmt"
 	"github.com/garyburd/redigo/redis"
+	"go.uber.org/zap"
 	"strconv"
 	"time"
 )
 
-func NewRedisPool(cfg *redisConfig) (pool *redis.Pool, err error) {
+func NewRedisPool(cfg *redisConfig, logger *zap.Logger) (pool *redis.Pool, err error) {
 
 	// 配置并获得一个连接池对象的指针
 	pool = &redis.Pool{
@@ -23,14 +23,13 @@ func NewRedisPool(cfg *redisConfig) (pool *redis.Pool, err error) {
 			redisAddr := cfg.DbHost + ":" + strconv.Itoa(cfg.DbPort)
 			conn, err := redis.Dial("tcp", redisAddr)
 			if err != nil {
-				fmt.Println("redis dial fatal:", err.Error())
+				logger.Error("redis dial fatal", zap.Error(err))
 				return nil, err
 			}
 			// 权限认证
 			if cfg.DbAuth {
 				if _, err := conn.Do("Auth", cfg.DbPasswd); err != nil {
-					fmt.Println("redis auth fatal:", err.Error())
-					fmt.Println(conn.Close().Error())
+					logger.Error("redis auth fatal", zap.Error(err))
 					return nil, err
 				}
 			}
@@ -44,13 +43,12 @@ func NewRedisPool(cfg *redisConfig) (pool *redis.Pool, err error) {
 			}
 			_, err := conn.Do("Ping")
 			if err != nil {
-				fmt.Println("")
+				logger.Info("Redis Connect Ping Successful!")
 			}
 			return err
 		},
 	}
 
 	// 一般启动后不关闭连接池
-	fmt.Println("Redis pool init ready!")
 	return pool, nil
 }

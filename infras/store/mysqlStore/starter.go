@@ -8,6 +8,7 @@ import (
 )
 
 var mysqlClient *sql.DB
+
 func MysqlClient() *sql.DB {
 	infras.Check(mysqlClient)
 	return mysqlClient
@@ -23,9 +24,7 @@ func (s *MysqlStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
 	define := mysqlConfig{}
 	err := kvs.Unmarshal(configs, &define, "Mysql")
-	if err != nil {
-		panic(err.Error())
-	}
+	infras.FailHandler(err)
 	s.cfg = &define
 }
 
@@ -35,13 +34,11 @@ func (s *MysqlStarter) Setup(sctx *infras.StarterContext) {}
 // 启动该资源组件
 func (s *MysqlStarter) Start(sctx *infras.StarterContext) {
 	var err error
-	mysqlClient,err = NewMysqlClient(s.cfg)
-	if err != nil {
-		panic(err.Error())
-	}
+	mysqlClient, err = NewMysqlClient(s.cfg)
+	infras.FailHandler(err)
 }
 
 // 停止服务
-func (s *MysqlStarter) Stop(sctx *infras.StarterContext)  {
+func (s *MysqlStarter) Stop(sctx *infras.StarterContext) {
 
 }

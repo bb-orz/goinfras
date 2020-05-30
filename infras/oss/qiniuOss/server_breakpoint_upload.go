@@ -30,7 +30,9 @@ type ProgressRecord struct {
 @param recordKey string 指定的进度文件保存目录，实际情况下，请确保该目录存在，而且只用于记录进度文件
 
 */
-func (client *QnClient) BreakPointUpload(bucket, fileKey, localFilePath, recordDir string) {
+func (client *QnClient) BreakPointUpload(bucket, fileKey, localFilePath, recordDir string) (storage.PutRet, error) {
+	var err error
+	ret := storage.PutRet{}
 
 	putPolicy := storage.PutPolicy{
 		Scope: bucket,
@@ -49,16 +51,14 @@ func (client *QnClient) BreakPointUpload(bucket, fileKey, localFilePath, recordD
 	// 我们这里采用 md5(bucket+key+local_path+local_file_last_modified)+".progress" 作为记录上传进度的文件名
 	fileInfo, statErr := os.Stat(localFilePath)
 	if statErr != nil {
-		fmt.Println(statErr)
-		return
+		return ret, statErr
 	}
 	fileSize := fileInfo.Size()
 	fileLmd := fileInfo.ModTime().UnixNano()
 	recordKey := md5Hex(fmt.Sprintf("%s:%s:%s:%s", bucket, fileKey, localFilePath, fileLmd)) + ".progress"
-	mErr := os.MkdirAll(recordDir, 0755)
-	if mErr != nil {
-		fmt.Println("mkdir for record dir error,", mErr)
-		return
+	err = os.MkdirAll(recordDir, 0755)
+	if err != nil {
+		return ret, err
 	}
 	recordPath := filepath.Join(recordDir, recordKey)
 	progressRecord := ProgressRecord{}
@@ -85,7 +85,6 @@ func (client *QnClient) BreakPointUpload(bucket, fileKey, localFilePath, recordD
 		progressRecord.Progresses = make([]storage.BlkputRet, storage.BlockCount(fileSize))
 	}
 	resumeUploader := storage.NewResumeUploader(&cfg)
-	ret := storage.PutRet{}
 	progressLock := sync.RWMutex{}
 	putExtra := storage.RputExtra{
 		Progresses: progressRecord.Progresses,
@@ -102,12 +101,12 @@ func (client *QnClient) BreakPointUpload(bucket, fileKey, localFilePath, recordD
 			}
 		},
 	}
-	err := resumeUploader.PutFile(context.Background(), &ret, upToken, fileKey, localFilePath, &putExtra)
+	err = resumeUploader.PutFile(context.Background(), &ret, upToken, fileKey, localFilePath, &putExtra)
 	if err != nil {
-		fmt.Println(err)
-		return
+		return ret, err
 	}
-	// 上传成功之后，一定记得删除这个进度文件
+	// 上传成功之后，删除这个进度文件
 	os.Remove(recordPath)
-	fmt.Println(ret.Key, ret.Hash)
+	//fmt.Println(ret.Key, ret.Hash)
+	return ret, nil
 }

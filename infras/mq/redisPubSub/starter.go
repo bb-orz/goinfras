@@ -4,7 +4,6 @@ import (
 	"GoWebScaffold/infras"
 	redigo "github.com/garyburd/redigo/redis"
 	"github.com/tietang/props/kvs"
-	"go.uber.org/zap"
 )
 
 var redispsPool *redigo.Pool
@@ -36,16 +35,14 @@ func (s *RedisPubSubStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
 	define := redisPubSubConfig{}
 	err := kvs.Unmarshal(configs, &define, "RedisPubSub")
-	if err != nil {
-		panic(err.Error())
-	}
+	infras.FailHandler(err)
 	s.cfg = &define
 }
 
 func (s *RedisPubSubStarter) Setup(sctx *infras.StarterContext) {}
 
 func (s *RedisPubSubStarter) Start(sctx *infras.StarterContext) {
-	redispsPool = GetRedisPubsubPool(s.cfg, s.logger)
+	redispsPool = GetRedisPubsubPool(s.cfg, sctx.Logger())
 }
 
 func (s *RedisPubSubStarter) Stop(sctx *infras.StarterContext) {

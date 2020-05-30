@@ -1,15 +1,12 @@
 package aliyunOss
 
 import (
-	"GoWebScaffold/infras"
 	aliOss "github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 
-func NewClient(cfg *aliyunOssConfig) *aliOss.Client {
+func NewClient(cfg *aliyunOssConfig) (*aliOss.Client, error) {
 	// Aliyun OSS初始化
-	var err error
-	var aoss *aliOss.Client
-	aoss, err = aliOss.New(
+	return aliOss.New(
 		cfg.Endpoint,
 		cfg.AccessKeyId,
 		cfg.AccessKeySecret,
@@ -17,7 +14,4 @@ func NewClient(cfg *aliyunOssConfig) *aliOss.Client {
 		aliOss.UseCname(cfg.UseCname),
 		aliOss.EnableCRC(cfg.EnableCRC),
 	)
-	infras.FailHandler(err)
-	return aoss
-
 }

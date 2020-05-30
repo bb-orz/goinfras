@@ -22,16 +22,16 @@ func (s *AliyunOssStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
 	define := aliyunOssConfig{}
 	err := kvs.Unmarshal(configs, &define, "AliyunOss")
-	if err != nil {
-		panic(err.Error())
-	}
+	infras.FailHandler(err)
 	s.cfg = &define
 }
 
 func (s *AliyunOssStarter) Setup(sctx *infras.StarterContext) {}
 
 func (s *AliyunOssStarter) Start(sctx *infras.StarterContext) {
-	aliyunOssClient = NewClient(s.cfg)
+	var err error
+	aliyunOssClient, err = NewClient(s.cfg)
+	infras.FailHandler(err)
 }
 
 func (s *AliyunOssStarter) Stop(ctx *infras.StarterContext) {

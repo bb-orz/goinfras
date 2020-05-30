@@ -31,9 +31,7 @@ func (s *QiniuOssStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
 	define := qiniuOssConfig{}
 	err := kvs.Unmarshal(configs, &define, "QiniuOss")
-	if err != nil {
-		panic(err.Error())
-	}
+	infras.FailHandler(err)
 
 	qiniuOssClient = new(QnClient)
 	qiniuOssClient.cfg = &define

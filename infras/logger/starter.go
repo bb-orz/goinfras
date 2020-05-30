@@ -10,19 +10,19 @@ import (
 var commonLogger *zap.Logger
 var syncErrorLogger *zap.Logger
 
-func CommonLogger() *zap.Logger  {
+func CommonLogger() *zap.Logger {
 	infras.Check(commonLogger)
 	return commonLogger
 }
 
-func SyncErrorLogger() *zap.Logger  {
+func SyncErrorLogger() *zap.Logger {
 	infras.Check(syncErrorLogger)
 	return syncErrorLogger
 }
 
 type LoggerStarter struct {
 	infras.BaseStarter
-	cfg *loggerConfig
+	cfg     *loggerConfig
 	Writers []io.Writer
 }
 
@@ -31,16 +31,15 @@ func (s *LoggerStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
 	define := loggerConfig{}
 	err := kvs.Unmarshal(configs, &define, "Logger")
-	if err != nil {
-		panic(err.Error())
-	}
+	infras.FailHandler(err)
 	s.cfg = &define
 }
 
 // 启动日志记录器
 func (s *LoggerStarter) Start(sctx *infras.StarterContext) {
-	commonLogger = NewCommonLogger(s.cfg,s.Writers...)
+	commonLogger = NewCommonLogger(s.cfg, s.Writers...)
 	syncErrorLogger = NewSyncErrorLogger(s.cfg)
+	sctx.SetLogger(commonLogger)
 }
 
 // 优先级为最优先启动

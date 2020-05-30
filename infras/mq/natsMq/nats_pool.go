@@ -1,8 +1,8 @@
 package natsMq
 
 import (
-	"GoWebScaffold/infras/logger"
 	"github.com/nats-io/nats.go"
+	"go.uber.org/zap"
 	"sync"
 	"time"
 )
@@ -55,7 +55,7 @@ func NewNatsConnectPool(addr string, connSize int, dialFunc DialFunc) (*NatsPool
 const DefaultConnSize = 20
 
 // 默认连接池的工厂方法
-func NewDefaultPool(addr string) (*NatsPool, error) {
+func NewDefaultPool(addr string, logger *zap.Logger) (*NatsPool, error) {
 	// 默认的连接处理函数
 	var defaultFunc = func(natsServersUrl string, options ...nats.Option) (*nats.Conn, error) {
 		ops := []nats.Option{
@@ -65,15 +65,15 @@ func NewDefaultPool(addr string) (*NatsPool, error) {
 			nats.ReconnectWait(2 * time.Second),
 			// 断开连接的错误处理
 			nats.DisconnectErrHandler(func(nc *nats.Conn, err error) {
-				logger.CommonLogger().Warn("Nats server disconnected Reason:" + err.Error())
+				logger.Warn("Nats server disconnected Reason:" + err.Error())
 			}),
 			// 重连时的错误处理
 			nats.ReconnectHandler(func(nc *nats.Conn) {
-				logger.CommonLogger().Warn("Nats server reconnected to " + nc.ConnectedUrl())
+				logger.Warn("Nats server reconnected to " + nc.ConnectedUrl())
 			}),
 			// 关闭连接时的错误处理
 			nats.ClosedHandler(func(nc *nats.Conn) {
-				logger.CommonLogger().Warn("Nats server connection closed. Reason: " + nc.LastError().Error())
+				logger.Warn("Nats server connection closed. Reason: " + nc.LastError().Error())
 			}),
 		}
 		ops = append(ops, options...)

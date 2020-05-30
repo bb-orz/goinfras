@@ -21,16 +21,17 @@ func (s *NatsMQStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
 	define := natsMqConfig{}
 	err := kvs.Unmarshal(configs, &define, "NatsMq")
-	if err != nil {
-		panic(err.Error())
-	}
+	infras.FailHandler(err)
+
 	s.cfg = &define
 }
 
 func (s *NatsMQStarter) SetUp(sctx *infras.StarterContext) {}
 
 func (s *NatsMQStarter) Start(sctx *infras.StarterContext) {
-	natsMQPool = GetNatsMqPool(s.cfg)
+	var err error
+	natsMQPool, err = GetNatsMqPool(s.cfg, sctx.Logger())
+	infras.FailHandler(err)
 }
 
 func (s *NatsMQStarter) Stop(sctx *infras.StarterContext) {

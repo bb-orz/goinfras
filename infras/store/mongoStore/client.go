@@ -1,7 +1,6 @@
 package mongoStore
 
 import (
-	"GoWebScaffold/infras"
 	"context"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -38,17 +37,19 @@ func NewMongoClient(cfg *mongoConfig) (mc *mongo.Client, err error) {
 	opt.SetRetryReads(cfg.RetryReads)                                        //指定是否应在某些错误（如网络）上重试一次受支持的读操作
 	// 创建连接客户端
 	mc, err = mongo.NewClient(opt)
-	infras.FailHandler(err)
+	if err != nil {
+		return nil, err
+	}
 
 	// 连接并Ping测试
 	ctx, _ := context.WithTimeout(context.TODO(), 10*time.Second)
 	err = mc.Connect(ctx)
-	if infras.ErrorHandler(err) {
+	if err == nil {
 		// 测试Ping
 		err = mc.Ping(ctx, nil)
-		if infras.ErrorHandler(err) {
-			return mc, nil
+		if err != nil {
+			return nil, err
 		}
 	}
-	return nil, err
+	return mc, err
 }

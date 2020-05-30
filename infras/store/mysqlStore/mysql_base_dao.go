@@ -34,7 +34,7 @@ func NewCommonMysqlStore() *BaseDao {
 */
 func (m *BaseDao) GetOne(tableName string, where map[string]interface{}, selectField []string, result DaoMysqlSchema) error {
 	if nil == m.db {
-		return errors.New("mysql.DB object couldn't be nil")
+		return errors.New("*sql.DB object couldn't be nil")
 	}
 	condition, values, err := builder.BuildSelect(tableName, where, selectField)
 	if nil != err {
@@ -58,7 +58,7 @@ func (m *BaseDao) GetOne(tableName string, where map[string]interface{}, selectF
 */
 func (m *BaseDao) GetMulti(tableName string, where map[string]interface{}, selectField []string, results interface{}) error {
 	if nil == m.db {
-		return errors.New("mysql.DB object couldn't be nil")
+		return errors.New("*sql.DB object couldn't be nil")
 	}
 	condition, values, err := builder.BuildSelect(tableName, where, selectField)
 	if nil != err {
@@ -82,7 +82,7 @@ func (m *BaseDao) GetMulti(tableName string, where map[string]interface{}, selec
 */
 func (m *BaseDao) Insert(tableName string, data []map[string]interface{}) (int64, error) {
 	if nil == m.db {
-		return -1, errors.New("sql.DB object couldn't be nil")
+		return -1, errors.New("*sql.DB object couldn't be nil")
 	}
 	condition, values, err := builder.BuildInsert(tableName, data)
 	if nil != err {
@@ -104,7 +104,7 @@ func (m *BaseDao) Insert(tableName string, data []map[string]interface{}) (int64
 */
 func (m *BaseDao) InsertIgnore(tableName string, data []map[string]interface{}) (int64, error) {
 	if nil == m.db {
-		return -1, errors.New("sql.DB object couldn't be nil")
+		return -1, errors.New("*sql.DB object couldn't be nil")
 	}
 	condition, values, err := builder.BuildInsertIgnore(tableName, data)
 	if nil != err {
@@ -126,7 +126,7 @@ func (m *BaseDao) InsertIgnore(tableName string, data []map[string]interface{}) 
 */
 func (m *BaseDao) InsertReplace(tableName string, data []map[string]interface{}) (int64, error) {
 	if nil == m.db {
-		return -1, errors.New("sql.DB object couldn't be nil")
+		return -1, errors.New("*sql.DB object couldn't be nil")
 	}
 	condition, values, err := builder.BuildReplaceInsert(tableName, data)
 	if nil != err {
@@ -149,7 +149,7 @@ func (m *BaseDao) InsertReplace(tableName string, data []map[string]interface{})
 */
 func (m *BaseDao) Update(tableName string, where, data map[string]interface{}) (int64, error) {
 	if nil == m.db {
-		return -1, errors.New("sql.DB object couldn't be nil")
+		return -1, errors.New("*sql.DB object couldn't be nil")
 	}
 	condition, values, err := builder.BuildUpdate(tableName, where, data)
 	if nil != err {
@@ -170,7 +170,7 @@ func (m *BaseDao) Update(tableName string, where, data map[string]interface{}) (
 @return RowsAffected int64						删除影响的行数
 */func (m *BaseDao) Delete(tableName string, where map[string]interface{}) (int64, error) {
 	if nil == m.db {
-		return -1, errors.New("sql.DB object couldn't be nil")
+		return -1, errors.New("*sql.DB object couldn't be nil")
 	}
 	condition, values, err := builder.BuildDelete(tableName, where)
 	if nil != err {
@@ -191,7 +191,7 @@ func (m *BaseDao) Update(tableName string, where, data map[string]interface{}) (
 @return count 		int64						符合条件的行数
 */func (m *BaseDao) GetCount(tableName string, where map[string]interface{}) (int64, error) {
 	if nil == m.db {
-		return -1, errors.New("sql.DB object couldn't be nil")
+		return -1, errors.New("*sql.DB object couldn't be nil")
 	}
 	res, err := builder.AggregateQuery(context.TODO(), m.db, tableName, where, builder.AggregateCount("*"))
 	if nil != err {
