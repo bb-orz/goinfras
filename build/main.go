@@ -20,6 +20,7 @@ import (
 	"os"
 )
 
+// TODO 测试infras各个资源组件，并整合gin框架，搭建基础脚手架
 func main() {
 	// 读取配置
 	cfgSourse := loadConfigFile()
