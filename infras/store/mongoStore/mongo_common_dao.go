@@ -31,16 +31,16 @@ func (mp *CommonMongoDao) DM(dbName, colName string, f func(c *mongo.Collection)
 /*
 通用新增数据到mongo collection
 */
-func (mp *CommonMongoDao) InsertOne(ctx context.Context, collectionName string, dataMap map[string]interface{}) (insertID interface{}, err error) {
-	one, err := mp.defaultDb.Collection(collectionName).InsertOne(ctx, dataMap)
+func (mp *CommonMongoDao) InsertOne(ctx context.Context, collectionName string, document interface{}, opts ...*options.InsertOneOptions) (insertID interface{}, err error) {
+	one, err := mp.defaultDb.Collection(collectionName).InsertOne(ctx, document, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return one.InsertedID, nil
 }
 
-func (mp *CommonMongoDao) InsertMany(ctx context.Context, collectionName string, dataMaps []interface{}) (insertIDs []interface{}, err error) {
-	many, err := mp.defaultDb.Collection(collectionName).InsertMany(ctx, dataMaps)
+func (mp *CommonMongoDao) InsertMany(ctx context.Context, collectionName string, documents []interface{}, opts ...*options.InsertManyOptions) (insertIDs []interface{}, err error) {
+	many, err := mp.defaultDb.Collection(collectionName).InsertMany(ctx, documents, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -51,15 +51,15 @@ func (mp *CommonMongoDao) InsertMany(ctx context.Context, collectionName string,
 通用更新数据
 
 */
-func (mp *CommonMongoDao) UpdateOne(ctx context.Context, collectionName string, filter, updater map[string]interface{}, opts ...*options.UpdateOptions) (result *mongo.UpdateResult, err error) {
+func (mp *CommonMongoDao) UpdateOne(ctx context.Context, collectionName string, filter, updater interface{}, opts ...*options.UpdateOptions) (result *mongo.UpdateResult, err error) {
 	return mp.defaultDb.Collection(collectionName).UpdateOne(ctx, filter, updater, opts...)
 }
 
-func (mp *CommonMongoDao) UpdateMany(ctx context.Context, collectionName string, filter, updater map[string]interface{}, opts ...*options.UpdateOptions) (result *mongo.UpdateResult, err error) {
+func (mp *CommonMongoDao) UpdateMany(ctx context.Context, collectionName string, filter, updater interface{}, opts ...*options.UpdateOptions) (result *mongo.UpdateResult, err error) {
 	return mp.defaultDb.Collection(collectionName).UpdateMany(ctx, filter, updater, opts...)
 }
 
-func (mp *CommonMongoDao) ReplaceOne(ctx context.Context, collectionName string, filter, replacement map[string]interface{}, opts ...*options.ReplaceOptions) (result *mongo.UpdateResult, err error) {
+func (mp *CommonMongoDao) ReplaceOne(ctx context.Context, collectionName string, filter, replacement interface{}, opts ...*options.ReplaceOptions) (result *mongo.UpdateResult, err error) {
 	return mp.defaultDb.Collection(collectionName).ReplaceOne(ctx, filter, replacement, opts...)
 }
 
@@ -67,7 +67,7 @@ func (mp *CommonMongoDao) ReplaceOne(ctx context.Context, collectionName string,
 通用删除数据
 
 */
-func (mp *CommonMongoDao) DeleteOne(ctx context.Context, collectionName string, filter map[string]interface{}, opts ...*options.DeleteOptions) (deleteCount int64, err error) {
+func (mp *CommonMongoDao) DeleteOne(ctx context.Context, collectionName string, filter interface{}, opts ...*options.DeleteOptions) (deleteCount int64, err error) {
 	deleteResult, err := mp.defaultDb.Collection(collectionName).DeleteOne(ctx, filter, opts...)
 	if err != nil {
 		return -1, err
@@ -75,7 +75,7 @@ func (mp *CommonMongoDao) DeleteOne(ctx context.Context, collectionName string, 
 	return deleteResult.DeletedCount, nil
 }
 
-func (mp *CommonMongoDao) DeleteMany(ctx context.Context, collectionName string, filter map[string]interface{}, opts ...*options.DeleteOptions) (deleteCount int64, err error) {
+func (mp *CommonMongoDao) DeleteMany(ctx context.Context, collectionName string, filter interface{}, opts ...*options.DeleteOptions) (deleteCount int64, err error) {
 	deleteResult, err := mp.defaultDb.Collection(collectionName).DeleteMany(ctx, filter, opts...)
 	if err != nil {
 		return -1, err
@@ -83,29 +83,29 @@ func (mp *CommonMongoDao) DeleteMany(ctx context.Context, collectionName string,
 	return deleteResult.DeletedCount, nil
 }
 
-type FindResult map[string]interface{}
-type FindResults []map[string]interface{}
+type FindResult interface{}
+type FindResults []interface{}
 
 /*
 查找文档
 */
-func (mp *CommonMongoDao) Find(ctx context.Context, collectionName string, filter map[string]interface{}, opts ...*options.FindOptions) (cursor *mongo.Cursor, err error) {
+func (mp *CommonMongoDao) Find(ctx context.Context, collectionName string, filter interface{}, opts ...*options.FindOptions) (cursor *mongo.Cursor, err error) {
 	return mp.defaultDb.Collection(collectionName).Find(ctx, filter, opts...)
 }
 
-func (mp *CommonMongoDao) FindOne(ctx context.Context, collectionName string, filter map[string]interface{}, opts ...*options.FindOneOptions) *mongo.SingleResult {
+func (mp *CommonMongoDao) FindOne(ctx context.Context, collectionName string, filter interface{}, opts ...*options.FindOneOptions) *mongo.SingleResult {
 	return mp.defaultDb.Collection(collectionName).FindOne(ctx, filter, opts...)
 }
 
-func (mp *CommonMongoDao) FindOneAndDelete(ctx context.Context, collectionName string, filter map[string]interface{}, opts ...*options.FindOneAndDeleteOptions) (singleResult *mongo.SingleResult) {
+func (mp *CommonMongoDao) FindOneAndDelete(ctx context.Context, collectionName string, filter interface{}, opts ...*options.FindOneAndDeleteOptions) (singleResult *mongo.SingleResult) {
 	return mp.defaultDb.Collection(collectionName).FindOneAndDelete(ctx, filter, opts...)
 }
 
-func (mp *CommonMongoDao) FindOneAndUpdate(ctx context.Context, collectionName string, filter, updater map[string]interface{}, opts ...*options.FindOneAndUpdateOptions) (result *mongo.SingleResult) {
+func (mp *CommonMongoDao) FindOneAndUpdate(ctx context.Context, collectionName string, filter, updater interface{}, opts ...*options.FindOneAndUpdateOptions) (result *mongo.SingleResult) {
 	return mp.defaultDb.Collection(collectionName).FindOneAndUpdate(ctx, filter, updater, opts...)
 }
 
-func (mp *CommonMongoDao) FindOneAndReplace(ctx context.Context, collectionName string, filter map[string]interface{}, replacement map[string]interface{}, opts ...*options.FindOneAndReplaceOptions) (singleResult *mongo.SingleResult) {
+func (mp *CommonMongoDao) FindOneAndReplace(ctx context.Context, collectionName string, filter interface{}, replacement interface{}, opts ...*options.FindOneAndReplaceOptions) (singleResult *mongo.SingleResult) {
 	return mp.defaultDb.Collection(collectionName).FindOneAndReplace(ctx, filter, replacement, opts...)
 }
 
@@ -117,7 +117,7 @@ func (mp *CommonMongoDao) BulkWrite(ctx context.Context, collectionName string, 
 }
 
 // 查找文档数
-func (mp *CommonMongoDao) CountDocuments(ctx context.Context, collectionName string, filter map[string]interface{}, opts ...*options.CountOptions) (int64, error) {
+func (mp *CommonMongoDao) CountDocuments(ctx context.Context, collectionName string, filter interface{}, opts ...*options.CountOptions) (int64, error) {
 	return mp.defaultDb.Collection(collectionName).CountDocuments(ctx, filter, opts...)
 }
 

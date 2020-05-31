@@ -1,16 +1,19 @@
 package etcd
 
 import (
+	"context"
 	"go.etcd.io/etcd/clientv3"
 )
 
-type EtcdCommonClient struct {
+type CommonEtcd struct {
 	client *clientv3.Client
+	ctx    context.Context
 }
 
-func NewEtcdCommonClient() *EtcdCommonClient {
-	c := new(EtcdCommonClient)
+func NewCommonEtcd() *CommonEtcd {
+	c := new(CommonEtcd)
 	c.client = EtcdClientV3()
+	c.ctx = context.TODO()
 	return c
 }
 

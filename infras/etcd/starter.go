@@ -37,4 +37,5 @@ func (s *EtcdStarter) Start(sctx *infras.StarterContext) {
 }
 
 func (s *EtcdStarter) Stop(sctx *infras.StarterContext) {
+	_ = EtcdClientV3().Close()
 }
