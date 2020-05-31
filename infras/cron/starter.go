@@ -7,8 +7,9 @@ import (
 
 type CronStarter struct {
 	infras.BaseStarter
-	cfg   *cronConfig
-	Tasks []*Task
+	cfg     *cronConfig
+	manager *CronManager
+	Tasks   []*Task
 }
 
 func (s *CronStarter) Init(sctx *infras.StarterContext) {
@@ -17,17 +18,21 @@ func (s *CronStarter) Init(sctx *infras.StarterContext) {
 	err := kvs.Unmarshal(configs, &define, "Cron")
 	infras.FailHandler(err)
 	s.cfg = &define
-
-	// 注册定时任务
-	RegisterTask(s.Tasks...)
 }
 
-func (s *CronStarter) Setup(sctx *infras.StarterContext) {}
+func (s *CronStarter) Setup(sctx *infras.StarterContext) {
+	// 1.获取Cron执行管理器
+	manager := NewCronManager(s.cfg, sctx.Logger())
+	// 2.注册定时运行任务
+	manager.RegisterTasks(s.Tasks...)
+}
 
 func (s *CronStarter) Start(sctx *infras.StarterContext) {
-	Do(s.cfg, sctx.Logger())
-	sctx.Logger().Info("Cron Start Up ...")
+	// 3.运行定时任务
+	s.manager.RunTasks()
 }
 
 func (s *CronStarter) Stop(sctx *infras.StarterContext) {
+	// 4.关闭定时任务
+	s.manager.StopCron()
 }

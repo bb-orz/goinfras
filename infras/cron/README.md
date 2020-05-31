@@ -1,6 +1,9 @@
-#### 定时任务
+# 定时任务
 
-使用github.com/robfig/cron/v3包构建定时任务服务
+> 使用github.com/robfig/cron/v3包构建定时任务服务
+
+
+## Cron 包基本用法
 
 ### 一、关于spec参数：与linux cron 基本一样
 ```
@@ -98,3 +101,33 @@ if err != nil {
 }
 ```
 
+
+## 资源组件用例
+
+#### 一、定义你的Tasks
+定义你的任务
+```
+type DemoJob struct {
+	Args string // 可以理解为cmd的执行参数，传入AddJob()前设置
+}
+
+func (job *DemoJob) Run() {
+	fmt.Println("The demo job's args is :",job.Args)
+}
+
+
+```
+
+启动资源组件时注册
+```
+// ...
+
+taskList := make([]*cron.NewTask,0)
+task1 := NewTask("*/2 * * * * *", &JobA{})
+...
+taskList = append(taskList,task1)
+
+infras.Register(&cron.CronStarter{Tasks:taskList})
+
+// ...
+```

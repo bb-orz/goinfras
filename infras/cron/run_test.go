@@ -6,6 +6,7 @@ import (
 	"github.com/tietang/props/kvs"
 	"go.uber.org/zap"
 	"testing"
+	"time"
 )
 
 type JobA struct{}
@@ -16,17 +17,23 @@ func (j JobA) Run() {
 
 func TestCron(t *testing.T) {
 	Convey("Test Cron", t, func() {
-		RegisterTask(&Task{spec: "*/2 * * * * *", job: &JobA{}})
-
 		config := cronConfig{}
 		p := kvs.NewEmptyCompositeConfigSource()
 		err := p.Unmarshal(&config)
 		So(err, ShouldBeNil)
 		Println("Cron Config:", config)
 
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
-		Do(&config, logger)
+		manager := NewCronManager(&config, zap.L())
+		// 注册任务
+		Println("Register Tasks...")
+		task1 := NewTask("*/2 * * * * *", &JobA{})
+		manager.RegisterTasks(task1)
 
+		Println("Run Tasks...")
+		manager.RunTasks()
+
+		time.Sleep(10 * time.Second)
+		Println("Stop Cron...")
+		manager.StopCron()
 	})
 }
