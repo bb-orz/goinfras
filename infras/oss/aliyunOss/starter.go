@@ -36,5 +36,4 @@ func (s *AliyunOssStarter) Start(sctx *infras.StarterContext) {
 
 }
 
-func (s *AliyunOssStarter) Stop(ctx *infras.StarterContext) {
-}
+func (s *AliyunOssStarter) Stop(ctx *infras.StarterContext) {}

@@ -41,5 +41,5 @@ func (s *MysqlStarter) Start(sctx *infras.StarterContext) {
 
 // 停止服务
 func (s *MysqlStarter) Stop(sctx *infras.StarterContext) {
-
+	MysqlClient().Close()
 }

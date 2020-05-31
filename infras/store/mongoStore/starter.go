@@ -2,6 +2,7 @@ package mongoStore
 
 import (
 	"GoWebScaffold/infras"
+	"context"
 	"github.com/tietang/props/kvs"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -39,5 +40,5 @@ func (s *MongoDBStarter) Start(sctx *infras.StarterContext) {
 
 // 停止服务
 func (s *MongoDBStarter) Stop(sctx *infras.StarterContext) {
-
+	_ = MongoClient().Disconnect(context.TODO())
 }

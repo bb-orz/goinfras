@@ -36,5 +36,5 @@ func (s *NatsMQStarter) Start(sctx *infras.StarterContext) {
 }
 
 func (s *NatsMQStarter) Stop(sctx *infras.StarterContext) {
-
+	NatsMQPool().Close()
 }

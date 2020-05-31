@@ -46,5 +46,4 @@ func (s *QiniuOssStarter) Start(sctx *infras.StarterContext) {
 
 }
 
-func (s *QiniuOssStarter) Stop(sctx *infras.StarterContext) {
-}
+func (s *QiniuOssStarter) Stop(sctx *infras.StarterContext) {}

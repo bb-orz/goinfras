@@ -119,3 +119,7 @@ func (p *NatsPool) Empty() {
 func (p *NatsPool) Avail() int {
 	return len(p.conns)
 }
+
+func (p *NatsPool) Close() {
+	p.Close()
+}

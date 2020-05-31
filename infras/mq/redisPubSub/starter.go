@@ -48,4 +48,5 @@ func (s *RedisPubSubStarter) Start(sctx *infras.StarterContext) {
 }
 
 func (s *RedisPubSubStarter) Stop(sctx *infras.StarterContext) {
+	_ = RedisPubSubPool().Close()
 }

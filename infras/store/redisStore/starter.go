@@ -40,5 +40,5 @@ func (s *RedisStarter) Start(sctx *infras.StarterContext) {
 
 // 停止服务
 func (s *RedisStarter) Stop(sctx *infras.StarterContext) {
-
+	RedisPool().Close()
 }
