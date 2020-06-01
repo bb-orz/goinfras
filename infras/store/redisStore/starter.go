@@ -26,19 +26,13 @@ func (s *RedisStarter) Init(sctx *infras.StarterContext) {
 	s.cfg = &define
 }
 
-// 检查该组件的前置依赖
-func (s *RedisStarter) Setup(sctx *infras.StarterContext) {}
-
-// 启动该资源组件
-func (s *RedisStarter) Start(sctx *infras.StarterContext) {
+func (s *RedisStarter) Setup(sctx *infras.StarterContext) {
 	var err error
 	rPool, err = NewRedisPool(s.cfg, sctx.Logger())
 	infras.FailHandler(err)
-	sctx.Logger().Info("Redis Pool Start Up ...")
-
+	sctx.Logger().Info("RedisPool Setup Successful!")
 }
 
-// 停止服务
 func (s *RedisStarter) Stop(sctx *infras.StarterContext) {
 	RedisPool().Close()
 }

@@ -53,12 +53,13 @@ func (manager *CronManager) RegisterTasks(tasks ...*Task) {
 		}
 		manager.logger.Info("[Cron Add Task]", zap.Int("Entry ID", int(entryID)))
 	}
+	manager.logger.Info("Cron Register Tasks Finish!")
 }
 
 func (manager *CronManager) RunTasks() {
 	if len(manager.client.Entries()) > 0 {
 		manager.client.Start()
-		manager.logger.Info("The Cron Jobs Start Up...")
+		manager.logger.Info("The Cron Tasks Running...")
 		manager.logger.Info("Cron Entries:", zap.Any("Tasks", manager.client.Entries()))
 	} else {
 		manager.logger.Info("No Cron Entries")

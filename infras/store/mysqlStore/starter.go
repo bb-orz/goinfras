@@ -28,18 +28,13 @@ func (s *MysqlStarter) Init(sctx *infras.StarterContext) {
 	s.cfg = &define
 }
 
-// 检查该组件的前置依赖
-func (s *MysqlStarter) Setup(sctx *infras.StarterContext) {}
-
-// 启动该资源组件
-func (s *MysqlStarter) Start(sctx *infras.StarterContext) {
+func (s *MysqlStarter) Setup(sctx *infras.StarterContext) {
 	var err error
 	mysqlClient, err = NewMysqlClient(s.cfg)
 	infras.FailHandler(err)
-	sctx.Logger().Info("Mysql Client Start Up ...")
+	sctx.Logger().Info("MysqlClient Setup Successful ...")
 }
 
-// 停止服务
 func (s *MysqlStarter) Stop(sctx *infras.StarterContext) {
 	MysqlClient().Close()
 }

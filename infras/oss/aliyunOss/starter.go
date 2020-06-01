@@ -26,14 +26,9 @@ func (s *AliyunOssStarter) Init(sctx *infras.StarterContext) {
 	s.cfg = &define
 }
 
-func (s *AliyunOssStarter) Setup(sctx *infras.StarterContext) {}
-
-func (s *AliyunOssStarter) Start(sctx *infras.StarterContext) {
+func (s *AliyunOssStarter) Setup(sctx *infras.StarterContext) {
 	var err error
 	aliyunOssClient, err = NewClient(s.cfg)
 	infras.FailHandler(err)
-	sctx.Logger().Info("AliyunOss Start Up ...")
-
+	sctx.Logger().Info("AliyunOss Setup Successful!")
 }
-
-func (s *AliyunOssStarter) Stop(ctx *infras.StarterContext) {}

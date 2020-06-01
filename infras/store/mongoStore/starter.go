@@ -27,18 +27,13 @@ func (s *MongoDBStarter) Init(sctx *infras.StarterContext) {
 	s.cfg = &define
 }
 
-// 检查该组件的前置依赖
-func (s *MongoDBStarter) Setup(sctx *infras.StarterContext) {}
-
-// 启动该资源组件
-func (s *MongoDBStarter) Start(sctx *infras.StarterContext) {
+func (s *MongoDBStarter) Setup(sctx *infras.StarterContext) {
 	var err error
 	mClient, err = NewMongoClient(s.cfg)
 	infras.FailHandler(err)
-	sctx.Logger().Info("MongoDb Client Start Up ...")
+	sctx.Logger().Info("MongoClient Setup Successful!")
 }
 
-// 停止服务
 func (s *MongoDBStarter) Stop(sctx *infras.StarterContext) {
 	_ = MongoClient().Disconnect(context.TODO())
 }

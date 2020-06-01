@@ -25,6 +25,7 @@ func (s *CronStarter) Setup(sctx *infras.StarterContext) {
 	manager := NewCronManager(s.cfg, sctx.Logger())
 	// 2.注册定时运行任务
 	manager.RegisterTasks(s.Tasks...)
+	sctx.Logger().Info("Cron Manager Setup Successful!")
 }
 
 func (s *CronStarter) Start(sctx *infras.StarterContext) {
@@ -35,4 +36,6 @@ func (s *CronStarter) Start(sctx *infras.StarterContext) {
 func (s *CronStarter) Stop(sctx *infras.StarterContext) {
 	// 4.关闭定时任务
 	s.manager.StopCron()
+	sctx.Logger().Info("Cron Tasks Stopped!")
+
 }

@@ -2,7 +2,7 @@ package hook
 
 import (
 	"GoWebScaffold/infras"
-	"fmt"
+	"go.uber.org/zap"
 	"os"
 	"os/signal"
 	"reflect"
@@ -19,14 +19,13 @@ type HookStarter struct {
 	infras.BaseStarter
 }
 
-func (s *HookStarter) Setup(ctx *infras.StarterContext) {
+func (s *HookStarter) Setup(sctx *infras.StarterContext) {
 	sigs := make(chan os.Signal)
 	signal.Notify(sigs, syscall.SIGQUIT, syscall.SIGTERM)
 	go func() {
 		for {
 			c := <-sigs
-			// TODO log something...
-			fmt.Printf("notify: ", c)
+			sctx.Logger().Info("System signal notify:", zap.String("signal", c.String()))
 			for _, fn := range callbacks {
 				fn()
 			}
@@ -37,15 +36,14 @@ func (s *HookStarter) Setup(ctx *infras.StarterContext) {
 
 }
 
-func (s *HookStarter) Start(ctx *infras.StarterContext) {
+func (s *HookStarter) Start(sctx *infras.StarterContext) {
 	starters := infras.StarterManager.GetAll()
 
 	for _, s := range starters {
 		typ := reflect.TypeOf(s)
-		// TODO log something...
-		fmt.Printf("【Register Notify Stop】:%s.Stop()", typ.String())
+		sctx.Logger().Info("【Register Notify Stop】:%s.Stop()", zap.String("Resource Component", typ.String()))
 		Register(func() {
-			s.Stop(ctx)
+			s.Stop(sctx)
 		})
 	}
 }

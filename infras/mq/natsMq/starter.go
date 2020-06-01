@@ -26,13 +26,11 @@ func (s *NatsMQStarter) Init(sctx *infras.StarterContext) {
 	s.cfg = &define
 }
 
-func (s *NatsMQStarter) SetUp(sctx *infras.StarterContext) {}
-
-func (s *NatsMQStarter) Start(sctx *infras.StarterContext) {
+func (s *NatsMQStarter) Setup(sctx *infras.StarterContext) {
 	var err error
 	natsMQPool, err = GetNatsMqPool(s.cfg, sctx.Logger())
 	infras.FailHandler(err)
-	sctx.Logger().Info("NatsMq Start Up ...")
+	sctx.Logger().Info("NatsMQPool Setup Successful!")
 }
 
 func (s *NatsMQStarter) Stop(sctx *infras.StarterContext) {

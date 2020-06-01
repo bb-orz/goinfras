@@ -38,12 +38,7 @@ func (s *QiniuOssStarter) Init(sctx *infras.StarterContext) {
 
 }
 
-func (s *QiniuOssStarter) Setup(sctx *infras.StarterContext) {}
-
-func (s *QiniuOssStarter) Start(sctx *infras.StarterContext) {
+func (s *QiniuOssStarter) Setup(sctx *infras.StarterContext) {
 	qiniuOssClient.mac = NewQiniuOssMac(qiniuOssClient.cfg)
-	sctx.Logger().Info("QiniuOss Start Up ...")
-
+	sctx.Logger().Info("QiniuOss Setup Successful!")
 }
-
-func (s *QiniuOssStarter) Stop(sctx *infras.StarterContext) {}

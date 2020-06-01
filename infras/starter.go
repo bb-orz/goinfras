@@ -26,31 +26,40 @@ type Starter interface {
 
 // 启动组件顺序的优先组
 type PriorityGroup int
-const (
-	SystemGroup         PriorityGroup = 30  // 系统级别优先组
-	BasicResourcesGroup PriorityGroup = 20  // 基本资源级别优先组
-	AppGroup            PriorityGroup = 10  // 应用级别优先组
 
-	INT_MAX          = int(^uint(0) >> 1)   // 最优先启动级别
-	INT_MIN			 = 0					// 最末位启动级别
-	DEFAULT_PRIORITY = 10000  				// 默认
+const (
+	SystemGroup         PriorityGroup = 30 // 系统级别优先组
+	BasicResourcesGroup PriorityGroup = 20 // 基本资源级别优先组
+	AppGroup            PriorityGroup = 10 // 应用级别优先组
+
+	INT_MAX          = int(^uint(0) >> 1) // 最优先启动级别
+	INT_MIN          = 0                  // 最末位启动级别
+	DEFAULT_PRIORITY = 10000              // 默认
 )
 
 // 基础空启动器，可便于被其他具体的基础资源嵌入
 type BaseStarter struct{}
 
+// 载入启动器配置信息
 func (*BaseStarter) Init(*StarterContext) {}
 
+// 安装作为系统资源组件
 func (*BaseStarter) Setup(*StarterContext) {}
 
+// 如需随应用运行需Start启动
 func (*BaseStarter) Start(*StarterContext) {}
 
+// 阻塞型组件需设置为true
 func (*BaseStarter) SetStartBlocking() bool { return false }
 
+// 关闭应用时的资源组件清理工作
 func (*BaseStarter) Stop(*StarterContext) {}
 
+// 为资源组件设置优先组
 func (s *BaseStarter) PriorityGroup() PriorityGroup { return BasicResourcesGroup }
-func (s *BaseStarter) Priority() int                { return DEFAULT_PRIORITY }
+
+// 为资源组件设置启动优先值
+func (s *BaseStarter) Priority() int { return DEFAULT_PRIORITY }
 
 // 接口实现检查
 var _ Starter = new(BaseStarter)
@@ -74,12 +83,10 @@ func (m *starterManager) GetAll() []Starter {
 func (m *starterManager) Len() int {
 	return len(m.starters)
 }
-func (m starterManager) Swap(i, j int) { m.starters[i],  m.starters[j] =  m.starters[j],  m.starters[i] }
+func (m starterManager) Swap(i, j int) { m.starters[i], m.starters[j] = m.starters[j], m.starters[i] }
 func (m starterManager) Less(i, j int) bool {
-	return  m.starters[i].PriorityGroup() >  m.starters[j].PriorityGroup() &&  m.starters[i].Priority() >  m.starters[j].Priority()
+	return m.starters[i].PriorityGroup() > m.starters[j].PriorityGroup() && m.starters[i].Priority() > m.starters[j].Priority()
 }
-
-
 
 var StarterManager = new(starterManager)
 

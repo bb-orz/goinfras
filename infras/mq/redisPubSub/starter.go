@@ -39,12 +39,9 @@ func (s *RedisPubSubStarter) Init(sctx *infras.StarterContext) {
 	s.cfg = &define
 }
 
-func (s *RedisPubSubStarter) Setup(sctx *infras.StarterContext) {}
-
-func (s *RedisPubSubStarter) Start(sctx *infras.StarterContext) {
+func (s *RedisPubSubStarter) Setup(sctx *infras.StarterContext) {
 	redispsPool = GetRedisPubsubPool(s.cfg, sctx.Logger())
-	sctx.Logger().Info("Redis PubSub Pool Start Up ...")
-
+	sctx.Logger().Info("RedisPubSubPool Setup Successful ...")
 }
 
 func (s *RedisPubSubStarter) Stop(sctx *infras.StarterContext) {

@@ -27,15 +27,14 @@ func (s *EtcdStarter) Init(sctx *infras.StarterContext) {
 	s.cfg = &define
 }
 
-func (s *EtcdStarter) Setup(sctx *infras.StarterContext) {}
-
-func (s *EtcdStarter) Start(sctx *infras.StarterContext) {
+func (s *EtcdStarter) Setup(sctx *infras.StarterContext) {
 	var err error
 	etcdClient, err = NewEtcdClient(context.TODO(), s.cfg, nil)
 	infras.FailHandler(err)
-	sctx.Logger().Info("Etcd Start Up ...")
+	sctx.Logger().Info("EtcdClientV3 Setup Successful!")
 }
 
 func (s *EtcdStarter) Stop(sctx *infras.StarterContext) {
 	_ = EtcdClientV3().Close()
+	sctx.Logger().Info("EtcdClientV3 Closed!")
 }

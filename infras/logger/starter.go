@@ -26,7 +26,6 @@ type LoggerStarter struct {
 	Writers []io.Writer
 }
 
-// 初始化时读取有关日志记录器的配置信息
 func (s *LoggerStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
 	define := loggerConfig{}
@@ -35,13 +34,11 @@ func (s *LoggerStarter) Init(sctx *infras.StarterContext) {
 	s.cfg = &define
 }
 
-// 启动日志记录器
-func (s *LoggerStarter) Start(sctx *infras.StarterContext) {
+func (s *LoggerStarter) Setup(sctx *infras.StarterContext) {
 	commonLogger = NewCommonLogger(s.cfg, s.Writers...)
 	syncErrorLogger = NewSyncErrorLogger(s.cfg)
 	sctx.SetLogger(commonLogger)
-	sctx.Logger().Info("Logger Start Up ...")
+	sctx.Logger().Info("CommonLogger And SyncErrorLogger Setup Successful!")
 }
 
-// 优先级为最优先启动
 func (s *LoggerStarter) Priority() int { return infras.INT_MAX }

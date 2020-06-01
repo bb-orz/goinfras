@@ -31,23 +31,18 @@ func (s *OauthStarter) Init(sctx *infras.StarterContext) {
 	s.cfg = &define
 }
 
-func (s *OauthStarter) Setup(sctx *infras.StarterContext) {}
-
-func (s *OauthStarter) Start(sctx *infras.StarterContext) {
+func (s *OauthStarter) Setup(sctx *infras.StarterContext) {
 	oauthManager = new(oAuthManager)
 	if s.cfg.QQSignSwitch {
 		oauthManager.QQ = NewQQOauthManager(s.cfg)
-		sctx.Logger().Info("QQ OAuth Manager Start Up...")
+		sctx.Logger().Info("QQ OAuth Manager Setup Successful!")
 	}
 	if s.cfg.WechatSignSwitch {
 		oauthManager.Wechat = NewWechatOAuthManager(s.cfg)
-		sctx.Logger().Info("Wechat OAuth Manager Start Up...")
+		sctx.Logger().Info("Wechat OAuth Manager Setup Successful!")
 	}
 	if s.cfg.WeiboSignSwitch {
 		oauthManager.Weibo = NewWeiboOAuthManager(s.cfg)
-		sctx.Logger().Info("Weibo OAuth Manager Start Up...")
+		sctx.Logger().Info("Weibo OAuth Manager Setup Successful!")
 	}
-}
-
-func (s *OauthStarter) Stop(sctx *infras.StarterContext) {
 }
