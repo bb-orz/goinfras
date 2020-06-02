@@ -41,4 +41,10 @@ func (s *LoggerStarter) Setup(sctx *infras.StarterContext) {
 	sctx.Logger().Info("CommonLogger And SyncErrorLogger Setup Successful!")
 }
 
+func (s *LoggerStarter) Stop(sctx *infras.StarterContext) {
+	// 关闭前刷入日志数据
+	CommonLogger().Sync()
+	SyncErrorLogger().Sync()
+}
+
 func (s *LoggerStarter) Priority() int { return infras.INT_MAX }

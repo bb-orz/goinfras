@@ -7,17 +7,17 @@ import (
 // 启动器接口
 type Starter interface {
 	// 初始化：资源组件读取配置信息
-	Init(*StarterContext)
+	Init(sctx *StarterContext)
 	// 安装：检查该组件的前置依赖
-	Setup(*StarterContext)
+	Setup(sctx *StarterContext)
 	// 启动：该资源组件的连接或启动以供应用程序后续使用
-	Start(ctx *StarterContext)
+	Start(sctx *StarterContext)
 	// 阻塞启动：设置需要后置启动的资源组件，默认为false
 	SetStartBlocking() bool
 	//资源停止：
 	// 通常在启动时遇到异常时或者启用远程管理时，用于释放资源和终止资源的使用，
 	// 通常要优雅的释放，等待正在进行的任务继续，但不再接受新的任务
-	Stop(ctx *StarterContext)
+	Stop(sctx *StarterContext)
 	// 优先组：从高到低分：系统级别、基本资源级别、应用级别三组
 	PriorityGroup() PriorityGroup
 	// 设置该资源组件的启动优先级，默认为DEFAULT_PRIORITY，最大为INT_MAX
