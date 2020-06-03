@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func GingerRecoveryWithZap(logger *zap.Logger, stack bool) gin.HandlerFunc {
+func ZapRecoveryMiddleware(logger *zap.Logger, stack bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {

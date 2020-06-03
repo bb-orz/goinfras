@@ -5,14 +5,15 @@ import (
 	"time"
 )
 
-type ITokenService interface {
+type ITokenUtils interface {
 	Encode(user UserClaim) (string, error)
 	Decode(tokenString string) (*CustomerClaim, error)
+	// TODO Validate() 服务端缓存的存储校验
 }
 
 // JWT中携带的用户个人信息
 type UserClaim struct {
-	Id     int64  `json:id`
+	Id     string `json:id`
 	Name   string `json:name`
 	Avatar string `json:avatar`
 }
@@ -24,25 +25,24 @@ type CustomerClaim struct {
 }
 
 // 实现token服务
-type TokenService struct {
+type tokenUtils struct {
 	privateKey []byte // 编解码私钥，在生产环境中，该私钥请使用生成器生成，并妥善保管，此处使用简单字符串。
+	expTime    time.Time
 }
 
-func NewTokenService(privateKey []byte) *TokenService {
-	ts := new(TokenService)
+func NewTokenUtils(privateKey []byte, expSeconds int) *tokenUtils {
+	ts := new(tokenUtils)
 	ts.privateKey = privateKey
+	ts.expTime = time.Now().Add(time.Second * time.Duration(expSeconds))
 	return ts
 }
 
 // 传入用户信息编码成token
-func (tks *TokenService) Encode(user UserClaim) (string, error) {
+func (tks *tokenUtils) Encode(user UserClaim) (string, error) {
 	// privateKey, _ := base64.URLEncoding.DecodeString(string(privateKey))
 
-	// 设置超时时间
-	expTime := time.Now().Add(time.Hour * 24 * 3).Unix()
-
 	// 设置Claim
-	customer := CustomerClaim{user, &jwt.StandardClaims{ExpiresAt: expTime}}
+	customer := CustomerClaim{user, &jwt.StandardClaims{ExpiresAt: tks.expTime.Unix()}}
 
 	// 生成token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, customer)
@@ -52,18 +52,13 @@ func (tks *TokenService) Encode(user UserClaim) (string, error) {
 }
 
 // token字符串解码成用户信息
-func (tks *TokenService) Decode(tokenString string) (*CustomerClaim, error) {
+func (tks *tokenUtils) Decode(tokenString string) (*CustomerClaim, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &CustomerClaim{}, func(token *jwt.Token) (interface{}, error) {
 		// return base64.URLEncoding.DecodeString(string(privateKey))
 		return tks.privateKey, nil
 	})
 
 	if err != nil {
-		//logger.Error("JWT Decode Wrong",
-		//	zap.String("path", "util/jwt.TokenService.Decode"),
-		//	zap.String("warming", err.Error()),
-		//	zap.String("receive_token", tokenString),
-		//)
 		return nil, err
 	}
 

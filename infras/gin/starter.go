@@ -2,8 +2,9 @@ package gin
 
 import (
 	"GoWebScaffold/infras"
+	"GoWebScaffold/infras/jwt"
+	"github.com/gin-gonic/gin"
 	"github.com/tietang/props/kvs"
-	"go.uber.org/zap"
 )
 
 type GinStarter struct {
@@ -29,8 +30,20 @@ func (s *GinStarter) Setup(sctx *infras.StarterContext) {
 
 // 启动运行gin service
 func (s *GinStarter) Start(sctx *infras.StarterContext) {
+	middlewares := make([]gin.HandlerFunc, 0)
+	middlewares = append(middlewares, ZapLoggerMiddleware(sctx.Logger()), ZapRecoveryMiddleware(sctx.Logger(), false))
 
-	err := runGinServer(s.cfg, zap.L())
+	// 如开启cors限制，添加中间件
+	if !s.cfg.cors.AllowAllOrigins {
+		middlewares = append(middlewares, CORSMiddleware(s.cfg.cors))
+	}
+
+	// 如TokenUtils服务已初始化，添加中间件
+	if tku := jwt.TokenUtils(); tku != nil {
+		middlewares = append(middlewares, JwtAuthMiddleware(tku))
+	}
+
+	err := GinServerRun(s.cfg, sctx.Logger(), middlewares...)
 	infras.FailHandler(err)
 }
 

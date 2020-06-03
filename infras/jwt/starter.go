@@ -5,11 +5,11 @@ import (
 	"github.com/tietang/props/kvs"
 )
 
-var tokenService *TokenService
+var tku *tokenUtils
 
-func TokenUtil() *TokenService {
-	infras.Check(tokenService)
-	return tokenService
+func TokenUtils() *tokenUtils {
+	infras.Check(tku)
+	return tku
 }
 
 type JWTStarter struct {
@@ -26,7 +26,7 @@ func (s *JWTStarter) Init(sctx *infras.StarterContext) {
 }
 
 func (s *JWTStarter) Setup(sctx *infras.StarterContext) {
-	tokenService = NewTokenService([]byte(s.cfg.privateKey))
+	tku = NewTokenUtils([]byte(s.cfg.privateKey), s.cfg.expSeconds)
 }
 
 func (s *JWTStarter) Start(sctx *infras.StarterContext) {

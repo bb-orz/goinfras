@@ -8,7 +8,7 @@ import (
 
 var timeFormat = "2019-11-09T23:02:28.844+0800"
 
-func GingerWithZap(logger *zap.Logger) gin.HandlerFunc {
+func ZapLoggerMiddleware(logger *zap.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
 		path := c.Request.URL.Path
