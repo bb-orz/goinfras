@@ -9,9 +9,9 @@ type CommonRedisDao struct {
 	pool *redis.Pool
 }
 
-func NewCommonRedisDao() *CommonRedisDao {
+func NewCommonRedisDao(pool *redis.Pool) *CommonRedisDao {
 	c := new(CommonRedisDao)
-	c.pool = RedisPool()
+	c.pool = pool
 	return c
 }
 

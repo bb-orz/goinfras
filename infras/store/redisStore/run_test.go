@@ -45,7 +45,7 @@ func TestCommonRedisDao(t *testing.T) {
 		rPool, err = NewRedisPool(&config, zap.L())
 		So(err, ShouldBeNil)
 
-		commonRedisDao := NewCommonRedisDao()
+		commonRedisDao := NewCommonRedisDao(rPool)
 
 		reply1, err := commonRedisDao.R("Set", "name", "joker")
 		So(err, ShouldBeNil)

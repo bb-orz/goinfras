@@ -21,16 +21,14 @@ func JwtAuthMiddleware(tku jwt.ITokenUtils) gin.HandlerFunc {
 		}
 
 		// 2.解码校验token是否合法
-		customerClaim, err := tku.Decode(tkStr)
+		customerClaim, err := tku.Validate(tkStr)
 		if err != nil {
 			c.Abort()
 			c.JSON(http.StatusUnauthorized, gin.H{
-				"message": "token string is invalid!",
+				"message": err.Error(),
 			})
 			return
 		}
-
-		// TODO 服务端缓存服务器校验用户身份
 
 		// 鉴权通过后设置用户信息
 		c.Set("tkStr", tkStr)

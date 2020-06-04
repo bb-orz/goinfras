@@ -1,6 +1,8 @@
 package jwt
 
 import (
+	"GoWebScaffold/infras/store/redisStore"
+	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"time"
 )
@@ -8,7 +10,8 @@ import (
 type ITokenUtils interface {
 	Encode(user UserClaim) (string, error)
 	Decode(tokenString string) (*CustomerClaim, error)
-	// TODO Validate() 服务端缓存的存储校验
+	// Validate() 服务端缓存的存储校验
+	Validate(tokenString string) (*CustomerClaim, error)
 }
 
 // JWT中携带的用户个人信息
@@ -26,8 +29,8 @@ type CustomerClaim struct {
 
 // 实现token服务
 type tokenUtils struct {
-	privateKey []byte // 编解码私钥，在生产环境中，该私钥请使用生成器生成，并妥善保管，此处使用简单字符串。
-	expTime    time.Time
+	privateKey []byte    // 编解码私钥，在生产环境中，该私钥请使用生成器生成，并妥善保管，此处使用简单字符串。
+	expTime    time.Time // 超时秒数
 }
 
 func NewTokenUtils(privateKey []byte, expSeconds int) *tokenUtils {
@@ -67,4 +70,20 @@ func (tks *tokenUtils) Decode(tokenString string) (*CustomerClaim, error) {
 	} else {
 		return nil, err
 	}
+}
+
+func (tks *tokenUtils) Validate(tokenString string) (*CustomerClaim, error) {
+	// 如不能解码，直接返回err
+	claim, err := tks.Decode(tokenString)
+	if err != nil {
+		return claim, err
+	}
+
+	// redis 鉴定缓存数据
+	cache := NewRedisCache(redisStore.RedisPool())
+	cacheToken, err := cache.GetToken(claim.UserClaim.Id)
+	if cacheToken != tokenString {
+		return nil, errors.New("Token string is invalid with cache data ")
+	}
+	return claim, nil
 }
