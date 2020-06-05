@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func NewRedisPool(cfg *redisConfig, logger *zap.Logger) (pool *redis.Pool, err error) {
+func NewRedisPool(cfg *RedisConfig, logger *zap.Logger) (pool *redis.Pool, err error) {
 
 	// 配置并获得一个连接池对象的指针
 	pool = &redis.Pool{

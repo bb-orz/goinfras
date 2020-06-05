@@ -11,7 +11,7 @@ import (
 
 func TestNewCommonRedisPool(t *testing.T) {
 	Convey("Redis Dao Test", t, func() {
-		config := redisConfig{}
+		config := RedisConfig{}
 		p := kvs.NewEmptyCompositeConfigSource()
 		err := p.Unmarshal(&config)
 		So(err, ShouldBeNil)
@@ -36,7 +36,7 @@ func TestNewCommonRedisPool(t *testing.T) {
 
 func TestCommonRedisDao(t *testing.T) {
 	Convey("Redis Dao Test", t, func() {
-		config := redisConfig{}
+		config := RedisConfig{}
 		p := kvs.NewEmptyCompositeConfigSource()
 		err := p.Unmarshal(&config)
 		So(err, ShouldBeNil)

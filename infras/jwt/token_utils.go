@@ -1,8 +1,6 @@
 package jwt
 
 import (
-	"GoWebScaffold/infras/store/redisStore"
-	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"time"
 )
@@ -10,8 +8,6 @@ import (
 type ITokenUtils interface {
 	Encode(user UserClaim) (string, error)
 	Decode(tokenString string) (*CustomerClaim, error)
-	// Validate() 服务端缓存的存储校验
-	Validate(tokenString string) (*CustomerClaim, error)
 }
 
 // JWT中携带的用户个人信息
@@ -41,7 +37,7 @@ func NewTokenUtils(privateKey []byte, expSeconds int) *tokenUtils {
 }
 
 // 传入用户信息编码成token
-func (tks *tokenUtils) Encode(user UserClaim) (string, error) {
+func (tks *tokenUtils) encode(user UserClaim) (string, error) {
 	// privateKey, _ := base64.URLEncoding.DecodeString(string(privateKey))
 
 	// 设置Claim
@@ -55,7 +51,7 @@ func (tks *tokenUtils) Encode(user UserClaim) (string, error) {
 }
 
 // token字符串解码成用户信息
-func (tks *tokenUtils) Decode(tokenString string) (*CustomerClaim, error) {
+func (tks *tokenUtils) decode(tokenString string) (*CustomerClaim, error) {
 	token, err := jwt.ParseWithClaims(tokenString, &CustomerClaim{}, func(token *jwt.Token) (interface{}, error) {
 		// return base64.URLEncoding.DecodeString(string(privateKey))
 		return tks.privateKey, nil
@@ -72,18 +68,10 @@ func (tks *tokenUtils) Decode(tokenString string) (*CustomerClaim, error) {
 	}
 }
 
-func (tks *tokenUtils) Validate(tokenString string) (*CustomerClaim, error) {
-	// 如不能解码，直接返回err
-	claim, err := tks.Decode(tokenString)
-	if err != nil {
-		return claim, err
-	}
+func (tks *tokenUtils) Encode(user UserClaim) (string, error) {
+	return tks.encode(user)
+}
 
-	// redis 鉴定缓存数据
-	cache := NewRedisCache(redisStore.RedisPool())
-	cacheToken, err := cache.GetToken(claim.UserClaim.Id)
-	if cacheToken != tokenString {
-		return nil, errors.New("Token string is invalid with cache data ")
-	}
-	return claim, nil
+func (tks *tokenUtils) Decode(tokenString string) (*CustomerClaim, error) {
+	return tks.decode(tokenString)
 }

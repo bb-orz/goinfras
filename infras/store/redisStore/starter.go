@@ -15,12 +15,12 @@ func RedisPool() *redis.Pool {
 
 type RedisStarter struct {
 	infras.BaseStarter
-	cfg *redisConfig
+	cfg *RedisConfig
 }
 
 func (s *RedisStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
-	define := redisConfig{}
+	define := RedisConfig{}
 	err := kvs.Unmarshal(configs, &define, "Redis")
 	infras.FailHandler(err)
 	s.cfg = &define

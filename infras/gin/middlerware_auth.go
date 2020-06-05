@@ -21,7 +21,7 @@ func JwtAuthMiddleware(tku jwt.ITokenUtils) gin.HandlerFunc {
 		}
 
 		// 2.解码校验token是否合法
-		customerClaim, err := tku.Validate(tkStr)
+		customerClaim, err := tku.Decode(tkStr)
 		if err != nil {
 			c.Abort()
 			c.JSON(http.StatusUnauthorized, gin.H{

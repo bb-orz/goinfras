@@ -1,7 +1,7 @@
 package redisStore
 
 // RedisDB配置
-type redisConfig struct {
+type RedisConfig struct {
 	DbHost      string `val:"127.0.0.1"`
 	DbPort      int    `val:"6379"`
 	DbAuth      bool   `val:"false"`
