@@ -43,7 +43,7 @@ func (s *GinStarter) Start(sctx *infras.StarterContext) {
 		middlewares = append(middlewares, JwtAuthMiddleware(tku))
 	}
 
-	err := GinServerRun(s.cfg, sctx.Logger(), middlewares...)
+	err := GinServer(s.cfg, sctx.Logger(), middlewares...)
 	infras.FailHandler(err)
 }
 

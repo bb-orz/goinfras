@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func GinServerRun(cfg *ginConfig, logger *zap.Logger, middlewares ...gin.HandlerFunc) error {
+func GinServer(cfg *ginConfig, logger *zap.Logger, middlewares ...gin.HandlerFunc) error {
 	// 创建一个gin实例
 	engine := gin.New()
 
