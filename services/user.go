@@ -1,6 +1,31 @@
 package services
 
-import "time"
+import (
+	"GoWebScaffold/infras"
+	"time"
+)
+
+/* 定义用户模块的服务层方法，并定义数据传输对象DTO*/
+
+var userService IUserService
+
+// 用于对外暴露账户应用服务，唯一的暴露点，供接口层调用
+func GetUserService() IUserService {
+	infras.Check(userService)
+	return userService
+}
+
+// 服务具体实现初始化时设置服务对象，供核心业务层具体实现并设置
+func SetUserService(service IUserService) {
+	userService = service
+}
+
+// 定义用户服务接口
+type IUserService interface {
+	CreateUser(dto CreateUserDTO) (*UserDTO, error) // 创建用户
+	GetUserInfo(userId string) (*UserDTO, error)    // 获取用户数据
+	SetUserInfo(dto SetUserInfoDTO) error           // 修改用户信息
+}
 
 // 创建用户的数据传输对象
 type CreateUserDTO struct {
@@ -33,11 +58,4 @@ type SetUserInfoDTO struct {
 	Avatar string `validate:"alphanumunicode"`
 	Gender int8   `validate:"numeric"`
 	Status int8   `validate:"numeric"`
-}
-
-// 定义用户服务接口
-type UserService interface {
-	CreateUser(dto CreateUserDTO) (*UserDTO, error) // 创建用户
-	GetUserInfo(userId string) (*UserDTO, error)    // 获取用户数据
-	SetUserInfo(dto SetUserInfoDTO) error           // 修改用户信息
 }

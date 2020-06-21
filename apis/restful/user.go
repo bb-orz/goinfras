@@ -8,15 +8,17 @@ import (
 )
 
 func init() {
+	// 初始化时注册该模块API
 	ginger.RegisterApiModule(new(UserApi))
 }
 
 type UserApi struct {
-	service services.UserService
+	service services.IUserService
 }
 
 // 设置该模块的API Router
 func (a *UserApi) SetRoutes() {
+	a.service = services.GetUserService()
 	engine := ginger.GinEngine()
 
 	// 如TokenUtils服务已初始化，添加中间件
