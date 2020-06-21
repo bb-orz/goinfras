@@ -1,4 +1,4 @@
-package gin
+package ginger
 
 import (
 	"GoWebScaffold/infras/jwt"
