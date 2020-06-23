@@ -5,6 +5,7 @@ import "time"
 // 用户模块的持久化对象，代表user表的每行数据
 type UserPO struct {
 	ID       uint      `ddb:"id" json:"id"`
+	UserNo   string    `ddb:"user_no" json:"user_no"`
 	Name     string    `ddb:"name" json:"name"`
 	Age      byte      `ddb:"age" json:"age"`
 	Avatar   string    `ddb:"avatar" json:"avatar"`

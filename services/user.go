@@ -2,7 +2,6 @@ package services
 
 import (
 	"GoWebScaffold/infras"
-	"time"
 )
 
 /* 定义用户模块的服务层方法，并定义数据传输对象DTO*/
@@ -29,14 +28,14 @@ type IUserService interface {
 
 // 创建用户的数据传输对象
 type CreateUserDTO struct {
-	Username string `validate:"required,alphanum"`
-	Email    string `validate:"required,email"`
-	Password string `validate:"required,alphanumunicode"`
+	Username   string `validate:"required,alphanum"`
+	Email      string `validate:"required,email"`
+	Password   string `validate:"required,alphanumunicode"`
+	RePassword string `validate:"required,alphanumunicode,eqfield=Password"`
 }
 
 // 用户数据传输对象
 type UserDTO struct {
-	ID       uint
 	Name     string
 	Age      byte
 	Avatar   string
@@ -44,10 +43,7 @@ type UserDTO struct {
 	Email    string
 	Phone    string
 	Password string
-	Salt     string
 	Status   int8
-	UpdateAt time.Time
-	CreateAt time.Time
 }
 
 // 修改用户新息的数据传输对象

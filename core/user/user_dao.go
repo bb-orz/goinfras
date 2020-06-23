@@ -8,3 +8,7 @@ import (
 type UserDAO struct {
 	dao *mysqlStore.BaseDao
 }
+
+func (d *UserDAO) Insert(po UserPO) {
+	// d.dao.Insert()
+}
