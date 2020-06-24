@@ -24,6 +24,15 @@ type IUserService interface {
 	CreateUser(dto CreateUserDTO) (*UserDTO, error) // 创建用户
 	GetUserInfo(userId string) (*UserDTO, error)    // 获取用户数据
 	SetUserInfo(dto SetUserInfoDTO) error           // 修改用户信息
+	BindEmail(email string) error                   // 绑定邮箱，发送验证邮件到指定邮箱
+	ValidateEmail(validateCode int) bool            // 绑定邮箱，验证邮箱链接
+	BindPhone(phone string) error                   // 绑定手机，发送短信验证码
+	ValidatePhone(validateCode int) bool            // 绑定手机，验证短信验证码
+	SetStatus(status int) int                       // 设置用户锁定状态
+	ChangePassword(dto ChangePassword) bool         // 更改用户密码
+	SendEmailForgetPassword() bool                  // 忘记密码，发送邮件到用户绑定的邮箱
+	ReSetPassword(dto ReSetPassword) bool           // 重设密码
+	UploadAvatar() bool                             // 上传头像
 }
 
 // 创建用户的数据传输对象
@@ -54,4 +63,16 @@ type SetUserInfoDTO struct {
 	Avatar string `validate:"alphanumunicode"`
 	Gender int8   `validate:"numeric"`
 	Status int8   `validate:"numeric"`
+}
+
+type ChangePassword struct {
+	old   string
+	new   string
+	reNew string
+}
+
+type ReSetPassword struct {
+	code  string // 允许重设密码的key值，服务端生成后被发往邮箱，用户点击过来后接收
+	new   string
+	reNew string
 }

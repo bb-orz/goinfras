@@ -29,7 +29,7 @@ func (*userService) CreateUser(dto services.CreateUserDTO) (*services.UserDTO, e
 	}
 
 	// 实例user模块领域模型
-	domain := userDomain{}
+	domain := NewUserDomain()
 
 	// 验证参数是否存在
 	if domain.IsUserExist(dto) {
@@ -53,5 +53,41 @@ func (*userService) GetUserInfo(userId string) (*services.UserDTO, error) {
 }
 
 func (*userService) SetUserInfo(dto services.SetUserInfoDTO) error {
+	panic("implement me")
+}
+
+func (*userService) BindEmail(email string) error {
+	panic("implement me")
+}
+
+func (*userService) ValidateEmail(validateCode int) bool {
+	panic("implement me")
+}
+
+func (*userService) BindPhone(phone string) error {
+	panic("implement me")
+}
+
+func (*userService) ValidatePhone(validateCode int) bool {
+	panic("implement me")
+}
+
+func (*userService) SetStatus(status int) int {
+	panic("implement me")
+}
+
+func (*userService) ChangePassword(dto services.ChangePassword) bool {
+	panic("implement me")
+}
+
+func (*userService) SendEmailForgetPassword() bool {
+	panic("implement me")
+}
+
+func (*userService) ReSetPassword(dto services.ReSetPassword) bool {
+	panic("implement me")
+}
+
+func (*userService) UploadAvatar() bool {
 	panic("implement me")
 }
