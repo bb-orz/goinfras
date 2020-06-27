@@ -32,7 +32,9 @@ func (*userService) CreateUser(dto services.CreateUserDTO) (*services.UserDTO, e
 	domain := NewUserDomain()
 
 	// 验证参数是否存在
-	if domain.IsUserExist(dto) {
+	if isExist, err := domain.IsUserExist(dto); err != nil {
+		return nil, errors.New("查询错误! ")
+	} else if isExist {
 		return nil, errors.New("该用户已经存在! ")
 	}
 
@@ -43,7 +45,7 @@ func (*userService) CreateUser(dto services.CreateUserDTO) (*services.UserDTO, e
 		Password: dto.Password,
 		Status:   1,
 	}
-	res, err := domain.Create(userDTO)
+	res, err := domain.CreateUser(userDTO)
 	return res, err
 
 }

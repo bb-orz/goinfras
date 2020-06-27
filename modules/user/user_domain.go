@@ -7,10 +7,14 @@ import (
 )
 
 /*领域层：实现具体业务逻辑*/
-type userDomain struct{}
+type userDomain struct {
+	userDao *UserDAO
+}
 
 func NewUserDomain() *userDomain {
-	return new(userDomain)
+	domain := new(userDomain)
+	domain.userDao = NewUserDao()
+	return domain
 }
 
 // 生成用户编号
@@ -27,14 +31,26 @@ func (domain *userDomain) encryptPassword(password string) (hashStr, salt string
 }
 
 // 查找用户是否已存在
-func (domain *userDomain) IsUserExist(dto services.UserDTO) (bool, error) {
+func (domain *userDomain) IsUserExist(dto services.CreateUserDTO) (bool, error) {
+	if isExist, err := domain.userDao.isExist(&User{Email: dto.Email}); err != nil {
+		return false, err
+	} else if isExist {
+		return true, nil
+	}
 
 	return false, nil
 }
 
 // 创建用户
 func (domain *userDomain) CreateUser(dto services.UserDTO) (*services.UserDTO, error) {
-	// 设置po
+	userModel := User{}
+	userModel.FromDTO(&dto)
+	var user *User
+	var err error
+	if user, err = domain.userDao.Create(userModel); err != nil {
+		return nil, err
+	}
 
-	return nil, nil
+	userDTO := user.ToDTO()
+	return userDTO, nil
 }

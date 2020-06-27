@@ -15,29 +15,22 @@ func NewUserDao() *UserDAO {
 
 // 查找用户名是否存在
 func (d *UserDAO) IsUserNameExist(name string) (bool, error) {
-	var where = map[string]interface{}{
-		"name": name,
-	}
-	return d.isExist(where)
+	return d.isExist(&User{Name: name})
 }
 
 // 查找邮箱是否存在
 func (d *UserDAO) IsEmailExist(email string) (bool, error) {
-	var where = map[string]interface{}{
-		"email": email,
-	}
-	return d.isExist(where)
+
+	return d.isExist(&User{Email: email})
 }
 
 // 查找手机号码是否存在
 func (d *UserDAO) IsPhoneExist(phone string) (bool, error) {
-	var where = map[string]interface{}{
-		"phone": phone,
-	}
-	return d.isExist(where)
+
+	return d.isExist(&User{Phone: phone})
 }
 
-func (d *UserDAO) isExist(where map[string]interface{}) (bool, error) {
+func (d *UserDAO) isExist(where *User) (bool, error) {
 	var count int
 	if err := ormStore.GormDb().Where(where).Count(&count).Error; err != nil {
 		return false, err
@@ -51,12 +44,12 @@ func (d *UserDAO) isExist(where map[string]interface{}) (bool, error) {
 }
 
 // 插入
-func (d *UserDAO) Create(po User) error {
-	if err := ormStore.GormDb().Create(&po).Error; err != nil {
-		return err
+func (d *UserDAO) Create(model User) (*User, error) {
+	if err := ormStore.GormDb().Create(&model).Error; err != nil {
+		return nil, err
 	}
 
-	return nil
+	return &model, nil
 }
 
 // 通过Id查找
