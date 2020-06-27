@@ -31,7 +31,7 @@ type MysqlTx struct {
 @param selectField 	[]string				查询选择返回的字段
 @param result 		DaoMysqlSchema			带表结构存储结果的指针，接收返回的数据，实现DaoMysqlSchema接口
 */
-func (mtx *MysqlTx) GetOne(tableName string, where map[string]interface{}, selectField []string, result DaoMysqlSchema) error {
+func (mtx *MysqlTx) GetOne(tableName string, where map[string]interface{}, selectField []string, result interface{}) error {
 	if mtx.tx == nil {
 		return errors.New("sql.Tx pointer couldn't be nil")
 	}
@@ -56,7 +56,7 @@ func (mtx *MysqlTx) GetOne(tableName string, where map[string]interface{}, selec
 @param selectField 	[]string				查询选择返回的字段
 @param results 		[]DaoMysqlSchema		带表结构存储结果的指针数组，接收返回的数据，实现DaoMysqlSchema接口
 */
-func (mtx *MysqlTx) GetMulti(tableName string, where map[string]interface{}, selectField []string, results interface{}) error {
+func (mtx *MysqlTx) GetMulti(tableName string, where map[string]interface{}, selectField []string, results []interface{}) error {
 	if mtx.tx == nil {
 		return errors.New("sql.Tx pointer couldn't be nil")
 	}

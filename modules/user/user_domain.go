@@ -26,16 +26,15 @@ func (domain *userDomain) encryptPassword(password string) (hashStr, salt string
 	return
 }
 
-// 创建用户
-func (domain *userDomain) Create(dto services.UserDTO) (*services.UserDTO, error) {
-	// 设置po
-	userPO := UserPO{}
-	userNo := domain.generateUserNo()
-	encryptPassword, salt := domain.encryptPassword(dto.Password)
+// 查找用户是否已存在
+func (domain *userDomain) IsUserExist(dto services.UserDTO) (bool, error) {
 
-	// TODO 实例DAO，执行持久化操作
-	userDao := UserDAO{}
-	userDao.Create(userPO)
+	return false, nil
+}
+
+// 创建用户
+func (domain *userDomain) CreateUser(dto services.UserDTO) (*services.UserDTO, error) {
+	// 设置po
 
 	return nil, nil
 }

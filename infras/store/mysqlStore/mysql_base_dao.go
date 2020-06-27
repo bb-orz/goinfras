@@ -8,11 +8,6 @@ import (
 	"github.com/didi/gendry/scanner"
 )
 
-// sql builder 映射的表struct应该实现的接口，实现该结构可使用一些通用的curd方法
-type DaoMysqlSchema interface {
-	TableName() string
-}
-
 // 通用Mysql数据访问操作
 type BaseDao struct {
 	db *sql.DB
@@ -32,7 +27,7 @@ func NewCommonMysqlStore() *BaseDao {
 @param selectField 	[]string				查询选择返回的字段
 @param result 		DaoMysqlSchema			带表结构存储结果的指针，接收返回的数据，实现DaoMysqlSchema接口
 */
-func (m *BaseDao) GetOne(tableName string, where map[string]interface{}, selectField []string, result DaoMysqlSchema) error {
+func (m *BaseDao) GetOne(tableName string, where map[string]interface{}, selectField []string, result interface{}) error {
 	if nil == m.db {
 		return errors.New("*sql.DB object couldn't be nil")
 	}
@@ -56,7 +51,7 @@ func (m *BaseDao) GetOne(tableName string, where map[string]interface{}, selectF
 @param selectField 	[]string				查询选择返回的字段
 @param results 		interface{}				带表结构存储结果的指针数组，接收返回的数据，接收results应与table schema struct相对应
 */
-func (m *BaseDao) GetMulti(tableName string, where map[string]interface{}, selectField []string, results interface{}) error {
+func (m *BaseDao) GetMulti(tableName string, where map[string]interface{}, selectField []string, results []interface{}) error {
 	if nil == m.db {
 		return errors.New("*sql.DB object couldn't be nil")
 	}
