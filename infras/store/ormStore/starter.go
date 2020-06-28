@@ -37,3 +37,18 @@ func (s *MysqlStarter) Setup(sctx *infras.StarterContext) {
 func (s *MysqlStarter) Stop(sctx *infras.StarterContext) {
 	GormDb().Close()
 }
+
+func RunForTesting(config *OrmConfig) error {
+	var err error
+	if config == nil {
+		config = &OrmConfig{}
+		p := kvs.NewEmptyCompositeConfigSource()
+		err = p.Unmarshal(&config)
+		if err != nil {
+			return err
+		}
+	}
+
+	gormDb, err = NewORMDb(config)
+	return err
+}
