@@ -39,7 +39,7 @@ func (s *ValidatorStarter) Init(sctx infras.StarterContext) {
 func (s *ValidatorStarter) Setup(sctx infras.StarterContext) {
 	var err error
 	if s.cfg.TransZh {
-		validate, translator, err = NewZhValidator(sctx.Logger())
+		validate, translator, err = NewZhValidator()
 	} else {
 		validate = NewValidator()
 	}
@@ -61,7 +61,7 @@ func RunForTesting(config *ValidateConfig) error {
 	}
 
 	if config.TransZh {
-		validate, translator, err = NewZhValidator(zap.L())
+		validate, translator, err = NewZhValidator()
 	} else {
 		validate = NewValidator()
 	}

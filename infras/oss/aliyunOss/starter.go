@@ -38,7 +38,7 @@ func RunForTesting(config *AliyunOssConfig) error {
 	if config == nil {
 		config = &AliyunOssConfig{}
 		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(&config)
+		err = p.Unmarshal(config)
 		if err != nil {
 			return err
 		}

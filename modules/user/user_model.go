@@ -21,6 +21,10 @@ type User struct {
 	UserOauths []UserOauth `gorm:"many2many:user_oauth_binding;"` // Many-To-Many , 'user_oauth_binding'是连接表
 }
 
+func (User) TableName() string {
+	return "user"
+}
+
 func (model *User) FromDTO(dto *services.UserDTO) {
 	model.Email = dto.Email
 	model.Name = dto.Name

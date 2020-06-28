@@ -44,7 +44,7 @@ func RunForTesting(config *MysqlConfig) error {
 	if config == nil {
 		config = &MysqlConfig{}
 		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(&config)
+		err = p.Unmarshal(config)
 		if err != nil {
 			return err
 		}

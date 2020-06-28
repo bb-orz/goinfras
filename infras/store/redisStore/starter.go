@@ -42,7 +42,7 @@ func RunForTesting() error {
 	var err error
 	config := RedisConfig{}
 	p := kvs.NewEmptyCompositeConfigSource()
-	err = p.Unmarshal(&config)
+	err = p.Unmarshal(config)
 	if err != nil {
 		return err
 	}

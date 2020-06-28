@@ -3,6 +3,7 @@ package user
 import (
 	"GoWebScaffold/common"
 	"GoWebScaffold/services"
+	"fmt"
 	"github.com/segmentio/ksuid"
 )
 
@@ -32,7 +33,8 @@ func (domain *userDomain) encryptPassword(password string) (hashStr, salt string
 
 // 查找用户是否已存在
 func (domain *userDomain) IsUserExist(dto services.CreateUserDTO) (bool, error) {
-	if isExist, err := domain.userDao.isExist(&User{Email: dto.Email}); err != nil {
+	if isExist, err := domain.userDao.IsEmailExist(dto.Email); err != nil {
+		fmt.Println("Error:", err)
 		return false, err
 	} else if isExist {
 		return true, nil

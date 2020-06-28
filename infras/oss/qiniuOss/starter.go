@@ -48,7 +48,7 @@ func RunForTesting(config *QiniuOssConfig) error {
 	if config == nil {
 		config = &QiniuOssConfig{}
 		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(&config)
+		err = p.Unmarshal(config)
 		if err != nil {
 			return err
 		}

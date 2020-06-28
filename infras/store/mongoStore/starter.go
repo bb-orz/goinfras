@@ -43,7 +43,7 @@ func RunForTesting(config *MongoConfig) error {
 	if config == nil {
 		config = &MongoConfig{}
 		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(&config)
+		err = p.Unmarshal(config)
 		if err != nil {
 			return err
 		}
