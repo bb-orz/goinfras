@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func NewGinEngine(cfg *ginConfig, middlewares ...gin.HandlerFunc) *gin.Engine {
+func NewGinEngine(cfg *GinConfig, middlewares ...gin.HandlerFunc) *gin.Engine {
 	var engine *gin.Engine
 
 	// 2.创建一个gin实例

@@ -16,13 +16,13 @@ func MysqlClient() *sql.DB {
 
 type MysqlStarter struct {
 	infras.BaseStarter
-	cfg *mysqlConfig
+	cfg *MysqlConfig
 }
 
 // 读取配置
 func (s *MysqlStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
-	define := mysqlConfig{}
+	define := MysqlConfig{}
 	err := kvs.Unmarshal(configs, &define, "Mysql")
 	infras.FailHandler(err)
 	s.cfg = &define
@@ -37,4 +37,18 @@ func (s *MysqlStarter) Setup(sctx *infras.StarterContext) {
 
 func (s *MysqlStarter) Stop(sctx *infras.StarterContext) {
 	MysqlClient().Close()
+}
+
+func RunForTesting(config *MysqlConfig) error {
+	var err error
+	if config == nil {
+		config = &MysqlConfig{}
+		p := kvs.NewEmptyCompositeConfigSource()
+		err = p.Unmarshal(&config)
+		if err != nil {
+			return err
+		}
+	}
+	mysqlClient, err = NewMysqlClient(config)
+	return err
 }

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"github.com/jinzhu/gorm"
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/tietang/props/kvs"
 	"testing"
 	"time"
 )
@@ -55,22 +54,10 @@ type CreditCard struct {
 	Number string
 }
 
-func newOrmDb(t *testing.T) {
-
-	config := ormConfig{}
-	p := kvs.NewEmptyCompositeConfigSource()
-	err := p.Unmarshal(&config)
-	So(err, ShouldBeNil)
-	Println("ORM Config:", config)
-
-	gormDb, err = NewORMDb(&config)
-	So(err, ShouldBeNil)
-
-}
-
 func TestGormDb(t *testing.T) {
 	Convey("测试使用gorm：", t, func() {
-		newOrmDb(t)
+		err := RunForTesting(nil)
+		So(err, ShouldBeNil)
 		// 检查模型`Address`表是否存在
 		hasAddressTable := gormDb.HasTable(&Address{})
 		Println("Address Table Is Exist:", hasAddressTable)
@@ -100,7 +87,8 @@ func TestGormDb(t *testing.T) {
 
 func TestGormInsert(t *testing.T) {
 	Convey("测试使用 Gorm Insert：", t, func() {
-		newOrmDb(t)
+		err := RunForTesting(nil)
+		So(err, ShouldBeNil)
 
 		// 插入
 		user := User{Name: "Jinzhu", Age: 18, Birthday: time.Now()}
@@ -114,7 +102,9 @@ func TestGormInsert(t *testing.T) {
 
 func TestGormFind(t *testing.T) {
 	Convey("测试使用 Gorm Find：", t, func() {
-		newOrmDb(t)
+		err := RunForTesting(nil)
+		So(err, ShouldBeNil)
+
 		var user User
 		var users []User
 		user = User{}
@@ -146,7 +136,9 @@ func TestGormFind(t *testing.T) {
 
 func TestGormSimpleWhere(t *testing.T) {
 	Convey("测试使用 Gorm Simple Where：", t, func() {
-		newOrmDb(t)
+		err := RunForTesting(nil)
+		So(err, ShouldBeNil)
+
 		var user User
 		var users []User
 		// 获取第一个匹配记录
@@ -195,7 +187,9 @@ func TestGormSimpleWhere(t *testing.T) {
 
 func TestGormWhereByStructOrMap(t *testing.T) {
 	Convey("测试使用 Gorm Where By struct Or Map：", t, func() {
-		newOrmDb(t)
+		err := RunForTesting(nil)
+		So(err, ShouldBeNil)
+
 		var user User
 		var users []User
 

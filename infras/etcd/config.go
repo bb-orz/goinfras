@@ -1,6 +1,6 @@
 package etcd
 
-type etcdConfig struct {
+type EtcdConfig struct {
 	Endpoints            []string
 	TLS                  string
 	Username             string

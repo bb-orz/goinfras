@@ -1,7 +1,7 @@
 package mongoStore
 
 // MongoDB 配置
-type mongoConfig struct {
+type MongoConfig struct {
 	DbHosts               []string
 	DbUser                string
 	DbPasswd              string

@@ -4,6 +4,7 @@ import (
 	"GoWebScaffold/infras"
 	"github.com/go-playground/universal-translator"
 	"github.com/tietang/props/kvs"
+	"go.uber.org/zap"
 	"gopkg.in/go-playground/validator.v9"
 )
 
@@ -24,21 +25,45 @@ func Translater() ut.Translator {
 
 type ValidatorStarter struct {
 	infras.BaseStarter
-	cfg *validateConfig
+	cfg *ValidateConfig
 }
 
 func (s *ValidatorStarter) Init(sctx infras.StarterContext) {
 	configs := sctx.Configs()
-	define := validateConfig{}
+	define := ValidateConfig{}
 	err := kvs.Unmarshal(configs, &define, "Validate")
 	infras.FailHandler(err)
 	s.cfg = &define
 }
 
 func (s *ValidatorStarter) Setup(sctx infras.StarterContext) {
-	if s.cfg.transZh {
-		validate, translator = NewZhValidator(sctx.Logger())
+	var err error
+	if s.cfg.TransZh {
+		validate, translator, err = NewZhValidator(sctx.Logger())
 	} else {
 		validate = NewValidator()
 	}
+	if err != nil {
+		sctx.Logger().Error("Validator Error:", zap.Error(err))
+	}
+}
+
+/*For testing*/
+func RunForTesting(config *ValidateConfig) error {
+	var err error
+	if config == nil {
+		config = &ValidateConfig{}
+		p := kvs.NewEmptyCompositeConfigSource()
+		err = p.Unmarshal(config)
+		if err != nil {
+			return err
+		}
+	}
+
+	if config.TransZh {
+		validate, translator, err = NewZhValidator(zap.L())
+	} else {
+		validate = NewValidator()
+	}
+	return err
 }

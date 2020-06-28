@@ -1,6 +1,6 @@
 package jwt
 
-type jwtConfig struct {
-	privateKey string
-	expSeconds int
+type JwtConfig struct {
+	PrivateKey string
+	ExpSeconds int
 }

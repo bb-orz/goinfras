@@ -1,7 +1,7 @@
 package natsMq
 
 // Nats Mq 消息系统
-type natsMqConfig struct {
+type NatsMqConfig struct {
 	Switch      bool
 	NatsServers []natsServer
 }

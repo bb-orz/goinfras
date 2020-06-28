@@ -1,6 +1,6 @@
 package redisPubSub
 
-type redisPubSubConfig struct {
+type RedisPubSubConfig struct {
 	Switch      bool   `val:"false"`
 	DbHost      string `val:"127.0.0.1"`
 	DbPort      int    `val:"6379"`

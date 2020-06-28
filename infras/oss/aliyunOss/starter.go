@@ -15,12 +15,12 @@ func AliyunOssClient() *oss.Client {
 
 type AliyunOssStarter struct {
 	infras.BaseStarter
-	cfg *aliyunOssConfig
+	cfg *AliyunOssConfig
 }
 
 func (s *AliyunOssStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
-	define := aliyunOssConfig{}
+	define := AliyunOssConfig{}
 	err := kvs.Unmarshal(configs, &define, "AliyunOss")
 	infras.FailHandler(err)
 	s.cfg = &define
@@ -31,4 +31,19 @@ func (s *AliyunOssStarter) Setup(sctx *infras.StarterContext) {
 	aliyunOssClient, err = NewClient(s.cfg)
 	infras.FailHandler(err)
 	sctx.Logger().Info("AliyunOss Setup Successful!")
+}
+
+func RunForTesting(config *AliyunOssConfig) error {
+	var err error
+	if config == nil {
+		config = &AliyunOssConfig{}
+		p := kvs.NewEmptyCompositeConfigSource()
+		err = p.Unmarshal(&config)
+		if err != nil {
+			return err
+		}
+	}
+
+	aliyunOssClient, err = NewClient(config)
+	return err
 }

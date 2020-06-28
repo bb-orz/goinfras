@@ -17,12 +17,12 @@ func GinEngine() *gin.Engine {
 
 type GinStarter struct {
 	infras.BaseStarter
-	cfg *ginConfig
+	cfg *GinConfig
 }
 
 func (s *GinStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
-	define := ginConfig{}
+	define := GinConfig{}
 	err := kvs.Unmarshal(configs, &define, "Gin")
 	infras.FailHandler(err)
 	s.cfg = &define
@@ -37,8 +37,8 @@ func (s *GinStarter) Setup(sctx *infras.StarterContext) {
 	middlewares = append(middlewares, ZapLoggerMiddleware(log), ZapRecoveryMiddleware(log, false))
 
 	// 如开启cors限制，添加中间件
-	if !s.cfg.cors.AllowAllOrigins {
-		middlewares = append(middlewares, CORSMiddleware(s.cfg.cors))
+	if !s.cfg.Cors.AllowAllOrigins {
+		middlewares = append(middlewares, CORSMiddleware(s.cfg.Cors))
 	}
 
 	// 2.New Gin Engine
@@ -55,8 +55,8 @@ func (s *GinStarter) Start(sctx *infras.StarterContext) {
 	var addr string
 	var err error
 	addr = fmt.Sprintf("%s:%d", s.cfg.ListenHost, s.cfg.ListenPort)
-	if s.cfg.tls && s.cfg.certFile != "" && s.cfg.keyFile != "" {
-		err = GinEngine().RunTLS(addr, s.cfg.certFile, s.cfg.keyFile)
+	if s.cfg.Tls && s.cfg.CertFile != "" && s.cfg.KeyFile != "" {
+		err = GinEngine().RunTLS(addr, s.cfg.CertFile, s.cfg.KeyFile)
 		infras.FailHandler(err)
 	} else {
 		err = GinEngine().Run(addr)
@@ -69,4 +69,48 @@ func (s *GinStarter) SetStartBlocking() bool {
 }
 
 func (s *GinStarter) Stop(sctx *infras.StarterContext) {
+}
+
+/*For testing*/
+func RunForTesting(config *GinConfig, apis []IApiModule) error {
+	var err error
+	if config == nil {
+		config = &GinConfig{}
+		p := kvs.NewEmptyCompositeConfigSource()
+		err = p.Unmarshal(config)
+		if err != nil {
+			return err
+		}
+	}
+
+	// 1.配置gin中间件
+	log := logger.CommonLogger()
+	middlewares := make([]gin.HandlerFunc, 0)
+	middlewares = append(middlewares, ZapLoggerMiddleware(log), ZapRecoveryMiddleware(log, false))
+
+	// 如开启cors限制，添加中间件
+	if !config.Cors.AllowAllOrigins {
+		middlewares = append(middlewares, CORSMiddleware(config.Cors))
+	}
+
+	// 2.New Gin Engine
+	ginEngine = NewGinEngine(config, middlewares...)
+
+	// 3.服务API 模块路由注册
+	for _, v := range apis {
+		v.SetRoutes()
+	}
+
+	// 4.启动
+	var addr string
+	addr = fmt.Sprintf("%s:%d", config.ListenHost, config.ListenPort)
+	if config.Tls && config.CertFile != "" && config.KeyFile != "" {
+		err = GinEngine().RunTLS(addr, config.CertFile, config.KeyFile)
+		infras.FailHandler(err)
+	} else {
+		err = GinEngine().Run(addr)
+		infras.FailHandler(err)
+	}
+
+	return err
 }

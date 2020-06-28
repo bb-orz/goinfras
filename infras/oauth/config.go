@@ -1,6 +1,6 @@
 package oauth
 
-type oAuthConfig struct {
+type OAuthConfig struct {
 	WechatSignSwitch      bool
 	WechatOAuth2AppKey    string
 	WechatOAuth2AppSecret string

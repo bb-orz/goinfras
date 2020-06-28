@@ -17,7 +17,7 @@ type QQOAuthManager struct {
 	redirectUrl string
 }
 
-func NewQQOauthManager(cfg *oAuthConfig) *QQOAuthManager {
+func NewQQOauthManager(cfg *OAuthConfig) *QQOAuthManager {
 	return &QQOAuthManager{
 		appKey:    cfg.QQOAuth2AppKey,
 		appSecret: cfg.QQOAuth2AppSecret,

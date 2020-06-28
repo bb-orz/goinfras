@@ -14,7 +14,7 @@ type WechatOAuthManager struct {
 	redirectUrl string
 }
 
-func NewWechatOAuthManager(cfg *oAuthConfig) *WechatOAuthManager {
+func NewWechatOAuthManager(cfg *OAuthConfig) *WechatOAuthManager {
 	return &WechatOAuthManager{
 		appKey:    cfg.WechatOAuth2AppKey,
 		appSecret: cfg.WechatOAuth2AppSecret,

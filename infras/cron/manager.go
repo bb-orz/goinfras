@@ -26,7 +26,7 @@ type CronManager struct {
 	tasks  []*Task
 }
 
-func NewCronManager(cfg *cronConfig, logger *zap.Logger) *CronManager {
+func NewCronManager(cfg *CronConfig, logger *zap.Logger) *CronManager {
 	cronLogger := &LoggerCron{logger: logger}
 	location, err := time.LoadLocation(cfg.Location)
 	infras.FailHandler(err)

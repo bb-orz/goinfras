@@ -20,12 +20,12 @@ func OAuthManager() *oAuthManager {
 
 type OauthStarter struct {
 	infras.BaseStarter
-	cfg *oAuthConfig
+	cfg *OAuthConfig
 }
 
 func (s *OauthStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
-	define := oAuthConfig{}
+	define := OAuthConfig{}
 	err := kvs.Unmarshal(configs, &define, "Oauth")
 	infras.FailHandler(err)
 	s.cfg = &define
@@ -45,4 +45,29 @@ func (s *OauthStarter) Setup(sctx *infras.StarterContext) {
 		oauthManager.Weibo = NewWeiboOAuthManager(s.cfg)
 		sctx.Logger().Info("Weibo OAuth Manager Setup Successful!")
 	}
+}
+
+func RunForTesting(config *OAuthConfig) error {
+	var err error
+	if config == nil {
+		config = &OAuthConfig{}
+		p := kvs.NewEmptyCompositeConfigSource()
+		err = p.Unmarshal(config)
+		if err != nil {
+			return err
+		}
+	}
+
+	oauthManager = new(oAuthManager)
+	if config.QQSignSwitch {
+		oauthManager.QQ = NewQQOauthManager(config)
+	}
+	if config.WechatSignSwitch {
+		oauthManager.Wechat = NewWechatOAuthManager(config)
+	}
+	if config.WeiboSignSwitch {
+		oauthManager.Weibo = NewWeiboOAuthManager(config)
+	}
+
+	return nil
 }

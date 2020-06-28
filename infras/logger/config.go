@@ -1,11 +1,11 @@
 package logger
 
 // 日志配置
-type loggerConfig struct {
+type LoggerConfig struct {
 	AppName            string
-	AppVersion 		   string
-	DevEnv 			   bool	  `val:"true"`
-	AddCaller		   bool	  `val:"true"`
+	AppVersion         string
+	DevEnv             bool   `val:"true"`
+	AddCaller          bool   `val:"true"`
 	DebugLevelSwitch   bool   `val:"false"`
 	InfoLevelSwitch    bool   `val:"true"`
 	WarnLevelSwitch    bool   `val:"true"`

@@ -1,6 +1,6 @@
 package aliyunOss
 
-type aliyunOssConfig struct {
+type AliyunOssConfig struct {
 	AccessKeySecret string
 	ConnTimeout     int
 	RWTimeout       int

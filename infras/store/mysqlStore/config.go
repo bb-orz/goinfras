@@ -1,7 +1,7 @@
 package mysqlStore
 
 // MysqlDB 配置
-type mysqlConfig struct {
+type MysqlConfig struct {
 	DbHost                  string `val:"127.0.0.1"`
 	DbPort                  int64  `val:"3308"`
 	DbUser                  string `val:"dev"`

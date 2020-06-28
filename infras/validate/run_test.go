@@ -7,6 +7,7 @@ import (
 
 func TestValidateStruct(t *testing.T) {
 	Convey("Test Validate DTO Struct", t, func() {
-
+		err := RunForTesting(nil)
+		So(err, ShouldBeNil)
 	})
 }

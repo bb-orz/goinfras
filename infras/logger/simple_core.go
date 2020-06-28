@@ -8,7 +8,7 @@ import (
 )
 
 // 简单的日志记录器核心:只输出到stdout和file
-func SimpleCoreList(cfg *loggerConfig, format zapcore.EncoderConfig) zapcore.Core {
+func SimpleCoreList(cfg *LoggerConfig, format zapcore.EncoderConfig) zapcore.Core {
 	var coreList []zapcore.Core
 	if cfg.DebugLevelSwitch || cfg.InfoLevelSwitch || cfg.WarnLevelSwitch {
 		coreList = append(coreList, SimpleInfoCore(cfg, format))
@@ -20,7 +20,7 @@ func SimpleCoreList(cfg *loggerConfig, format zapcore.EncoderConfig) zapcore.Cor
 }
 
 //简单非错误信息(debug/info/warn)日志记录器:只输出到stdout和file
-func SimpleInfoCore(cfg *loggerConfig, format zapcore.EncoderConfig) zapcore.Core {
+func SimpleInfoCore(cfg *LoggerConfig, format zapcore.EncoderConfig) zapcore.Core {
 	// 记录所有非错误日志级别
 	levelEnablerFunc := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
 		return level >= zapcore.DebugLevel && level <= zapcore.WarnLevel
@@ -48,7 +48,7 @@ func SimpleInfoCore(cfg *loggerConfig, format zapcore.EncoderConfig) zapcore.Cor
 }
 
 //简单错误信息(error/dpanic/panic/fatal)日志记录器:只输出到stdout和file
-func SimpleErrorCore(cfg *loggerConfig, format zapcore.EncoderConfig) zapcore.Core {
+func SimpleErrorCore(cfg *LoggerConfig, format zapcore.EncoderConfig) zapcore.Core {
 	// 记录所有非错误日志级别
 	levelEnablerFunc := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
 		return level >= zapcore.ErrorLevel && level <= zapcore.FatalLevel
@@ -75,7 +75,7 @@ func SimpleErrorCore(cfg *loggerConfig, format zapcore.EncoderConfig) zapcore.Co
 	)
 }
 
-func SimpleCore(cfg *loggerConfig, format zapcore.EncoderConfig) zapcore.Core {
+func SimpleCore(cfg *LoggerConfig, format zapcore.EncoderConfig) zapcore.Core {
 	// 记录所有日志级别
 	levelEnablerFunc := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
 		return level >= zapcore.DebugLevel && level <= zapcore.FatalLevel
@@ -92,7 +92,7 @@ func SimpleCore(cfg *loggerConfig, format zapcore.EncoderConfig) zapcore.Core {
 }
 
 //简单文件日志输出
-func SimpleFileLogHook(filename string,cfg *loggerConfig) io.Writer {
+func SimpleFileLogHook(filename string, cfg *LoggerConfig) io.Writer {
 	var file io.Writer
 	var err error
 	fullFileName := cfg.LogDir + filename + ".log"

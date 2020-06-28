@@ -15,14 +15,14 @@ func GormDb() *gorm.DB {
 
 type MysqlStarter struct {
 	infras.BaseStarter
-	cfg *ormConfig
+	cfg *OrmConfig
 }
 
 // 读取配置
 func (s *MysqlStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
-	define := ormConfig{}
-	err := kvs.Unmarshal(configs, &define, "ORMConfig")
+	define := OrmConfig{}
+	err := kvs.Unmarshal(configs, &define, "OrmConfig")
 	infras.FailHandler(err)
 	s.cfg = &define
 }

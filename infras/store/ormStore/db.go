@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"github.com/tietang/props/kvs"
 )
 
-func NewORMDb(config *ormConfig) (*gorm.DB, error) {
+func NewORMDb(config *OrmConfig) (*gorm.DB, error) {
 	var db *gorm.DB
 	var err error
 	switch config.Dialect {
@@ -48,5 +49,20 @@ func NewORMDb(config *ormConfig) (*gorm.DB, error) {
 		}
 	}
 
-	return db, nil
+	return db, err
+}
+
+func RunForTesting(config *OrmConfig) error {
+	var err error
+	if config == nil {
+		config = &OrmConfig{}
+		p := kvs.NewEmptyCompositeConfigSource()
+		err = p.Unmarshal(&config)
+		if err != nil {
+			return err
+		}
+	}
+
+	gormDb, err = NewORMDb(config)
+	return err
 }

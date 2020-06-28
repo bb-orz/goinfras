@@ -4,6 +4,7 @@ import (
 	"GoWebScaffold/infras"
 	"github.com/garyburd/redigo/redis"
 	"github.com/tietang/props/kvs"
+	"go.uber.org/zap"
 )
 
 var rPool *redis.Pool
@@ -35,4 +36,16 @@ func (s *RedisStarter) Setup(sctx *infras.StarterContext) {
 
 func (s *RedisStarter) Stop(sctx *infras.StarterContext) {
 	RedisPool().Close()
+}
+
+func RunForTesting() error {
+	var err error
+	config := RedisConfig{}
+	p := kvs.NewEmptyCompositeConfigSource()
+	err = p.Unmarshal(&config)
+	if err != nil {
+		return err
+	}
+	rPool, err = NewRedisPool(&config, zap.L())
+	return err
 }

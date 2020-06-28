@@ -17,7 +17,7 @@ func (j JobA) Run() {
 
 func TestCron(t *testing.T) {
 	Convey("Test Cron", t, func() {
-		config := cronConfig{}
+		config := CronConfig{}
 		p := kvs.NewEmptyCompositeConfigSource()
 		err := p.Unmarshal(&config)
 		So(err, ShouldBeNil)

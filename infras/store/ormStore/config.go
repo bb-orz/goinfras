@@ -1,7 +1,7 @@
 package ormStore
 
 // MysqlDB 配置
-type ormConfig struct {
+type OrmConfig struct {
 	Dialect       string `val:"mysql"` // 数据库驱动类型
 	DbHost        string `val:"127.0.0.1"`
 	DbPort        int64  `val:"3306"`

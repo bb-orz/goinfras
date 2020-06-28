@@ -3,6 +3,7 @@ package natsMq
 import (
 	"GoWebScaffold/infras"
 	"github.com/tietang/props/kvs"
+	"go.uber.org/zap"
 )
 
 var natsMQPool *NatsPool
@@ -14,12 +15,12 @@ func NatsMQPool() *NatsPool {
 
 type NatsMQStarter struct {
 	infras.BaseStarter
-	cfg *natsMqConfig
+	cfg *NatsMqConfig
 }
 
 func (s *NatsMQStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
-	define := natsMqConfig{}
+	define := NatsMqConfig{}
 	err := kvs.Unmarshal(configs, &define, "NatsMq")
 	infras.FailHandler(err)
 
@@ -28,11 +29,27 @@ func (s *NatsMQStarter) Init(sctx *infras.StarterContext) {
 
 func (s *NatsMQStarter) Setup(sctx *infras.StarterContext) {
 	var err error
-	natsMQPool, err = GetNatsMqPool(s.cfg, sctx.Logger())
+	natsMQPool, err = NewNatsMqPool(s.cfg, sctx.Logger())
 	infras.FailHandler(err)
 	sctx.Logger().Info("NatsMQPool Setup Successful!")
 }
 
 func (s *NatsMQStarter) Stop(sctx *infras.StarterContext) {
 	NatsMQPool().Close()
+}
+
+/*For testing*/
+func RunForTesting(config *NatsMqConfig) error {
+	var err error
+	if config == nil {
+		config = &NatsMqConfig{}
+		p := kvs.NewEmptyCompositeConfigSource()
+		err = p.Unmarshal(config)
+		if err != nil {
+			return err
+		}
+	}
+
+	natsMQPool, err = NewNatsMqPool(config, zap.L())
+	return err
 }

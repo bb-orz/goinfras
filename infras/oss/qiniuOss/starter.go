@@ -10,7 +10,7 @@ var qiniuOssClient *QnClient
 
 type QnClient struct {
 	mac *qiniuOss.Mac
-	cfg *qiniuOssConfig
+	cfg *QiniuOssConfig
 }
 
 func (client *QnClient) GetMac() *qiniuOss.Mac {
@@ -29,7 +29,7 @@ type QiniuOssStarter struct {
 
 func (s *QiniuOssStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
-	define := qiniuOssConfig{}
+	define := QiniuOssConfig{}
 	err := kvs.Unmarshal(configs, &define, "QiniuOss")
 	infras.FailHandler(err)
 
@@ -41,4 +41,22 @@ func (s *QiniuOssStarter) Init(sctx *infras.StarterContext) {
 func (s *QiniuOssStarter) Setup(sctx *infras.StarterContext) {
 	qiniuOssClient.mac = NewQiniuOssMac(qiniuOssClient.cfg)
 	sctx.Logger().Info("QiniuOss Setup Successful!")
+}
+
+func RunForTesting(config *QiniuOssConfig) error {
+	var err error
+	if config == nil {
+		config = &QiniuOssConfig{}
+		p := kvs.NewEmptyCompositeConfigSource()
+		err = p.Unmarshal(&config)
+		if err != nil {
+			return err
+		}
+	}
+	mac := NewQiniuOssMac(config)
+	client := new(QnClient)
+	client.mac = mac
+	client.cfg = config
+	qiniuOssClient = client
+	return err
 }

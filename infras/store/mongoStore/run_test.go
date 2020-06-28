@@ -3,7 +3,6 @@ package mongoStore
 import (
 	"context"
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/tietang/props/kvs"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"testing"
@@ -11,17 +10,10 @@ import (
 
 func TestMongoClient(t *testing.T) {
 	Convey("测试使用mysql client", t, func() {
-		config := mongoConfig{}
-		p := kvs.NewEmptyCompositeConfigSource()
-		err := p.Unmarshal(&config)
-		config.DbHosts = []string{"127.0.0.1:27017"}
-		So(err, ShouldBeNil)
-		Println("MongoDB Config:", config)
-
-		mongoClient, err := NewMongoClient(&config)
+		err := RunForTesting(nil)
 		So(err, ShouldBeNil)
 
-		err = mongoClient.Ping(context.TODO(), nil)
+		err = MongoClient().Ping(context.TODO(), nil)
 		So(err, ShouldBeNil)
 	})
 
@@ -29,15 +21,8 @@ func TestMongoClient(t *testing.T) {
 
 func TestNewCommonMongoDao(t *testing.T) {
 	Convey("测试使用mysql client", t, func() {
-		var err error
-		config := mongoConfig{}
-		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(&config)
-		config.DbHosts = []string{"127.0.0.1:27017"}
-		So(err, ShouldBeNil)
-		Println("MongoDB Config:", config)
+		err := RunForTesting(nil)
 
-		mClient, err = NewMongoClient(&config)
 		So(err, ShouldBeNil)
 
 		// 通用操作：增删改查

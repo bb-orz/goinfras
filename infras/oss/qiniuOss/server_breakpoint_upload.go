@@ -55,7 +55,7 @@ func (client *QnClient) BreakPointUpload(bucket, fileKey, localFilePath, recordD
 	}
 	fileSize := fileInfo.Size()
 	fileLmd := fileInfo.ModTime().UnixNano()
-	recordKey := md5Hex(fmt.Sprintf("%s:%s:%s:%s", bucket, fileKey, localFilePath, fileLmd)) + ".progress"
+	recordKey := md5Hex(fmt.Sprintf("%s:%s:%s:%d", bucket, fileKey, localFilePath, fileLmd)) + ".progress"
 	err = os.MkdirAll(recordDir, 0755)
 	if err != nil {
 		return ret, err

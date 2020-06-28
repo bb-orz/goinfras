@@ -1,5 +1,5 @@
 package cron
 
-type cronConfig struct {
+type CronConfig struct {
 	Location string `val:"Local"`
 }

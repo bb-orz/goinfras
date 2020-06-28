@@ -3,18 +3,19 @@ package cron
 import (
 	"GoWebScaffold/infras"
 	"github.com/tietang/props/kvs"
+	"go.uber.org/zap"
 )
 
 type CronStarter struct {
 	infras.BaseStarter
-	cfg     *cronConfig
+	cfg     *CronConfig
 	manager *CronManager
 	Tasks   []*Task
 }
 
 func (s *CronStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
-	define := cronConfig{}
+	define := CronConfig{}
 	err := kvs.Unmarshal(configs, &define, "Cron")
 	infras.FailHandler(err)
 	s.cfg = &define
@@ -38,4 +39,27 @@ func (s *CronStarter) Stop(sctx *infras.StarterContext) {
 	s.manager.StopCron()
 	sctx.Logger().Info("Cron Tasks Stopped!")
 
+}
+
+/*For testing*/
+func RunForTesting(config *CronConfig, tasks []*Task) error {
+	var err error
+	if config == nil {
+		config = &CronConfig{}
+		p := kvs.NewEmptyCompositeConfigSource()
+		err = p.Unmarshal(config)
+		if err != nil {
+			return err
+		}
+	}
+
+	// 1.获取Cron执行管理器
+	manager := NewCronManager(config, zap.L())
+	// 2.注册定时运行任务
+	manager.RegisterTasks(tasks...)
+
+	// 3.运行定时任务
+	manager.RunTasks()
+
+	return err
 }

@@ -1,6 +1,6 @@
 package qiniuOss
 
-type qiniuOssConfig struct {
+type QiniuOssConfig struct {
 	AccessKey        string
 	SecretKey        string
 	Bucket           string

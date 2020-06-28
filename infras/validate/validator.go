@@ -1,6 +1,7 @@
 package validate
 
 import (
+	"errors"
 	"github.com/go-playground/locales/zh"
 	ut "github.com/go-playground/universal-translator"
 	"go.uber.org/zap"
@@ -14,7 +15,7 @@ func NewValidator() *validator.Validate {
 }
 
 // 中文翻译验证器
-func NewZhValidator(logger *zap.Logger) (*validator.Validate, ut.Translator) {
+func NewZhValidator(logger *zap.Logger) (*validator.Validate, ut.Translator, error) {
 	valid := validator.New()
 	// 创建消息国际化通用翻译器
 	cn := zh.New()
@@ -25,11 +26,11 @@ func NewZhValidator(logger *zap.Logger) (*validator.Validate, ut.Translator) {
 	if found {
 		err := vtzh.RegisterDefaultTranslations(validate, translator)
 		if err != nil {
-			logger.Error("Translate Error", zap.Error(err))
+			return valid, nil, err
 		}
 	} else {
-		logger.Error("Not found translator: zh")
+		return valid, nil, errors.New("Not found translator: zh! ")
 	}
 
-	return valid, trans
+	return valid, trans, nil
 }

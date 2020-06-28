@@ -22,13 +22,13 @@ func SyncErrorLogger() *zap.Logger {
 
 type LoggerStarter struct {
 	infras.BaseStarter
-	cfg     *loggerConfig
+	cfg     *LoggerConfig
 	Writers []io.Writer
 }
 
 func (s *LoggerStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
-	define := loggerConfig{}
+	define := LoggerConfig{}
 	err := kvs.Unmarshal(configs, &define, "Logger")
 	infras.FailHandler(err)
 	s.cfg = &define
@@ -48,3 +48,19 @@ func (s *LoggerStarter) Stop(sctx *infras.StarterContext) {
 }
 
 func (s *LoggerStarter) Priority() int { return infras.INT_MAX }
+
+/*For testing*/
+func RunForTesting(config *LoggerConfig) error {
+	var err error
+	if config == nil {
+		config = &LoggerConfig{}
+		p := kvs.NewEmptyCompositeConfigSource()
+		err = p.Unmarshal(config)
+		if err != nil {
+			return err
+		}
+	}
+
+	commonLogger = NewCommonLogger(config)
+	return err
+}

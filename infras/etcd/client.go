@@ -7,8 +7,8 @@ import (
 	"time"
 )
 
-func NewEtcdClient(ctx context.Context, cfg *etcdConfig, zapLoggerConf *zap.Config) (cli *clientv3.Client, err error) {
-	etcdConfig := clientv3.Config{
+func NewEtcdClient(ctx context.Context, cfg *EtcdConfig, zapLoggerConf *zap.Config) (cli *clientv3.Client, err error) {
+	EtcdConfig := clientv3.Config{
 		Endpoints:            cfg.Endpoints,                                         // 单机或集群主机地址
 		AutoSyncInterval:     time.Duration(cfg.AutoSyncInterval) * time.Second,     // 更新其最新成员端点的时间间隔。 0禁用自动同步。 默认情况下，自动同步被禁用。
 		DialTimeout:          time.Duration(cfg.DialTimeout) * time.Second,          // 未能建立连接超时。
@@ -25,5 +25,5 @@ func NewEtcdClient(ctx context.Context, cfg *etcdConfig, zapLoggerConf *zap.Conf
 		PermitWithoutStream: cfg.PermitWithoutStream, // 如为true则设置后将允许客户端在没有任何活动流（RPC）的情况下向服务器发送keepalive ping。
 	}
 
-	return clientv3.New(etcdConfig)
+	return clientv3.New(EtcdConfig)
 }

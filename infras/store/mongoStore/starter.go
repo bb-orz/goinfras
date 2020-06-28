@@ -16,12 +16,12 @@ func MongoClient() *mongo.Client {
 
 type MongoDBStarter struct {
 	infras.BaseStarter
-	cfg *mongoConfig
+	cfg *MongoConfig
 }
 
 func (s *MongoDBStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
-	define := mongoConfig{}
+	define := MongoConfig{}
 	err := kvs.Unmarshal(configs, &define, "Mongodb")
 	infras.FailHandler(err)
 	s.cfg = &define
@@ -36,4 +36,20 @@ func (s *MongoDBStarter) Setup(sctx *infras.StarterContext) {
 
 func (s *MongoDBStarter) Stop(sctx *infras.StarterContext) {
 	_ = MongoClient().Disconnect(context.TODO())
+}
+
+func RunForTesting(config *MongoConfig) error {
+	var err error
+	if config == nil {
+		config = &MongoConfig{}
+		p := kvs.NewEmptyCompositeConfigSource()
+		err = p.Unmarshal(&config)
+		if err != nil {
+			return err
+		}
+		config.DbHosts = []string{"127.0.0.1:27017"}
+	}
+
+	mClient, err = NewMongoClient(config)
+	return err
 }

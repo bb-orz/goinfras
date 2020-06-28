@@ -13,7 +13,7 @@ NatsMq，类似于redis式的轻量级消息中间件，用于高吞吐量的应
 应用场景：　寻址、发现、命令和控制（控制面板）、负载均衡、多路可伸缩能力、定位透明、容错等。
 */
 
-func GetNatsMqPool(cfg *natsMqConfig, logger *zap.Logger) (*NatsPool, error) {
+func NewNatsMqPool(cfg *NatsMqConfig, logger *zap.Logger) (*NatsPool, error) {
 	var serverList []string
 	var natsServersUrl string
 

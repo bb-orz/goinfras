@@ -9,7 +9,7 @@ import (
 
 func TestEtcdClientV3(t *testing.T) {
 	Convey("ETCD Client Test", t, func() {
-		config := etcdConfig{}
+		config := EtcdConfig{}
 		p := kvs.NewEmptyCompositeConfigSource()
 		err := p.Unmarshal(&config)
 		So(err, ShouldBeNil)

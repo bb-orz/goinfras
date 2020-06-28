@@ -4,7 +4,7 @@ import (
 	aliOss "github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 
-func NewClient(cfg *aliyunOssConfig) (*aliOss.Client, error) {
+func NewClient(cfg *AliyunOssConfig) (*aliOss.Client, error) {
 	// Aliyun OSS初始化
 	return aliOss.New(
 		cfg.Endpoint,
