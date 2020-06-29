@@ -40,12 +40,12 @@ func (s *RedisStarter) Stop(sctx *infras.StarterContext) {
 
 func RunForTesting() error {
 	var err error
-	config := RedisConfig{}
+	config := &RedisConfig{}
 	p := kvs.NewEmptyCompositeConfigSource()
 	err = p.Unmarshal(config)
 	if err != nil {
 		return err
 	}
-	rPool, err = NewRedisPool(&config, zap.L())
+	rPool, err = NewRedisPool(config, zap.L())
 	return err
 }

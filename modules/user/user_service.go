@@ -22,7 +22,7 @@ func init() {
 
 type userService struct{}
 
-func (*userService) CreateUser(dto services.CreateUserDTO) (*services.UserDTO, error) {
+func (*userService) CreateUserWithEmail(dto services.CreateUserWithEmailDTO) (*services.UserDTO, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
 		return nil, err
@@ -31,27 +31,28 @@ func (*userService) CreateUser(dto services.CreateUserDTO) (*services.UserDTO, e
 	// 实例user模块领域模型
 	domain := NewUserDomain()
 
-	// 验证参数是否存在
-	if isExist, err := domain.IsUserExist(dto); err != nil {
+	// 验证用户邮箱是否存在
+	if isExist, err := domain.IsUserEmailExist(dto); err != nil {
 		return nil, errors.New("查询错误! ")
 	} else if isExist {
 		return nil, errors.New("该用户已经存在! ")
 	}
 
-	// 构造user dto
-	userDTO := services.UserDTO{
-		Name:     dto.Username,
-		Email:    dto.Email,
-		Password: dto.Password,
-		Status:   1,
-	}
-	res, err := domain.CreateUser(userDTO)
+	res, err := domain.CreateUserForEmail(dto)
 	return res, err
 
 }
 
-func (*userService) GetUserInfo(userId string) (*services.UserDTO, error) {
-	panic("implement me")
+func (*userService) GetUserInfo(userId uint) (*services.UserDTO, error) {
+
+	// 查找用户信息
+	domain := new(userDomain)
+	userDTO, err := domain.GetUserInfo(int(userId))
+	if err != nil {
+		return nil, err
+	}
+
+	return userDTO, nil
 }
 
 func (*userService) SetUserInfo(dto services.SetUserInfoDTO) error {

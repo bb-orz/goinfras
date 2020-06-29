@@ -22,40 +22,43 @@ func SetUserService(service IUserService) {
 
 // 定义用户服务接口
 type IUserService interface {
-	CreateUser(dto CreateUserDTO) (*UserDTO, error) // 创建用户
-	GetUserInfo(userId string) (*UserDTO, error)    // 获取用户数据
-	SetUserInfo(dto SetUserInfoDTO) error           // 修改用户信息
-	BindEmail(email string) error                   // 绑定邮箱，发送验证邮件到指定邮箱
-	ValidateEmail(validateCode int) bool            // 绑定邮箱，验证邮箱链接
-	BindPhone(phone string) error                   // 绑定手机，发送短信验证码
-	ValidatePhone(validateCode int) bool            // 绑定手机，验证短信验证码
-	SetStatus(status int) int                       // 设置用户锁定状态
-	ChangePassword(dto ChangePassword) bool         // 更改用户密码
-	SendEmailForgetPassword() bool                  // 忘记密码，发送邮件到用户绑定的邮箱
-	ReSetPassword(dto ReSetPassword) bool           // 重设密码
-	UploadAvatar() bool                             // 上传头像
-}
-
-// 创建用户的数据传输对象
-type CreateUserDTO struct {
-	Username   string `validate:"required,alphanum"`
-	Email      string `validate:"required,email"`
-	Password   string `validate:"required,alphanumunicode"`
-	RePassword string `validate:"required,alphanumunicode,eqfield=Password"`
+	CreateUserWithEmail(dto CreateUserWithEmailDTO) (*UserDTO, error) // 创建用户
+	GetUserInfo(userId uint) (*UserDTO, error)                        // 获取用户数据
+	SetUserInfo(dto SetUserInfoDTO) error                             // 修改用户信息
+	BindEmail(email string) error                                     // 绑定邮箱，发送验证邮件到指定邮箱
+	ValidateEmail(validateCode int) bool                              // 绑定邮箱，验证邮箱链接
+	BindPhone(phone string) error                                     // 绑定手机，发送短信验证码
+	ValidatePhone(validateCode int) bool                              // 绑定手机，验证短信验证码
+	SetStatus(status int) int                                         // 设置用户锁定状态
+	ChangePassword(dto ChangePassword) bool                           // 更改用户密码
+	SendEmailForgetPassword() bool                                    // 忘记密码，发送邮件到用户绑定的邮箱
+	ReSetPassword(dto ReSetPassword) bool                             // 重设密码
+	UploadAvatar() bool                                               // 上传头像
 }
 
 // 用户数据传输对象
 type UserDTO struct {
-	Name      string
-	Age       byte
-	Avatar    string
-	Gender    uint8
-	Email     string
-	Phone     string
-	Password  string
-	Status    int8
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	Uid           uint
+	No            string
+	Name          string
+	Age           uint
+	Avatar        string
+	Gender        uint
+	Email         string
+	EmailVerified bool
+	Phone         string
+	PhoneVerified bool
+	Status        int8
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+}
+
+// 创建用户的数据传输对象
+type CreateUserWithEmailDTO struct {
+	Name       string `validate:"required,alphanum"`
+	Email      string `validate:"required,email"`
+	Password   string `validate:"required,alphanumunicode"`
+	RePassword string `validate:"required,alphanumunicode,eqfield=Password"`
 }
 
 // 修改用户新息的数据传输对象

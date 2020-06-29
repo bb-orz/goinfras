@@ -30,14 +30,14 @@ func TestUserService_CreateUser(t *testing.T) {
 		err = ormStore.RunForTesting(nil)
 		So(err, ShouldBeNil)
 
-		dto := services.CreateUserDTO{
-			Username:   "fun",
+		dto := services.CreateUserWithEmailDTO{
+			Name:       "fun",
 			Email:      "123456@qq.com",
 			Password:   "123456",
 			RePassword: "123456",
 		}
 		service := new(userService)
-		userDTO, err := service.CreateUser(dto)
+		userDTO, err := service.CreateUserWithEmail(dto)
 		So(err, ShouldBeNil)
 		Println(err)
 

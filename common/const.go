@@ -15,6 +15,7 @@ const (
 	DevEnv       = "dev"
 	TestingEnv   = "testing"
 	ProductEnv   = "product"
+
 	// jwt编码时的私钥字符串
 	TokenPrivateKey = "myapp"
 )

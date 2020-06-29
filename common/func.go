@@ -8,7 +8,24 @@ import (
 	"time"
 )
 
-// 生成盐值
+// 幂运算
+func Powerf(x float64, n int) float64 {
+	ans := 1.0
+	for n != 0 {
+		ans *= x
+		n--
+	}
+	return ans
+}
+
+// 生成固定位随机数字
+func RandomNumber(l int) (string, error) {
+	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
+	code := fmt.Sprintf("%06v", rnd.Int31n(int32(Powerf(10.00, l))))
+	return code, nil
+}
+
+// 生成固定长度随机字符串
 func RandomString(l int) string {
 	chars := "0123456789abcdefghijklmnopqrstuvwxyz"
 	var rendomString []byte
