@@ -1,0 +1,5 @@
+package aliyunSms
+
+func NewAliyunSmsClient() {
+
+}

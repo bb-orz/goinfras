@@ -10,44 +10,48 @@ import (
 // 服务层，实现services包定义的服务并设置该服务的实例，
 // 需在服务实现的方法中验证DTO传输参数并调用具体的领域层业务逻辑
 
-var _ services.IUserService = new(userService)
+var _ services.IUserService = new(UserService)
 var once sync.Once
 
 func init() {
 	// 初始化该业务模块时实例化服务
 	once.Do(func() {
-		services.SetUserService(new(userService))
+		userService := new(UserService)
+		userService.userDomain = NewUserDomain()
+		services.SetUserService(userService)
 	})
 }
 
-type userService struct{}
+type UserService struct {
+	userDomain *UserDomain
+}
 
-func (*userService) CreateUserWithEmail(dto services.CreateUserWithEmailDTO) (*services.UserDTO, error) {
+func (service *UserService) CreateUserWithEmail(dto services.CreateUserWithEmailDTO) (*services.UserDTO, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
 		return nil, err
 	}
 
-	// 实例user模块领域模型
-	domain := NewUserDomain()
-
 	// 验证用户邮箱是否存在
-	if isExist, err := domain.IsUserEmailExist(dto); err != nil {
+	if isExist, err := service.userDomain.IsUserEmailExist(dto); err != nil {
 		return nil, errors.New("查询错误! ")
 	} else if isExist {
 		return nil, errors.New("该用户已经存在! ")
 	}
 
-	res, err := domain.CreateUserForEmail(dto)
+	res, err := service.userDomain.CreateUserForEmail(dto)
 	return res, err
 
 }
 
-func (*userService) GetUserInfo(userId uint) (*services.UserDTO, error) {
+func (service *UserService) GetUserInfo(dto services.GetUserInfoDTO) (*services.UserDTO, error) {
+	// 校验传输参数
+	if err := validate.ValidateStruct(dto); err != nil {
+		return nil, err
+	}
 
 	// 查找用户信息
-	domain := new(userDomain)
-	userDTO, err := domain.GetUserInfo(int(userId))
+	userDTO, err := service.userDomain.GetUserInfo(int(dto.ID))
 	if err != nil {
 		return nil, err
 	}
@@ -55,42 +59,85 @@ func (*userService) GetUserInfo(userId uint) (*services.UserDTO, error) {
 	return userDTO, nil
 }
 
-func (*userService) SetUserInfo(dto services.SetUserInfoDTO) error {
-	panic("implement me")
+func (service *UserService) SetUserInfos(dto services.SetUserInfoDTO) error {
+
+	// 校验传输参数
+	if err := validate.ValidateStruct(dto); err != nil {
+		return err
+	}
+
+	uid := int(dto.ID)
+	return service.userDomain.SetUserInfos(uid, dto)
 }
 
-func (*userService) BindEmail(email string) error {
-	panic("implement me")
+// 发起绑定邮箱操作
+func (service *UserService) BindEmail(dto services.BindEmailDTO) error {
+	// 校验传输参数
+	if err := validate.ValidateStruct(dto); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (*userService) ValidateEmail(validateCode int) bool {
-	panic("implement me")
+func (service *UserService) ValidateEmail(dto services.ValidateEmailDTO) (bool, error) {
+	// 校验传输参数
+	if err := validate.ValidateStruct(dto); err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
 
-func (*userService) BindPhone(phone string) error {
-	panic("implement me")
+func (service *UserService) BindPhone(dto services.BindPhoneDTO) error {
+	// 校验传输参数
+	if err := validate.ValidateStruct(dto); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (*userService) ValidatePhone(validateCode int) bool {
-	panic("implement me")
+func (service *UserService) ValidatePhone(dto services.ValidatePhoneDTO) (bool, error) {
+	// 校验传输参数
+	if err := validate.ValidateStruct(dto); err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
 
-func (*userService) SetStatus(status int) int {
-	panic("implement me")
+func (service *UserService) SetStatus(dto services.SetStatusDTO) (int, error) {
+	// 校验传输参数
+	if err := validate.ValidateStruct(dto); err != nil {
+		return -1, err
+	}
+
+	return 0, nil
 }
 
-func (*userService) ChangePassword(dto services.ChangePassword) bool {
-	panic("implement me")
+func (service *UserService) ChangePassword(dto services.ChangePassword) error {
+	// 校验传输参数
+	if err := validate.ValidateStruct(dto); err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (*userService) SendEmailForgetPassword() bool {
-	panic("implement me")
+func (service *UserService) SendEmailForgetPassword() (bool, error) {
+	return false, nil
 }
 
-func (*userService) ReSetPassword(dto services.ReSetPassword) bool {
-	panic("implement me")
+func (service *UserService) ReSetPassword(dto services.ReSetPassword) error {
+	// 校验传输参数
+	if err := validate.ValidateStruct(dto); err != nil {
+		return err
+	}
+	return nil
+
 }
 
-func (*userService) UploadAvatar() bool {
+func (service *UserService) UploadAvatar() error {
 	panic("implement me")
 }

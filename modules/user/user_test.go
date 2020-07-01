@@ -4,23 +4,9 @@ import (
 	"GoWebScaffold/infras/store/ormStore"
 	"GoWebScaffold/infras/validate"
 	"GoWebScaffold/services"
-	"github.com/jinzhu/gorm"
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/tietang/props/kvs"
 	"testing"
 )
-
-func getOrmDb() *gorm.DB {
-	config := ormStore.OrmConfig{}
-	p := kvs.NewEmptyCompositeConfigSource()
-	err := p.Unmarshal(&config)
-	So(err, ShouldBeNil)
-	Println("ORM Config:", config)
-
-	gormDb, err := ormStore.NewORMDb(&config)
-	So(err, ShouldBeNil)
-	return gormDb
-}
 
 func TestUserService_CreateUser(t *testing.T) {
 	Convey("User Service Create User Testing:", t, func() {
@@ -36,11 +22,25 @@ func TestUserService_CreateUser(t *testing.T) {
 			Password:   "123456",
 			RePassword: "123456",
 		}
-		service := new(userService)
+		service := new(UserService)
 		userDTO, err := service.CreateUserWithEmail(dto)
 		So(err, ShouldBeNil)
-		Println(err)
 
 		Println("New User:", userDTO)
+	})
+}
+
+func TestUserService_GetUserInfo(t *testing.T) {
+	Convey("User Service Get User Info Testing:", t, func() {
+		var err error
+		err = validate.RunForTesting(nil)
+		So(err, ShouldBeNil)
+		err = ormStore.RunForTesting(nil)
+		So(err, ShouldBeNil)
+
+		service := new(UserService)
+		userDTO, err := service.GetUserInfo(12)
+		So(err, ShouldBeNil)
+		Println("Get User Info:", userDTO)
 	})
 }

@@ -23,17 +23,17 @@ func SetUserService(service IUserService) {
 // 定义用户服务接口
 type IUserService interface {
 	CreateUserWithEmail(dto CreateUserWithEmailDTO) (*UserDTO, error) // 创建用户
-	GetUserInfo(userId uint) (*UserDTO, error)                        // 获取用户数据
-	SetUserInfo(dto SetUserInfoDTO) error                             // 修改用户信息
-	BindEmail(email string) error                                     // 绑定邮箱，发送验证邮件到指定邮箱
-	ValidateEmail(validateCode int) bool                              // 绑定邮箱，验证邮箱链接
-	BindPhone(phone string) error                                     // 绑定手机，发送短信验证码
-	ValidatePhone(validateCode int) bool                              // 绑定手机，验证短信验证码
-	SetStatus(status int) int                                         // 设置用户锁定状态
-	ChangePassword(dto ChangePassword) bool                           // 更改用户密码
-	SendEmailForgetPassword() bool                                    // 忘记密码，发送邮件到用户绑定的邮箱
-	ReSetPassword(dto ReSetPassword) bool                             // 重设密码
-	UploadAvatar() bool                                               // 上传头像
+	GetUserInfo(dto GetUserInfoDTO) (*UserDTO, error)                 // 获取用户数据
+	SetUserInfos(dto SetUserInfoDTO) error                            // 修改用户信息
+	BindEmail(dto BindEmailDTO) error                                 // 绑定邮箱，发送验证邮件到指定邮箱
+	ValidateEmail(dto ValidateEmailDTO) (bool, error)                 // 绑定邮箱，验证邮箱链接
+	BindPhone(dto BindPhoneDTO) error                                 // 绑定手机，发送短信验证码
+	ValidatePhone(dto ValidatePhoneDTO) (bool, error)                 // 绑定手机，验证短信验证码
+	SetStatus(dto SetStatusDTO) (int, error)                          // 设置用户锁定状态
+	ChangePassword(dto ChangePassword) error                          // 更改用户密码
+	SendEmailForgetPassword() (bool, error)                           // 忘记密码，发送邮件到用户绑定的邮箱
+	ReSetPassword(dto ReSetPassword) error                            // 重设密码
+	UploadAvatar() error                                              // 上传头像
 }
 
 // 用户数据传输对象
@@ -61,9 +61,36 @@ type CreateUserWithEmailDTO struct {
 	RePassword string `validate:"required,alphanumunicode,eqfield=Password"`
 }
 
+type GetUserInfoDTO struct {
+	ID uint `validate:"required,numeric"`
+}
+
+type BindEmailDTO struct {
+	ID    uint   `validate:"required,numeric"`
+	Email string `validate:"required,email"`
+}
+
+type ValidateEmailDTO struct {
+	VerifiedCode string `validate:"required,alphanum"`
+}
+
+type BindPhoneDTO struct {
+	ID    uint `validate:"required,numeric"`
+	Phone uint `validate:"required,numeric"`
+}
+
+type ValidatePhoneDTO struct {
+	VerifiedCode string `validate:"required,numeric"`
+}
+
+type SetStatusDTO struct {
+	ID     uint `validate:"required,numeric"`
+	Status uint `validate:"required,numeric"` // TODO 验证枚举0/1/2
+}
+
 // 修改用户新息的数据传输对象
 type SetUserInfoDTO struct {
-	ID     uint   `validate:"required,alpha"`
+	ID     uint   `validate:"required,numeric"`
 	Name   string `validate:"alpha"`
 	Age    byte   `validate:"numeric"`
 	Avatar string `validate:"alphanumunicode"`

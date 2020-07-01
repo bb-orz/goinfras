@@ -8,7 +8,7 @@ import (
 /*用户模块的持久化对象，代表user表的每行数据 */
 type User struct {
 	gorm.Model
-	No            string      `gorm:"type:char(20);unique_index"` // index是为该列创建索引
+	No            string      `gorm:"type:char(40);unique_index"` // index是为该列创建索引
 	Name          string      `gorm:"type:char(12);index;not null"`
 	Age           uint        `gorm:"type:tinyint"`
 	Avatar        string      `gorm:"type:varchar(255)"`

@@ -2,6 +2,8 @@ package user
 
 import (
 	"GoWebScaffold/infras/store/ormStore"
+	"GoWebScaffold/services"
+	"github.com/jinzhu/gorm"
 )
 
 /* 数据访问层，实现具体数据持久化操作 */
@@ -32,14 +34,19 @@ func (d *UserDAO) IsPhoneExist(phone string) (bool, error) {
 
 func (d *UserDAO) isExist(where *User) (bool, error) {
 	var count int
-	if err := ormStore.GormDb().Where(where).Count(&count).Error; err != nil {
-		return false, err
+	err := ormStore.GormDb().Where(where).First(&User{}).Count(&count).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return false, nil
+		} else {
+			// 除无记录外的错误返回
+			return false, err
+		}
 	}
 
 	if count > 0 {
 		return true, nil
 	}
-
 	return false, nil
 }
 
@@ -60,4 +67,18 @@ func (d *UserDAO) GetById(id int) (*User, error) {
 	}
 
 	return &user, nil
+}
+
+func (d *UserDAO) SetUserInfo(uid int, field string, value interface{}) error {
+	if err := ormStore.GormDb().Model(&User{}).Where("id", uid).Update(field, value).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (d *UserDAO) SetUserInfos(uid int, dto services.SetUserInfoDTO) error {
+	if err := ormStore.GormDb().Model(&User{}).Where("id", uid).Updates(dto).Error; err != nil {
+		return err
+	}
+	return nil
 }
