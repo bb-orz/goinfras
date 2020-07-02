@@ -34,6 +34,7 @@ replace (
 )
 
 require (
+	github.com/aliyun/alibaba-cloud-sdk-go v1.61.296 // indirect
 	github.com/aliyun/aliyun-oss-go-sdk v2.0.8+incompatible
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/coreos/bbolt v1.3.4 // indirect

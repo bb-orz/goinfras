@@ -1,6 +1,23 @@
 package aliyunSms
 
-import "GoWebScaffold/infras"
+import (
+	"GoWebScaffold/infras"
+	"github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi"
+	"github.com/tietang/props/kvs"
+)
+
+var aliyunSmsClient *dysmsapi.Client
+var commonSms *CommonSms
+
+func AliyunSmsClient() *dysmsapi.Client {
+	infras.Check(aliyunSmsClient)
+	return aliyunSmsClient
+}
+
+func AliyunCommonSms() *CommonSms {
+	infras.Check(commonSms)
+	return commonSms
+}
 
 type aliyunSmsStarter struct {
 	infras.BaseStarter
@@ -8,29 +25,30 @@ type aliyunSmsStarter struct {
 }
 
 func (s *aliyunSmsStarter) Init(sctx *infras.StarterContext) {
-	panic("implement me")
+	configs := sctx.Configs()
+	define := AliyunSmsConfig{}
+	err := kvs.Unmarshal(configs, &define, "AliyunSms")
+	infras.FailHandler(err)
+	s.cfg = &define
 }
 
 func (s *aliyunSmsStarter) Setup(sctx *infras.StarterContext) {
-	panic("implement me")
+	var err error
+	aliyunSmsClient, err = NewAliyunSmsClient(s.cfg)
+	infras.FailHandler(err)
+	commonSms = NewCommonSms(s.cfg)
 }
 
-func (s *aliyunSmsStarter) Start(sctx *infras.StarterContext) {
-	panic("implement me")
-}
-
-func (s *aliyunSmsStarter) SetStartBlocking() bool {
-	panic("implement me")
-}
-
-func (s *aliyunSmsStarter) Stop(sctx *infras.StarterContext) {
-	panic("implement me")
-}
-
-func (s *aliyunSmsStarter) PriorityGroup() infras.PriorityGroup {
-	panic("implement me")
-}
-
-func (s *aliyunSmsStarter) Priority() int {
-	panic("implement me")
+func RunForTesting(config *AliyunSmsConfig) error {
+	var err error
+	if config == nil {
+		config = &AliyunSmsConfig{}
+		p := kvs.NewEmptyCompositeConfigSource()
+		err = p.Unmarshal(config)
+		if err != nil {
+			return err
+		}
+	}
+	aliyunSmsClient, err = NewAliyunSmsClient(config)
+	return err
 }
