@@ -6,7 +6,6 @@ import (
 )
 
 /* 定义用户模块的服务层方法，并定义数据传输对象DTO*/
-
 var userService IUserService
 
 // 用于对外暴露账户应用服务，唯一的暴露点，供接口层调用
@@ -25,13 +24,10 @@ type IUserService interface {
 	CreateUserWithEmail(dto CreateUserWithEmailDTO) (*UserDTO, error) // 创建用户
 	GetUserInfo(dto GetUserInfoDTO) (*UserDTO, error)                 // 获取用户数据
 	SetUserInfos(dto SetUserInfoDTO) error                            // 修改用户信息
-	BindEmail(dto BindEmailDTO) error                                 // 绑定邮箱，发送验证邮件到指定邮箱
 	ValidateEmail(dto ValidateEmailDTO) (bool, error)                 // 绑定邮箱，验证邮箱链接
-	BindPhone(dto BindPhoneDTO) error                                 // 绑定手机，发送短信验证码
 	ValidatePhone(dto ValidatePhoneDTO) (bool, error)                 // 绑定手机，验证短信验证码
 	SetStatus(dto SetStatusDTO) (int, error)                          // 设置用户锁定状态
 	ChangePassword(dto ChangePassword) error                          // 更改用户密码
-	SendEmailForgetPassword() (bool, error)                           // 忘记密码，发送邮件到用户绑定的邮箱
 	ReSetPassword(dto ReSetPassword) error                            // 重设密码
 	UploadAvatar() error                                              // 上传头像
 }
@@ -65,29 +61,6 @@ type GetUserInfoDTO struct {
 	ID uint `validate:"required,numeric"`
 }
 
-type BindEmailDTO struct {
-	ID    uint   `validate:"required,numeric"`
-	Email string `validate:"required,email"`
-}
-
-type ValidateEmailDTO struct {
-	VerifiedCode string `validate:"required,alphanum"`
-}
-
-type BindPhoneDTO struct {
-	ID    uint `validate:"required,numeric"`
-	Phone uint `validate:"required,numeric"`
-}
-
-type ValidatePhoneDTO struct {
-	VerifiedCode string `validate:"required,numeric"`
-}
-
-type SetStatusDTO struct {
-	ID     uint `validate:"required,numeric"`
-	Status uint `validate:"required,numeric"` // TODO 验证枚举0/1/2
-}
-
 // 修改用户新息的数据传输对象
 type SetUserInfoDTO struct {
 	ID     uint   `validate:"required,numeric"`
@@ -96,6 +69,19 @@ type SetUserInfoDTO struct {
 	Avatar string `validate:"alphanumunicode"`
 	Gender int8   `validate:"numeric"`
 	Status int8   `validate:"numeric"`
+}
+
+type SetStatusDTO struct {
+	ID     uint `validate:"required,numeric"`
+	Status uint `validate:"required,numeric"` // TODO 验证枚举0/1/2
+}
+
+type ValidateEmailDTO struct {
+	VerifiedCode string `validate:"required,alphanum"`
+}
+
+type ValidatePhoneDTO struct {
+	VerifiedCode string `validate:"required,numeric"`
 }
 
 type ChangePassword struct {
