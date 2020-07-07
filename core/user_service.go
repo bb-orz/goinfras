@@ -1,6 +1,7 @@
-package user
+package core
 
 import (
+	"GoWebScaffold/core/user"
 	"GoWebScaffold/infras/validate"
 	"GoWebScaffold/services"
 	"errors"
@@ -11,21 +12,22 @@ import (
 // 需在服务实现的方法中验证DTO传输参数并调用具体的领域层业务逻辑
 
 var _ services.IUserService = new(UserService)
-var once sync.Once
 
 func init() {
 	// 初始化该业务模块时实例化服务
+	var once sync.Once
 	once.Do(func() {
 		userService := new(UserService)
-		userService.userDomain = NewUserDomain()
+		userService.userDomain = user.NewUserDomain()
 		services.SetUserService(userService)
 	})
 }
 
 type UserService struct {
-	userDomain *UserDomain
+	userDomain *user.UserDomain
 }
 
+// 邮箱创建用户账号
 func (service *UserService) CreateUserWithEmail(dto services.CreateUserWithEmailDTO) (*services.UserDTO, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
@@ -44,6 +46,7 @@ func (service *UserService) CreateUserWithEmail(dto services.CreateUserWithEmail
 
 }
 
+// 获取用户信息
 func (service *UserService) GetUserInfo(dto services.GetUserInfoDTO) (*services.UserDTO, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
@@ -59,6 +62,7 @@ func (service *UserService) GetUserInfo(dto services.GetUserInfoDTO) (*services.
 	return userDTO, nil
 }
 
+// 批量设置用户信息
 func (service *UserService) SetUserInfos(dto services.SetUserInfoDTO) error {
 
 	// 校验传输参数
@@ -70,16 +74,7 @@ func (service *UserService) SetUserInfos(dto services.SetUserInfoDTO) error {
 	return service.userDomain.SetUserInfos(uid, dto)
 }
 
-// 发起绑定邮箱操作
-func (service *UserService) BindEmail(dto services.BindEmailDTO) error {
-	// 校验传输参数
-	if err := validate.ValidateStruct(dto); err != nil {
-		return err
-	}
-
-	return nil
-}
-
+// 验证用户邮箱
 func (service *UserService) ValidateEmail(dto services.ValidateEmailDTO) (bool, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
@@ -89,15 +84,7 @@ func (service *UserService) ValidateEmail(dto services.ValidateEmailDTO) (bool, 
 	return true, nil
 }
 
-func (service *UserService) BindPhone(dto services.BindPhoneDTO) error {
-	// 校验传输参数
-	if err := validate.ValidateStruct(dto); err != nil {
-		return err
-	}
-
-	return nil
-}
-
+// 验证手机号码
 func (service *UserService) ValidatePhone(dto services.ValidatePhoneDTO) (bool, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
@@ -107,6 +94,7 @@ func (service *UserService) ValidatePhone(dto services.ValidatePhoneDTO) (bool, 
 	return true, nil
 }
 
+// 设置用户账号状态
 func (service *UserService) SetStatus(dto services.SetStatusDTO) (int, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
@@ -116,6 +104,7 @@ func (service *UserService) SetStatus(dto services.SetStatusDTO) (int, error) {
 	return 0, nil
 }
 
+// 修改用户密码
 func (service *UserService) ChangePassword(dto services.ChangePassword) error {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
@@ -125,10 +114,7 @@ func (service *UserService) ChangePassword(dto services.ChangePassword) error {
 	return nil
 }
 
-func (service *UserService) SendEmailForgetPassword() (bool, error) {
-	return false, nil
-}
-
+// 重设密码
 func (service *UserService) ReSetPassword(dto services.ReSetPassword) error {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
@@ -138,6 +124,7 @@ func (service *UserService) ReSetPassword(dto services.ReSetPassword) error {
 
 }
 
+// 上传用户头像
 func (service *UserService) UploadAvatar() error {
 	panic("implement me")
 }

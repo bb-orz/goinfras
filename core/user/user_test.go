@@ -1,6 +1,7 @@
 package user
 
 import (
+	"GoWebScaffold/core"
 	"GoWebScaffold/infras/store/ormStore"
 	"GoWebScaffold/infras/validate"
 	"GoWebScaffold/services"
@@ -22,7 +23,7 @@ func TestUserService_CreateUser(t *testing.T) {
 			Password:   "123456",
 			RePassword: "123456",
 		}
-		service := new(UserService)
+		service := new(core.UserService)
 		userDTO, err := service.CreateUserWithEmail(dto)
 		So(err, ShouldBeNil)
 
@@ -38,7 +39,7 @@ func TestUserService_GetUserInfo(t *testing.T) {
 		err = ormStore.RunForTesting(nil)
 		So(err, ShouldBeNil)
 
-		service := new(UserService)
+		service := new(core.UserService)
 		userDTO, err := service.GetUserInfo(12)
 		So(err, ShouldBeNil)
 		Println("Get User Info:", userDTO)

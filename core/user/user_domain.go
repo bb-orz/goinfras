@@ -107,7 +107,7 @@ func (domain *UserDomain) sendEmail(email string, code string) error {
 }
 
 // 发送验证码到邮箱
-func (domain *UserDomain) SendEmail(dto services.BindEmailDTO) error {
+func (domain *UserDomain) SendEmail(dto services.SendEmailForVerifiedDTO) error {
 	uid := int(dto.ID)
 	email := dto.Email
 
@@ -162,7 +162,7 @@ func (domain *UserDomain) sendPhoneMsg(phone string, code string) error {
 }
 
 // 发送验证码到手机短信
-func (domain *UserDomain) SendPhoneMsg(dto services.BindPhoneDTO) error {
+func (domain *UserDomain) SendPhoneMsg(dto services.SendPhoneVerifiedCodeDTO) error {
 	uid := int(dto.ID)
 	phone := strconv.Itoa(int(dto.Phone))
 
