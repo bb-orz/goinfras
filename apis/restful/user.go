@@ -13,7 +13,10 @@ func init() {
 }
 
 type UserApi struct {
-	userService services.IUserService
+	userService  services.IUserService
+	oauthService services.IOAuthService
+	mailService  services.IMailService
+	smsService   services.ISmsService
 }
 
 // 设置该模块的API Router
