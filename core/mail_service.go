@@ -1,6 +1,7 @@
 package core
 
 import (
+	"GoWebScaffold/core/verified"
 	"GoWebScaffold/infras/validate"
 	"GoWebScaffold/services"
 	"sync"
@@ -21,8 +22,10 @@ func init() {
 }
 
 type MailService struct {
+	verifiedDomain *verified.VerifiedDomain
 }
 
+// 发送绑定验证码到邮箱
 func (service *MailService) SendEmailForVerified(dto services.SendEmailForVerifiedDTO) error {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
@@ -32,6 +35,7 @@ func (service *MailService) SendEmailForVerified(dto services.SendEmailForVerifi
 	return nil
 }
 
+// 发送忘记密码链接到邮箱
 func (service *MailService) SendEmailForgetPassword(dto services.SendEmailForgetPasswordDTO) error {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
@@ -40,3 +44,5 @@ func (service *MailService) SendEmailForgetPassword(dto services.SendEmailForget
 
 	return nil
 }
+
+// TODO 其他邮件相关服务...

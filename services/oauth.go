@@ -16,7 +16,7 @@ func SetOAuthService(service IOAuthService) {
 }
 
 type IOAuthService interface {
-	QQLogin(accessCode string)
-	WeixinLogin(accessCode string)
-	WeiboLogin(accessCode string)
+	QQLogin(accessCode string)     // qq三方登录
+	WeixinLogin(accessCode string) // 微信三方登录
+	WeiboLogin(accessCode string)  // 微博三方登录
 }

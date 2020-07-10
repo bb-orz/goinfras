@@ -17,8 +17,8 @@ func SetMailService(service IMailService) {
 }
 
 type IMailService interface {
-	SendEmailForVerified(dto SendEmailForVerifiedDTO) error   // 绑定邮箱，发送验证邮件到指定邮箱
-	SendEmailForgetPassword(SendEmailForgetPasswordDTO) error // 忘记密码，发送邮件到用户绑定的邮箱
+	SendEmailForVerified(dto SendEmailForVerifiedDTO) error   // 绑定邮箱时，发送邮件验证码到指定邮箱
+	SendEmailForgetPassword(SendEmailForgetPasswordDTO) error // 忘记密码时，发送邮件重置链接到用户绑定的邮箱
 }
 
 type SendEmailForVerifiedDTO struct {

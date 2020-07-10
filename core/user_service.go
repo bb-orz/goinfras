@@ -2,6 +2,7 @@ package core
 
 import (
 	"GoWebScaffold/core/user"
+	"GoWebScaffold/core/verified"
 	"GoWebScaffold/infras/validate"
 	"GoWebScaffold/services"
 	"errors"
@@ -24,7 +25,8 @@ func init() {
 }
 
 type UserService struct {
-	userDomain *user.UserDomain
+	userDomain     *user.UserDomain
+	verifiedDomain *verified.VerifiedDomain
 }
 
 // 邮箱创建用户账号

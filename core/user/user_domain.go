@@ -7,7 +7,7 @@ import (
 	"github.com/segmentio/ksuid"
 )
 
-/*领域层：实现具体业务逻辑*/
+/*User 领域层：实现用户相关具体业务逻辑*/
 type UserDomain struct {
 	dao   *UserDAO
 	cache *userCache

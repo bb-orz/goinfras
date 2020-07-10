@@ -1,6 +1,7 @@
 package core
 
 import (
+	"GoWebScaffold/core/verified"
 	"GoWebScaffold/services"
 	"sync"
 )
@@ -20,8 +21,12 @@ func init() {
 }
 
 type SmsService struct {
+	verifiedDomain *verified.VerifiedDomain
 }
 
+// 发送短信验证码
 func (service *SmsService) SendPhoneVerifiedCode(dto services.SendPhoneVerifiedCodeDTO) error {
 	panic("implement me")
 }
+
+// TODO 其他短信相关服务...

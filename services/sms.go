@@ -17,7 +17,7 @@ func SetSmsService(service ISmsService) {
 }
 
 type ISmsService interface {
-	SendPhoneVerifiedCode(dto SendPhoneVerifiedCodeDTO) error // 绑定手机，发送短信验证码
+	SendPhoneVerifiedCode(dto SendPhoneVerifiedCodeDTO) error // 绑定手机时，发送短信验证码
 }
 
 type SendPhoneVerifiedCodeDTO struct {

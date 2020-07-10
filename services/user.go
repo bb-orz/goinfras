@@ -22,11 +22,11 @@ func SetUserService(service IUserService) {
 // 定义用户服务接口
 type IUserService interface {
 	CreateUserWithEmail(dto CreateUserWithEmailDTO) (*UserDTO, error) // 创建用户
-	GetUserInfo(dto GetUserInfoDTO) (*UserDTO, error)                 // 获取用户数据
+	GetUserInfo(dto GetUserInfoDTO) (*UserDTO, error)                 // 获取用户信息
 	SetUserInfos(dto SetUserInfoDTO) error                            // 修改用户信息
 	ValidateEmail(dto ValidateEmailDTO) (bool, error)                 // 绑定邮箱，验证邮箱链接
 	ValidatePhone(dto ValidatePhoneDTO) (bool, error)                 // 绑定手机，验证短信验证码
-	SetStatus(dto SetStatusDTO) (int, error)                          // 设置用户锁定状态
+	SetStatus(dto SetStatusDTO) (int, error)                          // 设置用户状态
 	ChangePassword(dto ChangePassword) error                          // 更改用户密码
 	ReSetPassword(dto ReSetPassword) error                            // 重设密码
 	UploadAvatar() error                                              // 上传头像
