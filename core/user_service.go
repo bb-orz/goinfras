@@ -3,9 +3,9 @@ package core
 import (
 	"GoWebScaffold/core/user"
 	"GoWebScaffold/core/verified"
+	"GoWebScaffold/infras/global"
 	"GoWebScaffold/infras/validate"
 	"GoWebScaffold/services"
-	"errors"
 	"sync"
 )
 
@@ -37,15 +37,81 @@ func (service *UserService) CreateUserWithEmail(dto services.CreateUserWithEmail
 	}
 
 	// 验证用户邮箱是否存在
-	if isExist, err := service.userDomain.IsUserEmailExist(dto); err != nil {
-		return nil, errors.New("查询错误! ")
+	if isExist, err := service.userDomain.IsEmailExist(dto); err != nil {
+		return nil, WrapError(err, "查询错误！")
 	} else if isExist {
-		return nil, errors.New("该用户已经存在! ")
+		return nil, WrapError(err, "该用户已经存在!")
 	}
 
 	res, err := service.userDomain.CreateUserForEmail(dto)
-	return res, err
+	if err != nil {
+		return nil, WrapError(err, "创建用户失败！")
+	}
+	return res, nil
 
+}
+
+// 邮箱创建用户账号
+func (service *UserService) CreateUserWithPhone(dto services.CreateUserWithPhoneDTO) (*services.UserDTO, error) {
+	// 校验传输参数
+	if err := validate.ValidateStruct(dto); err != nil {
+		return nil, err
+	}
+
+	// 验证用户邮箱是否存在
+	if isExist, err := service.userDomain.IsPhoneExist(dto); err != nil {
+		return nil, WrapError(err, "查询错误！")
+	} else if isExist {
+		return nil, WrapError(err, "该用户已经存在!")
+	}
+
+	res, err := service.userDomain.CreateUserForPhone(dto)
+	if err != nil {
+		return nil, WrapError(err, "创建用户失败！")
+	}
+	return res, nil
+}
+
+// 邮箱账号登录鉴权
+func (service *UserService) AuthWithEmailPassword(dto services.AuthWithEmailPasswordDTO) (bool, error) {
+	// 校验传输参数
+	if err := validate.ValidateStruct(dto); err != nil {
+		return false, err
+	}
+
+	// 查找邮件账号是否存在
+	userDTO, err := service.userDomain.GetUserInfoByEmail(dto.Email)
+	if err != nil || userDTO == nil {
+		return false, err
+	}
+
+	// 校验密码
+	if global.ValidatePassword(dto.Password, userDTO.Salt, userDTO.Password) {
+		return true, nil
+	}
+
+	return false, nil
+}
+
+// 手机账号登录鉴权
+func (service *UserService) AuthWithPhonePassword(dto services.AuthWithPhonePasswordDTO) (bool, error) {
+	// 校验传输参数
+	if err := validate.ValidateStruct(dto); err != nil {
+		return false, err
+	}
+
+	// 查找手机账号是否存在
+	userDTO, err := service.userDomain.GetUserInfoByPhone(dto.Phone)
+	if err != nil || userDTO == nil {
+		return false, err
+	}
+
+	// 校验密码
+	if global.ValidatePassword(dto.Password, userDTO.Salt, userDTO.Password) {
+		return true, nil
+	}
+
+	return false, nil
 }
 
 // 获取用户信息
@@ -57,7 +123,7 @@ func (service *UserService) GetUserInfo(dto services.GetUserInfoDTO) (*services.
 
 	// 查找用户信息
 	userDTO, err := service.userDomain.GetUserInfo(int(dto.ID))
-	if err != nil {
+	if err != nil || userDTO == nil {
 		return nil, err
 	}
 

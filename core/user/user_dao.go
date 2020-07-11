@@ -37,6 +37,7 @@ func (d *UserDAO) isExist(where *User) (bool, error) {
 	err := ormStore.GormDb().Where(where).First(&User{}).Count(&count).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
+			// 无记录
 			return false, nil
 		} else {
 			// 除无记录外的错误返回
@@ -62,8 +63,49 @@ func (d *UserDAO) Create(model User) (*User, error) {
 // 通过Id查找
 func (d *UserDAO) GetById(id int) (*User, error) {
 	var user User
-	if err := ormStore.GormDb().Where(id).First(&user).Error; err != nil {
-		return nil, err
+	err := ormStore.GormDb().Where(id).First(&user).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			// 无记录
+			return nil, nil
+		} else {
+			// 除无记录外的错误返回
+			return nil, err
+		}
+	}
+
+	return &user, nil
+}
+
+// 通过邮箱账号查找
+func (d *UserDAO) GetByEmail(email string) (*User, error) {
+	var user User
+	err := ormStore.GormDb().Where(&User{Email: email}).First(&user).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			// 无记录
+			return nil, nil
+		} else {
+			// 除无记录外的错误返回
+			return nil, err
+		}
+	}
+
+	return &user, nil
+}
+
+// 通过邮箱账号查找
+func (d *UserDAO) GetByPhone(phone string) (*User, error) {
+	var user User
+	err := ormStore.GormDb().Where(&User{Phone: phone}).First(&user).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			// 无记录
+			return nil, nil
+		} else {
+			// 除无记录外的错误返回
+			return nil, err
+		}
 	}
 
 	return &user, nil

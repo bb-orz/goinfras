@@ -30,9 +30,12 @@ func (api *UserApi) SetRoutes() {
 		authMiddlerware = ginger.JwtAuthMiddleware(tku)
 	}
 
-	engine.POST("/register", api.registerHandler)
 	engine.POST("/login", api.loginHandler)
 	engine.POST("/logout", api.logoutHandler)
+
+	registerGroup := engine.Group("/register")
+	registerGroup.POST("/email", api.registerEmailHandler)
+	registerGroup.POST("/phone", api.registerPhoneHandler)
 
 	oauthGroup := engine.Group("/oauth")
 	oauthGroup.GET("/qq", api.oauthQQHandler)
@@ -41,12 +44,7 @@ func (api *UserApi) SetRoutes() {
 
 	userGroup := engine.Group("/user", authMiddlerware)
 	userGroup.GET("/get", api.getUserInfoHandler)
-	userGroup.POST("/set_info", api.setUserInfoHandler)
-}
-
-/*用户注册*/
-func (api *UserApi) registerHandler(ctx *gin.Context) {
-
+	userGroup.POST("/set", api.setUserInfoHandler)
 }
 
 /*用户登录*/
@@ -56,6 +54,16 @@ func (api *UserApi) loginHandler(ctx *gin.Context) {
 
 /*用户登出*/
 func (api *UserApi) logoutHandler(ctx *gin.Context) {
+
+}
+
+/*邮箱注册注册*/
+func (api *UserApi) registerEmailHandler(ctx *gin.Context) {
+
+}
+
+/*手机号码注册注册*/
+func (api *UserApi) registerPhoneHandler(ctx *gin.Context) {
 
 }
 

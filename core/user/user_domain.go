@@ -1,6 +1,7 @@
 package user
 
 import (
+	"GoWebScaffold/core"
 	"GoWebScaffold/infras/global"
 	"GoWebScaffold/services"
 	"fmt"
@@ -22,20 +23,30 @@ func NewUserDomain() *UserDomain {
 
 // 生成用户编号
 func (domain *UserDomain) generateUserNo() string {
-	// 采用ksuid的ID生成策略来创建No
-	// 全局唯一的ID
+	// 采用ksuid的ID生成策略来创建全局唯一的ID
 	return ksuid.New().Next().String()
 }
 
-// 加密密码，设置密文和盐值到po
+// 加密密码，设置密文和盐值
 func (domain *UserDomain) encryptPassword(password string) (hashStr, salt string) {
 	hashStr, salt = global.HashPassword(password)
 	return
 }
 
-// 查找用户是否已存在
-func (domain *UserDomain) IsUserEmailExist(dto services.CreateUserWithEmailDTO) (bool, error) {
+// 查找邮箱是否已存在
+func (domain *UserDomain) IsEmailExist(dto services.CreateUserWithEmailDTO) (bool, error) {
 	if isExist, err := domain.dao.IsEmailExist(dto.Email); err != nil {
+		return false, core.WrapError(err, "")
+	} else if isExist {
+		return true, nil
+	}
+
+	return false, nil
+}
+
+// 查找手机用户是否已存在
+func (domain *UserDomain) IsPhoneExist(dto services.CreateUserWithPhoneDTO) (bool, error) {
+	if isExist, err := domain.dao.IsPhoneExist(dto.Phone); err != nil {
 		fmt.Println("Error:", err)
 		return false, err
 	} else if isExist {
@@ -53,19 +64,54 @@ func (domain *UserDomain) CreateUserForEmail(dto services.CreateUserWithEmailDTO
 	userModel.No = domain.generateUserNo()
 	userModel.Password, userModel.Salt = domain.encryptPassword(dto.Password)
 	userModel.Status = UserStatusNotVerified // 初始创建时未验证状态
+	// fmt.Println("UserModel:", userModel)
+	var user *User
+	var err error
+	if user, err = domain.dao.Create(userModel); err != nil {
+		return nil, err
+	}
+	userDTO := user.ToDTO()
+	return userDTO, nil
+}
+
+// 手机号码创建用户
+func (domain *UserDomain) CreateUserForPhone(dto services.CreateUserWithPhoneDTO) (*services.UserDTO, error) {
+	userModel := User{}
+	userModel.Name = dto.Name
+	userModel.Phone = dto.Phone
+	userModel.No = domain.generateUserNo()
+	userModel.Password, userModel.Salt = domain.encryptPassword(dto.Password)
+	userModel.Status = UserStatusNotVerified // 初始创建时未验证状态
 	fmt.Println("UserModel:", userModel)
 	var user *User
 	var err error
 	if user, err = domain.dao.Create(userModel); err != nil {
 		return nil, err
 	}
-
 	userDTO := user.ToDTO()
 	return userDTO, nil
 }
 
 func (domain *UserDomain) GetUserInfo(uid int) (*services.UserDTO, error) {
 	user, err := domain.dao.GetById(uid)
+	if err != nil {
+		return nil, err
+	}
+	userDTO := user.ToDTO()
+	return userDTO, nil
+}
+
+func (domain *UserDomain) GetUserInfoByEmail(email string) (*services.UserDTO, error) {
+	user, err := domain.dao.GetByEmail(email)
+	if err != nil {
+		return nil, err
+	}
+	userDTO := user.ToDTO()
+	return userDTO, nil
+}
+
+func (domain *UserDomain) GetUserInfoByPhone(phone string) (*services.UserDTO, error) {
+	user, err := domain.dao.GetByPhone(phone)
 	if err != nil {
 		return nil, err
 	}

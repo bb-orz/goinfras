@@ -38,8 +38,13 @@ func (model *User) FromDTO(dto *services.UserDTO) {
 	model.EmailVerified = dto.EmailVerified
 	model.Phone = dto.Phone
 	model.PhoneVerified = dto.PhoneVerified
+	model.Status = uint(dto.Status)
+	model.Password = dto.Password
+	model.Salt = dto.Salt
 	model.CreatedAt = dto.CreatedAt
 	model.UpdatedAt = dto.UpdatedAt
+	model.DeletedAt = dto.DeletedAt
+
 }
 
 func (model *User) ToDTO() *services.UserDTO {
@@ -54,8 +59,12 @@ func (model *User) ToDTO() *services.UserDTO {
 	userDTO.EmailVerified = model.EmailVerified
 	userDTO.Phone = model.Phone
 	userDTO.PhoneVerified = model.PhoneVerified
+	userDTO.Status = int8(model.Status)
+	userDTO.Password = model.Password
+	userDTO.Salt = model.Salt
 	userDTO.CreatedAt = model.CreatedAt
 	userDTO.UpdatedAt = model.UpdatedAt
+	userDTO.DeletedAt = model.DeletedAt
 	return &userDTO
 }
 
