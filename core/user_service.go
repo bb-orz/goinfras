@@ -11,6 +11,7 @@ import (
 
 // 服务层，实现services包定义的服务并设置该服务的实例，
 // 需在服务实现的方法中验证DTO传输参数并调用具体的领域层业务逻辑
+// 接收领域层和dao层的错误并处理，记录日志
 
 var _ services.IUserService = new(UserService)
 

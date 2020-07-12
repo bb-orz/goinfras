@@ -6,7 +6,10 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-/* 数据访问层，实现具体数据持久化操作 */
+/*
+数据访问层，实现具体数据持久化操作
+
+*/
 
 type UserDAO struct{}
 
