@@ -34,7 +34,7 @@ type UserService struct {
 func (service *UserService) CreateUserWithEmail(dto services.CreateUserWithEmailDTO) (*services.UserDTO, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
-		return nil, err
+		return nil, WrapError(err, SerivceDTOValidateError, "UserService.CreateUserWithEmail")
 	}
 
 	// 验证用户邮箱是否存在
