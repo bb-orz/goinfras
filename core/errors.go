@@ -30,20 +30,23 @@ func WrapError(err error, messageFormat string, msgArgs ...interface{}) CError {
 // 领域层错误信息格式
 const (
 	// 领域层SQL数据库执行错误信息格式
-	DomainSqlQueryError  = "SQL Query  Error：[LEVEL]:%s [CALL]:dao.%s"
-	DomainSqlInsertError = "SQL Insert Error：[LEVEL]:%s [CALL]:dao.%s"
-	DomainSqlUpdateError = "SQL Update Error：[LEVEL]:%s [CALL]:dao.%s"
-	DomainSqlDeleteError = "SQL Delete Error：[LEVEL]:%s [CALL]:dao.%s"
+	DomainErrorFormatSqlQuery  = "[Domain Error]: SQL Query  Error：[LEVEL]:%s [CALL]:dao.%s"
+	DomainErrorFormatSqlInsert = "[Domain Error]: SQL Insert Error：[LEVEL]:%s [CALL]:dao.%s"
+	DomainErrorFormatSqlUpdate = "[Domain Error]: SQL Update Error：[LEVEL]:%s [CALL]:dao.%s"
+	DomainErrorFormatSqlDelete = "[Domain Error]: SQL Delete Error：[LEVEL]:%s [CALL]:dao.%s"
 
 	// 领域层缓存执行错误信息格式
-	DomainCacheSetError = "Cache Set Error:[LEVEL]:%s [CALL]:cache.%s"
-	DomainCacheGetError = "Cache Get Error:[LEVEL]:%s [CALL]:cache.%s"
+	DomainErrorFormatCacheSet = "[Domain Error]: Cache Set Error:[LEVEL]:%s [CALL]:cache.%s"
+	DomainErrorFormatCacheGet = "[Domain Error]: Cache Get Error:[LEVEL]:%s [CALL]:cache.%s"
 
-	// 领域层算法类错误信息格式
-	DomainAlgorithmError = "Algorithm Error:[LEVEL]:%s [CALL]:%s"
+	// 领域层算法逻辑类错误信息格式
+	DomainErrorFormatAlgorithm = "[Domain Error]: Algorithm Error:[LEVEL]:%s [CALL]:%s"
 )
 
 // 服务层错误信息格式
 const (
-	SerivceDTOValidateError = "DTO Validate Error: [SERVICE]:%s"
+	// DTO 验证错误信息
+	ServiceErrorFormatDTOValidate = "[Service Error]: Validate DTO Error"
+
+	//
 )

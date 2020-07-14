@@ -28,7 +28,7 @@ func (domain *VerifiedDomain) genEmailVerifiedCode(uid int) (string, error) {
 	// 保存到缓存
 	err := domain.cache.SetUserVerifiedEmailCode(uid, code)
 	if err != nil {
-		return "", core.WrapError(err, core.DomainCacheSetError, DomainName, "SetUserVerifiedEmailCode")
+		return "", core.WrapError(err, core.DomainErrorFormatCacheSet, DomainName, "SetUserVerifiedEmailCode")
 	}
 
 	return code, nil
@@ -62,7 +62,7 @@ func (domain *VerifiedDomain) VerifiedEmail(uid int, vcode string) (bool, error)
 	// 缓存取出
 	code, err := domain.cache.GetUserVerifiedEmailCode(uid)
 	if err != nil {
-		return false, core.WrapError(err, core.DomainCacheGetError, DomainName, "GetUserVerifiedEmailCode")
+		return false, core.WrapError(err, core.DomainErrorFormatCacheGet, DomainName, "GetUserVerifiedEmailCode")
 	}
 
 	// 校验
@@ -80,13 +80,13 @@ func (domain *VerifiedDomain) genPhoneVerifiedCode(uid int) (string, error) {
 	// 生成4位随机数字
 	code, err = global.RandomNumber(4)
 	if err != nil {
-		return "", core.WrapError(err, core.DomainAlgorithmError, DomainName, "global.RandomNumber")
+		return "", core.WrapError(err, core.DomainErrorFormatAlgorithm, DomainName, "global.RandomNumber")
 	}
 
 	// 保存到缓存
 	err = domain.cache.SetUserVerifiedPhoneCode(uid, code)
 	if err != nil {
-		return "", core.WrapError(err, core.DomainCacheSetError, DomainName, "SetUserVerifiedPhoneCode")
+		return "", core.WrapError(err, core.DomainErrorFormatCacheSet, DomainName, "SetUserVerifiedPhoneCode")
 	}
 
 	return code, nil

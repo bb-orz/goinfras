@@ -38,7 +38,7 @@ func (domain *UserDomain) encryptPassword(password string) (hashStr, salt string
 // 查找邮箱是否已存在
 func (domain *UserDomain) IsEmailExist(dto services.CreateUserWithEmailDTO) (bool, error) {
 	if isExist, err := domain.dao.IsEmailExist(dto.Email); err != nil {
-		return false, core.WrapError(err, core.DomainSqlQueryError, DomainName, "IsEmailExist")
+		return false, core.WrapError(err, core.DomainErrorFormatSqlQuery, DomainName, "IsEmailExist")
 	} else if isExist {
 		return true, nil
 	}
@@ -49,7 +49,7 @@ func (domain *UserDomain) IsEmailExist(dto services.CreateUserWithEmailDTO) (boo
 // 查找手机用户是否已存在
 func (domain *UserDomain) IsPhoneExist(dto services.CreateUserWithPhoneDTO) (bool, error) {
 	if isExist, err := domain.dao.IsPhoneExist(dto.Phone); err != nil {
-		return false, core.WrapError(err, core.DomainSqlQueryError, DomainName, "IsPhoneExist")
+		return false, core.WrapError(err, core.DomainErrorFormatSqlQuery, DomainName, "IsPhoneExist")
 	} else if isExist {
 		return true, nil
 	}
@@ -68,7 +68,7 @@ func (domain *UserDomain) CreateUserForEmail(dto services.CreateUserWithEmailDTO
 	var user *User
 	var err error
 	if user, err = domain.dao.Create(userModel); err != nil {
-		return nil, core.WrapError(err, core.DomainSqlInsertError, DomainName, "Create")
+		return nil, core.WrapError(err, core.DomainErrorFormatSqlInsert, DomainName, "Create")
 	}
 	userDTO := user.ToDTO()
 	return userDTO, nil
@@ -85,7 +85,7 @@ func (domain *UserDomain) CreateUserForPhone(dto services.CreateUserWithPhoneDTO
 	var user *User
 	var err error
 	if user, err = domain.dao.Create(userModel); err != nil {
-		return nil, core.WrapError(err, core.DomainSqlInsertError, DomainName, "Create")
+		return nil, core.WrapError(err, core.DomainErrorFormatSqlInsert, DomainName, "Create")
 	}
 	userDTO := user.ToDTO()
 	return userDTO, nil
@@ -94,7 +94,7 @@ func (domain *UserDomain) CreateUserForPhone(dto services.CreateUserWithPhoneDTO
 func (domain *UserDomain) GetUserInfo(uid int) (*services.UserDTO, error) {
 	user, err := domain.dao.GetById(uid)
 	if err != nil {
-		return nil, core.WrapError(err, core.DomainSqlQueryError, DomainName, "GetById")
+		return nil, core.WrapError(err, core.DomainErrorFormatSqlQuery, DomainName, "GetById")
 	}
 	userDTO := user.ToDTO()
 	return userDTO, nil
@@ -103,7 +103,7 @@ func (domain *UserDomain) GetUserInfo(uid int) (*services.UserDTO, error) {
 func (domain *UserDomain) GetUserInfoByEmail(email string) (*services.UserDTO, error) {
 	user, err := domain.dao.GetByEmail(email)
 	if err != nil {
-		return nil, core.WrapError(err, core.DomainSqlQueryError, DomainName, "GetByEmail")
+		return nil, core.WrapError(err, core.DomainErrorFormatSqlQuery, DomainName, "GetByEmail")
 	}
 	userDTO := user.ToDTO()
 	return userDTO, nil
@@ -112,7 +112,7 @@ func (domain *UserDomain) GetUserInfoByEmail(email string) (*services.UserDTO, e
 func (domain *UserDomain) GetUserInfoByPhone(phone string) (*services.UserDTO, error) {
 	user, err := domain.dao.GetByPhone(phone)
 	if err != nil {
-		return nil, core.WrapError(err, core.DomainSqlQueryError, DomainName, "GetByPhone")
+		return nil, core.WrapError(err, core.DomainErrorFormatSqlQuery, DomainName, "GetByPhone")
 	}
 	userDTO := user.ToDTO()
 	return userDTO, nil
@@ -122,7 +122,7 @@ func (domain *UserDomain) GetUserInfoByPhone(phone string) (*services.UserDTO, e
 func (domain *UserDomain) SetUserInfo(uid int, field string, value interface{}) error {
 	err := domain.dao.SetUserInfo(uid, field, value)
 	if err != nil {
-		return core.WrapError(err, core.DomainSqlUpdateError, DomainName, "SetUserInfo")
+		return core.WrapError(err, core.DomainErrorFormatSqlUpdate, DomainName, "SetUserInfo")
 	}
 	return nil
 }
@@ -131,7 +131,7 @@ func (domain *UserDomain) SetUserInfo(uid int, field string, value interface{}) 
 func (domain *UserDomain) SetUserInfos(uid int, dto services.SetUserInfoDTO) error {
 	err := domain.dao.SetUserInfos(uid, dto)
 	if err != nil {
-		return core.WrapError(err, core.DomainSqlUpdateError, DomainName, "SetUserInfo")
+		return core.WrapError(err, core.DomainErrorFormatSqlUpdate, DomainName, "SetUserInfo")
 	}
 	return nil
 }

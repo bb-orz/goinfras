@@ -34,7 +34,7 @@ type UserService struct {
 func (service *UserService) CreateUserWithEmail(dto services.CreateUserWithEmailDTO) (*services.UserDTO, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
-		return nil, WrapError(err, SerivceDTOValidateError, "UserService.CreateUserWithEmail")
+		return nil, WrapError(err, ServiceErrorFormatDTOValidate)
 	}
 
 	// 验证用户邮箱是否存在
@@ -49,14 +49,13 @@ func (service *UserService) CreateUserWithEmail(dto services.CreateUserWithEmail
 		return nil, WrapError(err, "创建用户失败！")
 	}
 	return res, nil
-
 }
 
 // 邮箱创建用户账号
 func (service *UserService) CreateUserWithPhone(dto services.CreateUserWithPhoneDTO) (*services.UserDTO, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
-		return nil, err
+		return nil, WrapError(err, ServiceErrorFormatDTOValidate)
 	}
 
 	// 验证用户邮箱是否存在
@@ -77,7 +76,7 @@ func (service *UserService) CreateUserWithPhone(dto services.CreateUserWithPhone
 func (service *UserService) AuthWithEmailPassword(dto services.AuthWithEmailPasswordDTO) (bool, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
-		return false, err
+		return false, WrapError(err, ServiceErrorFormatDTOValidate)
 	}
 
 	// 查找邮件账号是否存在
@@ -98,7 +97,7 @@ func (service *UserService) AuthWithEmailPassword(dto services.AuthWithEmailPass
 func (service *UserService) AuthWithPhonePassword(dto services.AuthWithPhonePasswordDTO) (bool, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
-		return false, err
+		return false, WrapError(err, ServiceErrorFormatDTOValidate)
 	}
 
 	// 查找手机账号是否存在
@@ -119,7 +118,7 @@ func (service *UserService) AuthWithPhonePassword(dto services.AuthWithPhonePass
 func (service *UserService) GetUserInfo(dto services.GetUserInfoDTO) (*services.UserDTO, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
-		return nil, err
+		return nil, WrapError(err, ServiceErrorFormatDTOValidate)
 	}
 
 	// 查找用户信息
@@ -136,7 +135,7 @@ func (service *UserService) SetUserInfos(dto services.SetUserInfoDTO) error {
 
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
-		return err
+		return WrapError(err, ServiceErrorFormatDTOValidate)
 	}
 
 	uid := int(dto.ID)
@@ -147,7 +146,7 @@ func (service *UserService) SetUserInfos(dto services.SetUserInfoDTO) error {
 func (service *UserService) ValidateEmail(dto services.ValidateEmailDTO) (bool, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
-		return false, err
+		return false, WrapError(err, ServiceErrorFormatDTOValidate)
 	}
 
 	return true, nil
@@ -157,7 +156,7 @@ func (service *UserService) ValidateEmail(dto services.ValidateEmailDTO) (bool, 
 func (service *UserService) ValidatePhone(dto services.ValidatePhoneDTO) (bool, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
-		return false, err
+		return false, WrapError(err, ServiceErrorFormatDTOValidate)
 	}
 
 	return true, nil
@@ -167,7 +166,7 @@ func (service *UserService) ValidatePhone(dto services.ValidatePhoneDTO) (bool, 
 func (service *UserService) SetStatus(dto services.SetStatusDTO) (int, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
-		return -1, err
+		return -1, WrapError(err, ServiceErrorFormatDTOValidate)
 	}
 
 	return 0, nil
@@ -177,7 +176,7 @@ func (service *UserService) SetStatus(dto services.SetStatusDTO) (int, error) {
 func (service *UserService) ChangePassword(dto services.ChangePassword) error {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
-		return err
+		return WrapError(err, ServiceErrorFormatDTOValidate)
 	}
 
 	return nil
@@ -187,7 +186,7 @@ func (service *UserService) ChangePassword(dto services.ChangePassword) error {
 func (service *UserService) ReSetPassword(dto services.ReSetPassword) error {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
-		return err
+		return WrapError(err, ServiceErrorFormatDTOValidate)
 	}
 	return nil
 
