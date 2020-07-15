@@ -7,6 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+/*
+APT层，调用相关Service，封装响应返回，并记录日志
+*/
+
 func init() {
 	// 初始化时注册该模块API
 	ginger.RegisterApiModule(new(UserApi))
