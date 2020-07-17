@@ -114,14 +114,14 @@ func (d *UserDAO) GetByPhone(phone string) (*User, error) {
 	return &user, nil
 }
 
-func (d *UserDAO) SetUserInfo(uid int, field string, value interface{}) error {
+func (d *UserDAO) SetUserInfo(uid uint, field string, value interface{}) error {
 	if err := ormStore.GormDb().Model(&User{}).Where("id", uid).Update(field, value).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (d *UserDAO) SetUserInfos(uid int, dto services.SetUserInfoDTO) error {
+func (d *UserDAO) SetUserInfos(uid uint, dto services.SetUserInfoDTO) error {
 	if err := ormStore.GormDb().Model(&User{}).Where("id", uid).Updates(dto).Error; err != nil {
 		return err
 	}

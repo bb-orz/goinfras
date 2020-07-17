@@ -118,8 +118,17 @@ func (domain *UserDomain) GetUserInfoByPhone(phone string) (*services.UserDTO, e
 	return userDTO, nil
 }
 
+// 设置用户状态
+func (domain *UserDomain) SetStatus(uid, status uint) error {
+	err := domain.dao.SetUserInfo(uid, "status", status)
+	if err != nil {
+		return core.WrapError(err, core.ErrorFormatDomainSqlUpdate, DomainName, "SetUserInfo")
+	}
+	return nil
+}
+
 // 设置单个用户信息
-func (domain *UserDomain) SetUserInfo(uid int, field string, value interface{}) error {
+func (domain *UserDomain) SetUserInfo(uid uint, field string, value interface{}) error {
 	err := domain.dao.SetUserInfo(uid, field, value)
 	if err != nil {
 		return core.WrapError(err, core.ErrorFormatDomainSqlUpdate, DomainName, "SetUserInfo")
@@ -128,7 +137,7 @@ func (domain *UserDomain) SetUserInfo(uid int, field string, value interface{}) 
 }
 
 // 设置多个用户信息
-func (domain *UserDomain) SetUserInfos(uid int, dto services.SetUserInfoDTO) error {
+func (domain *UserDomain) SetUserInfos(uid uint, dto services.SetUserInfoDTO) error {
 	err := domain.dao.SetUserInfos(uid, dto)
 	if err != nil {
 		return core.WrapError(err, core.ErrorFormatDomainSqlUpdate, DomainName, "SetUserInfo")

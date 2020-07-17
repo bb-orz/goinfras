@@ -105,10 +105,12 @@ type SetStatusDTO struct {
 }
 
 type ValidateEmailDTO struct {
+	ID           uint   `validate:"required,numeric"`
 	VerifiedCode string `validate:"required,alphanum"`
 }
 
 type ValidatePhoneDTO struct {
+	ID           uint   `validate:"required,numeric"`
 	VerifiedCode string `validate:"required,numeric"`
 }
 

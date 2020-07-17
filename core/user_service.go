@@ -145,7 +145,7 @@ func (service *UserService) SetUserInfos(dto services.SetUserInfoDTO) error {
 		return WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
-	uid := int(dto.ID)
+	uid := dto.ID
 	err := service.userDomain.SetUserInfos(uid, dto)
 	if err != nil {
 		return WrapError(err, ErrorFormatServiceStorage)
@@ -161,7 +161,17 @@ func (service *UserService) ValidateEmail(dto services.ValidateEmailDTO) (bool, 
 		return false, WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
-	return true, nil
+	// 从cache拿出保存的邮箱验证码
+	pass, err := service.verifiedDomain.VerifiedEmail(dto.ID, dto.VerifiedCode)
+	if err != nil {
+		return false, WrapError(err, ErrorFormatServiceCache, "缓存验证码校验错误")
+	}
+
+	if pass {
+		return true, nil
+	}
+
+	return false, nil
 }
 
 // 验证手机号码
@@ -171,7 +181,17 @@ func (service *UserService) ValidatePhone(dto services.ValidatePhoneDTO) (bool, 
 		return false, WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
-	return true, nil
+	// 从cache拿出保存的短信验证码
+	pass, err := service.verifiedDomain.VerifiedPhone(dto.ID, dto.VerifiedCode)
+	if err != nil {
+		return false, WrapError(err, ErrorFormatServiceCache, "缓存验证码校验错误")
+	}
+
+	if pass {
+		return true, nil
+	}
+
+	return false, nil
 }
 
 // 设置用户账号状态
@@ -179,6 +199,11 @@ func (service *UserService) SetStatus(dto services.SetStatusDTO) (int, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
 		return -1, WrapError(err, ErrorFormatServiceDTOValidate)
+	}
+
+	err := service.userDomain.SetStatus(dto.ID, dto.Status)
+	if err != nil {
+		return -1, WrapError(err, ErrorFormatServiceStorage)
 	}
 
 	return 0, nil

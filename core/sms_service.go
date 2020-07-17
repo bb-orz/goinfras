@@ -2,6 +2,7 @@ package core
 
 import (
 	"GoWebScaffold/core/verified"
+	"GoWebScaffold/infras/validate"
 	"GoWebScaffold/services"
 	"sync"
 )
@@ -24,9 +25,21 @@ type SmsService struct {
 	verifiedDomain *verified.VerifiedDomain
 }
 
-// 发送短信验证码
+// 发送绑定手机短信验证码
 func (service *SmsService) SendPhoneVerifiedCode(dto services.SendPhoneVerifiedCodeDTO) error {
-	panic("implement me")
+	// 校验传输参数
+	if err := validate.ValidateStruct(dto); err != nil {
+		return err
+	}
+
+	if err := service.verifiedDomain.SendValidatePhoneMsg(dto); err != nil {
+		return WrapError(err, ErrorFormatServiceCache)
+	}
+
+	return nil
+
 }
 
 // TODO 其他短信相关服务...
+
+// 发送忘记密码短信验证码

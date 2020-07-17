@@ -25,11 +25,15 @@ type MailService struct {
 	verifiedDomain *verified.VerifiedDomain
 }
 
-// 发送绑定验证码到邮箱
+// 发送绑定邮箱验证码到指定邮箱
 func (service *MailService) SendEmailForVerified(dto services.SendEmailForVerifiedDTO) error {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
 		return err
+	}
+
+	if err := service.verifiedDomain.SendValidateEmail(dto); err != nil {
+		return WrapError(err, ErrorFormatServiceCache)
 	}
 
 	return nil
@@ -46,3 +50,5 @@ func (service *MailService) SendEmailForgetPassword(dto services.SendEmailForget
 }
 
 // TODO 其他邮件相关服务...
+
+// 发送忘记密码重置邮件

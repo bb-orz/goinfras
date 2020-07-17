@@ -54,6 +54,9 @@ const (
 	// 存储相关错误
 	ErrorFormatServiceStorage = "[Service Error]: Storage Data Error"
 
+	// 存储相关错误
+	ErrorFormatServiceCache = "[Service Error]: Cache Data Error"
+
 	// 业务逻辑相关错误
 	ErrorFormatServiceBusinesslogic = "[Service Error]: Business Logic Error | [Info]:%s"
 )

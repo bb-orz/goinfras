@@ -17,7 +17,7 @@ func NewMailCache() *verifiedCache {
 }
 
 // 保存邮箱验证码缓存
-func (cache *verifiedCache) SetUserVerifiedEmailCode(uid int, code string) error {
+func (cache *verifiedCache) SetUserVerifiedEmailCode(uid uint, code string) error {
 	key := UserCacheVerifiedEmailCodePrefix + strconv.Itoa(uid)
 	_, err := cache.commonRedis.R("SETEX", key, UserCacheVerifiedEmailCodeExpire, code)
 	if err != nil {
@@ -28,7 +28,7 @@ func (cache *verifiedCache) SetUserVerifiedEmailCode(uid int, code string) error
 }
 
 // 获取邮箱验证码缓存
-func (cache *verifiedCache) GetUserVerifiedEmailCode(uid int) (string, error) {
+func (cache *verifiedCache) GetUserVerifiedEmailCode(uid uint) (string, error) {
 	key := UserCacheVerifiedEmailCodePrefix + strconv.Itoa(uid)
 	code, err := redis.String(cache.commonRedis.R("GET", key))
 	if err != nil {
@@ -39,7 +39,7 @@ func (cache *verifiedCache) GetUserVerifiedEmailCode(uid int) (string, error) {
 }
 
 // 保存手机验证码缓存
-func (cache *verifiedCache) SetUserVerifiedPhoneCode(uid int, code string) error {
+func (cache *verifiedCache) SetUserVerifiedPhoneCode(uid uint, code string) error {
 	key := UserCacheVerifiedPhoneCodePrefix + strconv.Itoa(uid)
 	_, err := cache.commonRedis.R("SETEX", key, UserCacheVerifiedPhoneCodeExpire, code)
 	if err != nil {
@@ -50,7 +50,7 @@ func (cache *verifiedCache) SetUserVerifiedPhoneCode(uid int, code string) error
 }
 
 // 获取手机验证码缓存
-func (cache *verifiedCache) GetUserVerifiedPhoneCode(uid int) (string, error) {
+func (cache *verifiedCache) GetUserVerifiedPhoneCode(uid uint) (string, error) {
 	key := UserCacheVerifiedPhoneCodePrefix + strconv.Itoa(uid)
 	code, err := redis.String(cache.commonRedis.R("GET", key))
 	if err != nil {

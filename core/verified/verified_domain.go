@@ -21,7 +21,7 @@ func NewMailDomain() *VerifiedDomain {
 }
 
 // 生成邮箱验证码
-func (domain *VerifiedDomain) genEmailVerifiedCode(uid int) (string, error) {
+func (domain *VerifiedDomain) genEmailVerifiedCode(uid uint) (string, error) {
 	// 生成6位随机字符串
 	code := global.RandomString(6)
 
@@ -34,8 +34,8 @@ func (domain *VerifiedDomain) genEmailVerifiedCode(uid int) (string, error) {
 	return code, nil
 }
 
-// 构造邮件
-func (domain *VerifiedDomain) sendEmail(email string, code string) error {
+// 构造验证邮箱邮件
+func (domain *VerifiedDomain) sendValidateEmail(email string, code string) error {
 	from := "no-reply@" + global.Config().ServerName
 	subject := "Verified Email Code From " + global.Config().AppName
 	body := fmt.Sprintf("Verified Code: %s", code)
@@ -43,8 +43,8 @@ func (domain *VerifiedDomain) sendEmail(email string, code string) error {
 }
 
 // 发送验证码到邮箱
-func (domain *VerifiedDomain) SendEmail(dto services.SendEmailForVerifiedDTO) error {
-	uid := int(dto.ID)
+func (domain *VerifiedDomain) SendValidateEmail(dto services.SendEmailForVerifiedDTO) error {
+	uid := dto.ID
 	email := dto.Email
 
 	code, err := domain.genEmailVerifiedCode(uid)
@@ -53,11 +53,11 @@ func (domain *VerifiedDomain) SendEmail(dto services.SendEmailForVerifiedDTO) er
 	}
 
 	// 发送邮件
-	return domain.sendEmail(email, code)
+	return domain.sendValidateEmail(email, code)
 }
 
 // 验证邮箱
-func (domain *VerifiedDomain) VerifiedEmail(uid int, vcode string) (bool, error) {
+func (domain *VerifiedDomain) VerifiedEmail(uid uint, vcode string) (bool, error) {
 
 	// 缓存取出
 	code, err := domain.cache.GetUserVerifiedEmailCode(uid)
@@ -74,7 +74,7 @@ func (domain *VerifiedDomain) VerifiedEmail(uid int, vcode string) (bool, error)
 }
 
 // 生成手机短信验证码
-func (domain *VerifiedDomain) genPhoneVerifiedCode(uid int) (string, error) {
+func (domain *VerifiedDomain) genPhoneVerifiedCode(uid uint) (string, error) {
 	var err error
 	var code string
 	// 生成4位随机数字
@@ -93,14 +93,14 @@ func (domain *VerifiedDomain) genPhoneVerifiedCode(uid int) (string, error) {
 }
 
 // 构造短信
-func (domain *VerifiedDomain) sendPhoneMsg(phone string, code string) error {
+func (domain *VerifiedDomain) sendValidatePhoneMsg(phone string, code string) error {
 
 	return nil
 }
 
 // 发送验证码到手机短信
-func (domain *VerifiedDomain) SendPhoneMsg(dto services.SendPhoneVerifiedCodeDTO) error {
-	uid := int(dto.ID)
+func (domain *VerifiedDomain) SendValidatePhoneMsg(dto services.SendPhoneVerifiedCodeDTO) error {
+	uid := dto.ID
 	phone := strconv.Itoa(int(dto.Phone))
 
 	code, err := domain.genPhoneVerifiedCode(uid)
@@ -108,11 +108,11 @@ func (domain *VerifiedDomain) SendPhoneMsg(dto services.SendPhoneVerifiedCodeDTO
 		return err
 	}
 
-	return domain.sendPhoneMsg(phone, code)
+	return domain.sendValidatePhoneMsg(phone, code)
 }
 
 // 验证手机短信
-func (domain *VerifiedDomain) VerifiedPhone(uid int, vcode string) (bool, error) {
+func (domain *VerifiedDomain) VerifiedPhone(uid uint, vcode string) (bool, error) {
 	// 缓存取出
 	code, err := domain.cache.GetUserVerifiedPhoneCode(uid)
 	if err != nil {
