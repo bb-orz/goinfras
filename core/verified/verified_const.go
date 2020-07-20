@@ -8,4 +8,8 @@ const (
 
 	UserCacheVerifiedPhoneCodePrefix = "user.verified.phone.code." // 缓存手机验证码key前缀
 	UserCacheVerifiedPhoneCodeExpire = 60 * 5                      // 缓存手机验证码超时时间
+
+	UserCacheForgetPasswordVerifiedCodePrefix = "user.verified.forgetpassword.code." // 忘记密码重置验证码前缀
+	UserCacheForgetPasswordVerifiedCodeExpire = 60 * 5                               // 忘记密码重置超时时间
+
 )

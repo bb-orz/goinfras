@@ -46,9 +46,11 @@ func (service *MailService) SendEmailForgetPassword(dto services.SendEmailForget
 		return err
 	}
 
+	if err := service.verifiedDomain.SendResetPasswordCodeEmail(dto); err != nil {
+		return WrapError(err, ErrorFormatServiceCache)
+	}
+
 	return nil
 }
 
 // TODO 其他邮件相关服务...
-
-// 发送忘记密码重置邮件

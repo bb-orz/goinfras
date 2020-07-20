@@ -38,7 +38,7 @@ func (service *UserService) CreateUserWithEmail(dto services.CreateUserWithEmail
 	}
 
 	// 验证用户邮箱是否存在
-	if isExist, err := service.userDomain.IsEmailExist(dto); err != nil {
+	if isExist, err := service.userDomain.IsEmailExist(dto.Email); err != nil {
 		return nil, WrapError(err, ErrorFormatServiceStorage)
 	} else if isExist {
 		return nil, WrapError(err, ErrorFormatServiceCheckInfo, "该用户已经存在!")
@@ -59,7 +59,7 @@ func (service *UserService) CreateUserWithPhone(dto services.CreateUserWithPhone
 	}
 
 	// 验证用户邮箱是否存在
-	if isExist, err := service.userDomain.IsPhoneExist(dto); err != nil {
+	if isExist, err := service.userDomain.IsPhoneExist(dto.Phone); err != nil {
 		return nil, WrapError(err, ErrorFormatServiceStorage)
 	} else if isExist {
 		return nil, WrapError(err, ErrorFormatServiceCheckInfo, "该用户已经存在!")
@@ -85,15 +85,14 @@ func (service *UserService) AuthWithEmailPassword(dto services.AuthWithEmailPass
 	if userDTO, err = service.userDomain.GetUserInfoByEmail(dto.Email); err != nil {
 		return false, WrapError(err, ErrorFormatServiceStorage)
 	}
-
 	if userDTO == nil {
 		return false, WrapError(err, ErrorFormatServiceCheckInfo, "该用户不存在!")
-	} else if global.ValidatePassword(dto.Password, userDTO.Salt, userDTO.Password) {
-		// 校验密码成功
-		return true, nil
+	} else if !global.ValidatePassword(dto.Password, userDTO.Salt, userDTO.Password) {
+		// 校验密码失败
+		return false, WrapError(err, ErrorFormatServiceCheckInfo, "密码错误!")
 	}
 
-	return false, nil
+	return true, nil
 }
 
 // 手机账号登录鉴权
@@ -113,12 +112,12 @@ func (service *UserService) AuthWithPhonePassword(dto services.AuthWithPhonePass
 
 	if userDTO == nil {
 		return false, WrapError(err, ErrorFormatServiceCheckInfo, "该用户不存在!")
-	} else if global.ValidatePassword(dto.Password, userDTO.Salt, userDTO.Password) {
-		// 校验密码成功
-		return true, nil
+	} else if !global.ValidatePassword(dto.Password, userDTO.Salt, userDTO.Password) {
+		// 校验密码失败
+		return false, WrapError(err, ErrorFormatServiceCheckInfo, "密码错误!")
 	}
 
-	return false, nil
+	return true, nil
 }
 
 // 获取用户信息
@@ -129,7 +128,7 @@ func (service *UserService) GetUserInfo(dto services.GetUserInfoDTO) (*services.
 	}
 
 	// 查找用户信息
-	userDTO, err := service.userDomain.GetUserInfo(int(dto.ID))
+	userDTO, err := service.userDomain.GetUserInfo(dto.ID)
 	if err != nil {
 		return nil, WrapError(err, ErrorFormatServiceStorage)
 	}
@@ -210,26 +209,69 @@ func (service *UserService) SetStatus(dto services.SetStatusDTO) (int, error) {
 }
 
 // 修改用户密码
-func (service *UserService) ChangePassword(dto services.ChangePassword) error {
+func (service *UserService) ChangePassword(dto services.ChangePasswordDTO) error {
+	var userDTO *services.UserDTO
+	var err error
 	// 校验传输参数
-	if err := validate.ValidateStruct(dto); err != nil {
+	if err = validate.ValidateStruct(dto); err != nil {
 		return WrapError(err, ErrorFormatServiceDTOValidate)
+	}
+
+	// 查找账号是否存在
+	userDTO, err = service.userDomain.GetUserInfo(dto.ID)
+	if err != nil {
+		return WrapError(err, ErrorFormatServiceStorage)
+	}
+
+	// 校验旧密码
+	if userDTO == nil {
+		return WrapError(err, ErrorFormatServiceCheckInfo, "该用户不存在!")
+	} else if !global.ValidatePassword(dto.Old, userDTO.Salt, userDTO.Password) {
+		// 校验旧密码失败
+		return WrapError(err, ErrorFormatServiceCheckInfo, "旧密码错误!")
+	}
+
+	// 设置新密码
+	if err = service.userDomain.ReSetPassword(dto.ID, dto.New); err != nil {
+		return WrapError(err, ErrorFormatServiceStorage)
 	}
 
 	return nil
 }
 
-// 重设密码
-func (service *UserService) ReSetPassword(dto services.ReSetPassword) error {
+// 忘记密码重设
+func (service *UserService) ForgetPassword(dto services.ForgetPasswordDTO) error {
+
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
 		return WrapError(err, ErrorFormatServiceDTOValidate)
 	}
+
+	// 查找账号是否存在
+	b, err := service.userDomain.IsUserExist(dto.ID)
+	if err != nil {
+		return WrapError(err, ErrorFormatServiceStorage)
+	}
+	if !b {
+		return WrapError(err, ErrorFormatServiceCheckInfo, "该用户不存在!")
+	}
+
+	// 校验Code
+	b, err = service.verifiedDomain.VerifiedResetPasswordCode(dto.ID, dto.Code)
+	if err != nil {
+		return WrapError(err, ErrorFormatServiceCache)
+	}
+
+	if !b {
+		return WrapError(nil, ErrorFormatServiceCheckInfo, "重置密码校验码错误，请重试！")
+	}
+
 	return nil
 
 }
 
 // 上传用户头像
 func (service *UserService) UploadAvatar() error {
-	panic("implement me")
+
+	return nil
 }

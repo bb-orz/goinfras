@@ -56,13 +56,68 @@ func (domain *VerifiedDomain) SendValidateEmail(dto services.SendEmailForVerifie
 	return domain.sendValidateEmail(email, code)
 }
 
-// 验证邮箱
+// 注册时验证邮箱
 func (domain *VerifiedDomain) VerifiedEmail(uid uint, vcode string) (bool, error) {
 
 	// 缓存取出
 	code, err := domain.cache.GetUserVerifiedEmailCode(uid)
 	if err != nil {
 		return false, core.WrapError(err, core.ErrorFormatDomainCacheGet, DomainName, "GetUserVerifiedEmailCode")
+	}
+
+	// 校验
+	if vcode == code {
+		return true, nil
+	}
+
+	return false, nil
+}
+
+// 生成邮箱验证码
+func (domain *VerifiedDomain) genResetPasswordCode(uid uint) (string, error) {
+	// 生成6位随机字符串
+	code := global.RandomString(40)
+
+	// 保存到缓存
+	err := domain.cache.SetForgetPasswordVerifiedCode(uid, code)
+	if err != nil {
+		return "", core.WrapError(err, core.ErrorFormatDomainCacheSet, DomainName, "SetForgetPasswordVerifiedCode")
+	}
+
+	return code, nil
+}
+
+// 构造验证邮箱邮件
+func (domain *VerifiedDomain) sendResetPasswordCodeEmail(email string, code string) error {
+	from := "no-reply@" + global.Config().ServerName
+	subject := "Reset Password Code From " + global.Config().AppName
+	// TODO 设置重置密码的链接
+	url := global.Config().ServerName + "?code=" + code
+	body := fmt.Sprintf("Click This link To Reset Your Password: %s", url)
+	return mail.SendSimpleMail(from, email, subject, body)
+}
+
+// 发送验证码到邮箱
+func (domain *VerifiedDomain) SendResetPasswordCodeEmail(dto services.SendEmailForgetPasswordDTO) error {
+	uid := dto.ID
+	email := dto.Email
+
+	code, err := domain.genResetPasswordCode(uid)
+	if err != nil {
+		return err
+	}
+
+	// 发送邮件
+	return domain.sendResetPasswordCodeEmail(email, code)
+}
+
+// 忘记密码时验证重置码
+func (domain *VerifiedDomain) VerifiedResetPasswordCode(uid uint, vcode string) (bool, error) {
+
+	// 缓存取出
+	code, err := domain.cache.GetForgetPasswordVerifiedCode(uid)
+	if err != nil {
+		return false, core.WrapError(err, core.ErrorFormatDomainCacheGet, DomainName, "GetForgetPasswordVerifiedCode")
 	}
 
 	// 校验
@@ -111,7 +166,7 @@ func (domain *VerifiedDomain) SendValidatePhoneMsg(dto services.SendPhoneVerifie
 	return domain.sendValidatePhoneMsg(phone, code)
 }
 
-// 验证手机短信
+// 注册时验证手机短信
 func (domain *VerifiedDomain) VerifiedPhone(uid uint, vcode string) (bool, error) {
 	// 缓存取出
 	code, err := domain.cache.GetUserVerifiedPhoneCode(uid)

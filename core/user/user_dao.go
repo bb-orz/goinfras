@@ -19,6 +19,26 @@ func NewUserDao() *UserDAO {
 }
 
 // 查找用户名是否存在
+func (d *UserDAO) IsUserIdExist(uid uint) (bool, error) {
+	var count int
+	err := ormStore.GormDb().Where(uid).First(&User{}).Count(&count).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			// 无记录
+			return false, nil
+		} else {
+			// 除无记录外的错误返回
+			return false, err
+		}
+	}
+
+	if count > 0 {
+		return true, nil
+	}
+	return false, nil
+}
+
+// 查找用户名是否存在
 func (d *UserDAO) IsUserNameExist(name string) (bool, error) {
 	return d.isExist(&User{Name: name})
 }
@@ -64,7 +84,7 @@ func (d *UserDAO) Create(model User) (*User, error) {
 }
 
 // 通过Id查找
-func (d *UserDAO) GetById(id int) (*User, error) {
+func (d *UserDAO) GetById(id uint) (*User, error) {
 	var user User
 	err := ormStore.GormDb().Where(id).First(&user).Error
 	if err != nil {
@@ -114,6 +134,7 @@ func (d *UserDAO) GetByPhone(phone string) (*User, error) {
 	return &user, nil
 }
 
+// 设置单个用户信息字段
 func (d *UserDAO) SetUserInfo(uid uint, field string, value interface{}) error {
 	if err := ormStore.GormDb().Model(&User{}).Where("id", uid).Update(field, value).Error; err != nil {
 		return err
@@ -121,8 +142,33 @@ func (d *UserDAO) SetUserInfo(uid uint, field string, value interface{}) error {
 	return nil
 }
 
+// 设置多个用户信息字段
 func (d *UserDAO) SetUserInfos(uid uint, dto services.SetUserInfoDTO) error {
 	if err := ormStore.GormDb().Model(&User{}).Where("id", uid).Updates(dto).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// 设置用户密码和盐值
+func (d *UserDAO) SetPasswordAndSalt(uid uint, passHash, salt string) error {
+	if err := ormStore.GormDb().Model(&User{}).Where("id", uid).Update(&User{Password: passHash, Salt: salt}).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// 真删除
+func (d *UserDAO) DeleteById(uid uint) error {
+	if err := ormStore.GormDb().Model(&User{}).Delete(uid).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// 伪删除
+func (d *UserDAO) SetDeletedAtById(uid uint) error {
+	if err := ormStore.GormDb().Set("gorm:delete_option", "OPTION (OPTIMIZE FOR UNKNOWN)").Delete(uid).Error; err != nil {
 		return err
 	}
 	return nil

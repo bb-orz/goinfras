@@ -30,33 +30,25 @@ func WrapError(err error, messageFormat string, msgArgs ...interface{}) CError {
 // 领域层错误信息格式
 const (
 	// 领域层SQL数据库执行错误信息格式
-	ErrorFormatDomainSqlQuery  = "[Domain Error]: SQL Query  Error | [LEVEL]:%s | [CALL]:dao.%s"
-	ErrorFormatDomainSqlInsert = "[Domain Error]: SQL Insert Error | [LEVEL]:%s | [CALL]:dao.%s"
-	ErrorFormatDomainSqlUpdate = "[Domain Error]: SQL Update Error | [LEVEL]:%s | [CALL]:dao.%s"
-	ErrorFormatDomainSqlDelete = "[Domain Error]: SQL Delete Error | [LEVEL]:%s | [CALL]:dao.%s"
+	ErrorFormatDomainSqlQuery      = "[Domain Error]: SQL Query  Error | [LEVEL]:%s | [CALL]:dao.%s"     // sql查询错误
+	ErrorFormatDomainSqlInsert     = "[Domain Error]: SQL Insert Error | [LEVEL]:%s | [CALL]:dao.%s"     // sql插入错误
+	ErrorFormatDomainSqlUpdate     = "[Domain Error]: SQL Update Error | [LEVEL]:%s | [CALL]:dao.%s"     // sql更新错误
+	ErrorFormatDomainSqlDelete     = "[Domain Error]: SQL Delete Error | [LEVEL]:%s | [CALL]:dao.%s"     // sql删除错误
+	ErrorFormatDomainSqlShamDelete = "[Domain Error]: SQL ShamDelete Error | [LEVEL]:%s | [CALL]:dao.%s" // sql更新deleted_at字段错误，假删除
 
 	// 领域层缓存执行错误信息格式
-	ErrorFormatDomainCacheSet = "[Domain Error]: Cache Set Error | [LEVEL]:%s | [CALL]:cache.%s"
-	ErrorFormatDomainCacheGet = "[Domain Error]: Cache Get Error | [LEVEL]:%s | [CALL]:cache.%s"
+	ErrorFormatDomainCacheSet = "[Domain Error]: Cache Set Error | [LEVEL]:%s | [CALL]:cache.%s" // 缓存设置错误
+	ErrorFormatDomainCacheGet = "[Domain Error]: Cache Get Error | [LEVEL]:%s | [CALL]:cache.%s" // 缓存获取错误
 
 	// 领域层算法逻辑类错误信息格式
-	ErrorFormatDomainAlgorithm = "[Domain Error]: Algorithm Error | [LEVEL]:%s | [CALL]:%s"
+	ErrorFormatDomainAlgorithm = "[Domain Error]: Algorithm Error | [LEVEL]:%s | [CALL]:%s" // 算法执行错误
 )
 
 // 服务层错误信息格式
 const (
-	// DTO验证错误信息
-	ErrorFormatServiceDTOValidate = "[Service Error]: Validate DTO Error"
-
-	// 信息检查相关错误
-	ErrorFormatServiceCheckInfo = "[Service Error]: Check Info Error | [Info]:%s"
-
-	// 存储相关错误
-	ErrorFormatServiceStorage = "[Service Error]: Storage Data Error"
-
-	// 存储相关错误
-	ErrorFormatServiceCache = "[Service Error]: Cache Data Error"
-
-	// 业务逻辑相关错误
-	ErrorFormatServiceBusinesslogic = "[Service Error]: Business Logic Error | [Info]:%s"
+	ErrorFormatServiceDTOValidate   = "[Service Error]: Validate DTO Error"               // DTO验证错误信息
+	ErrorFormatServiceCheckInfo     = "[Service Error]: Check Info Error | [Info]:%s"     // 信息检查相关错误
+	ErrorFormatServiceStorage       = "[Service Error]: Storage Data Error"               // 存储相关错误
+	ErrorFormatServiceCache         = "[Service Error]: Cache Data Error"                 // 存储相关错误
+	ErrorFormatServiceBusinesslogic = "[Service Error]: Business Logic Error | [Info]:%s" // 业务逻辑相关错误
 )

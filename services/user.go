@@ -32,8 +32,8 @@ type IUserService interface {
 	ValidateEmail(dto ValidateEmailDTO) (bool, error) // 绑定邮箱，验证邮箱链接
 	ValidatePhone(dto ValidatePhoneDTO) (bool, error) // 绑定手机，验证短信验证码
 	SetStatus(dto SetStatusDTO) (int, error)          // 设置用户状态
-	ChangePassword(dto ChangePassword) error          // 更改用户密码
-	ReSetPassword(dto ReSetPassword) error            // 重设密码
+	ChangePassword(dto ChangePasswordDTO) error       // 更改用户密码
+	ForgetPassword(dto ForgetPasswordDTO) error       // 忘记密码重设
 	UploadAvatar() error                              // 上传头像
 }
 
@@ -114,14 +114,16 @@ type ValidatePhoneDTO struct {
 	VerifiedCode string `validate:"required,numeric"`
 }
 
-type ChangePassword struct {
-	old   string
-	new   string
-	reNew string
+type ChangePasswordDTO struct {
+	ID    uint   `validate:"required,numeric"`
+	Old   string `validate:"required,alphanumunicode"`
+	New   string `validate:"required,alphanumunicode"`
+	ReNew string `validate:"required,alphanumunicode"`
 }
 
-type ReSetPassword struct {
-	code  string // 允许重设密码的key值，服务端生成后被发往邮箱，用户点击过来后接收
-	new   string
-	reNew string
+type ForgetPasswordDTO struct {
+	ID    uint   `validate:"required,numeric"`
+	Code  string `validate:"required,alphanum"` // 允许重设密码的key值，服务端生成后被发往邮箱，用户点击过来后接收
+	New   string `validate:"required,alphanumunicode"`
+	ReNew string `validate:"required,alphanumunicode"`
 }
