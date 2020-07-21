@@ -12,7 +12,7 @@ User 领域层：实现用户相关具体业务逻辑
 封装领域层的错误信息并返回给调用者
 */
 type UserDomain struct {
-	dao   *UserDAO
+	dao   *userDAO
 	cache *userCache
 }
 

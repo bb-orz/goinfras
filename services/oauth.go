@@ -16,7 +16,19 @@ func SetOAuthService(service IOAuthService) {
 }
 
 type IOAuthService interface {
-	QQLogin(accessCode string)     // qq三方登录
-	WeixinLogin(accessCode string) // 微信三方登录
-	WeiboLogin(accessCode string)  // 微博三方登录
+	QQOAuth(dto QQLoginDTO) (string, error)         // qq三方登录
+	WeixinOAuth(dto WeixinLoginDTO) (string, error) // 微信三方登录
+	WeiboOAuth(dto WeiboLoginDTO) (string, error)   // 微博三方登录
+}
+
+type QQLoginDTO struct {
+	accessCode string
+}
+
+type WeixinLoginDTO struct {
+	accessCode string
+}
+
+type WeiboLoginDTO struct {
+	accessCode string
 }

@@ -4,6 +4,7 @@ import (
 	"GoWebScaffold/core/user"
 	"GoWebScaffold/core/verified"
 	"GoWebScaffold/infras/global"
+	"GoWebScaffold/infras/jwt"
 	"GoWebScaffold/infras/validate"
 	"GoWebScaffold/services"
 	"sync"
@@ -73,33 +74,40 @@ func (service *UserService) CreateUserWithPhone(dto services.CreateUserWithPhone
 }
 
 // 邮箱账号登录鉴权
-func (service *UserService) AuthWithEmailPassword(dto services.AuthWithEmailPasswordDTO) (bool, error) {
+func (service *UserService) EmailAuth(dto services.AuthWithEmailPasswordDTO) (string, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
-		return false, WrapError(err, ErrorFormatServiceDTOValidate)
+		return "", WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
 	var userDTO *services.UserDTO
 	var err error
 	// 查找邮件账号是否存在
 	if userDTO, err = service.userDomain.GetUserInfoByEmail(dto.Email); err != nil {
-		return false, WrapError(err, ErrorFormatServiceStorage)
+		return "", WrapError(err, ErrorFormatServiceStorage)
 	}
 	if userDTO == nil {
-		return false, WrapError(err, ErrorFormatServiceCheckInfo, "该用户不存在!")
+		return "", WrapError(err, ErrorFormatServiceCheckInfo, "该用户不存在!")
 	} else if !global.ValidatePassword(dto.Password, userDTO.Salt, userDTO.Password) {
 		// 校验密码失败
-		return false, WrapError(err, ErrorFormatServiceCheckInfo, "密码错误!")
+		return "", WrapError(err, ErrorFormatServiceCheckInfo, "密码错误!")
 	}
 
-	return true, nil
+	// JWT token
+	token, err := jwt.TokenUtils().Encode(jwt.UserClaim{
+		Id:     userDTO.No,
+		Name:   userDTO.Name,
+		Avatar: userDTO.Avatar,
+	})
+
+	return token, nil
 }
 
 // 手机账号登录鉴权
-func (service *UserService) AuthWithPhonePassword(dto services.AuthWithPhonePasswordDTO) (bool, error) {
+func (service *UserService) PhoneAuth(dto services.AuthWithPhonePasswordDTO) (string, error) {
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
-		return false, WrapError(err, ErrorFormatServiceDTOValidate)
+		return "", WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
 	var userDTO *services.UserDTO
@@ -107,17 +115,24 @@ func (service *UserService) AuthWithPhonePassword(dto services.AuthWithPhonePass
 	// 查找手机账号是否存在
 	userDTO, err = service.userDomain.GetUserInfoByPhone(dto.Phone)
 	if err != nil {
-		return false, WrapError(err, ErrorFormatServiceStorage)
+		return "", WrapError(err, ErrorFormatServiceStorage)
 	}
 
 	if userDTO == nil {
-		return false, WrapError(err, ErrorFormatServiceCheckInfo, "该用户不存在!")
+		return "", WrapError(err, ErrorFormatServiceCheckInfo, "该用户不存在!")
 	} else if !global.ValidatePassword(dto.Password, userDTO.Salt, userDTO.Password) {
 		// 校验密码失败
-		return false, WrapError(err, ErrorFormatServiceCheckInfo, "密码错误!")
+		return "", WrapError(err, ErrorFormatServiceCheckInfo, "密码错误!")
 	}
 
-	return true, nil
+	// JWT token
+	token, err := jwt.TokenUtils().Encode(jwt.UserClaim{
+		Id:     userDTO.No,
+		Name:   userDTO.Name,
+		Avatar: userDTO.Avatar,
+	})
+
+	return token, nil
 }
 
 // 获取用户信息

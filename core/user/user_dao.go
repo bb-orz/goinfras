@@ -11,15 +11,15 @@ import (
 直接返回error和执行结果
 */
 
-type UserDAO struct{}
+type userDAO struct{}
 
-func NewUserDao() *UserDAO {
-	dao := new(UserDAO)
+func NewUserDao() *userDAO {
+	dao := new(userDAO)
 	return dao
 }
 
 // 查找用户名是否存在
-func (d *UserDAO) IsUserIdExist(uid uint) (bool, error) {
+func (d *userDAO) IsUserIdExist(uid uint) (bool, error) {
 	var count int
 	err := ormStore.GormDb().Where(uid).First(&User{}).Count(&count).Error
 	if err != nil {
@@ -39,23 +39,23 @@ func (d *UserDAO) IsUserIdExist(uid uint) (bool, error) {
 }
 
 // 查找用户名是否存在
-func (d *UserDAO) IsUserNameExist(name string) (bool, error) {
+func (d *userDAO) IsUserNameExist(name string) (bool, error) {
 	return d.isExist(&User{Name: name})
 }
 
 // 查找邮箱是否存在
-func (d *UserDAO) IsEmailExist(email string) (bool, error) {
+func (d *userDAO) IsEmailExist(email string) (bool, error) {
 
 	return d.isExist(&User{Email: email})
 }
 
 // 查找手机号码是否存在
-func (d *UserDAO) IsPhoneExist(phone string) (bool, error) {
+func (d *userDAO) IsPhoneExist(phone string) (bool, error) {
 
 	return d.isExist(&User{Phone: phone})
 }
 
-func (d *UserDAO) isExist(where *User) (bool, error) {
+func (d *userDAO) isExist(where *User) (bool, error) {
 	var count int
 	err := ormStore.GormDb().Where(where).First(&User{}).Count(&count).Error
 	if err != nil {
@@ -75,7 +75,7 @@ func (d *UserDAO) isExist(where *User) (bool, error) {
 }
 
 // 插入
-func (d *UserDAO) Create(model User) (*User, error) {
+func (d *userDAO) Create(model User) (*User, error) {
 	if err := ormStore.GormDb().Create(&model).Error; err != nil {
 		return nil, err
 	}
@@ -84,7 +84,7 @@ func (d *UserDAO) Create(model User) (*User, error) {
 }
 
 // 通过Id查找
-func (d *UserDAO) GetById(id uint) (*User, error) {
+func (d *userDAO) GetById(id uint) (*User, error) {
 	var user User
 	err := ormStore.GormDb().Where(id).First(&user).Error
 	if err != nil {
@@ -101,7 +101,7 @@ func (d *UserDAO) GetById(id uint) (*User, error) {
 }
 
 // 通过邮箱账号查找
-func (d *UserDAO) GetByEmail(email string) (*User, error) {
+func (d *userDAO) GetByEmail(email string) (*User, error) {
 	var user User
 	err := ormStore.GormDb().Where(&User{Email: email}).First(&user).Error
 	if err != nil {
@@ -118,7 +118,7 @@ func (d *UserDAO) GetByEmail(email string) (*User, error) {
 }
 
 // 通过邮箱账号查找
-func (d *UserDAO) GetByPhone(phone string) (*User, error) {
+func (d *userDAO) GetByPhone(phone string) (*User, error) {
 	var user User
 	err := ormStore.GormDb().Where(&User{Phone: phone}).First(&user).Error
 	if err != nil {
@@ -135,7 +135,7 @@ func (d *UserDAO) GetByPhone(phone string) (*User, error) {
 }
 
 // 设置单个用户信息字段
-func (d *UserDAO) SetUserInfo(uid uint, field string, value interface{}) error {
+func (d *userDAO) SetUserInfo(uid uint, field string, value interface{}) error {
 	if err := ormStore.GormDb().Model(&User{}).Where("id", uid).Update(field, value).Error; err != nil {
 		return err
 	}
@@ -143,7 +143,7 @@ func (d *UserDAO) SetUserInfo(uid uint, field string, value interface{}) error {
 }
 
 // 设置多个用户信息字段
-func (d *UserDAO) SetUserInfos(uid uint, dto services.SetUserInfoDTO) error {
+func (d *userDAO) SetUserInfos(uid uint, dto services.SetUserInfoDTO) error {
 	if err := ormStore.GormDb().Model(&User{}).Where("id", uid).Updates(dto).Error; err != nil {
 		return err
 	}
@@ -151,7 +151,7 @@ func (d *UserDAO) SetUserInfos(uid uint, dto services.SetUserInfoDTO) error {
 }
 
 // 设置用户密码和盐值
-func (d *UserDAO) SetPasswordAndSalt(uid uint, passHash, salt string) error {
+func (d *userDAO) SetPasswordAndSalt(uid uint, passHash, salt string) error {
 	if err := ormStore.GormDb().Model(&User{}).Where("id", uid).Update(&User{Password: passHash, Salt: salt}).Error; err != nil {
 		return err
 	}
@@ -159,7 +159,7 @@ func (d *UserDAO) SetPasswordAndSalt(uid uint, passHash, salt string) error {
 }
 
 // 真删除
-func (d *UserDAO) DeleteById(uid uint) error {
+func (d *userDAO) DeleteById(uid uint) error {
 	if err := ormStore.GormDb().Model(&User{}).Delete(uid).Error; err != nil {
 		return err
 	}
@@ -167,7 +167,7 @@ func (d *UserDAO) DeleteById(uid uint) error {
 }
 
 // 伪删除
-func (d *UserDAO) SetDeletedAtById(uid uint) error {
+func (d *userDAO) SetDeletedAtById(uid uint) error {
 	if err := ormStore.GormDb().Set("gorm:delete_option", "OPTION (OPTIMIZE FOR UNKNOWN)").Delete(uid).Error; err != nil {
 		return err
 	}

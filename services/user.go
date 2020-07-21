@@ -24,8 +24,8 @@ type IUserService interface {
 	CreateUserWithEmail(dto CreateUserWithEmailDTO) (*UserDTO, error) // 创建邮箱账号
 	CreateUserWithPhone(dto CreateUserWithPhoneDTO) (*UserDTO, error) // 创建手机号码账号
 
-	AuthWithEmailPassword(dto AuthWithEmailPasswordDTO) (bool, error)
-	AuthWithPhonePassword(dto AuthWithPhonePasswordDTO) (bool, error)
+	EmailAuth(dto AuthWithEmailPasswordDTO) (string, error)
+	PhoneAuth(dto AuthWithPhonePasswordDTO) (string, error)
 
 	GetUserInfo(dto GetUserInfoDTO) (*UserDTO, error) // 获取用户信息
 	SetUserInfos(dto SetUserInfoDTO) error            // 修改用户信息
