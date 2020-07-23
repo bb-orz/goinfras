@@ -2,6 +2,7 @@ package oauth
 
 import (
 	"encoding/json"
+	"errors"
 	"github.com/imroc/req"
 	"strings"
 )
@@ -26,24 +27,24 @@ func NewQQOauthManager(cfg *OAuthConfig) *QQOAuthManager {
 
 func (oauth *QQOAuthManager) Authorize(code string) OAuthResult {
 	// 先获取accessToken
-	accessTokenResp := oauth.getAccessToken(code)
-	if accessTokenResp == nil {
-		return OAuthResult{false, nil}
+	accessTokenResp, err := oauth.getAccessToken(code)
+	if err != nil || accessTokenResp == nil {
+		return OAuthResult{false, nil, err}
 	}
 	accessToken := accessTokenResp["access_token"].(string)
 
 	// 再获取openId和unionId
 	openidResp := oauth.getOpenId(accessToken)
-	if _, ok := openidResp["error"]; ok {
-		return OAuthResult{false, nil}
+	if e, ok := openidResp["error"]; ok {
+		return OAuthResult{false, nil, errors.New(e.(string))}
 	}
 	openId := openidResp["openid"].(string)
 	unionId := openidResp["unionid"].(string)
 
 	// 最后获取用户信息
-	userInfoMap := oauth.getUserInfo(accessToken, openId)
-	if userInfoMap == nil {
-		return OAuthResult{false, nil}
+	userInfoMap, err := oauth.getUserInfo(accessToken, openId)
+	if err != nil || userInfoMap == nil {
+		return OAuthResult{false, nil, err}
 	}
 	var genderN int
 	gender, ok := userInfoMap["gender"]
@@ -62,10 +63,10 @@ func (oauth *QQOAuthManager) Authorize(code string) OAuthResult {
 		userInfoMap["nickname"].(string),
 		genderN,
 		userInfoMap["figureurl_qq_1"].(string),
-	}}
+	}, nil}
 }
 
-func (oauth *QQOAuthManager) getAccessToken(code string) map[string]interface{} {
+func (oauth *QQOAuthManager) getAccessToken(code string) (map[string]interface{}, error) {
 
 	params := req.Param{
 		"grant_type":    "authorization_code",
@@ -76,16 +77,16 @@ func (oauth *QQOAuthManager) getAccessToken(code string) map[string]interface{} 
 	}
 	resp, err := req.Get(qqGetAccessTokenUrl, params)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 	response := resp.String()
 
 	if strings.Contains(response, "callback") {
-		return nil
+		return nil, errors.New("jsonp with callback!")
 	}
 	temp := strings.Split(response, "&")[0]
 	accessToken := strings.Split(temp, "=")[1]
-	return map[string]interface{}{"access_token": accessToken}
+	return map[string]interface{}{"access_token": accessToken}, nil
 }
 
 func (oauth *QQOAuthManager) getOpenId(accessToken string) map[string]interface{} {
@@ -129,7 +130,7 @@ func (oauth *QQOAuthManager) getOpenId(accessToken string) map[string]interface{
 "is_yellow_year_vip":"1"
 }
 */
-func (oauth *QQOAuthManager) getUserInfo(accessToken string, openId string) map[string]interface{} {
+func (oauth *QQOAuthManager) getUserInfo(accessToken string, openId string) (map[string]interface{}, error) {
 	params := req.Param{
 		"access_token":       accessToken,
 		"oauth_consumer_key": oauth.appKey,
@@ -138,13 +139,13 @@ func (oauth *QQOAuthManager) getUserInfo(accessToken string, openId string) map[
 
 	resp, err := req.Get(qqGetUserInfoUrl, params)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
 	var response map[string]interface{}
 	err = resp.ToJSON(&response)
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	return response
+	return response, nil
 }

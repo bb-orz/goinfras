@@ -18,7 +18,7 @@ type UserDomain struct {
 
 func NewUserDomain() *UserDomain {
 	domain := new(UserDomain)
-	domain.dao = NewUserDao()
+	domain.dao = NewUserDAO()
 	domain.cache = NewUserCache()
 	return domain
 }

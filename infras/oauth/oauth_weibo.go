@@ -1,6 +1,7 @@
 package oauth
 
 import (
+	"errors"
 	"github.com/imroc/req"
 )
 
@@ -22,28 +23,27 @@ func NewWeiboOAuthManager(cfg *OAuthConfig) *WeiboOAuthManager {
 }
 
 func (oauth *WeiboOAuthManager) Authorize(code string) OAuthResult {
-	accessTokenResp := oauth.getAccessToken(code)
-	if accessTokenResp == nil {
-		return OAuthResult{false, nil}
+	accessTokenResp, err := oauth.getAccessToken(code)
+	if err != nil || accessTokenResp == nil {
+		return OAuthResult{false, nil, err}
 	}
 
 	// 获取accessToken接口返回错误码
-	if _, ok := accessTokenResp["error_code"]; ok {
-		return OAuthResult{false, nil}
-
+	if e, ok := accessTokenResp["error_code"]; ok {
+		return OAuthResult{false, nil, errors.New(e.(string))}
 	}
 
 	openId := accessTokenResp["uid"].(string)
 	accessToken := accessTokenResp["access_token"].(string)
-	userInfoMap := oauth.getUserInfo(accessToken, openId)
+	userInfoMap, err := oauth.getUserInfo(accessToken, openId)
 
-	if userInfoMap == nil {
-		return OAuthResult{false, nil}
+	if err != nil || userInfoMap == nil {
+		return OAuthResult{false, nil, err}
 	}
 
 	// 获取用户信息接口返回错误码
-	if _, ok := userInfoMap["error_code"]; ok {
-		return OAuthResult{false, nil}
+	if e, ok := userInfoMap["error_code"]; ok {
+		return OAuthResult{false, nil, errors.New(e.(string))}
 
 	}
 
@@ -65,10 +65,10 @@ func (oauth *WeiboOAuthManager) Authorize(code string) OAuthResult {
 		userInfoMap["screen_name"].(string),
 		genderN,
 		userInfoMap["profile_image_url"].(string),
-	}}
+	}, nil}
 }
 
-func (oauth *WeiboOAuthManager) getAccessToken(code string) map[string]interface{} {
+func (oauth *WeiboOAuthManager) getAccessToken(code string) (map[string]interface{}, error) {
 	params := req.Param{
 		"client_id":     oauth.appKey,
 		"client_secret": oauth.appSecret,
@@ -78,15 +78,15 @@ func (oauth *WeiboOAuthManager) getAccessToken(code string) map[string]interface
 	}
 	resp, err := req.Get(weiboGetAccessTokenUrl, params)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
 	var response map[string]interface{}
 	err = resp.ToJSON(&response)
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	return response
+	return response, nil
 }
 
 /*
@@ -127,20 +127,20 @@ bi_followers_count	int	用户的互粉数
 lang	string	用户当前的语言版本，zh-cn：简体中文，zh-tw：繁体中文，en：英语
 
 */
-func (oauth *WeiboOAuthManager) getUserInfo(accessToken string, openId string) map[string]interface{} {
+func (oauth *WeiboOAuthManager) getUserInfo(accessToken string, openId string) (map[string]interface{}, error) {
 	params := req.Param{
 		"access_token": accessToken,
 		"uid":          openId,
 	}
 	resp, err := req.Get(weiboGetUserInfoUrl, params)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 
 	var response map[string]interface{}
 	err = resp.ToJSON(&response)
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	return response
+	return response, nil
 }

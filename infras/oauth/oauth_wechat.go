@@ -1,6 +1,7 @@
 package oauth
 
 import (
+	"errors"
 	"github.com/imroc/req"
 )
 
@@ -22,28 +23,28 @@ func NewWechatOAuthManager(cfg *OAuthConfig) *WechatOAuthManager {
 }
 
 func (oauth *WechatOAuthManager) Authorize(code string) OAuthResult {
-	accessTokenResp := oauth.getAccessToken(code)
-	if accessTokenResp == nil {
-		return OAuthResult{false, nil}
+	accessTokenResp, err := oauth.getAccessToken(code)
+	if err != nil || accessTokenResp == nil {
+		return OAuthResult{false, nil, err}
 	}
 
 	// 获取accessToken接口返回错误码
-	_, ok := accessTokenResp["errcode"]
+	e, ok := accessTokenResp["errcode"]
 	if ok {
-		return OAuthResult{false, nil}
+		return OAuthResult{false, nil, errors.New(e.(string))}
 	}
 
 	openId := accessTokenResp["openid"].(string)
 	accessToken := accessTokenResp["access_token"].(string)
-	userInfoMap := oauth.getUserInfo(accessToken, openId)
-	if userInfoMap == nil {
-		return OAuthResult{false, nil}
+	userInfoMap, err := oauth.getUserInfo(accessToken, openId)
+	if err != nil || userInfoMap == nil {
+		return OAuthResult{false, nil, err}
 	}
 
 	// 获取用户信息接口返回错误码
-	_, ok = userInfoMap["errcode"]
+	e, ok = userInfoMap["errcode"]
 	if ok {
-		return OAuthResult{false, nil}
+		return OAuthResult{false, nil, errors.New(e.(string))}
 	}
 
 	return OAuthResult{true, &OAuthUserInfo{
@@ -53,10 +54,10 @@ func (oauth *WechatOAuthManager) Authorize(code string) OAuthResult {
 		userInfoMap["nickname"].(string),
 		userInfoMap["sex"].(int),
 		userInfoMap["figureurl_qq_1"].(string),
-	}}
+	}, nil}
 }
 
-func (oauth *WechatOAuthManager) getAccessToken(code string) map[string]interface{} {
+func (oauth *WechatOAuthManager) getAccessToken(code string) (map[string]interface{}, error) {
 	params := req.Param{
 		"appid":      oauth.appKey,
 		"secret":     oauth.appSecret,
@@ -65,14 +66,14 @@ func (oauth *WechatOAuthManager) getAccessToken(code string) map[string]interfac
 	}
 	resp, err := req.Get(wechatGetAccessTokenUrl, params)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 	var response map[string]interface{}
 	err = resp.ToJSON(&response)
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	return response
+	return response, nil
 
 }
 
@@ -94,20 +95,19 @@ func (oauth *WechatOAuthManager) getAccessToken(code string) map[string]interfac
 
 }
 */
-func (oauth *WechatOAuthManager) getUserInfo(accessToken string, openId string) map[string]interface{} {
+func (oauth *WechatOAuthManager) getUserInfo(accessToken string, openId string) (map[string]interface{}, error) {
 	params := req.Param{
 		"access_token": accessToken,
 		"openid":       openId,
 	}
 	resp, err := req.Get(wechatGetUserInfoUrl, params)
 	if err != nil {
-		return nil
+		return nil, err
 	}
 	var response map[string]interface{}
 	err = resp.ToJSON(&response)
 	if err != nil {
-		return nil
+		return nil, err
 	}
-	return response
-
+	return response, nil
 }

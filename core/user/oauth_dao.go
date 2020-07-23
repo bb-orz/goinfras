@@ -5,9 +5,15 @@ package user
 直接返回error和执行结果
 */
 
-type oauthDao struct{}
+type oauthDAO struct{}
 
-func NewOauthDao() *oauthDao {
-	dao := new(oauthDao)
+func NewOauthDAO() *oauthDAO {
+	dao := new(oauthDAO)
 	return dao
+}
+
+// 通过openid unionid 获取oauth user 信息
+func (d *oauthDAO) GetOauthInfoByOpenId(openId, unionId string) (*UserOauth, error) {
+
+	return nil, nil
 }

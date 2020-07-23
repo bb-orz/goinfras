@@ -11,6 +11,7 @@ type OAuth interface {
 type OAuthResult struct {
 	Result   bool
 	UserInfo *OAuthUserInfo
+	Error    error
 }
 
 // OAuth授权获取的用户信息

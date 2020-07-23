@@ -13,7 +13,7 @@ import (
 
 type userDAO struct{}
 
-func NewUserDao() *userDAO {
+func NewUserDAO() *userDAO {
 	dao := new(userDAO)
 	return dao
 }

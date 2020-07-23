@@ -40,15 +40,21 @@ const (
 	ErrorFormatDomainCacheSet = "[Domain Error]: Cache Set Error | [LEVEL]:%s | [CALL]:cache.%s" // 缓存设置错误
 	ErrorFormatDomainCacheGet = "[Domain Error]: Cache Get Error | [LEVEL]:%s | [CALL]:cache.%s" // 缓存获取错误
 
+	// 网络请求报错
+	ErrorFormatDomainNetRequest = "[Domain Error]: Network Request Error | [Request]:%s"   // 网络请求相关错误
+	ErrorFormatDomainThirdPart  = "[Domain Error]: Network ThirdPart Error | [Request]:%s" // 第三方接口错误相关错误
+
 	// 领域层算法逻辑类错误信息格式
 	ErrorFormatDomainAlgorithm = "[Domain Error]: Algorithm Error | [LEVEL]:%s | [CALL]:%s" // 算法执行错误
 )
 
 // 服务层错误信息格式
 const (
-	ErrorFormatServiceDTOValidate   = "[Service Error]: Validate DTO Error"               // DTO验证错误信息
-	ErrorFormatServiceCheckInfo     = "[Service Error]: Check Info Error | [Info]:%s"     // 信息检查相关错误
-	ErrorFormatServiceStorage       = "[Service Error]: Storage Data Error"               // 存储相关错误
-	ErrorFormatServiceCache         = "[Service Error]: Cache Data Error"                 // 存储相关错误
-	ErrorFormatServiceBusinesslogic = "[Service Error]: Business Logic Error | [Info]:%s" // 业务逻辑相关错误
+	ErrorFormatServiceDTOValidate   = "[Service Error]: Validate DTO Error"                   // DTO验证错误信息
+	ErrorFormatServiceCheckInfo     = "[Service Error]: Check Info Error | [Info]:%s"         // 信息检查相关错误
+	ErrorFormatServiceStorage       = "[Service Error]: Storage Data Error"                   // 存储相关错误
+	ErrorFormatServiceCache         = "[Service Error]: Cache Data Error"                     // 存储相关错误
+	ErrorFormatServiceBusinesslogic = "[Service Error]: Business Logic Error | [Info]:%s"     // 业务逻辑相关错误
+	ErrorFormatServiceNetRequest    = "[Service Error]: Network Request Error | [Request]:%s" // 网络请求相关错误
+
 )
