@@ -1,5 +1,7 @@
 package user
 
+import "GoWebScaffold/services"
+
 /*
 数据访问层，实现具体数据持久化操作
 直接返回error和执行结果
@@ -13,7 +15,7 @@ func NewOauthDAO() *oauthDAO {
 }
 
 // 通过openid unionid 获取oauth user 信息
-func (d *oauthDAO) GetOauthInfoByOpenId(openId, unionId string) (*UserOauth, error) {
+func (d *oauthDAO) GetOauthInfoByOpenId(openId, unionId string) (*services.OauthInfoDTO, error) {
 
 	return nil, nil
 }

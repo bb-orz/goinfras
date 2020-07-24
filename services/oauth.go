@@ -1,6 +1,8 @@
 package services
 
-import "GoWebScaffold/infras"
+import (
+	"GoWebScaffold/infras"
+)
 
 /* 定义三方登录模块的服务层方法，并定义数据传输对象DTO*/
 
@@ -31,4 +33,14 @@ type WechatLoginDTO struct {
 
 type WeiboLoginDTO struct {
 	AccessCode string
+}
+
+type OauthInfoDTO struct {
+	Platform    uint8
+	AccessToken string
+	OpenId      string
+	UnionId     string
+	NickName    string
+	Gender      uint8
+	Avatar      string
 }
