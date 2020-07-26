@@ -102,10 +102,12 @@ func (domain *UserDomain) CreateUserForPhone(dto services.CreateUserWithPhoneDTO
 	return userDTO, nil
 }
 
-// 第三方账号创建用户
-func (domain *UserDomain) CreateUserForOauth(name, avatar string, gander uint) (*services.UserDTO, error) {
+// Oauth三方账号绑定创建用户
+func (domain *UserDomain) CreateUserOauthBinding(dto *services.OauthInfoDTO) (*services.UserDTO, error) {
+	// TODO 事务
+	// 插入用户信息
 	userModel := User{}
-	userModel.Name = name
+	userModel.Name = dto.NickName
 	userModel.No = domain.generateUserNo()
 	userModel.Status = UserStatusNotVerified // 初始创建时未验证状态
 	var user *User
@@ -113,8 +115,19 @@ func (domain *UserDomain) CreateUserForOauth(name, avatar string, gander uint) (
 	if user, err = domain.dao.Create(userModel); err != nil {
 		return nil, core.WrapError(err, core.ErrorFormatDomainSqlInsert, DomainName, "Create")
 	}
+
+	// 插入oauth绑定信息
+	userOauthModle := UserOauth{}
+
 	userDTO := user.ToDTO()
 	return userDTO, nil
+
+}
+
+// 查找Oauth三方注册账号是否存在
+func (domain *UserDomain) GetOauthUserBinding(platform uint, openId, unionId string) (*services.OauthInfoDTO, error) {
+
+	return nil, nil
 }
 
 func (domain *UserDomain) GetUserInfo(uid uint) (*services.UserDTO, error) {

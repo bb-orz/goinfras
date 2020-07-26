@@ -3,7 +3,6 @@ package user
 import (
 	"GoWebScaffold/core"
 	"GoWebScaffold/infras/oauth"
-	"GoWebScaffold/services"
 )
 
 /*
@@ -53,16 +52,4 @@ func (domain *OauthDomain) GetWeiboOauthUserInfo(accessCode string) (*oauth.OAut
 	}
 
 	return result.UserInfo, nil
-}
-
-// 查找Oauth三方注册账号是否存在
-func (domain *OauthDomain) GetOauthUserBinding(platform uint, openId, unionId string) (*services.OauthInfoDTO, error) {
-
-	return nil, nil
-}
-
-// 创建Oauth三方账号绑定
-func (domain *OauthDomain) CreateOauthUserBinding(platform uint) {
-	userOauthModle := UserOauth{}
-
 }

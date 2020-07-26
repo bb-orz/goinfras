@@ -4,7 +4,6 @@ import (
 	"GoWebScaffold/core/user"
 	"GoWebScaffold/infras/validate"
 	"GoWebScaffold/services"
-	"fmt"
 	"sync"
 )
 
@@ -20,6 +19,12 @@ func init() {
 		services.SetOAuthService(oauthService)
 	})
 }
+
+const (
+	QQOauthPlatform = iota
+	WechatOauthPlatform
+	WeiboOauthPlatform
+)
 
 type OauthService struct {
 	userDomain  *user.UserDomain
@@ -38,16 +43,15 @@ func (service *OauthService) QQOAuth(dto services.QQLoginDTO) (string, error) {
 		return "", WrapError(err, ErrorFormatServiceNetRequest, "GetQQUserInfo")
 	}
 
-	fmt.Printf(authInfo.NickName)
-
 	// oauth domain: 使用OpenId UnionId查找user oauth表查看用户是否存在
-	oauthInfo, err := service.oauthDomain.GetOauthUserBinding(user.QQOauthPlatform, authInfo.OpenId, authInfo.UnionId)
+	oauthInfo, err := service.userDomain.GetOauthUserBinding(QQOauthPlatform, authInfo.OpenId, authInfo.UnionId)
 	if err != nil {
 		return "", WrapError(err, ErrorFormatServiceStorage, "IsOauthUserExist")
 	}
 
 	// 如不存在进入创建用户流程,否则进登录流程
 	if oauthInfo != nil {
+		// 事务
 
 	} else {
 

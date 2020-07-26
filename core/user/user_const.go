@@ -8,9 +8,3 @@ const (
 	UserStatusDeactivation        // 已停用 2
 
 )
-
-const (
-	QQOauthPlatform = iota
-	WechatOauthPlatform
-	WeiboOauthPlatform
-)
