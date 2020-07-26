@@ -33,7 +33,7 @@ func (service *OauthService) QQOAuth(dto services.QQLoginDTO) (string, error) {
 	}
 
 	// oauth domain：使用qq回调授权码code开始鉴权流程并获取QQ用户信息
-	authInfo, err := service.oauthDomain.GetQQUserInfo(dto.AccessCode)
+	authInfo, err := service.oauthDomain.GetQQOauthUserInfo(dto.AccessCode)
 	if err != nil {
 		return "", WrapError(err, ErrorFormatServiceNetRequest, "GetQQUserInfo")
 	}
@@ -41,15 +41,15 @@ func (service *OauthService) QQOAuth(dto services.QQLoginDTO) (string, error) {
 	fmt.Printf(authInfo.NickName)
 
 	// oauth domain: 使用OpenId UnionId查找user oauth表查看用户是否存在
-	oauthInfo, err := service.oauthDomain.GetOauthUser(authInfo.OpenId, authInfo.UnionId)
+	oauthInfo, err := service.oauthDomain.GetOauthUserBinding(user.QQOauthPlatform, authInfo.OpenId, authInfo.UnionId)
 	if err != nil {
 		return "", WrapError(err, ErrorFormatServiceStorage, "IsOauthUserExist")
 	}
 
+	// 如不存在进入创建用户流程,否则进登录流程
 	if oauthInfo != nil {
-		// 如存在进入登录流程
+
 	} else {
-		// 如不存在进入创建用户流程
 
 	}
 

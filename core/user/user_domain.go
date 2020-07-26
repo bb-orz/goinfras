@@ -102,6 +102,21 @@ func (domain *UserDomain) CreateUserForPhone(dto services.CreateUserWithPhoneDTO
 	return userDTO, nil
 }
 
+// 第三方账号创建用户
+func (domain *UserDomain) CreateUserForOauth(name, avatar string, gander uint) (*services.UserDTO, error) {
+	userModel := User{}
+	userModel.Name = name
+	userModel.No = domain.generateUserNo()
+	userModel.Status = UserStatusNotVerified // 初始创建时未验证状态
+	var user *User
+	var err error
+	if user, err = domain.dao.Create(userModel); err != nil {
+		return nil, core.WrapError(err, core.ErrorFormatDomainSqlInsert, DomainName, "Create")
+	}
+	userDTO := user.ToDTO()
+	return userDTO, nil
+}
+
 func (domain *UserDomain) GetUserInfo(uid uint) (*services.UserDTO, error) {
 	var user *User
 	var err error

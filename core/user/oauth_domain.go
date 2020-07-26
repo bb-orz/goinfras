@@ -23,7 +23,7 @@ func NewOauthDomain() *OauthDomain {
 }
 
 // 通过accessCode获取qq user info
-func (domain *OauthDomain) GetQQUserInfo(accessCode string) (*oauth.OAuthUserInfo, error) {
+func (domain *OauthDomain) GetQQOauthUserInfo(accessCode string) (*oauth.OAuthUserInfo, error) {
 	result := oauth.OAuthManager().QQ.Authorize(accessCode)
 
 	if result.Error != nil || !result.Result {
@@ -34,7 +34,7 @@ func (domain *OauthDomain) GetQQUserInfo(accessCode string) (*oauth.OAuthUserInf
 }
 
 // 通过accessCode获取wechat user info
-func (domain *OauthDomain) GetWechatUserInfo(accessCode string) (*oauth.OAuthUserInfo, error) {
+func (domain *OauthDomain) GetWechatOauthUserInfo(accessCode string) (*oauth.OAuthUserInfo, error) {
 	result := oauth.OAuthManager().Wechat.Authorize(accessCode)
 
 	if result.Error != nil || !result.Result {
@@ -45,7 +45,7 @@ func (domain *OauthDomain) GetWechatUserInfo(accessCode string) (*oauth.OAuthUse
 }
 
 // 通过accessCode获取weibo user info
-func (domain *OauthDomain) GetWeiboUserInfo(accessCode string) (*oauth.OAuthUserInfo, error) {
+func (domain *OauthDomain) GetWeiboOauthUserInfo(accessCode string) (*oauth.OAuthUserInfo, error) {
 	result := oauth.OAuthManager().Weibo.Authorize(accessCode)
 
 	if result.Error != nil || !result.Result {
@@ -56,7 +56,13 @@ func (domain *OauthDomain) GetWeiboUserInfo(accessCode string) (*oauth.OAuthUser
 }
 
 // 查找Oauth三方注册账号是否存在
-func (domain *OauthDomain) GetOauthUser(openId, unionId string) (*services.OauthInfoDTO, error) {
+func (domain *OauthDomain) GetOauthUserBinding(platform uint, openId, unionId string) (*services.OauthInfoDTO, error) {
 
 	return nil, nil
+}
+
+// 创建Oauth三方账号绑定
+func (domain *OauthDomain) CreateOauthUserBinding(platform uint) {
+	userOauthModle := UserOauth{}
+
 }
