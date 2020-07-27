@@ -2,6 +2,7 @@ package core
 
 import (
 	"GoWebScaffold/core/user"
+	"GoWebScaffold/infras/jwt"
 	"GoWebScaffold/infras/validate"
 	"GoWebScaffold/services"
 	"sync"
@@ -53,13 +54,17 @@ func (service *OauthService) QQOAuth(dto services.QQLoginDTO) (string, error) {
 	if oauthInfo != nil {
 		// 事务
 
-	} else {
-
 	}
 
 	// 返回jwt
+	// JWT token
+	token, err := jwt.TokenUtils().Encode(jwt.UserClaim{
+		Id:     userDTO.No,
+		Name:   userDTO.Name,
+		Avatar: userDTO.Avatar,
+	})
 
-	return "", nil
+	return token, nil
 }
 
 func (service *OauthService) WechatOAuth(dto services.WechatLoginDTO) (string, error) {

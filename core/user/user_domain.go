@@ -117,7 +117,7 @@ func (domain *UserDomain) CreateUserOauthBinding(dto *services.OauthInfoDTO) (*s
 	}
 
 	// 插入oauth绑定信息
-	userOauthModle := UserOauth{}
+	userOauthModel := UserOauth{}
 
 	userDTO := user.ToDTO()
 	return userDTO, nil
