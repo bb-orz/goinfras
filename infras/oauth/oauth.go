@@ -10,16 +10,16 @@ type OAuth interface {
 // OAuth鉴权结果
 type OAuthResult struct {
 	Result   bool
-	UserInfo *OAuthUserInfo
+	UserInfo *OAuthAccountInfo
 	Error    error
 }
 
-// OAuth授权获取的用户信息
-type OAuthUserInfo struct {
+// OAuth授权获取的第三方账号信息
+type OAuthAccountInfo struct {
 	AccessToken string
 	OpenId      string
 	UnionId     string
 	NickName    string
-	Gender      int
+	Gender      uint
 	AvatarUrl   string
 }

@@ -3,6 +3,7 @@ package user
 import (
 	"GoWebScaffold/core"
 	"GoWebScaffold/infras/global"
+	"GoWebScaffold/infras/oauth"
 	"GoWebScaffold/services"
 	"github.com/segmentio/ksuid"
 )
@@ -103,30 +104,35 @@ func (domain *UserDomain) CreateUserForPhone(dto services.CreateUserWithPhoneDTO
 }
 
 // Oauth三方账号绑定创建用户
-func (domain *UserDomain) CreateUserOauthBinding(dto *services.OauthInfoDTO) (*services.UserDTO, error) {
-	// TODO 事务
+func (domain *UserDomain) CreateUserOauthBinding(platform uint, oauthInfo *oauth.OAuthAccountInfo) (*services.UserOauthInfoDTO, error) {
 	// 插入用户信息
 	userModel := User{}
-	userModel.Name = dto.NickName
+	userModel.Name = oauthInfo.NickName
 	userModel.No = domain.generateUserNo()
 	userModel.Status = UserStatusNotVerified // 初始创建时未验证状态
+	userModel.UserOauths = []UserOauth{
+		{
+			AccessToken: oauthInfo.AccessToken,
+			UnionId:     oauthInfo.UnionId,
+			OpenId:      oauthInfo.OpenId,
+			NickName:    oauthInfo.NickName,
+			Avatar:      oauthInfo.AvatarUrl,
+			Gender:      oauthInfo.Gender,
+			Platform:    platform,
+		},
+	}
 	var user *User
 	var err error
 	if user, err = domain.dao.Create(userModel); err != nil {
 		return nil, core.WrapError(err, core.ErrorFormatDomainSqlInsert, DomainName, "Create")
 	}
-
-	// 插入oauth绑定信息
-	userOauthModel := UserOauth{}
-
-	userDTO := user.ToDTO()
+	userDTO := user.ToOauthBindingDTO()
 	return userDTO, nil
-
 }
 
 // 查找Oauth三方注册账号是否存在
-func (domain *UserDomain) GetOauthUserBinding(platform uint, openId, unionId string) (*services.OauthInfoDTO, error) {
-
+func (domain *UserDomain) GetUserOauthBinding(platform uint, openId, unionId string) (*services.UserOauthInfoDTO, error) {
+	// TODO 获取整个关联的用户信息和三方平台绑定信息
 	return nil, nil
 }
 

@@ -1,10 +1,12 @@
 package core
 
 import (
+	"GoWebScaffold/core/oauth2"
 	"GoWebScaffold/core/user"
 	"GoWebScaffold/core/verified"
 	"GoWebScaffold/infras/global"
 	"GoWebScaffold/infras/jwt"
+	"GoWebScaffold/infras/oauth"
 	"GoWebScaffold/infras/validate"
 	"GoWebScaffold/services"
 	"sync"
@@ -28,6 +30,7 @@ func init() {
 
 type UserService struct {
 	userDomain     *user.UserDomain
+	oauthDomain    *oauth2.OauthDomain
 	verifiedDomain *verified.VerifiedDomain
 }
 
@@ -133,6 +136,91 @@ func (service *UserService) PhoneAuth(dto services.AuthWithPhonePasswordDTO) (st
 	})
 
 	return token, nil
+}
+
+// qq oauth 鉴权
+func (service *UserService) QQOAuth(dto services.QQLoginDTO) (string, error) {
+	var err error
+	var token string
+	var qqOauthAccountInfo *oauth.OAuthAccountInfo
+	var findUserBindingDTO *services.UserOauthInfoDTO
+	var oauthBindingInfo *services.UserOauthInfoDTO
+
+	// 校验传输参数
+	if err := validate.ValidateStruct(dto); err != nil {
+		return "", WrapError(err, ErrorFormatServiceDTOValidate)
+	}
+
+	// oauth domain：使用qq回调授权码code开始鉴权流程并获取QQ用户信息
+	qqOauthAccountInfo, err = service.oauthDomain.GetQQOauthUserInfo(dto.AccessCode)
+	if err != nil {
+		return "", WrapError(err, ErrorFormatServiceNetRequest, "GetQQUserInfo")
+	}
+
+	// oauth domain: 使用OpenId UnionId查找user oauth表查看用户是否存在
+	findUserBindingDTO, err = service.userDomain.GetUserOauthBinding(user.QQOauthPlatform, qqOauthAccountInfo.OpenId, qqOauthAccountInfo.UnionId)
+	if err != nil {
+		return "", WrapError(err, ErrorFormatServiceStorage, "IsOauthUserExist")
+	}
+
+	// 如不存在进入创建用户流程,否则进登录流程
+	if findUserBindingDTO == nil {
+		oauthBindingInfo, err = service.userDomain.CreateUserOauthBinding(user.QQOauthPlatform, qqOauthAccountInfo)
+		// JWT token
+		if oauthBindingInfo != nil {
+			token, err = jwt.TokenUtils().Encode(jwt.UserClaim{
+				Id:     oauthBindingInfo.User.No,
+				Name:   oauthBindingInfo.User.Name,
+				Avatar: oauthBindingInfo.User.Avatar,
+			})
+			return token, nil
+		} else {
+			return "", WrapError(err, ErrorFormatServiceStorage, "CreateUserOauthBinding")
+		}
+	}
+
+	token, err = jwt.TokenUtils().Encode(jwt.UserClaim{
+		Id:     findUserBindingDTO.User.No,
+		Name:   findUserBindingDTO.User.Name,
+		Avatar: findUserBindingDTO.User.Avatar,
+	})
+
+}
+
+// wechat Oauth 鉴权
+func (service *UserService) WechatOAuth(dto services.WechatLoginDTO) (string, error) {
+	// 校验传输参数
+	if err := validate.ValidateStruct(dto); err != nil {
+		return "", WrapError(err, ErrorFormatServiceDTOValidate)
+	}
+
+	// oauth domain：使用微信回调授权码code开始鉴权流程并获取微信用户信息
+
+	// oauth domain: 使用OpenId UnionId查找user oauth表查看用户是否存在
+
+	// 不存在进入创建用户流程，存在进入登录流程
+
+	// 返回jwt
+
+	return "", nil
+}
+
+// 微博 Oauth 鉴权
+func (service *UserService) WeiboOAuth(dto services.WeiboLoginDTO) (string, error) {
+	// 校验传输参数
+	if err := validate.ValidateStruct(dto); err != nil {
+		return "", WrapError(err, ErrorFormatServiceDTOValidate)
+	}
+
+	// oauth domain：使用微博回调授权码code开始鉴权流程并获取微博用户信息
+
+	// oauth domain: 使用OpenId UnionId查找user oauth表查看用户是否存在
+
+	// 不存在进入创建用户流程，存在进入登录流程
+
+	// 返回jwt
+
+	return "", nil
 }
 
 // 获取用户信息

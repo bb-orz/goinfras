@@ -79,7 +79,6 @@ func (d *userDAO) Create(model User) (*User, error) {
 	if err := ormStore.GormDb().Create(&model).Error; err != nil {
 		return nil, err
 	}
-
 	return &model, nil
 }
 

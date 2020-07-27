@@ -68,13 +68,51 @@ func (model *User) ToDTO() *services.UserDTO {
 	return &userDTO
 }
 
+func (model *User) ToOauthBindingDTO() *services.UserOauthInfoDTO {
+	userDTO := services.UserOauthInfoDTO{}
+	userDTO.User.Uid = model.ID
+	userDTO.User.No = model.No
+	userDTO.User.Name = model.Name
+	userDTO.User.Age = model.Age
+	userDTO.User.Avatar = model.Avatar
+	userDTO.User.Gender = model.Gender
+	userDTO.User.Email = model.Email
+	userDTO.User.EmailVerified = model.EmailVerified
+	userDTO.User.Phone = model.Phone
+	userDTO.User.PhoneVerified = model.PhoneVerified
+	userDTO.User.Status = int8(model.Status)
+	userDTO.User.Password = model.Password
+	userDTO.User.Salt = model.Salt
+	userDTO.User.CreatedAt = model.CreatedAt
+	userDTO.User.UpdatedAt = model.UpdatedAt
+	userDTO.User.DeletedAt = model.DeletedAt
+
+	for _, item := range model.UserOauths {
+		userDTO.UserOauths = append(userDTO.UserOauths, item.ToDTO())
+	}
+
+	return &userDTO
+}
+
 type UserOauth struct {
 	gorm.Model
-	Platform    uint8  `gorm:"type:tinyint(1)"`
+	Platform    uint   `gorm:"type:tinyint(1)"`
 	AccessToken string `gorm:"type:varchar(64);unique"`
 	OpenId      string `gorm:"type:varchar(20);unique"`
 	UnionId     string `gorm:"type:varchar(20);unique"`
 	NickName    string `gorm:"type:varchar(20)"`
-	Gender      uint8  `gorm:"type:tinyint(1)"`
+	Gender      uint   `gorm:"type:tinyint(1)"`
 	Avatar      string `gorm:"type:varchar(255)"`
+}
+
+func (model *UserOauth) ToDTO() *services.OauthInfoDTO {
+	oauthDTO := services.OauthInfoDTO{}
+	oauthDTO.Platform = model.Platform
+	oauthDTO.OpenId = model.OpenId
+	oauthDTO.UnionId = model.UnionId
+	oauthDTO.AccessToken = model.AccessToken
+	oauthDTO.NickName = model.NickName
+	oauthDTO.Avatar = model.Avatar
+	oauthDTO.Gender = model.Gender
+	return &oauthDTO
 }

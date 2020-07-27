@@ -1,4 +1,4 @@
-package user
+package oauth2
 
 import (
 	"GoWebScaffold/core"
@@ -6,23 +6,17 @@ import (
 )
 
 /*
-Oauth 领域层：实现三方登录相关具体业务逻辑
-封装领域层的错误信息并返回给调用者
+Oauth 领域层：实现第三方平台鉴权相关具体业务逻辑，主要为通过accessCode获取用户在第三方平台账号的信息
 */
-type OauthDomain struct {
-	dao   *oauthDAO
-	cache *oauthCache
-}
+type OauthDomain struct{}
 
 func NewOauthDomain() *OauthDomain {
 	domain := new(OauthDomain)
-	domain.dao = NewOauthDAO()
-	domain.cache = NewOauthCache()
 	return domain
 }
 
 // 通过accessCode获取qq user info
-func (domain *OauthDomain) GetQQOauthUserInfo(accessCode string) (*oauth.OAuthUserInfo, error) {
+func (domain *OauthDomain) GetQQOauthUserInfo(accessCode string) (*oauth.OAuthAccountInfo, error) {
 	result := oauth.OAuthManager().QQ.Authorize(accessCode)
 
 	if result.Error != nil || !result.Result {
@@ -33,7 +27,7 @@ func (domain *OauthDomain) GetQQOauthUserInfo(accessCode string) (*oauth.OAuthUs
 }
 
 // 通过accessCode获取wechat user info
-func (domain *OauthDomain) GetWechatOauthUserInfo(accessCode string) (*oauth.OAuthUserInfo, error) {
+func (domain *OauthDomain) GetWechatOauthUserInfo(accessCode string) (*oauth.OAuthAccountInfo, error) {
 	result := oauth.OAuthManager().Wechat.Authorize(accessCode)
 
 	if result.Error != nil || !result.Result {
@@ -44,7 +38,7 @@ func (domain *OauthDomain) GetWechatOauthUserInfo(accessCode string) (*oauth.OAu
 }
 
 // 通过accessCode获取weibo user info
-func (domain *OauthDomain) GetWeiboOauthUserInfo(accessCode string) (*oauth.OAuthUserInfo, error) {
+func (domain *OauthDomain) GetWeiboOauthUserInfo(accessCode string) (*oauth.OAuthAccountInfo, error) {
 	result := oauth.OAuthManager().Weibo.Authorize(accessCode)
 
 	if result.Error != nil || !result.Result {
