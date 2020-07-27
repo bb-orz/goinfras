@@ -3,6 +3,7 @@ package user
 import (
 	"GoWebScaffold/core"
 	"GoWebScaffold/infras/global"
+	"GoWebScaffold/infras/jwt"
 	"GoWebScaffold/infras/oauth"
 	"GoWebScaffold/services"
 	"github.com/segmentio/ksuid"
@@ -36,6 +37,23 @@ func (domain *UserDomain) encryptPassword(password string) (hashStr, salt string
 	return
 }
 
+// 鉴权后生成token
+func (domain *UserDomain) GenToken(no, name, avatar string) (string, error) {
+	// 生成
+	token, err := jwt.TokenUtils().Encode(jwt.UserClaim{
+		Id:     no,
+		Name:   name,
+		Avatar: avatar,
+	})
+	if err != nil {
+		return "", core.WrapError(err, core.ErrorFormatDomainAlgorithm, DomainName, "jwt.TokenUtils().Encode")
+	}
+
+	// TODO 可以做缓存
+
+	return token, nil
+}
+
 // 查找用户id是否已存在
 func (domain *UserDomain) IsUserExist(uid uint) (bool, error) {
 	if isExist, err := domain.dao.IsUserIdExist(uid); err != nil {
@@ -65,7 +83,6 @@ func (domain *UserDomain) IsPhoneExist(phone string) (bool, error) {
 	} else if isExist {
 		return true, nil
 	}
-
 	return false, nil
 }
 
@@ -104,6 +121,7 @@ func (domain *UserDomain) CreateUserForPhone(dto services.CreateUserWithPhoneDTO
 }
 
 // Oauth三方账号绑定创建用户
+// TODO 待检测
 func (domain *UserDomain) CreateUserOauthBinding(platform uint, oauthInfo *oauth.OAuthAccountInfo) (*services.UserOauthInfoDTO, error) {
 	// 插入用户信息
 	userModel := User{}
@@ -131,8 +149,8 @@ func (domain *UserDomain) CreateUserOauthBinding(platform uint, oauthInfo *oauth
 }
 
 // 查找Oauth三方注册账号是否存在
+// TODO 获取整个关联的用户信息和三方平台绑定信息
 func (domain *UserDomain) GetUserOauthBinding(platform uint, openId, unionId string) (*services.UserOauthInfoDTO, error) {
-	// TODO 获取整个关联的用户信息和三方平台绑定信息
 	return nil, nil
 }
 

@@ -5,7 +5,6 @@ import (
 	"GoWebScaffold/core/user"
 	"GoWebScaffold/core/verified"
 	"GoWebScaffold/infras/global"
-	"GoWebScaffold/infras/jwt"
 	"GoWebScaffold/infras/oauth"
 	"GoWebScaffold/infras/validate"
 	"GoWebScaffold/services"
@@ -29,9 +28,9 @@ func init() {
 }
 
 type UserService struct {
-	userDomain     *user.UserDomain
-	oauthDomain    *oauth2.OauthDomain
-	verifiedDomain *verified.VerifiedDomain
+	userDomain     *user.UserDomain         // 用户操作相关领域逻辑
+	oauthDomain    *oauth2.OauthDomain      // 第三方鉴权相关领域逻辑
+	verifiedDomain *verified.VerifiedDomain // 邮箱、短信验证相关领域逻辑
 }
 
 // 邮箱创建用户账号
@@ -97,11 +96,10 @@ func (service *UserService) EmailAuth(dto services.AuthWithEmailPasswordDTO) (st
 	}
 
 	// JWT token
-	token, err := jwt.TokenUtils().Encode(jwt.UserClaim{
-		Id:     userDTO.No,
-		Name:   userDTO.Name,
-		Avatar: userDTO.Avatar,
-	})
+	token, err := service.userDomain.GenToken(userDTO.No, userDTO.Name, userDTO.Avatar)
+	if err != nil {
+		return "", WrapError(err, ErrorFormatServiceBusinesslogic)
+	}
 
 	return token, nil
 }
@@ -129,12 +127,10 @@ func (service *UserService) PhoneAuth(dto services.AuthWithPhonePasswordDTO) (st
 	}
 
 	// JWT token
-	token, err := jwt.TokenUtils().Encode(jwt.UserClaim{
-		Id:     userDTO.No,
-		Name:   userDTO.Name,
-		Avatar: userDTO.Avatar,
-	})
-
+	token, err := service.userDomain.GenToken(userDTO.No, userDTO.Name, userDTO.Avatar)
+	if err != nil {
+		return "", WrapError(err, ErrorFormatServiceBusinesslogic)
+	}
 	return token, nil
 }
 
@@ -142,9 +138,9 @@ func (service *UserService) PhoneAuth(dto services.AuthWithPhonePasswordDTO) (st
 func (service *UserService) QQOAuth(dto services.QQLoginDTO) (string, error) {
 	var err error
 	var token string
-	var qqOauthAccountInfo *oauth.OAuthAccountInfo
-	var findUserBindingDTO *services.UserOauthInfoDTO
-	var oauthBindingInfo *services.UserOauthInfoDTO
+	var qqOauthAccountInfo *oauth.OAuthAccountInfo    // qq账号鉴权信息
+	var findUserBindingDTO *services.UserOauthInfoDTO // 查找绑定用户
+	var oauthBindingInfo *services.UserOauthInfoDTO   // 创建用户后的信息
 
 	// 校验传输参数
 	if err := validate.ValidateStruct(dto); err != nil {
@@ -168,23 +164,29 @@ func (service *UserService) QQOAuth(dto services.QQLoginDTO) (string, error) {
 		oauthBindingInfo, err = service.userDomain.CreateUserOauthBinding(user.QQOauthPlatform, qqOauthAccountInfo)
 		// JWT token
 		if oauthBindingInfo != nil {
-			token, err = jwt.TokenUtils().Encode(jwt.UserClaim{
-				Id:     oauthBindingInfo.User.No,
-				Name:   oauthBindingInfo.User.Name,
-				Avatar: oauthBindingInfo.User.Avatar,
-			})
+			token, err = service.userDomain.GenToken(
+				oauthBindingInfo.User.No,
+				oauthBindingInfo.User.Name,
+				oauthBindingInfo.User.Avatar)
+			if err != nil {
+				return "", WrapError(err, ErrorFormatServiceBusinesslogic)
+			}
 			return token, nil
 		} else {
 			return "", WrapError(err, ErrorFormatServiceStorage, "CreateUserOauthBinding")
 		}
 	}
 
-	token, err = jwt.TokenUtils().Encode(jwt.UserClaim{
-		Id:     findUserBindingDTO.User.No,
-		Name:   findUserBindingDTO.User.Name,
-		Avatar: findUserBindingDTO.User.Avatar,
-	})
+	// 跳过创建，直接返回token，登录成功
+	token, err = service.userDomain.GenToken(
+		findUserBindingDTO.User.No,
+		findUserBindingDTO.User.Name,
+		findUserBindingDTO.User.Avatar)
+	if err != nil {
+		return "", WrapError(err, ErrorFormatServiceBusinesslogic)
+	}
 
+	return token, nil
 }
 
 // wechat Oauth 鉴权
