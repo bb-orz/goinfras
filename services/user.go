@@ -55,24 +55,13 @@ type UserDTO struct {
 	PhoneVerified bool
 	Password      string
 	Salt          string
-	Status        int8
+	Status        uint
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
 	DeletedAt     *time.Time
 }
 
-type QQLoginDTO struct {
-	AccessCode string
-}
-
-type WechatLoginDTO struct {
-	AccessCode string
-}
-
-type WeiboLoginDTO struct {
-	AccessCode string
-}
-
+// 三方平台授权信息
 type OauthInfoDTO struct {
 	Platform    uint
 	AccessToken string
@@ -83,9 +72,22 @@ type OauthInfoDTO struct {
 	Avatar      string
 }
 
+// 包含三方账号绑定信息的用户信息
 type UserOauthInfoDTO struct {
 	User       UserDTO
 	UserOauths []*OauthInfoDTO
+}
+
+type QQLoginDTO struct {
+	AccessCode string `validate:"required"`
+}
+
+type WechatLoginDTO struct {
+	AccessCode string `validate:"required"`
+}
+
+type WeiboLoginDTO struct {
+	AccessCode string `validate:"required"`
 }
 
 // 创建用户的数据传输对象
