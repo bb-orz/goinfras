@@ -62,7 +62,7 @@ type UserDTO struct {
 }
 
 // 三方平台授权信息
-type OauthInfoDTO struct {
+type OAuthInfoDTO struct {
 	Platform    uint
 	AccessToken string
 	OpenId      string
@@ -73,9 +73,9 @@ type OauthInfoDTO struct {
 }
 
 // 包含三方账号绑定信息的用户信息
-type UserOauthInfoDTO struct {
+type UserOAuthInfoDTO struct {
 	User       UserDTO
-	UserOauths []*OauthInfoDTO
+	UserOAuths []OAuthInfoDTO
 }
 
 type QQLoginDTO struct {

@@ -74,16 +74,30 @@ func (d *userDAO) isExist(where *User) (bool, error) {
 	return false, nil
 }
 
-// 插入
-func (d *userDAO) Create(model User) (*User, error) {
+// 插入单个用户信息
+func (d *userDAO) Create(dto *services.UserDTO) (*services.UserDTO, error) {
+	model := User{}
+	model.FromDTO(dto)
 	if err := ormStore.GormDb().Create(&model).Error; err != nil {
 		return nil, err
 	}
-	return &model, nil
+	userDTO := model.ToDTO()
+	return userDTO, nil
+}
+
+// 插入单个用户信息，三方平台账户
+func (d *userDAO) CreateUserWithOAuth(dto *services.UserOAuthInfoDTO) (*services.UserOAuthInfoDTO, error) {
+	model := User{}
+	model.FromOAuthBindingDTO(dto)
+	if err := ormStore.GormDb().Create(&model).Error; err != nil {
+		return nil, err
+	}
+	userDTO := model.ToOAuthBindingDTO()
+	return userDTO, nil
 }
 
 // 通过Id查找
-func (d *userDAO) GetById(id uint) (*User, error) {
+func (d *userDAO) GetById(id uint) (*services.UserDTO, error) {
 	var user User
 	err := ormStore.GormDb().Where(id).First(&user).Error
 	if err != nil {
@@ -95,12 +109,12 @@ func (d *userDAO) GetById(id uint) (*User, error) {
 			return nil, err
 		}
 	}
-
-	return &user, nil
+	dto := user.ToDTO()
+	return dto, nil
 }
 
 // 通过邮箱账号查找
-func (d *userDAO) GetByEmail(email string) (*User, error) {
+func (d *userDAO) GetByEmail(email string) (*services.UserDTO, error) {
 	var user User
 	err := ormStore.GormDb().Where(&User{Email: email}).First(&user).Error
 	if err != nil {
@@ -113,11 +127,12 @@ func (d *userDAO) GetByEmail(email string) (*User, error) {
 		}
 	}
 
-	return &user, nil
+	dto := user.ToDTO()
+	return dto, nil
 }
 
 // 通过邮箱账号查找
-func (d *userDAO) GetByPhone(phone string) (*User, error) {
+func (d *userDAO) GetByPhone(phone string) (*services.UserDTO, error) {
 	var user User
 	err := ormStore.GormDb().Where(&User{Phone: phone}).First(&user).Error
 	if err != nil {
@@ -129,8 +144,8 @@ func (d *userDAO) GetByPhone(phone string) (*User, error) {
 			return nil, err
 		}
 	}
-
-	return &user, nil
+	dto := user.ToDTO()
+	return dto, nil
 }
 
 // 设置单个用户信息字段
