@@ -61,7 +61,7 @@ type UserDTO struct {
 	DeletedAt     *time.Time
 }
 
-// 三方平台授权信息
+// 第三方平台授权账号信息传输对象
 type OAuthInfoDTO struct {
 	Platform    uint
 	AccessToken string
@@ -72,11 +72,15 @@ type OAuthInfoDTO struct {
 	Avatar      string
 }
 
-// 包含三方账号绑定信息的用户信息
+// 包含第三方账号绑定信息的用户信息传输对象
 type UserOAuthInfoDTO struct {
 	User       UserDTO
 	UserOAuths []OAuthInfoDTO
 }
+
+/*
+以下为服务方法的待校验传输参数对象
+*/
 
 type QQLoginDTO struct {
 	AccessCode string `validate:"required"`
@@ -132,21 +136,25 @@ type SetUserInfoDTO struct {
 	Status int8   `validate:"numeric"`
 }
 
+// 设置用户状态数据传输对象
 type SetStatusDTO struct {
 	ID     uint `validate:"required,numeric"`
 	Status uint `validate:"required,numeric"` // TODO 验证枚举0/1/2
 }
 
+// 验证邮箱数据传输对象
 type ValidateEmailDTO struct {
 	ID           uint   `validate:"required,numeric"`
 	VerifiedCode string `validate:"required,alphanum"`
 }
 
+// 验证手机号码数据传输对象
 type ValidatePhoneDTO struct {
 	ID           uint   `validate:"required,numeric"`
 	VerifiedCode string `validate:"required,numeric"`
 }
 
+// 更改密码数据传输对象
 type ChangePasswordDTO struct {
 	ID    uint   `validate:"required,numeric"`
 	Old   string `validate:"required,alphanumunicode"`
@@ -154,6 +162,7 @@ type ChangePasswordDTO struct {
 	ReNew string `validate:"required,alphanumunicode"`
 }
 
+// 忘记密码数据传输对象
 type ForgetPasswordDTO struct {
 	ID    uint   `validate:"required,numeric"`
 	Code  string `validate:"required,alphanum"` // 允许重设密码的key值，服务端生成后被发往邮箱，用户点击过来后接收

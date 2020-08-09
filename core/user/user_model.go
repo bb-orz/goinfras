@@ -27,6 +27,7 @@ func (User) TableName() string {
 	return "user"
 }
 
+// DTO => Model
 func (model *User) FromDTO(dto *services.UserDTO) {
 	model.ID = dto.Uid
 	model.No = dto.No
@@ -46,6 +47,7 @@ func (model *User) FromDTO(dto *services.UserDTO) {
 	model.DeletedAt = dto.DeletedAt
 }
 
+// Model => DTO
 func (model *User) ToDTO() *services.UserDTO {
 	userDTO := services.UserDTO{}
 	userDTO.Uid = model.ID
@@ -67,6 +69,7 @@ func (model *User) ToDTO() *services.UserDTO {
 	return &userDTO
 }
 
+// DTO => Model
 func (model *User) FromOAuthBindingDTO(dto *services.UserOAuthInfoDTO) {
 	model.ID = dto.User.Uid
 	model.No = dto.User.No
@@ -92,6 +95,7 @@ func (model *User) FromOAuthBindingDTO(dto *services.UserOAuthInfoDTO) {
 	}
 }
 
+// Model => DTO
 func (model *User) ToOAuthBindingDTO() *services.UserOAuthInfoDTO {
 	userDTO := services.UserOAuthInfoDTO{}
 	userDTO.User.Uid = model.ID
@@ -118,6 +122,7 @@ func (model *User) ToOAuthBindingDTO() *services.UserOAuthInfoDTO {
 	return &userDTO
 }
 
+// OAuth 第三方账号关联表
 type UserOAuth struct {
 	gorm.Model
 	Platform    uint   `gorm:"type:tinyint(1)"`
@@ -129,6 +134,18 @@ type UserOAuth struct {
 	Avatar      string `gorm:"type:varchar(255)"`
 }
 
+// DTO => Model
+func (model *UserOAuth) FromDTO(dto services.OAuthInfoDTO) {
+	model.Platform = dto.Platform
+	model.NickName = dto.NickName
+	model.OpenId = dto.OpenId
+	model.UnionId = dto.UnionId
+	model.AccessToken = dto.AccessToken
+	model.Gender = dto.Gender
+	model.Avatar = dto.Avatar
+}
+
+// Model => DTO
 func (model *UserOAuth) ToDTO() services.OAuthInfoDTO {
 	oauthDTO := services.OAuthInfoDTO{}
 	oauthDTO.Platform = model.Platform
@@ -139,14 +156,4 @@ func (model *UserOAuth) ToDTO() services.OAuthInfoDTO {
 	oauthDTO.Avatar = model.Avatar
 	oauthDTO.Gender = model.Gender
 	return oauthDTO
-}
-
-func (model *UserOAuth) FromDTO(dto services.OAuthInfoDTO) {
-	model.Platform = dto.Platform
-	model.NickName = dto.NickName
-	model.OpenId = dto.OpenId
-	model.UnionId = dto.UnionId
-	model.AccessToken = dto.AccessToken
-	model.Gender = dto.Gender
-	model.Avatar = dto.Avatar
 }

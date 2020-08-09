@@ -39,8 +39,10 @@ func (domain *UserDomain) encryptPassword(password string) (hashStr, salt string
 
 // 鉴权后生成token
 func (domain *UserDomain) GenToken(no, name, avatar string) (string, error) {
+	var err error
+	var token string
 	// 生成
-	token, err := jwt.TokenUtils().Encode(jwt.UserClaim{
+	token, err = jwt.TokenUtils().Encode(jwt.UserClaim{
 		Id:     no,
 		Name:   name,
 		Avatar: avatar,
@@ -60,7 +62,10 @@ func (domain *UserDomain) GenToken(no, name, avatar string) (string, error) {
 
 // 查找用户id是否已存在
 func (domain *UserDomain) IsUserExist(uid uint) (bool, error) {
-	if isExist, err := domain.dao.IsUserIdExist(uid); err != nil {
+	var err error
+	var isExist bool
+
+	if isExist, err = domain.dao.IsUserIdExist(uid); err != nil {
 		return false, core.WrapError(err, core.ErrorFormatDomainSqlQuery, DomainName, "IsEmailExist")
 	} else if isExist {
 		return true, nil
@@ -71,7 +76,9 @@ func (domain *UserDomain) IsUserExist(uid uint) (bool, error) {
 
 // 查找邮箱是否已存在
 func (domain *UserDomain) IsEmailExist(email string) (bool, error) {
-	if isExist, err := domain.dao.IsEmailExist(email); err != nil {
+	var err error
+	var isExist bool
+	if isExist, err = domain.dao.IsEmailExist(email); err != nil {
 		return false, core.WrapError(err, core.ErrorFormatDomainSqlQuery, DomainName, "IsEmailExist")
 	} else if isExist {
 		return true, nil
@@ -82,7 +89,9 @@ func (domain *UserDomain) IsEmailExist(email string) (bool, error) {
 
 // 查找手机用户是否已存在
 func (domain *UserDomain) IsPhoneExist(phone string) (bool, error) {
-	if isExist, err := domain.dao.IsPhoneExist(phone); err != nil {
+	var err error
+	var isExist bool
+	if isExist, err = domain.dao.IsPhoneExist(phone); err != nil {
 		return false, core.WrapError(err, core.ErrorFormatDomainSqlQuery, DomainName, "IsPhoneExist")
 	} else if isExist {
 		return true, nil
@@ -92,45 +101,52 @@ func (domain *UserDomain) IsPhoneExist(phone string) (bool, error) {
 
 // 邮箱账号创建用户
 func (domain *UserDomain) CreateUserForEmail(dto services.CreateUserWithEmailDTO) (*services.UserDTO, error) {
-	userDTO := services.UserDTO{}
-	userDTO.Name = dto.Name
-	userDTO.Email = dto.Email
-	userDTO.No = domain.generateUserNo()
-	userDTO.Password, userDTO.Salt = domain.encryptPassword(dto.Password)
-	userDTO.Status = UserStatusNotVerified // 初始创建时未验证状态
-	var user *services.UserDTO
 	var err error
-	if user, err = domain.dao.Create(&userDTO); err != nil {
+	var userDTO *services.UserDTO
+
+	createUserData := services.UserDTO{}
+	createUserData.Name = dto.Name
+	createUserData.Email = dto.Email
+	createUserData.No = domain.generateUserNo()
+	createUserData.Password, createUserData.Salt = domain.encryptPassword(dto.Password)
+	createUserData.Status = UserStatusNotVerified // 初始创建时未验证状态
+
+	if userDTO, err = domain.dao.Create(&createUserData); err != nil {
 		return nil, core.WrapError(err, core.ErrorFormatDomainSqlInsert, DomainName, "Create")
 	}
-	return user, nil
+	return userDTO, nil
 }
 
 // 手机号码创建用户
 func (domain *UserDomain) CreateUserForPhone(dto services.CreateUserWithPhoneDTO) (*services.UserDTO, error) {
-	userDTO := services.UserDTO{}
-	userDTO.Name = dto.Name
-	userDTO.Phone = dto.Phone
-	userDTO.No = domain.generateUserNo()
-	userDTO.Password, userDTO.Salt = domain.encryptPassword(dto.Password)
-	userDTO.Status = UserStatusNotVerified // 初始创建时未验证状态
-	var user *services.UserDTO
 	var err error
-	if user, err = domain.dao.Create(&userDTO); err != nil {
+	var userDTO *services.UserDTO
+
+	createUserData := services.UserDTO{}
+	createUserData.Name = dto.Name
+	createUserData.Phone = dto.Phone
+	createUserData.No = domain.generateUserNo()
+	createUserData.Password, createUserData.Salt = domain.encryptPassword(dto.Password)
+	createUserData.Status = UserStatusNotVerified // 初始创建时未验证状态
+
+	if userDTO, err = domain.dao.Create(&createUserData); err != nil {
 		return nil, core.WrapError(err, core.ErrorFormatDomainSqlInsert, DomainName, "Create")
 	}
-	return user, nil
+	return userDTO, nil
 }
 
 // Oauth三方账号绑定创建用户
 // TODO 待检测
 func (domain *UserDomain) CreateUserOAuthBinding(platform uint, oauthInfo *oauth.OAuthAccountInfo) (*services.UserOAuthInfoDTO, error) {
+	var err error
+	var userOAuthDTO *services.UserOAuthInfoDTO
+
 	// 插入用户信息
-	userDTO := services.UserOAuthInfoDTO{}
-	userDTO.User.Name = oauthInfo.NickName
-	userDTO.User.No = domain.generateUserNo()
-	userDTO.User.Status = UserStatusNotVerified // 初始创建时未验证状态
-	userDTO.UserOAuths = []services.OAuthInfoDTO{
+	createUserData := services.UserOAuthInfoDTO{}
+	createUserData.User.Name = oauthInfo.NickName
+	createUserData.User.No = domain.generateUserNo()
+	createUserData.User.Status = UserStatusNotVerified // 初始创建时未验证状态
+	createUserData.UserOAuths = []services.OAuthInfoDTO{
 		{
 			AccessToken: oauthInfo.AccessToken,
 			UnionId:     oauthInfo.UnionId,
@@ -141,13 +157,12 @@ func (domain *UserDomain) CreateUserOAuthBinding(platform uint, oauthInfo *oauth
 			Platform:    platform,
 		},
 	}
-	var user *services.UserOAuthInfoDTO
-	var err error
-	if user, err = domain.dao.CreateUserWithOAuth(&userDTO); err != nil {
+
+	if userOAuthDTO, err = domain.dao.CreateUserWithOAuth(&createUserData); err != nil {
 		return nil, core.WrapError(err, core.ErrorFormatDomainSqlInsert, DomainName, "Create")
 	}
 
-	return user, nil
+	return userOAuthDTO, nil
 }
 
 // 查找Oauth三方注册账号是否存在
@@ -157,8 +172,8 @@ func (domain *UserDomain) GetUserOauthBinding(platform uint, openId, unionId str
 }
 
 func (domain *UserDomain) GetUserInfo(uid uint) (*services.UserDTO, error) {
-	var userDTO *services.UserDTO
 	var err error
+	var userDTO *services.UserDTO
 	if userDTO, err = domain.dao.GetById(uid); err != nil {
 		return nil, core.WrapError(err, core.ErrorFormatDomainSqlQuery, DomainName, "GetById")
 	}
@@ -166,8 +181,8 @@ func (domain *UserDomain) GetUserInfo(uid uint) (*services.UserDTO, error) {
 }
 
 func (domain *UserDomain) GetUserInfoByEmail(email string) (*services.UserDTO, error) {
-	var userDTO *services.UserDTO
 	var err error
+	var userDTO *services.UserDTO
 	if userDTO, err = domain.dao.GetByEmail(email); err != nil {
 		return nil, core.WrapError(err, core.ErrorFormatDomainSqlQuery, DomainName, "GetByEmail")
 	}
@@ -175,8 +190,8 @@ func (domain *UserDomain) GetUserInfoByEmail(email string) (*services.UserDTO, e
 }
 
 func (domain *UserDomain) GetUserInfoByPhone(phone string) (*services.UserDTO, error) {
-	var userDTO *services.UserDTO
 	var err error
+	var userDTO *services.UserDTO
 	if userDTO, err = domain.dao.GetByPhone(phone); err != nil {
 		return nil, core.WrapError(err, core.ErrorFormatDomainSqlQuery, DomainName, "GetByPhone")
 	}
@@ -185,7 +200,8 @@ func (domain *UserDomain) GetUserInfoByPhone(phone string) (*services.UserDTO, e
 
 // 设置用户状态
 func (domain *UserDomain) SetStatus(uid, status uint) error {
-	if err := domain.dao.SetUserInfo(uid, "status", status); err != nil {
+	var err error
+	if err = domain.dao.SetUserInfo(uid, "status", status); err != nil {
 		return core.WrapError(err, core.ErrorFormatDomainSqlUpdate, DomainName, "SetUserInfo")
 	}
 	return nil
@@ -193,7 +209,8 @@ func (domain *UserDomain) SetStatus(uid, status uint) error {
 
 // 设置单个用户信息
 func (domain *UserDomain) SetUserInfo(uid uint, field string, value interface{}) error {
-	if err := domain.dao.SetUserInfo(uid, field, value); err != nil {
+	var err error
+	if err = domain.dao.SetUserInfo(uid, field, value); err != nil {
 		return core.WrapError(err, core.ErrorFormatDomainSqlUpdate, DomainName, "SetUserInfo")
 	}
 	return nil
@@ -201,7 +218,8 @@ func (domain *UserDomain) SetUserInfo(uid uint, field string, value interface{})
 
 // 设置多个用户信息
 func (domain *UserDomain) SetUserInfos(uid uint, dto services.SetUserInfoDTO) error {
-	if err := domain.dao.SetUserInfos(uid, dto); err != nil {
+	var err error
+	if err = domain.dao.SetUserInfos(uid, dto); err != nil {
 		return core.WrapError(err, core.ErrorFormatDomainSqlUpdate, DomainName, "SetUserInfo")
 	}
 
@@ -210,8 +228,10 @@ func (domain *UserDomain) SetUserInfos(uid uint, dto services.SetUserInfoDTO) er
 
 // 改变密码
 func (domain *UserDomain) ReSetPassword(uid uint, password string) error {
-	hashStr, salt := domain.encryptPassword(password)
-	if err := domain.dao.SetPasswordAndSalt(uid, hashStr, salt); err != nil {
+	var err error
+	var hashStr, salt string
+	hashStr, salt = domain.encryptPassword(password)
+	if err = domain.dao.SetPasswordAndSalt(uid, hashStr, salt); err != nil {
 		return core.WrapError(err, core.ErrorFormatDomainSqlUpdate, DomainName, "SetPasswordAndSalt")
 	}
 	return nil
@@ -219,7 +239,8 @@ func (domain *UserDomain) ReSetPassword(uid uint, password string) error {
 
 // 真删除
 func (domain *UserDomain) DeleteUser(uid uint) error {
-	if err := domain.dao.DeleteById(uid); err != nil {
+	var err error
+	if err = domain.dao.DeleteById(uid); err != nil {
 		return core.WrapError(err, core.ErrorFormatDomainSqlDelete, DomainName, "DeleteById")
 	}
 	return nil
@@ -227,7 +248,8 @@ func (domain *UserDomain) DeleteUser(uid uint) error {
 
 // 伪删除
 func (domain *UserDomain) ShamDeleteUser(uid uint) error {
-	if err := domain.dao.SetDeletedAtById(uid); err != nil {
+	var err error
+	if err = domain.dao.SetDeletedAtById(uid); err != nil {
 		return core.WrapError(err, core.ErrorFormatDomainSqlShamDelete, DomainName, "SetDeletedAtById")
 	}
 	return nil

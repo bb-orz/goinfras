@@ -27,12 +27,13 @@ type MailService struct {
 
 // 发送绑定邮箱验证码到指定邮箱
 func (service *MailService) SendEmailForVerified(dto services.SendEmailForVerifiedDTO) error {
+	var err error
 	// 校验传输参数
-	if err := validate.ValidateStruct(dto); err != nil {
+	if err = validate.ValidateStruct(dto); err != nil {
 		return err
 	}
 
-	if err := service.verifiedDomain.SendValidateEmail(dto); err != nil {
+	if err = service.verifiedDomain.SendValidateEmail(dto); err != nil {
 		return WrapError(err, ErrorFormatServiceCache)
 	}
 
@@ -41,12 +42,13 @@ func (service *MailService) SendEmailForVerified(dto services.SendEmailForVerifi
 
 // 发送忘记密码链接到邮箱
 func (service *MailService) SendEmailForgetPassword(dto services.SendEmailForgetPasswordDTO) error {
+	var err error
 	// 校验传输参数
-	if err := validate.ValidateStruct(dto); err != nil {
+	if err = validate.ValidateStruct(dto); err != nil {
 		return err
 	}
 
-	if err := service.verifiedDomain.SendResetPasswordCodeEmail(dto); err != nil {
+	if err = service.verifiedDomain.SendResetPasswordCodeEmail(dto); err != nil {
 		return WrapError(err, ErrorFormatServiceCache)
 	}
 

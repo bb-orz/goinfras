@@ -17,33 +17,36 @@ func NewOauthDomain() *OauthDomain {
 
 // 通过accessCode获取qq user info
 func (domain *OauthDomain) GetQQOauthUserInfo(accessCode string) (*oauth.OAuthAccountInfo, error) {
-	result := oauth.OAuthManager().QQ.Authorize(accessCode)
+	var oAuthResult oauth.OAuthResult
+	oAuthResult = oauth.OAuthManager().QQ.Authorize(accessCode)
 
-	if result.Error != nil || !result.Result {
-		return nil, core.WrapError(result.Error, core.ErrorFormatDomainThirdPart, "QQ.Authorize")
+	if oAuthResult.Error != nil || !oAuthResult.Result {
+		return nil, core.WrapError(oAuthResult.Error, core.ErrorFormatDomainThirdPart, "QQ.Authorize")
 	}
 
-	return result.UserInfo, nil
+	return oAuthResult.UserInfo, nil
 }
 
 // 通过accessCode获取wechat user info
 func (domain *OauthDomain) GetWechatOauthUserInfo(accessCode string) (*oauth.OAuthAccountInfo, error) {
-	result := oauth.OAuthManager().Wechat.Authorize(accessCode)
+	var oAuthResult oauth.OAuthResult
+	oAuthResult = oauth.OAuthManager().Wechat.Authorize(accessCode)
 
-	if result.Error != nil || !result.Result {
-		return nil, core.WrapError(result.Error, core.ErrorFormatDomainThirdPart, "Wechat.Authorize")
+	if oAuthResult.Error != nil || !oAuthResult.Result {
+		return nil, core.WrapError(oAuthResult.Error, core.ErrorFormatDomainThirdPart, "Wechat.Authorize")
 	}
 
-	return result.UserInfo, nil
+	return oAuthResult.UserInfo, nil
 }
 
 // 通过accessCode获取weibo user info
 func (domain *OauthDomain) GetWeiboOauthUserInfo(accessCode string) (*oauth.OAuthAccountInfo, error) {
-	result := oauth.OAuthManager().Weibo.Authorize(accessCode)
+	var oAuthResult oauth.OAuthResult
+	oAuthResult = oauth.OAuthManager().Weibo.Authorize(accessCode)
 
-	if result.Error != nil || !result.Result {
-		return nil, core.WrapError(result.Error, core.ErrorFormatDomainThirdPart, "Weibo.Authorize")
+	if oAuthResult.Error != nil || !oAuthResult.Result {
+		return nil, core.WrapError(oAuthResult.Error, core.ErrorFormatDomainThirdPart, "Weibo.Authorize")
 	}
 
-	return result.UserInfo, nil
+	return oAuthResult.UserInfo, nil
 }

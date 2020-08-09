@@ -18,8 +18,10 @@ func NewMailCache() *verifiedCache {
 
 // 保存邮箱验证码缓存
 func (cache *verifiedCache) SetForgetPasswordVerifiedCode(uid uint, code string) error {
-	key := UserCacheForgetPasswordVerifiedCodePrefix + strconv.Itoa(int(uid))
-	_, err := cache.commonRedis.R("SETEX", key, UserCacheForgetPasswordVerifiedCodeExpire, code)
+	var err error
+	var key string
+	key = UserCacheForgetPasswordVerifiedCodePrefix + strconv.Itoa(int(uid))
+	_, err = cache.commonRedis.R("SETEX", key, UserCacheForgetPasswordVerifiedCodeExpire, code)
 	if err != nil {
 		return err
 	}
@@ -29,8 +31,11 @@ func (cache *verifiedCache) SetForgetPasswordVerifiedCode(uid uint, code string)
 
 // 获取邮箱验证码缓存
 func (cache *verifiedCache) GetForgetPasswordVerifiedCode(uid uint) (string, error) {
-	key := UserCacheForgetPasswordVerifiedCodePrefix + strconv.Itoa(int(uid))
-	code, err := redis.String(cache.commonRedis.R("GET", key))
+	var err error
+	var key string
+	var code string
+	key = UserCacheForgetPasswordVerifiedCodePrefix + strconv.Itoa(int(uid))
+	code, err = redis.String(cache.commonRedis.R("GET", key))
 	if err != nil {
 		return "", err
 	}
@@ -40,8 +45,10 @@ func (cache *verifiedCache) GetForgetPasswordVerifiedCode(uid uint) (string, err
 
 // 保存邮箱验证码缓存
 func (cache *verifiedCache) SetUserVerifiedEmailCode(uid uint, code string) error {
-	key := UserCacheVerifiedEmailCodePrefix + strconv.Itoa(int(uid))
-	_, err := cache.commonRedis.R("SETEX", key, UserCacheVerifiedEmailCodeExpire, code)
+	var err error
+	var key string
+	key = UserCacheVerifiedEmailCodePrefix + strconv.Itoa(int(uid))
+	_, err = cache.commonRedis.R("SETEX", key, UserCacheVerifiedEmailCodeExpire, code)
 	if err != nil {
 		return err
 	}
@@ -51,8 +58,12 @@ func (cache *verifiedCache) SetUserVerifiedEmailCode(uid uint, code string) erro
 
 // 获取邮箱验证码缓存
 func (cache *verifiedCache) GetUserVerifiedEmailCode(uid uint) (string, error) {
-	key := UserCacheVerifiedEmailCodePrefix + strconv.Itoa(int(uid))
-	code, err := redis.String(cache.commonRedis.R("GET", key))
+	var err error
+	var key string
+	var code string
+
+	key = UserCacheVerifiedEmailCodePrefix + strconv.Itoa(int(uid))
+	code, err = redis.String(cache.commonRedis.R("GET", key))
 	if err != nil {
 		return "", err
 	}
@@ -62,8 +73,11 @@ func (cache *verifiedCache) GetUserVerifiedEmailCode(uid uint) (string, error) {
 
 // 保存手机验证码缓存
 func (cache *verifiedCache) SetUserVerifiedPhoneCode(uid uint, code string) error {
-	key := UserCacheVerifiedPhoneCodePrefix + strconv.Itoa(int(uid))
-	_, err := cache.commonRedis.R("SETEX", key, UserCacheVerifiedPhoneCodeExpire, code)
+	var err error
+	var key string
+
+	key = UserCacheVerifiedPhoneCodePrefix + strconv.Itoa(int(uid))
+	_, err = cache.commonRedis.R("SETEX", key, UserCacheVerifiedPhoneCodeExpire, code)
 	if err != nil {
 		return err
 	}
@@ -73,8 +87,12 @@ func (cache *verifiedCache) SetUserVerifiedPhoneCode(uid uint, code string) erro
 
 // 获取手机验证码缓存
 func (cache *verifiedCache) GetUserVerifiedPhoneCode(uid uint) (string, error) {
-	key := UserCacheVerifiedPhoneCodePrefix + strconv.Itoa(int(uid))
-	code, err := redis.String(cache.commonRedis.R("GET", key))
+	var err error
+	var key string
+	var code string
+
+	key = UserCacheVerifiedPhoneCodePrefix + strconv.Itoa(int(uid))
+	code, err = redis.String(cache.commonRedis.R("GET", key))
 	if err != nil {
 		return "", err
 	}

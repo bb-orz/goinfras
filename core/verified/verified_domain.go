@@ -22,11 +22,13 @@ func NewMailDomain() *VerifiedDomain {
 
 // 生成邮箱验证码
 func (domain *VerifiedDomain) genEmailVerifiedCode(uid uint) (string, error) {
+	var err error
+	var code string
 	// 生成6位随机字符串
-	code := global.RandomString(6)
+	code = global.RandomString(6)
 
 	// 保存到缓存
-	err := domain.cache.SetUserVerifiedEmailCode(uid, code)
+	err = domain.cache.SetUserVerifiedEmailCode(uid, code)
 	if err != nil {
 		return "", core.WrapError(err, core.ErrorFormatDomainCacheSet, DomainName, "SetUserVerifiedEmailCode")
 	}
@@ -44,10 +46,13 @@ func (domain *VerifiedDomain) sendValidateEmail(email string, code string) error
 
 // 发送验证码到邮箱
 func (domain *VerifiedDomain) SendValidateEmail(dto services.SendEmailForVerifiedDTO) error {
+	var err error
+	var code string
+
 	uid := dto.ID
 	email := dto.Email
 
-	code, err := domain.genEmailVerifiedCode(uid)
+	code, err = domain.genEmailVerifiedCode(uid)
 	if err != nil {
 		return err
 	}
@@ -58,9 +63,10 @@ func (domain *VerifiedDomain) SendValidateEmail(dto services.SendEmailForVerifie
 
 // 注册时验证邮箱
 func (domain *VerifiedDomain) VerifiedEmail(uid uint, vcode string) (bool, error) {
-
+	var err error
+	var code string
 	// 缓存取出
-	code, err := domain.cache.GetUserVerifiedEmailCode(uid)
+	code, err = domain.cache.GetUserVerifiedEmailCode(uid)
 	if err != nil {
 		return false, core.WrapError(err, core.ErrorFormatDomainCacheGet, DomainName, "GetUserVerifiedEmailCode")
 	}
@@ -75,11 +81,13 @@ func (domain *VerifiedDomain) VerifiedEmail(uid uint, vcode string) (bool, error
 
 // 生成邮箱验证码
 func (domain *VerifiedDomain) genResetPasswordCode(uid uint) (string, error) {
+	var err error
+	var code string
 	// 生成6位随机字符串
-	code := global.RandomString(40)
+	code = global.RandomString(40)
 
 	// 保存到缓存
-	err := domain.cache.SetForgetPasswordVerifiedCode(uid, code)
+	err = domain.cache.SetForgetPasswordVerifiedCode(uid, code)
 	if err != nil {
 		return "", core.WrapError(err, core.ErrorFormatDomainCacheSet, DomainName, "SetForgetPasswordVerifiedCode")
 	}
@@ -99,10 +107,13 @@ func (domain *VerifiedDomain) sendResetPasswordCodeEmail(email string, code stri
 
 // 发送验证码到邮箱
 func (domain *VerifiedDomain) SendResetPasswordCodeEmail(dto services.SendEmailForgetPasswordDTO) error {
+	var err error
+	var code string
+
 	uid := dto.ID
 	email := dto.Email
 
-	code, err := domain.genResetPasswordCode(uid)
+	code, err = domain.genResetPasswordCode(uid)
 	if err != nil {
 		return err
 	}
@@ -113,9 +124,11 @@ func (domain *VerifiedDomain) SendResetPasswordCodeEmail(dto services.SendEmailF
 
 // 忘记密码时验证重置码
 func (domain *VerifiedDomain) VerifiedResetPasswordCode(uid uint, vcode string) (bool, error) {
+	var err error
+	var code string
 
 	// 缓存取出
-	code, err := domain.cache.GetForgetPasswordVerifiedCode(uid)
+	code, err = domain.cache.GetForgetPasswordVerifiedCode(uid)
 	if err != nil {
 		return false, core.WrapError(err, core.ErrorFormatDomainCacheGet, DomainName, "GetForgetPasswordVerifiedCode")
 	}
@@ -132,6 +145,7 @@ func (domain *VerifiedDomain) VerifiedResetPasswordCode(uid uint, vcode string) 
 func (domain *VerifiedDomain) genPhoneVerifiedCode(uid uint) (string, error) {
 	var err error
 	var code string
+
 	// 生成4位随机数字
 	code, err = global.RandomNumber(4)
 	if err != nil {
@@ -155,10 +169,13 @@ func (domain *VerifiedDomain) sendValidatePhoneMsg(phone string, code string) er
 
 // 发送验证码到手机短信
 func (domain *VerifiedDomain) SendValidatePhoneMsg(dto services.SendPhoneVerifiedCodeDTO) error {
+	var err error
+	var code string
+
 	uid := dto.ID
 	phone := strconv.Itoa(int(dto.Phone))
 
-	code, err := domain.genPhoneVerifiedCode(uid)
+	code, err = domain.genPhoneVerifiedCode(uid)
 	if err != nil {
 		return err
 	}
@@ -168,8 +185,11 @@ func (domain *VerifiedDomain) SendValidatePhoneMsg(dto services.SendPhoneVerifie
 
 // 注册时验证手机短信
 func (domain *VerifiedDomain) VerifiedPhone(uid uint, vcode string) (bool, error) {
+	var err error
+	var code string
+
 	// 缓存取出
-	code, err := domain.cache.GetUserVerifiedPhoneCode(uid)
+	code, err = domain.cache.GetUserVerifiedPhoneCode(uid)
 	if err != nil {
 		return false, err
 	}

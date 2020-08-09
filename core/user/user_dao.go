@@ -20,8 +20,9 @@ func NewUserDAO() *userDAO {
 
 // 查找用户名是否存在
 func (d *userDAO) IsUserIdExist(uid uint) (bool, error) {
+	var err error
 	var count int
-	err := ormStore.GormDb().Where(uid).First(&User{}).Count(&count).Error
+	err = ormStore.GormDb().Where(uid).First(&User{}).Count(&count).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			// 无记录
@@ -56,8 +57,9 @@ func (d *userDAO) IsPhoneExist(phone string) (bool, error) {
 }
 
 func (d *userDAO) isExist(where *User) (bool, error) {
+	var err error
 	var count int
-	err := ormStore.GormDb().Where(where).First(&User{}).Count(&count).Error
+	err = ormStore.GormDb().Where(where).First(&User{}).Count(&count).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			// 无记录
@@ -76,30 +78,37 @@ func (d *userDAO) isExist(where *User) (bool, error) {
 
 // 插入单个用户信息
 func (d *userDAO) Create(dto *services.UserDTO) (*services.UserDTO, error) {
-	model := User{}
-	model.FromDTO(dto)
-	if err := ormStore.GormDb().Create(&model).Error; err != nil {
+	var err error
+	var userDTO *services.UserDTO
+
+	userModel := User{}
+	userModel.FromDTO(dto)
+	if err = ormStore.GormDb().Create(&userModel).Error; err != nil {
 		return nil, err
 	}
-	userDTO := model.ToDTO()
+	userDTO = userModel.ToDTO()
 	return userDTO, nil
 }
 
 // 插入单个用户信息，三方平台账户
 func (d *userDAO) CreateUserWithOAuth(dto *services.UserOAuthInfoDTO) (*services.UserOAuthInfoDTO, error) {
-	model := User{}
-	model.FromOAuthBindingDTO(dto)
-	if err := ormStore.GormDb().Create(&model).Error; err != nil {
+	var err error
+	var userOAuthDTO *services.UserOAuthInfoDTO
+
+	userModel := User{}
+	userModel.FromOAuthBindingDTO(dto)
+	if err = ormStore.GormDb().Create(&userModel).Error; err != nil {
 		return nil, err
 	}
-	userDTO := model.ToOAuthBindingDTO()
-	return userDTO, nil
+	userOAuthDTO = userModel.ToOAuthBindingDTO()
+	return userOAuthDTO, nil
 }
 
 // 通过Id查找
 func (d *userDAO) GetById(id uint) (*services.UserDTO, error) {
-	var user User
-	err := ormStore.GormDb().Where(id).First(&user).Error
+	var err error
+	var userModel User
+	err = ormStore.GormDb().Where(id).First(&userModel).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			// 无记录
@@ -109,14 +118,15 @@ func (d *userDAO) GetById(id uint) (*services.UserDTO, error) {
 			return nil, err
 		}
 	}
-	dto := user.ToDTO()
+	dto := userModel.ToDTO()
 	return dto, nil
 }
 
 // 通过邮箱账号查找
 func (d *userDAO) GetByEmail(email string) (*services.UserDTO, error) {
-	var user User
-	err := ormStore.GormDb().Where(&User{Email: email}).First(&user).Error
+	var err error
+	var userModel User
+	err = ormStore.GormDb().Where(&User{Email: email}).First(&userModel).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			// 无记录
@@ -127,14 +137,15 @@ func (d *userDAO) GetByEmail(email string) (*services.UserDTO, error) {
 		}
 	}
 
-	dto := user.ToDTO()
+	dto := userModel.ToDTO()
 	return dto, nil
 }
 
 // 通过邮箱账号查找
 func (d *userDAO) GetByPhone(phone string) (*services.UserDTO, error) {
-	var user User
-	err := ormStore.GormDb().Where(&User{Phone: phone}).First(&user).Error
+	var err error
+	var userModel User
+	err = ormStore.GormDb().Where(&User{Phone: phone}).First(&userModel).Error
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			// 无记录
@@ -144,13 +155,14 @@ func (d *userDAO) GetByPhone(phone string) (*services.UserDTO, error) {
 			return nil, err
 		}
 	}
-	dto := user.ToDTO()
+	dto := userModel.ToDTO()
 	return dto, nil
 }
 
 // 设置单个用户信息字段
 func (d *userDAO) SetUserInfo(uid uint, field string, value interface{}) error {
-	if err := ormStore.GormDb().Model(&User{}).Where("id", uid).Update(field, value).Error; err != nil {
+	var err error
+	if err = ormStore.GormDb().Model(&User{}).Where("id", uid).Update(field, value).Error; err != nil {
 		return err
 	}
 	return nil
@@ -158,7 +170,8 @@ func (d *userDAO) SetUserInfo(uid uint, field string, value interface{}) error {
 
 // 设置多个用户信息字段
 func (d *userDAO) SetUserInfos(uid uint, dto services.SetUserInfoDTO) error {
-	if err := ormStore.GormDb().Model(&User{}).Where("id", uid).Updates(dto).Error; err != nil {
+	var err error
+	if err = ormStore.GormDb().Model(&User{}).Where("id", uid).Updates(dto).Error; err != nil {
 		return err
 	}
 	return nil
@@ -166,7 +179,8 @@ func (d *userDAO) SetUserInfos(uid uint, dto services.SetUserInfoDTO) error {
 
 // 设置用户密码和盐值
 func (d *userDAO) SetPasswordAndSalt(uid uint, passHash, salt string) error {
-	if err := ormStore.GormDb().Model(&User{}).Where("id", uid).Update(&User{Password: passHash, Salt: salt}).Error; err != nil {
+	var err error
+	if err = ormStore.GormDb().Model(&User{}).Where("id", uid).Update(&User{Password: passHash, Salt: salt}).Error; err != nil {
 		return err
 	}
 	return nil
@@ -174,7 +188,8 @@ func (d *userDAO) SetPasswordAndSalt(uid uint, passHash, salt string) error {
 
 // 真删除
 func (d *userDAO) DeleteById(uid uint) error {
-	if err := ormStore.GormDb().Model(&User{}).Delete(uid).Error; err != nil {
+	var err error
+	if err = ormStore.GormDb().Model(&User{}).Delete(uid).Error; err != nil {
 		return err
 	}
 	return nil
@@ -182,7 +197,8 @@ func (d *userDAO) DeleteById(uid uint) error {
 
 // 伪删除
 func (d *userDAO) SetDeletedAtById(uid uint) error {
-	if err := ormStore.GormDb().Set("gorm:delete_option", "OPTION (OPTIMIZE FOR UNKNOWN)").Delete(uid).Error; err != nil {
+	var err error
+	if err = ormStore.GormDb().Set("gorm:delete_option", "OPTION (OPTIMIZE FOR UNKNOWN)").Delete(uid).Error; err != nil {
 		return err
 	}
 	return nil

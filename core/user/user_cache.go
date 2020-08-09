@@ -17,8 +17,11 @@ func NewUserCache() *userCache {
 
 // 设置鉴权令牌缓存
 func (cache *userCache) SetUserToken(userNo, token string) error {
-	key := UserCacheTokenPrefix + userNo
-	_, err := cache.commonRedis.R("SETEX", key, UserCacheTokenExpire, token)
+	var err error
+	var key string
+
+	key = UserCacheTokenPrefix + userNo
+	_, err = cache.commonRedis.R("SETEX", key, UserCacheTokenExpire, token)
 	if err != nil {
 		return err
 	}
@@ -27,8 +30,12 @@ func (cache *userCache) SetUserToken(userNo, token string) error {
 
 // 获取鉴权令牌缓存
 func (cache *userCache) GetUserToken(userNo string) (string, error) {
-	key := UserCacheTokenPrefix + userNo
-	code, err := redis.String(cache.commonRedis.R("GET", key))
+	var err error
+	var key string
+	var code string
+
+	key = UserCacheTokenPrefix + userNo
+	code, err = redis.String(cache.commonRedis.R("GET", key))
 	if err != nil {
 		return "", err
 	}

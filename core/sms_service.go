@@ -27,12 +27,13 @@ type SmsService struct {
 
 // 发送绑定手机短信验证码
 func (service *SmsService) SendPhoneVerifiedCode(dto services.SendPhoneVerifiedCodeDTO) error {
+	var err error
 	// 校验传输参数
-	if err := validate.ValidateStruct(dto); err != nil {
+	if err = validate.ValidateStruct(dto); err != nil {
 		return err
 	}
 
-	if err := service.verifiedDomain.SendValidatePhoneMsg(dto); err != nil {
+	if err = service.verifiedDomain.SendValidatePhoneMsg(dto); err != nil {
 		return WrapError(err, ErrorFormatServiceCache)
 	}
 
