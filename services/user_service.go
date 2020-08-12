@@ -64,6 +64,7 @@ type UserDTO struct {
 // 第三方平台授权账号信息传输对象
 type OAuthInfoDTO struct {
 	Platform    uint
+	UserId      uint
 	AccessToken string
 	OpenId      string
 	UnionId     string
