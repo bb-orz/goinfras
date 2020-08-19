@@ -1,4 +1,4 @@
-package mysqlStore
+package sqlbuilderStore
 
 import (
 	"GoWebScaffold/infras"
@@ -7,20 +7,20 @@ import (
 	"github.com/tietang/props/kvs"
 )
 
-var mysqlClient *sql.DB
+var sqlBuilderClient *sql.DB
 
-func MysqlClient() *sql.DB {
-	infras.Check(mysqlClient)
-	return mysqlClient
+func SqlBuilderClient() *sql.DB {
+	infras.Check(sqlBuilderClient)
+	return sqlBuilderClient
 }
 
-type MysqlStarter struct {
+type SqlBuilderStarter struct {
 	infras.BaseStarter
 	cfg *MysqlConfig
 }
 
 // 读取配置
-func (s *MysqlStarter) Init(sctx *infras.StarterContext) {
+func (s *SqlBuilderStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
 	define := MysqlConfig{}
 	err := kvs.Unmarshal(configs, &define, "Mysql")
@@ -28,15 +28,15 @@ func (s *MysqlStarter) Init(sctx *infras.StarterContext) {
 	s.cfg = &define
 }
 
-func (s *MysqlStarter) Setup(sctx *infras.StarterContext) {
+func (s *SqlBuilderStarter) Setup(sctx *infras.StarterContext) {
 	var err error
-	mysqlClient, err = NewMysqlClient(s.cfg)
+	sqlBuilderClient, err = NewMysqlClient(s.cfg)
 	infras.FailHandler(err)
 	sctx.Logger().Info("MysqlClient Setup Successful ...")
 }
 
-func (s *MysqlStarter) Stop(sctx *infras.StarterContext) {
-	MysqlClient().Close()
+func (s *SqlBuilderStarter) Stop(sctx *infras.StarterContext) {
+	SqlBuilderClient().Close()
 }
 
 func RunForTesting(config *MysqlConfig) error {
@@ -49,6 +49,6 @@ func RunForTesting(config *MysqlConfig) error {
 			return err
 		}
 	}
-	mysqlClient, err = NewMysqlClient(config)
+	sqlBuilderClient, err = NewMysqlClient(config)
 	return err
 }

@@ -46,7 +46,7 @@ func init() {
 	// 2注册mongodb启动器
 	infras.Register(&mongoStore.MongoDBStarter{})
 	// 3注册mysql启动器
-	infras.Register(&mysqlStore.MysqlStarter{})
+	infras.Register(&sqlBuilderStore.MysqlStarter{})
 	// 4 注册Redis连接池
 	infras.Register(&redisStore.RedisStarter{})
 	// 5 注册Oss

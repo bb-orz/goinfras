@@ -75,6 +75,7 @@ require (
 	github.com/tietang/go-utils v0.1.3 // indirect
 	github.com/tietang/props v2.3.0+incompatible
 	github.com/valyala/fasttemplate v1.1.0 // indirect
+	github.com/xxjwxc/gormt v1.1.2 // indirect
 	go.etcd.io/etcd v3.3.20+incompatible
 	go.mongodb.org/mongo-driver v1.3.2
 	go.uber.org/zap v1.10.0

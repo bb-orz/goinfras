@@ -13,13 +13,13 @@ func GormDb() *gorm.DB {
 	return gormDb
 }
 
-type MysqlStarter struct {
+type ORMStarter struct {
 	infras.BaseStarter
 	cfg *OrmConfig
 }
 
 // 读取配置
-func (s *MysqlStarter) Init(sctx *infras.StarterContext) {
+func (s *ORMStarter) Init(sctx *infras.StarterContext) {
 	configs := sctx.Configs()
 	define := OrmConfig{}
 	err := kvs.Unmarshal(configs, &define, "OrmConfig")
@@ -27,14 +27,14 @@ func (s *MysqlStarter) Init(sctx *infras.StarterContext) {
 	s.cfg = &define
 }
 
-func (s *MysqlStarter) Setup(sctx *infras.StarterContext) {
+func (s *ORMStarter) Setup(sctx *infras.StarterContext) {
 	var err error
 	gormDb, err = NewORMDb(s.cfg)
 	infras.FailHandler(err)
 	sctx.Logger().Info("GormClient Setup Successful ...")
 }
 
-func (s *MysqlStarter) Stop(sctx *infras.StarterContext) {
+func (s *ORMStarter) Stop(sctx *infras.StarterContext) {
 	GormDb().Close()
 }
 

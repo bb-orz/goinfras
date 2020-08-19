@@ -1,4 +1,4 @@
-package mysqlStore
+package sqlbuilderStore
 
 import (
 	"context"
@@ -15,7 +15,7 @@ type BaseDao struct {
 
 func NewCommonMysqlStore() *BaseDao {
 	dao := new(BaseDao)
-	dao.db = MysqlClient()
+	dao.db = SqlBuilderClient()
 	return dao
 }
 

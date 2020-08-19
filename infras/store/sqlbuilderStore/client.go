@@ -1,4 +1,4 @@
-package mysqlStore
+package sqlbuilderStore
 
 import (
 	"database/sql"
