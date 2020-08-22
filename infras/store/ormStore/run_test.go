@@ -91,7 +91,7 @@ func TestGormInsert(t *testing.T) {
 		So(err, ShouldBeNil)
 
 		// 插入
-		user := User{Name: "Jinzhu", Age: 18, Birthday: time.Now()}
+		user := User{Name: "Jinzhubbb", Age: 18, Birthday: time.Now()}
 		GormDb().Create(&user)
 
 		// 查询
@@ -122,14 +122,20 @@ func TestGormFind(t *testing.T) {
 
 		// 获取所有记录
 		users = make([]User, 0)
-		GormDb().Find(&users)
-		Println("Find More:", users)
+		if err := GormDb().Find(&users).Error; err != nil {
+			Println("Find More Error :", err)
+		} else {
+			Println("Find More:", users)
+		}
 		// SELECT * FROM users;
 
 		// 使用主键获取记录
-		users = make([]User, 0)
-		GormDb().First(&user, 10)
-		Println("Find By Key:", user)
+		user = User{}
+		if err := GormDb().First(&user, 10).Error; err != nil {
+			Println("Find By Key Error :", err)
+		} else {
+			Println("Find By Key:", user)
+		}
 		// SELECT * FROM users WHERE id = 10;
 	})
 }

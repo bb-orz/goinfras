@@ -27,6 +27,7 @@ func (s *ORMStarter) Init(sctx *infras.StarterContext) {
 	s.cfg = &define
 }
 
+// 连接数据库
 func (s *ORMStarter) Setup(sctx *infras.StarterContext) {
 	var err error
 	gormDb, err = NewORMDb(s.cfg)
@@ -38,6 +39,7 @@ func (s *ORMStarter) Stop(sctx *infras.StarterContext) {
 	GormDb().Close()
 }
 
+// 测试时启动db连接
 func RunForTesting(config *OrmConfig) error {
 	var err error
 	if config == nil {

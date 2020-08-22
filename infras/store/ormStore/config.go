@@ -5,9 +5,9 @@ type OrmConfig struct {
 	Dialect       string `val:"mysql"` // 数据库驱动类型
 	DbHost        string `val:"127.0.0.1"`
 	DbPort        int64  `val:"3306"`
-	DbUser        string `val:"ginger_user"`
+	DbUser        string `val:"dev"`
 	DbPasswd      string `val:"123456"`
-	DbName        string `val:"ginger_db"`
+	DbName        string `val:"dev_db"`
 	ChartSet      string `val:"utf8"`
 	ParseTime     bool   `val:"true"`
 	Local         string `val:"Local"`
