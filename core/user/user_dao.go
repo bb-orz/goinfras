@@ -91,17 +91,18 @@ func (d *userDAO) Create(dto *services.UserDTO) (*services.UserDTO, error) {
 }
 
 // 插入单个用户信息，三方平台账户
-func (d *userDAO) CreateUserWithOAuth(dto *services.UserOAuthInfoDTO) (*services.UserOAuthInfoDTO, error) {
+func (d *userDAO) CreateUserWithOAuth(dto *services.UserOAuthsDTO) (*services.UserOAuthsDTO, error) {
 	var err error
-	var userOAuthDTO *services.UserOAuthInfoDTO
+	var userOAuthsDTO *services.UserOAuthsDTO
 
-	userModel := User{}
-	userModel.FromOAuthBindingDTO(dto)
-	if err = ormStore.GormDb().Create(&userModel).Error; err != nil {
+	userOAuthsModel := UserOAuths{}
+	userOAuthsModel.FromDTO(dto)
+	if err = ormStore.GormDb().Create(&userOAuthsModel).Error; err != nil {
 		return nil, err
 	}
-	userOAuthDTO = userModel.ToOAuthBindingDTO()
-	return userOAuthDTO, nil
+
+	userOAuthsDTO = userOAuthsModel.ToDTO()
+	return userOAuthsDTO, nil
 }
 
 // 通过Id查找

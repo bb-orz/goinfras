@@ -62,7 +62,7 @@ type UserDTO struct {
 }
 
 // 第三方平台授权账号信息传输对象
-type OAuthInfoDTO struct {
+type OAuthDTO struct {
 	Platform    uint
 	UserId      uint
 	AccessToken string
@@ -74,9 +74,9 @@ type OAuthInfoDTO struct {
 }
 
 // 包含第三方账号绑定信息的用户信息传输对象
-type UserOAuthInfoDTO struct {
+type UserOAuthsDTO struct {
 	User       UserDTO
-	UserOAuths []OAuthInfoDTO
+	UserOAuths []OAuthDTO
 }
 
 /*

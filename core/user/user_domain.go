@@ -137,16 +137,16 @@ func (domain *UserDomain) CreateUserForPhone(dto services.CreateUserWithPhoneDTO
 
 // Oauth三方账号绑定创建用户
 // TODO 待检测
-func (domain *UserDomain) CreateUserOAuthBinding(platform uint, oauthInfo *oauth.OAuthAccountInfo) (*services.UserOAuthInfoDTO, error) {
+func (domain *UserDomain) CreateUserOAuthBinding(platform uint, oauthInfo *oauth.OAuthAccountInfo) (*services.UserOAuthsDTO, error) {
 	var err error
-	var userOAuthDTO *services.UserOAuthInfoDTO
+	var userOAuthsDTO *services.UserOAuthsDTO
 
 	// 插入用户信息
-	createUserData := services.UserOAuthInfoDTO{}
+	createUserData := services.UserOAuthsDTO{}
 	createUserData.User.Name = oauthInfo.NickName
 	createUserData.User.No = domain.generateUserNo()
 	createUserData.User.Status = UserStatusNotVerified // 初始创建时未验证状态
-	createUserData.UserOAuths = []services.OAuthInfoDTO{
+	createUserData.UserOAuths = []services.OAuthDTO{
 		{
 			AccessToken: oauthInfo.AccessToken,
 			UnionId:     oauthInfo.UnionId,
@@ -158,16 +158,16 @@ func (domain *UserDomain) CreateUserOAuthBinding(platform uint, oauthInfo *oauth
 		},
 	}
 
-	if userOAuthDTO, err = domain.dao.CreateUserWithOAuth(&createUserData); err != nil {
+	if userOAuthsDTO, err = domain.dao.CreateUserWithOAuth(&createUserData); err != nil {
 		return nil, core.WrapError(err, core.ErrorFormatDomainSqlInsert, DomainName, "Create")
 	}
 
-	return userOAuthDTO, nil
+	return userOAuthsDTO, nil
 }
 
 // 查找Oauth三方注册账号是否存在
 // TODO 获取整个关联的用户信息和三方平台绑定信息
-func (domain *UserDomain) GetUserOauthBinding(platform uint, openId, unionId string) (*services.UserOAuthInfoDTO, error) {
+func (domain *UserDomain) GetUserOauthBinding(platform uint, openId, unionId string) (*services.UserOAuthsDTO, error) {
 	return nil, nil
 }
 
