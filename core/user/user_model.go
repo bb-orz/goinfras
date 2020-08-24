@@ -6,7 +6,7 @@ import (
 )
 
 /* User 单表模型 */
-type User struct {
+type UserModel struct {
 	gorm.Model
 	No            string `gorm:"type:char(40);unique_index"` // index是为该列创建索引
 	Name          string `gorm:"type:char(12);index;not null"`
@@ -22,12 +22,12 @@ type User struct {
 	Status        uint   `gorm:"type:tinyint"`
 }
 
-func (User) TableName() string {
+func (UserModel) TableName() string {
 	return "user"
 }
 
 // DTO => Model
-func (model *User) FromDTO(dto *services.UserDTO) {
+func (model *UserModel) FromDTO(dto *services.UserDTO) {
 	model.ID = dto.Uid
 	model.No = dto.No
 	model.Name = dto.Name
@@ -47,7 +47,7 @@ func (model *User) FromDTO(dto *services.UserDTO) {
 }
 
 // Model => DTO
-func (model *User) ToDTO() *services.UserDTO {
+func (model *UserModel) ToDTO() *services.UserDTO {
 	userDTO := services.UserDTO{}
 	userDTO.Uid = model.ID
 	userDTO.No = model.No
@@ -68,25 +68,64 @@ func (model *User) ToDTO() *services.UserDTO {
 	return &userDTO
 }
 
-// 包含OAUTH关联的User模型
-type UserOAuths struct {
+// OAuth 第三方账号关联表
+type OAuthModel struct {
 	gorm.Model
-	No            string  `gorm:"type:char(40);unique_index"` // index是为该列创建索引
-	Name          string  `gorm:"type:char(12);index;not null"`
-	Age           uint    `gorm:"type:tinyint"`
-	Avatar        string  `gorm:"type:varchar(255)"`
-	Gender        uint    `gorm:"type:tinyint"`
-	Email         string  `gorm:"type:varchar(100);unique_index"`
-	EmailVerified bool    `gorm:"type:tinyint(1)"`
-	Phone         string  `gorm:"type:char(11)"`
-	PhoneVerified bool    `gorm:"type:tinyint(1)"`
-	Password      string  `gorm:"type:char(40)"`
-	Salt          string  `gorm:"type:char(4)"`
-	Status        uint    `gorm:"type:tinyint"`
-	OAuths        []OAuth // Has-Many
+	UserId      uint   `gorm:"foreignkey:UserId"`
+	Platform    uint   `gorm:"type:tinyint(1)"`
+	AccessToken string `gorm:"type:varchar(64);unique"`
+	OpenId      string `gorm:"type:varchar(20);unique"`
+	UnionId     string `gorm:"type:varchar(20);unique"`
+	NickName    string `gorm:"type:varchar(20)"`
+	Gender      uint   `gorm:"type:tinyint(1)"`
+	Avatar      string `gorm:"type:varchar(255)"`
 }
 
-func (model *UserOAuths) FromDTO(dto *services.UserOAuthsDTO) {
+// DTO => Model
+func (model *OAuthModel) FromDTO(dto services.OAuthDTO) {
+	model.UserId = dto.UserId
+	model.Platform = dto.Platform
+	model.NickName = dto.NickName
+	model.OpenId = dto.OpenId
+	model.UnionId = dto.UnionId
+	model.AccessToken = dto.AccessToken
+	model.Gender = dto.Gender
+	model.Avatar = dto.Avatar
+}
+
+// Model => DTO
+func (model *OAuthModel) ToDTO() services.OAuthDTO {
+	oauthDTO := services.OAuthDTO{}
+	oauthDTO.UserId = model.UserId
+	oauthDTO.Platform = model.Platform
+	oauthDTO.OpenId = model.OpenId
+	oauthDTO.UnionId = model.UnionId
+	oauthDTO.AccessToken = model.AccessToken
+	oauthDTO.NickName = model.NickName
+	oauthDTO.Avatar = model.Avatar
+	oauthDTO.Gender = model.Gender
+	return oauthDTO
+}
+
+// 包含UserOAuths关联模型
+type UserOAuthsModel struct {
+	gorm.Model
+	No            string       `gorm:"type:char(40);unique_index"` // index是为该列创建索引
+	Name          string       `gorm:"type:char(12);index;not null"`
+	Age           uint         `gorm:"type:tinyint"`
+	Avatar        string       `gorm:"type:varchar(255)"`
+	Gender        uint         `gorm:"type:tinyint"`
+	Email         string       `gorm:"type:varchar(100);unique_index"`
+	EmailVerified bool         `gorm:"type:tinyint(1)"`
+	Phone         string       `gorm:"type:char(11)"`
+	PhoneVerified bool         `gorm:"type:tinyint(1)"`
+	Password      string       `gorm:"type:char(40)"`
+	Salt          string       `gorm:"type:char(4)"`
+	Status        uint         `gorm:"type:tinyint"`
+	OAuths        []OAuthModel // Has-Many
+}
+
+func (model *UserOAuthsModel) FromDTO(dto *services.UserOAuthsDTO) {
 	model.ID = dto.User.Uid
 	model.No = dto.User.No
 	model.Name = dto.User.Name
@@ -103,16 +142,16 @@ func (model *UserOAuths) FromDTO(dto *services.UserOAuthsDTO) {
 	model.CreatedAt = dto.User.CreatedAt
 	model.UpdatedAt = dto.User.UpdatedAt
 	model.DeletedAt = dto.User.DeletedAt
-	oAuths := make([]OAuth, 0)
+	oAuths := make([]OAuthModel, 0)
 	for _, item := range dto.UserOAuths {
-		oAuthModel := OAuth{}
+		oAuthModel := OAuthModel{}
 		oAuthModel.FromDTO(item)
 		oAuths = append(oAuths, oAuthModel)
 	}
 	model.OAuths = oAuths
 }
 
-func (model *UserOAuths) ToDTO() *services.UserOAuthsDTO {
+func (model *UserOAuthsModel) ToDTO() *services.UserOAuthsDTO {
 	userOAuthsDTO := services.UserOAuthsDTO{}
 	userOAuthsDTO.User.Uid = model.ID
 	userOAuthsDTO.User.No = model.No
@@ -138,43 +177,4 @@ func (model *UserOAuths) ToDTO() *services.UserOAuthsDTO {
 	userOAuthsDTO.UserOAuths = oAuths
 	return &userOAuthsDTO
 
-}
-
-// OAuth 第三方账号关联表
-type OAuth struct {
-	gorm.Model
-	UserId      uint
-	Platform    uint   `gorm:"type:tinyint(1)"`
-	AccessToken string `gorm:"type:varchar(64);unique"`
-	OpenId      string `gorm:"type:varchar(20);unique"`
-	UnionId     string `gorm:"type:varchar(20);unique"`
-	NickName    string `gorm:"type:varchar(20)"`
-	Gender      uint   `gorm:"type:tinyint(1)"`
-	Avatar      string `gorm:"type:varchar(255)"`
-}
-
-// DTO => Model
-func (model *OAuth) FromDTO(dto services.OAuthDTO) {
-	model.UserId = dto.UserId
-	model.Platform = dto.Platform
-	model.NickName = dto.NickName
-	model.OpenId = dto.OpenId
-	model.UnionId = dto.UnionId
-	model.AccessToken = dto.AccessToken
-	model.Gender = dto.Gender
-	model.Avatar = dto.Avatar
-}
-
-// Model => DTO
-func (model *OAuth) ToDTO() services.OAuthDTO {
-	oauthDTO := services.OAuthDTO{}
-	oauthDTO.UserId = model.UserId
-	oauthDTO.Platform = model.Platform
-	oauthDTO.OpenId = model.OpenId
-	oauthDTO.UnionId = model.UnionId
-	oauthDTO.AccessToken = model.AccessToken
-	oauthDTO.NickName = model.NickName
-	oauthDTO.Avatar = model.Avatar
-	oauthDTO.Gender = model.Gender
-	return oauthDTO
 }

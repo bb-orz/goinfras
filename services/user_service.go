@@ -131,10 +131,10 @@ type GetUserInfoDTO struct {
 type SetUserInfoDTO struct {
 	ID     uint   `validate:"required,numeric"`
 	Name   string `validate:"alpha"`
-	Age    byte   `validate:"numeric"`
+	Age    uint   `validate:"numeric"`
 	Avatar string `validate:"alphanumunicode"`
-	Gender int8   `validate:"numeric"`
-	Status int8   `validate:"numeric"`
+	Gender uint   `validate:"numeric"`
+	Status uint   `validate:"numeric"`
 }
 
 // 设置用户状态数据传输对象

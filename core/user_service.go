@@ -321,9 +321,9 @@ func (service *UserService) UploadAvatar() error {
 func (service *UserService) QQOAuth(dto services.QQLoginDTO) (string, error) {
 	var err error
 	var token string
-	var qqOauthAccountInfo *oauth.OAuthAccountInfo    // qq账号鉴权信息
-	var findUserBindingDTO *services.UserOAuthInfoDTO // 查找绑定用户
-	var oauthBindingInfo *services.UserOAuthInfoDTO   // 创建用户后的信息
+	var qqOauthAccountInfo *oauth.OAuthAccountInfo // qq账号鉴权信息
+	var findUserBindingDTO *services.UserOAuthsDTO // 查找绑定用户
+	var userOAuthsInfo *services.UserOAuthsDTO     // 创建用户后的信息
 
 	// 校验传输参数
 	if err = validate.ValidateStruct(dto); err != nil {
@@ -337,20 +337,20 @@ func (service *UserService) QQOAuth(dto services.QQLoginDTO) (string, error) {
 	}
 
 	// oauth domain: 使用OpenId UnionId查找user oauth表查看用户是否存在
-	findUserBindingDTO, err = service.userDomain.GetUserOauthBinding(user.QQOauthPlatform, qqOauthAccountInfo.OpenId, qqOauthAccountInfo.UnionId)
+	findUserBindingDTO, err = service.userDomain.GetUserOauths(user.QQOauthPlatform, qqOauthAccountInfo.OpenId, qqOauthAccountInfo.UnionId)
 	if err != nil {
 		return "", WrapError(err, ErrorFormatServiceStorage, "IsOauthUserExist")
 	}
 
 	// 如不存在进入创建用户流程,否则进登录流程
 	if findUserBindingDTO == nil {
-		oauthBindingInfo, err = service.userDomain.CreateUserOAuthBinding(user.QQOauthPlatform, qqOauthAccountInfo)
+		userOAuthsInfo, err = service.userDomain.CreateUserOAuthBinding(user.QQOauthPlatform, qqOauthAccountInfo)
 		// JWT token
-		if oauthBindingInfo != nil {
+		if userOAuthsInfo != nil {
 			token, err = service.userDomain.GenToken(
-				oauthBindingInfo.User.No,
-				oauthBindingInfo.User.Name,
-				oauthBindingInfo.User.Avatar)
+				userOAuthsInfo.User.No,
+				userOAuthsInfo.User.Name,
+				userOAuthsInfo.User.Avatar)
 			if err != nil {
 				return "", WrapError(err, ErrorFormatServiceBusinesslogic)
 			}
@@ -374,36 +374,110 @@ func (service *UserService) QQOAuth(dto services.QQLoginDTO) (string, error) {
 
 // wechat Oauth 鉴权
 func (service *UserService) WechatOAuth(dto services.WechatLoginDTO) (string, error) {
+	var err error
+	var token string
+	var wechatOauthAccountInfo *oauth.OAuthAccountInfo // 微信账号鉴权信息
+	var findUserBindingDTO *services.UserOAuthsDTO     // 查找绑定用户
+	var userOAuthsInfo *services.UserOAuthsDTO         // 创建用户后的信息
+
 	// 校验传输参数
-	if err := validate.ValidateStruct(dto); err != nil {
+	if err = validate.ValidateStruct(dto); err != nil {
 		return "", WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
-	// oauth domain：使用微信回调授权码code开始鉴权流程并获取微信用户信息
+	// oauth domain：使用wechat回调授权码code开始鉴权流程并获取微信用户信息
+	wechatOauthAccountInfo, err = service.oauthDomain.GetQQOauthUserInfo(dto.AccessCode)
+	if err != nil {
+		return "", WrapError(err, ErrorFormatServiceNetRequest, "GetQQUserInfo")
+	}
 
 	// oauth domain: 使用OpenId UnionId查找user oauth表查看用户是否存在
+	findUserBindingDTO, err = service.userDomain.GetUserOauths(user.WechatOauthPlatform, wechatOauthAccountInfo.OpenId, wechatOauthAccountInfo.UnionId)
+	if err != nil {
+		return "", WrapError(err, ErrorFormatServiceStorage, "IsOauthUserExist")
+	}
 
-	// 不存在进入创建用户流程，存在进入登录流程
+	// 如不存在进入创建用户流程,否则进登录流程
+	if findUserBindingDTO == nil {
+		userOAuthsInfo, err = service.userDomain.CreateUserOAuthBinding(user.WechatOauthPlatform, wechatOauthAccountInfo)
+		// JWT token
+		if userOAuthsInfo != nil {
+			token, err = service.userDomain.GenToken(
+				userOAuthsInfo.User.No,
+				userOAuthsInfo.User.Name,
+				userOAuthsInfo.User.Avatar)
+			if err != nil {
+				return "", WrapError(err, ErrorFormatServiceBusinesslogic)
+			}
+			return token, nil
+		} else {
+			return "", WrapError(err, ErrorFormatServiceStorage, "CreateUserOauthBinding")
+		}
+	}
 
-	// 返回jwt
+	// 跳过创建，直接返回token，登录成功
+	token, err = service.userDomain.GenToken(
+		findUserBindingDTO.User.No,
+		findUserBindingDTO.User.Name,
+		findUserBindingDTO.User.Avatar)
+	if err != nil {
+		return "", WrapError(err, ErrorFormatServiceBusinesslogic)
+	}
 
-	return "", nil
+	return token, nil
 }
 
 // 微博 Oauth 鉴权
 func (service *UserService) WeiboOAuth(dto services.WeiboLoginDTO) (string, error) {
+	var err error
+	var token string
+	var weiboOauthAccountInfo *oauth.OAuthAccountInfo // 微博账号鉴权信息
+	var findUserBindingDTO *services.UserOAuthsDTO    // 查找绑定用户
+	var userOAuthsInfo *services.UserOAuthsDTO        // 创建用户后的信息
+
 	// 校验传输参数
-	if err := validate.ValidateStruct(dto); err != nil {
+	if err = validate.ValidateStruct(dto); err != nil {
 		return "", WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
-	// oauth domain：使用微博回调授权码code开始鉴权流程并获取微博用户信息
+	// oauth domain：使用wechat回调授权码code开始鉴权流程并获取微信用户信息
+	weiboOauthAccountInfo, err = service.oauthDomain.GetQQOauthUserInfo(dto.AccessCode)
+	if err != nil {
+		return "", WrapError(err, ErrorFormatServiceNetRequest, "GetQQUserInfo")
+	}
 
 	// oauth domain: 使用OpenId UnionId查找user oauth表查看用户是否存在
+	findUserBindingDTO, err = service.userDomain.GetUserOauths(user.WeiboOauthPlatform, weiboOauthAccountInfo.OpenId, weiboOauthAccountInfo.UnionId)
+	if err != nil {
+		return "", WrapError(err, ErrorFormatServiceStorage, "IsOauthUserExist")
+	}
 
-	// 不存在进入创建用户流程，存在进入登录流程
+	// 如不存在进入创建用户流程,否则进登录流程
+	if findUserBindingDTO == nil {
+		userOAuthsInfo, err = service.userDomain.CreateUserOAuthBinding(user.WeiboOauthPlatform, weiboOauthAccountInfo)
+		// JWT token
+		if userOAuthsInfo != nil {
+			token, err = service.userDomain.GenToken(
+				userOAuthsInfo.User.No,
+				userOAuthsInfo.User.Name,
+				userOAuthsInfo.User.Avatar)
+			if err != nil {
+				return "", WrapError(err, ErrorFormatServiceBusinesslogic)
+			}
+			return token, nil
+		} else {
+			return "", WrapError(err, ErrorFormatServiceStorage, "CreateUserOauthBinding")
+		}
+	}
 
-	// 返回jwt
+	// 跳过创建，直接返回token，登录成功
+	token, err = service.userDomain.GenToken(
+		findUserBindingDTO.User.No,
+		findUserBindingDTO.User.Name,
+		findUserBindingDTO.User.Avatar)
+	if err != nil {
+		return "", WrapError(err, ErrorFormatServiceBusinesslogic)
+	}
 
-	return "", nil
+	return token, nil
 }

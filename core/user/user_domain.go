@@ -136,10 +136,9 @@ func (domain *UserDomain) CreateUserForPhone(dto services.CreateUserWithPhoneDTO
 }
 
 // Oauth三方账号绑定创建用户
-// TODO 待检测
 func (domain *UserDomain) CreateUserOAuthBinding(platform uint, oauthInfo *oauth.OAuthAccountInfo) (*services.UserOAuthsDTO, error) {
 	var err error
-	var userOAuthsDTO *services.UserOAuthsDTO
+	var userOAuthsResult *services.UserOAuthsDTO
 
 	// 插入用户信息
 	createUserData := services.UserOAuthsDTO{}
@@ -158,17 +157,23 @@ func (domain *UserDomain) CreateUserOAuthBinding(platform uint, oauthInfo *oauth
 		},
 	}
 
-	if userOAuthsDTO, err = domain.dao.CreateUserWithOAuth(&createUserData); err != nil {
-		return nil, core.WrapError(err, core.ErrorFormatDomainSqlInsert, DomainName, "Create")
+	if userOAuthsResult, err = domain.dao.CreateUserWithOAuth(&createUserData); err != nil {
+		return nil, core.WrapError(err, core.ErrorFormatDomainSqlInsert, DomainName, "CreateUserWithOAuth")
 	}
 
-	return userOAuthsDTO, nil
+	return userOAuthsResult, nil
 }
 
-// 查找Oauth三方注册账号是否存在
-// TODO 获取整个关联的用户信息和三方平台绑定信息
-func (domain *UserDomain) GetUserOauthBinding(platform uint, openId, unionId string) (*services.UserOAuthsDTO, error) {
-	return nil, nil
+// 获取整个关联的用户信息和三方平台绑定信息
+func (domain *UserDomain) GetUserOauths(platform uint, openId, unionId string) (*services.UserOAuthsDTO, error) {
+	var err error
+	var userOAuthsResult *services.UserOAuthsDTO
+
+	if userOAuthsResult, err = domain.dao.GetUserOAuths(platform, openId, unionId); err != nil {
+		return nil, core.WrapError(err, core.ErrorFormatDomainSqlQuery, DomainName, "GetUserOAuths")
+	}
+
+	return userOAuthsResult, nil
 }
 
 func (domain *UserDomain) GetUserInfo(uid uint) (*services.UserDTO, error) {
