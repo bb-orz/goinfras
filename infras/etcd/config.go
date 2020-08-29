@@ -1,8 +1,10 @@
 package etcd
 
+import "crypto/tls"
+
 type EtcdConfig struct {
-	Endpoints            []string
-	TLS                  string
+	Endpoints            []string `val:"localhost:2379"`
+	TLS                  *tls.Config
 	Username             string
 	Password             string
 	PermitWithoutStream  bool

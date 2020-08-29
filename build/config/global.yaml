@@ -1,0 +1,5 @@
+# 应用基本配置
+Global:
+  Env:         debug               #环境
+  AppName:     MyApp              #应用名
+  ServerName:  exampler.com       #服务域名

@@ -14,7 +14,7 @@ type Starter interface {
 	Start(sctx *StarterContext)
 	// 阻塞启动：设置需要后置启动的资源组件，默认为false
 	SetStartBlocking() bool
-	//资源停止：
+	// 资源停止：
 	// 通常在启动时遇到异常时或者启用远程管理时，用于释放资源和终止资源的使用，
 	// 通常要优雅的释放，等待正在进行的任务继续，但不再接受新的任务
 	Stop(sctx *StarterContext)

@@ -1,0 +1,3 @@
+# 定时任务配置
+Cron:
+  Location: local

@@ -11,8 +11,8 @@ import (
 	"GoWebScaffold/infras/oss/aliyunOss"
 	"GoWebScaffold/infras/oss/qiniuOss"
 	"GoWebScaffold/infras/store/mongoStore"
-	"GoWebScaffold/infras/store/mysqlStore"
 	"GoWebScaffold/infras/store/redisStore"
+	"GoWebScaffold/infras/store/sqlbuilderStore"
 	"fmt"
 	"github.com/tietang/props/kvs"
 	"github.com/tietang/props/yam"
@@ -46,7 +46,7 @@ func init() {
 	// 2注册mongodb启动器
 	infras.Register(&mongoStore.MongoDBStarter{})
 	// 3注册mysql启动器
-	infras.Register(&sqlBuilderStore.MysqlStarter{})
+	infras.Register(&sqlbuilderStore.SqlBuilderStarter{})
 	// 4 注册Redis连接池
 	infras.Register(&redisStore.RedisStarter{})
 	// 5 注册Oss
@@ -55,12 +55,12 @@ func init() {
 	// 6 注册Mq
 	infras.Register(&redisPubSub.RedisPubSubStarter{})
 	infras.Register(&natsMq.NatsMQStarter{})
-	//7 注册Oauth Manager
+	// 7 注册Oauth Manager
 	infras.Register(&oauth.OauthStarter{})
 	// 8 注册Cron定时任务
 	infras.Register(&cron.CronStarter{})
 
-	//9 注册hook
+	// 9 注册hook
 	infras.Register(&hook.HookStarter{})
 
 	// 对资源组件启动器进行排序
@@ -69,7 +69,7 @@ func init() {
 
 // 读取配置文件
 func loadConfigFile() kvs.ConfigSource {
-	//获取程序运行文件所在的路径
+	// 获取程序运行文件所在的路径
 	file := kvs.GetCurrentFilePath("config.yaml", 1)
 	return yam.NewIniFileCompositeConfigSource(file)
 }
