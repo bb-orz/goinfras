@@ -18,6 +18,8 @@ import (
 	"github.com/tietang/props/yam"
 	"io"
 	"os"
+
+	"github.com/spf13/viper"
 )
 
 // TODO 测试infras各个资源组件，并整合gin框架，搭建基础脚手架
@@ -72,6 +74,13 @@ func loadConfigFile() kvs.ConfigSource {
 	// 获取程序运行文件所在的路径
 	file := kvs.GetCurrentFilePath("config.yaml", 1)
 	return yam.NewIniFileCompositeConfigSource(file)
+}
+
+// Viper 配置
+func ViperLoadConfig() {
+	viper.AddConfigPath("")
+	v := viper.New()
+	v.Get("")
 }
 
 // 日志记录器
