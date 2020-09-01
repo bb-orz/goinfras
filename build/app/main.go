@@ -14,19 +14,16 @@ import (
 	"GoWebScaffold/infras/store/redisStore"
 	"GoWebScaffold/infras/store/sqlbuilderStore"
 	"flag"
-	"fmt"
-	"github.com/tietang/props/kvs"
-	"github.com/tietang/props/yam"
 	"io"
 	"os"
+	"path"
+	"path/filepath"
 
 	"github.com/spf13/viper"
 )
 
 var (
-	configPath string //  配置文件路径接收变量
-	configName string //  配置文件名接收变量
-	configType string //  配置文件类型接收变量
+	configFile string //  配置文件路径接收变量
 
 	remoteProvider string // 连接远程配置的类型（etcd/consul/firestore）
 	remoteEndpoint string // 连接远程配置的机器节点（etcd requires http://ip:port  consul requires ip:port）
@@ -38,12 +35,17 @@ var (
 func main() {
 	var err error
 	var runtimeViper *viper.Viper
+	var fileName, configFilePath, configFileName, configFileExt string
 
 	flag.Parse()
-	if configPath != "" || configName != "" || configType != "" {
-		runtimeViper, err = viperLoadConfigFile(configPath, configName, configType)
+	if configFile != "" {
+		configFilePath, fileName = filepath.Split(configFile)
+		configFileExt = path.Ext(fileName)
+		configFileName = fileName[0 : len(fileName)-len(configFileExt)]
+		configFileExt = configFileExt[1:]
+		runtimeViper, err = viperLoadConfigFile(configFilePath, configFileName, configFileExt)
 		if err != nil {
-			panic("Viper Read Config Error:" + err.Error())
+			panic("Viper Read Config File Error:" + err.Error())
 		}
 	}
 
@@ -54,18 +56,22 @@ func main() {
 		}
 	}
 
+	if runtimeViper == nil {
+		runtimeViper = viper.New()
+	}
+
 	// TODO kvs库替换为viper库读取配置
 
 	// kvs包读取配置
-	cfgSourse := yam.NewIniFileCompositeConfigSource(kvs.GetCurrentFilePath("config.yaml", 1))
+	// cfgSourse := yam.NewIniFileCompositeConfigSource(kvs.GetCurrentFilePath("config.yaml", 1))
 
 	// 创建应用程序启动管理器
-	app := infras.NewApplication(cfgSourse)
+	// app := infras.NewApplication(cfgSourse)
 
 	// 运行应用,启动已注册的资源组件
-	app.Up()
+	// app.Up()
 
-	fmt.Println("Application Running  ......")
+	// fmt.Println("Application Running  ......")
 }
 
 // 应用启动时注册资源组件启动器并按启动优先级进行排序
@@ -73,19 +79,16 @@ func init() {
 	// 1.接收命令行参数
 	receiveFlag()
 	// 2.注册应用组件启动器
-	registerComponent()
+	// registerComponent()
 }
 
 // 接收命令行参数
 func receiveFlag() {
 	// 启动时获取命令行flag参数
-	flag.StringVar(&configPath, "p", "", "Config path,like: `./build/config`")
-	flag.StringVar(&configName, "n", "", "Config name,like: `config`")
-	flag.StringVar(&configName, "t", "", "Config name,like: `yaml|json|ini|toml`.")
-
+	flag.StringVar(&configFile, "f", "", "Config file,like: ./build/config.yaml")
 	flag.StringVar(&remoteProvider, "T", "", "Remote K/V config system provider，support etcd/consul")
 	flag.StringVar(&remoteEndpoint, "E", "", "Remote K/V config system endpoint，etcd requires http://ip:port  consul requires ip:port")
-	flag.StringVar(&remotePath, "P", "", "Remote K/V config path，path is the path in the k/v store to retrieve configuration,like:`/configs/myapp.json`")
+	flag.StringVar(&remotePath, "P", "", "Remote K/V config path，path is the path in the k/v store to retrieve configuration,like: /configs/myapp.json")
 }
 
 // 注册应用组件启动器
