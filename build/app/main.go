@@ -13,6 +13,7 @@ import (
 	"GoWebScaffold/infras/store/mongoStore"
 	"GoWebScaffold/infras/store/redisStore"
 	"GoWebScaffold/infras/store/sqlbuilderStore"
+	"flag"
 	"fmt"
 	"github.com/tietang/props/kvs"
 	"github.com/tietang/props/yam"
@@ -22,12 +23,38 @@ import (
 	"github.com/spf13/viper"
 )
 
+var (
+	configPath string //  配置文件路径接收变量
+	configName string //  配置文件名接收变量
+	configType string //  配置文件类型接收变量
+
+	remoteProvider string // 连接远程配置的类型（etcd/consul/firestore）
+	remoteEndpoint string // 连接远程配置的机器节点（etcd requires http://ip:port  consul requires ip:port）
+	remotePath     string // 连接远程配置的配置节点路径 (path is the path in the k/v store to retrieve configuration)
+
+)
+
 // TODO 测试infras各个资源组件，并整合gin框架，搭建基础脚手架
 func main() {
+	var err error
+	var runtimeViper *viper.Viper
 
-	// TODO 启动时获取命令行flag参数、读取环境变量
+	flag.Parse()
+	if configPath != "" || configName != "" || configType != "" {
+		runtimeViper, err = viperLoadConfigFile(configPath, configName, configType)
+		if err != nil {
+			panic("Viper Read Config Error:" + err.Error())
+		}
+	}
 
-	// TODO 读取配置渠道：远程配置数据（etcd/...）、或本地文件读取（json/yaml/ini/...）
+	if remoteProvider != "" || remoteEndpoint != "" || remotePath != "" {
+		runtimeViper, err = viperLoadRemoteEtcdConfig(remoteProvider, remoteEndpoint, remotePath)
+		if err != nil {
+			panic("Viper Read Remote Config Error:" + err.Error())
+		}
+	}
+
+	// TODO kvs库替换为viper库读取配置
 
 	// kvs包读取配置
 	cfgSourse := yam.NewIniFileCompositeConfigSource(kvs.GetCurrentFilePath("config.yaml", 1))
@@ -43,39 +70,58 @@ func main() {
 
 // 应用启动时注册资源组件启动器并按启动优先级进行排序
 func init() {
-	// 1注册日志记录启动器，并添加一个异步日志输出到文件
+	// 1.接收命令行参数
+	receiveFlag()
+	// 2.注册应用组件启动器
+	registerComponent()
+}
+
+// 接收命令行参数
+func receiveFlag() {
+	// 启动时获取命令行flag参数
+	flag.StringVar(&configPath, "p", "", "Config path,like: `./build/config`")
+	flag.StringVar(&configName, "n", "", "Config name,like: `config`")
+	flag.StringVar(&configName, "t", "", "Config name,like: `yaml|json|ini|toml`.")
+
+	flag.StringVar(&remoteProvider, "T", "", "Remote K/V config system provider，support etcd/consul")
+	flag.StringVar(&remoteEndpoint, "E", "", "Remote K/V config system endpoint，etcd requires http://ip:port  consul requires ip:port")
+	flag.StringVar(&remotePath, "P", "", "Remote K/V config path，path is the path in the k/v store to retrieve configuration,like:`/configs/myapp.json`")
+}
+
+// 注册应用组件启动器
+func registerComponent() {
+	// 注册日志记录启动器，并添加一个异步日志输出到文件
 	file, err := os.OpenFile("./info.log", os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		panic(err.Error())
 	}
 	writers := []io.Writer{file}
 	infras.Register(&logger.LoggerStarter{Writers: writers})
-	// 2注册mongodb启动器
+	// 注册mongodb启动器
 	infras.Register(&mongoStore.MongoDBStarter{})
-	// 3注册mysql启动器
+	// 注册mysql启动器
 	infras.Register(&sqlbuilderStore.SqlBuilderStarter{})
-	// 4 注册Redis连接池
+	// 注册Redis连接池
 	infras.Register(&redisStore.RedisStarter{})
-	// 5 注册Oss
+	// 注册Oss
 	infras.Register(&aliyunOss.AliyunOssStarter{})
 	infras.Register(&qiniuOss.QiniuOssStarter{})
-	// 6 注册Mq
+	// 注册Mq
 	infras.Register(&redisPubSub.RedisPubSubStarter{})
 	infras.Register(&natsMq.NatsMQStarter{})
-	// 7 注册Oauth Manager
+	// 注册Oauth Manager
 	infras.Register(&oauth.OauthStarter{})
-	// 8 注册Cron定时任务
+	// 注册Cron定时任务
 	infras.Register(&cron.CronStarter{})
-
-	// 9 注册hook
+	// 注册hook
 	infras.Register(&hook.HookStarter{})
-
 	// 对资源组件启动器进行排序
 	infras.SortStarters()
 }
 
+// TODO 读取配置渠道：远程配置数据（etcd/...）、或本地文件读取（json/yaml/ini/...）
 // Viper 读取本地配置文件
-func ViperLoadConfigFile(cfgPath, cfgName, cfgType string) (*viper.Viper, error) {
+func viperLoadConfigFile(cfgPath, cfgName, cfgType string) (*viper.Viper, error) {
 	v := viper.New()
 	v.AddConfigPath(cfgPath) // 设置配置文件读取路径，默认windows环境下为%GOPATH，linux环境下为$GOPATH
 	v.SetConfigName(cfgName) // 设置读取的配置文件名
@@ -89,8 +135,7 @@ func ViperLoadConfigFile(cfgPath, cfgName, cfgType string) (*viper.Viper, error)
 }
 
 // Viper 读取远程配置系统
-func ViperLoadRemoteEtcdConfig() {
+func viperLoadRemoteEtcdConfig(provider, endpoint, path string) (*viper.Viper, error) {
 
+	return &viper.Viper{}, nil
 }
-
-// 日志记录器
