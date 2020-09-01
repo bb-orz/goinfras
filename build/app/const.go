@@ -1,4 +1,4 @@
-package app
+package main
 
 /*
 常量级参数配置项，编译前设置值

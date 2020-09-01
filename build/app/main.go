@@ -1,4 +1,4 @@
-package app
+package main
 
 import (
 	"GoWebScaffold/infras"
@@ -24,11 +24,16 @@ import (
 
 // TODO 测试infras各个资源组件，并整合gin框架，搭建基础脚手架
 func main() {
-	// 读取配置
-	cfgSourse := loadConfigFile()
+
+	// TODO 启动时获取命令行flag参数、读取环境变量
+
+	// TODO 读取配置渠道：远程配置数据（etcd/...）、或本地文件读取（json/yaml/ini/...）
+
+	// kvs包读取配置
+	cfgSourse := yam.NewIniFileCompositeConfigSource(kvs.GetCurrentFilePath("config.yaml", 1))
 
 	// 创建应用程序启动管理器
-	app := infras.NewBoot(cfgSourse)
+	app := infras.NewApplication(cfgSourse)
 
 	// 运行应用,启动已注册的资源组件
 	app.Up()
@@ -69,18 +74,23 @@ func init() {
 	infras.SortStarters()
 }
 
-// 读取配置文件
-func loadConfigFile() kvs.ConfigSource {
-	// 获取程序运行文件所在的路径
-	file := kvs.GetCurrentFilePath("config.yaml", 1)
-	return yam.NewIniFileCompositeConfigSource(file)
+// Viper 读取本地配置文件
+func ViperLoadConfigFile(cfgPath, cfgName, cfgType string) (*viper.Viper, error) {
+	v := viper.New()
+	v.AddConfigPath(cfgPath) // 设置配置文件读取路径，默认windows环境下为%GOPATH，linux环境下为$GOPATH
+	v.SetConfigName(cfgName) // 设置读取的配置文件名
+	v.SetConfigType(cfgType) // 设置配置文件类型
+
+	if err := v.ReadInConfig(); err != nil {
+		return nil, err
+	}
+
+	return v, nil
 }
 
-// Viper 配置
-func ViperLoadConfig() {
-	viper.AddConfigPath("")
-	v := viper.New()
-	v.Get("")
+// Viper 读取远程配置系统
+func ViperLoadRemoteEtcdConfig() {
+
 }
 
 // 日志记录器
