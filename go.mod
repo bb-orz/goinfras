@@ -70,7 +70,7 @@ require (
 	github.com/sirupsen/logrus v1.6.0 // indirect
 	github.com/smartystreets/assertions v1.1.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4
-	github.com/spf13/viper v1.7.1 // indirect
+	github.com/spf13/viper v1.7.1
 	github.com/tebeka/strftime v0.1.4 // indirect
 	github.com/tietang/go-utils v0.1.3 // indirect
 	github.com/tietang/props v2.3.0+incompatible

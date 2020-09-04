@@ -47,7 +47,7 @@ func (oauth *WeiboOAuthManager) Authorize(code string) OAuthResult {
 
 	}
 
-	var genderN int
+	var genderN uint
 	gender, ok := userInfoMap["gender"]
 	if !ok {
 		genderN = 1
@@ -58,7 +58,7 @@ func (oauth *WeiboOAuthManager) Authorize(code string) OAuthResult {
 		genderN = 1
 	}
 
-	return OAuthResult{true, &OAuthUserInfo{
+	return OAuthResult{true, &OAuthAccountInfo{
 		accessToken,
 		openId,
 		userInfoMap["idstr"].(string), // 用新浪微博的UID代替

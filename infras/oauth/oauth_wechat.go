@@ -47,12 +47,12 @@ func (oauth *WechatOAuthManager) Authorize(code string) OAuthResult {
 		return OAuthResult{false, nil, errors.New(e.(string))}
 	}
 
-	return OAuthResult{true, &OAuthUserInfo{
+	return OAuthResult{true, &OAuthAccountInfo{
 		accessToken,
 		openId,
 		userInfoMap["unionid"].(string),
 		userInfoMap["nickname"].(string),
-		userInfoMap["sex"].(int),
+		userInfoMap["sex"].(uint),
 		userInfoMap["figureurl_qq_1"].(string),
 	}, nil}
 }

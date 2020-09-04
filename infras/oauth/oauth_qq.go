@@ -46,7 +46,7 @@ func (oauth *QQOAuthManager) Authorize(code string) OAuthResult {
 	if err != nil || userInfoMap == nil {
 		return OAuthResult{false, nil, err}
 	}
-	var genderN int
+	var genderN uint
 	gender, ok := userInfoMap["gender"]
 	if !ok {
 		genderN = 1
@@ -56,7 +56,7 @@ func (oauth *QQOAuthManager) Authorize(code string) OAuthResult {
 	} else {
 		genderN = 1
 	}
-	return OAuthResult{true, &OAuthUserInfo{
+	return OAuthResult{true, &OAuthAccountInfo{
 		accessToken,
 		openId,
 		unionId,
