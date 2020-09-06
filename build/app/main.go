@@ -102,6 +102,11 @@ func bindingFlag() {
 
 // TODO Viper读取环境变量
 func loadConfigFromEnv(runtimeViper *viper.Viper) error {
+	// 若有需要读取环境变量
+	// runtimeViper.SetEnvPrefix("env_prefix") // 添加需加载系统环境变量的前缀
+	// runtimeViper.AllowEmptyEnv(true) // 是否允许环境变量为空值,默认为false
+	// err := runtimeViper.BindEnv("your env var") // 绑定特定环境变量值到viper
+	// runtimeViper.AutomaticEnv() // 自动载入所有环境变量，如设置SetEnvPrefix，则加载有特定前缀的所有环境变量
 
 	return nil
 }
