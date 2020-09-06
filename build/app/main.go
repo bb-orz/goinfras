@@ -15,124 +15,100 @@ import (
 	"GoWebScaffold/infras/store/sqlbuilderStore"
 	"errors"
 	"flag"
+	"fmt"
+	"github.com/spf13/viper"
 	"io"
 	"os"
 	"path"
 	"path/filepath"
-
-	"github.com/spf13/viper"
 )
 
+// flag参数接收变量
 var (
-	configFile     string //  配置文件路径接收变量
-	remoteProvider string // 连接远程配置的类型（etcd/consul/firestore）
-	remoteEndpoint string // 连接远程配置的机器节点（etcd requires http://ip:port  consul requires ip:port）
-	remotePath     string // 连接远程配置的配置节点路径 (path is the path in the k/v store to retrieve configuration)
-
+	flagConfigFile     string // 配置文件路径接收变量
+	flagRemoteProvider string // 连接远程配置的类型（etcd/consul/firestore）
+	flagRemoteEndpoint string // 连接远程配置的机器节点（etcd requires http://ip:port  consul requires ip:port）
+	flagRemotePath     string // 连接远程配置的配置节点路径 (path is the path in the k/v store to retrieve configuration)
 )
-
-// TODO 测试infras各个资源组件，并整合gin框架，搭建基础脚手架
-func main() {
-	runtimeViper := getRuntimeViper()
-	// TODO kvs库替换为viper库读取配置
-	// app := infras.NewApplication(runtimeViper)
-	// app.Up()
-	// fmt.Println("Application Running  ......")
-
-	// ======================
-	// kvs包读取配置
-	// cfgSourse := yam.NewIniFileCompositeConfigSource(kvs.GetCurrentFilePath("config.yaml", 1))
-
-	// 创建应用程序启动管理器
-	// app := infras.NewApplication(cfgSourse)
-
-	// 运行应用,启动已注册的资源组件
-	// app.Up()
-
-	// fmt.Println("Application Running  ......")
-}
 
 // 应用启动时注册资源组件启动器并按启动优先级进行排序
 func init() {
 	// 1.接收命令行参数
 	bindingFlag()
-	flag.Parse()
 	// 2.注册应用组件启动器
 	registerComponent()
 }
 
-// 接收命令行参数
-func bindingFlag() {
-	// 启动时获取命令行flag参数
-	flag.StringVar(&configFile, "f", "", "Config file,like: ./build/config.yaml")
-	flag.StringVar(&remoteProvider, "T", "", "Remote K/V config system provider，support etcd/consul")
-	flag.StringVar(&remoteEndpoint, "E", "", "Remote K/V config system endpoint，etcd requires http://ip:port  consul requires ip:port")
-	flag.StringVar(&remotePath, "P", "", "Remote K/V config path，path is the path in the k/v store to retrieve configuration,like: /configs/myapp.json")
+func main() {
+	flag.Parse()
+
+	// 实例化运行时viper配置
+	runtimeViper := runtimeViper()
+
+	// 创建应用程序启动管理器
+	app := infras.NewApplication(runtimeViper)
+
+	// 运行应用,启动已注册的资源组件
+	app.Up()
+	fmt.Println("Application Running  ......")
 }
 
-// 注册应用组件启动器
-func registerComponent() {
-	// 注册日志记录启动器，并添加一个异步日志输出到文件
-	file, err := os.OpenFile("./info.log", os.O_RDWR|os.O_CREATE, os.ModePerm)
-	if err != nil {
-		panic(err.Error())
-	}
-	writers := []io.Writer{file}
-	infras.Register(&logger.LoggerStarter{Writers: writers})
-	// 注册mongodb启动器
-	infras.Register(&mongoStore.MongoDBStarter{})
-	// 注册mysql启动器
-	infras.Register(&sqlbuilderStore.SqlBuilderStarter{})
-	// 注册Redis连接池
-	infras.Register(&redisStore.RedisStarter{})
-	// 注册Oss
-	infras.Register(&aliyunOss.AliyunOssStarter{})
-	infras.Register(&qiniuOss.QiniuOssStarter{})
-	// 注册Mq
-	infras.Register(&redisPubSub.RedisPubSubStarter{})
-	infras.Register(&natsMq.NatsMQStarter{})
-	// 注册Oauth Manager
-	infras.Register(&oauth.OauthStarter{})
-	// 注册Cron定时任务
-	infras.Register(&cron.CronStarter{})
-	// 注册hook
-	infras.Register(&hook.HookStarter{})
-	// 对资源组件启动器进行排序
-	infras.SortStarters()
-}
-
-func getRuntimeViper() *viper.Viper {
+func runtimeViper() *viper.Viper {
 	var err error
 	var runtimeViper *viper.Viper
 	var fileName, configFilePath, configFileName, configFileExt string
 
 	runtimeViper = viper.New()
 
-	if configFile != "" {
-		configFilePath, fileName = filepath.Split(configFile)
+	// 1. 从环境变量导入配置项
+	err = loadConfigFromEnv(runtimeViper)
+	if err != nil {
+		panic("Viper Loading ENV Error:" + err.Error())
+	}
+
+	// 2. 从配置文件导入配置项
+	if flagConfigFile != "" {
+		configFilePath, fileName = filepath.Split(flagConfigFile)
 		configFileExt = path.Ext(fileName)
 		configFileName = fileName[0 : len(fileName)-len(configFileExt)]
 		configFileExt = configFileExt[1:]
-		err = viperLoadConfigFile(runtimeViper, configFilePath, configFileName, configFileExt)
+		err = loadConfigFromFile(runtimeViper, configFilePath, configFileName, configFileExt)
 		if err != nil {
-			panic("Viper Read Config File Error:" + err.Error())
+			panic("Viper Loading Config File Error:" + err.Error())
 
 		}
 	}
 
-	if remoteProvider != "" || remoteEndpoint != "" || remotePath != "" {
-		err = viperLoadRemoteEtcdConfig(runtimeViper, remoteProvider, remoteEndpoint, remotePath)
+	// 3. 从远程配置系统导入配置项
+	if flagRemoteProvider != "" || flagRemoteEndpoint != "" || flagRemotePath != "" {
+		err = loadConfigFromRemote(runtimeViper, flagRemoteProvider, flagRemoteEndpoint, flagRemotePath)
 		if err != nil {
-			panic("Viper Read Remote Config Error:" + err.Error())
+			panic("Viper Loading Remote Config Error:" + err.Error())
 		}
 	}
 
 	return runtimeViper
 }
 
+// 绑定命令行参数
+func bindingFlag() {
+	// 启动时获取命令行flag参数
+	flag.StringVar(&flagConfigFile, "f", "", "Config file,like: ./build/config.yaml")
+	flag.StringVar(&flagRemoteProvider, "T", "", "Remote K/V config system provider，support etcd/consul")
+	flag.StringVar(&flagRemoteEndpoint, "E", "", "Remote K/V config system endpoint，etcd requires http://ip:port  consul requires ip:port")
+	flag.StringVar(&flagRemotePath, "P", "", "Remote K/V config path，path is the path in the k/v store to retrieve configuration,like: /configs/myapp.json")
+
+}
+
+// TODO Viper读取环境变量
+func loadConfigFromEnv(runtimeViper *viper.Viper) error {
+
+	return nil
+}
+
 // 读取配置渠道：本地文件读取（json/yaml/ini/...）或远程配置数据（etcd/consul/...）
 // Viper 读取本地配置文件
-func viperLoadConfigFile(runtimeViper *viper.Viper, cfgPath, cfgName, cfgType string) error {
+func loadConfigFromFile(runtimeViper *viper.Viper, cfgPath, cfgName, cfgType string) error {
 	var err error
 	runtimeViper.AddConfigPath(cfgPath) // 设置配置文件读取路径，默认windows环境下为%GOPATH，linux环境下为$GOPATH
 	runtimeViper.SetConfigName(cfgName) // 设置读取的配置文件名
@@ -151,7 +127,7 @@ func viperLoadConfigFile(runtimeViper *viper.Viper, cfgPath, cfgName, cfgType st
 }
 
 // Viper 读取远程配置系统
-func viperLoadRemoteEtcdConfig(runtimeViper *viper.Viper, provider, endpoint, path string) error {
+func loadConfigFromRemote(runtimeViper *viper.Viper, provider, endpoint, path string) error {
 	var err error
 
 	switch provider {
@@ -185,4 +161,35 @@ func viperLoadRemoteEtcdConfig(runtimeViper *viper.Viper, provider, endpoint, pa
 	}
 
 	return nil
+}
+
+// 注册应用组件启动器
+func registerComponent() {
+	// 注册日志记录启动器，并添加一个异步日志输出到文件
+	file, err := os.OpenFile("./info.log", os.O_RDWR|os.O_CREATE, os.ModePerm)
+	if err != nil {
+		panic(err.Error())
+	}
+	writers := []io.Writer{file}
+	infras.Register(&logger.LoggerStarter{Writers: writers})
+	// 注册mongodb启动器
+	infras.Register(&mongoStore.MongoDBStarter{})
+	// 注册mysql启动器
+	infras.Register(&sqlbuilderStore.SqlBuilderStarter{})
+	// 注册Redis连接池
+	infras.Register(&redisStore.RedisStarter{})
+	// 注册Oss
+	infras.Register(&aliyunOss.AliyunOssStarter{})
+	infras.Register(&qiniuOss.QiniuOssStarter{})
+	// 注册Mq
+	infras.Register(&redisPubSub.RedisPubSubStarter{})
+	infras.Register(&natsMq.NatsMQStarter{})
+	// 注册Oauth Manager
+	infras.Register(&oauth.OauthStarter{})
+	// 注册Cron定时任务
+	infras.Register(&cron.CronStarter{})
+	// 注册hook
+	infras.Register(&hook.HookStarter{})
+	// 对资源组件启动器进行排序
+	infras.SortStarters()
 }
