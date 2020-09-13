@@ -5,7 +5,6 @@ import (
 	"GoWebScaffold/infras/logger"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/tietang/props/kvs"
 )
 
 var ginEngine *gin.Engine
@@ -21,9 +20,9 @@ type GinStarter struct {
 }
 
 func (s *GinStarter) Init(sctx *infras.StarterContext) {
-	configs := sctx.Configs()
+	viper := sctx.Configs()
 	define := GinConfig{}
-	err := kvs.Unmarshal(configs, &define, "Gin")
+	err := viper.UnmarshalKey("Gin", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
@@ -75,12 +74,11 @@ func (s *GinStarter) Stop(sctx *infras.StarterContext) {
 func RunForTesting(config *GinConfig, apis []IApiModule) error {
 	var err error
 	if config == nil {
-		config = &GinConfig{}
-		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(config)
-		if err != nil {
-			return err
+		config = &GinConfig{
+			ListenHost: "127.0.0.1",
+			ListenPort: 8090,
 		}
+
 	}
 
 	// 1.配置gin中间件

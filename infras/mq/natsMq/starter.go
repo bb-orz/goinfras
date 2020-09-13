@@ -2,7 +2,6 @@ package natsMq
 
 import (
 	"GoWebScaffold/infras"
-	"github.com/tietang/props/kvs"
 	"go.uber.org/zap"
 )
 
@@ -19,9 +18,9 @@ type NatsMQStarter struct {
 }
 
 func (s *NatsMQStarter) Init(sctx *infras.StarterContext) {
-	configs := sctx.Configs()
+	viper := sctx.Configs()
 	define := NatsMqConfig{}
-	err := kvs.Unmarshal(configs, &define, "NatsMq")
+	err := viper.UnmarshalKey("NatsMq", &define)
 	infras.FailHandler(err)
 
 	s.cfg = &define
@@ -42,12 +41,15 @@ func (s *NatsMQStarter) Stop(sctx *infras.StarterContext) {
 func RunForTesting(config *NatsMqConfig) error {
 	var err error
 	if config == nil {
-		config = &NatsMqConfig{}
-		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(config)
-		if err != nil {
-			return err
+		config = &NatsMqConfig{
+			Switch: true,
+			NatsServers: []natsServer{
+				{
+					Host: "",
+				},
+			},
 		}
+
 	}
 
 	natsMQPool, err = NewNatsMqPool(config, zap.L())

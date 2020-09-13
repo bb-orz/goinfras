@@ -2,7 +2,6 @@ package logger
 
 import (
 	"GoWebScaffold/infras"
-	"github.com/tietang/props/kvs"
 	"go.uber.org/zap"
 	"io"
 )
@@ -27,9 +26,9 @@ type LoggerStarter struct {
 }
 
 func (s *LoggerStarter) Init(sctx *infras.StarterContext) {
-	configs := sctx.Configs()
+	viper := sctx.Configs()
 	define := LoggerConfig{}
-	err := kvs.Unmarshal(configs, &define, "Logger")
+	err := viper.UnmarshalKey("Logger", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
@@ -53,11 +52,24 @@ func (s *LoggerStarter) Priority() int { return infras.INT_MAX }
 func RunForTesting(config *LoggerConfig) error {
 	var err error
 	if config == nil {
-		config = &LoggerConfig{}
-		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(config)
-		if err != nil {
-			return err
+		config = &LoggerConfig{
+			AppName:           "",
+			AppVersion:        "",
+			DevEnv:            true,
+			AddCaller:         true,
+			DebugLevelSwitch:  false,
+			InfoLevelSwitch:   true,
+			WarnLevelSwitch:   true,
+			ErrorLevelSwitch:  true,
+			DPanicLevelSwitch: true,
+			PanicLevelSwitch:  false,
+			FatalLevelSwitch:  true,
+			SimpleZapCore:     true,
+			SyncZapCore:       false,
+			SyncLogSwitch:     true,
+			StdoutLogSwitch:   true,
+			RotateLogSwitch:   false,
+			LogDir:            "../../log",
 		}
 	}
 

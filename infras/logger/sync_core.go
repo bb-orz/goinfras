@@ -49,7 +49,7 @@ func SyncInfoCore(cfg *LoggerConfig, format zapcore.EncoderConfig, syncWriters .
 	)
 }
 
-//异步错误信息(error/dpanic/panic/fatal)日志记录器:
+// 异步错误信息(error/dpanic/panic/fatal)日志记录器:
 func SyncErrorCore(cfg *LoggerConfig, format zapcore.EncoderConfig, syncWriters ...io.Writer) zapcore.Core {
 	// 记录所有非错误日志级别
 	levelEnablerFunc := zap.LevelEnablerFunc(func(level zapcore.Level) bool {

@@ -1,28 +1,28 @@
 package infras
 
 import (
-	"github.com/tietang/props/kvs"
+	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )
 
 const (
-	KeyConfig = "_conf"
+	KeyConfig = "_vpcfg"
 	KeyLogger = "_logger"
 )
 
-//资源启动器上下文，
+// 资源启动器上下文，
 // 用来在服务资源初始化、安装、启动和停止的生命周期中变量和对象的传递
 type StarterContext map[string]interface{}
 
-func (s StarterContext) Configs() kvs.ConfigSource {
+func (s StarterContext) Configs() *viper.Viper {
 	p := s[KeyConfig]
 	if p == nil {
 		panic("配置还没有被初始化")
 	}
-	return p.(kvs.ConfigSource)
+	return p.(*viper.Viper)
 }
-func (s StarterContext) SetConfigs(conf kvs.ConfigSource) {
-	s[KeyConfig] = conf
+func (s StarterContext) SetConfigs(vpcfg *viper.Viper) {
+	s[KeyConfig] = vpcfg
 }
 
 func (s StarterContext) Logger() *zap.Logger {

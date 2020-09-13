@@ -1,5 +1,5 @@
 package cron
 
 type CronConfig struct {
-	Location string `val:"Local"`
+	Location string // 定时器时区设置
 }

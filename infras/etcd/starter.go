@@ -3,7 +3,6 @@ package etcd
 import (
 	"GoWebScaffold/infras"
 	"context"
-	"github.com/tietang/props/kvs"
 	"go.etcd.io/etcd/clientv3"
 )
 
@@ -20,9 +19,9 @@ type EtcdStarter struct {
 }
 
 func (s *EtcdStarter) Init(sctx *infras.StarterContext) {
-	configs := sctx.Configs()
+	viper := sctx.Configs()
 	define := EtcdConfig{}
-	err := kvs.Unmarshal(configs, &define, "Etcd")
+	err := viper.UnmarshalKey("Etcd", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
@@ -43,11 +42,8 @@ func (s *EtcdStarter) Stop(sctx *infras.StarterContext) {
 func RunForTesting(config *EtcdConfig) error {
 	var err error
 	if config == nil {
-		config = &EtcdConfig{}
-		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(config)
-		if err != nil {
-			return err
+		config = &EtcdConfig{
+			Endpoints: []string{"localhost:2379"},
 		}
 	}
 	etcdClient, err = NewEtcdClient(context.TODO(), config, nil)

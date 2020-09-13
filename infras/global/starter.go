@@ -2,7 +2,6 @@ package global
 
 import (
 	"GoWebScaffold/infras"
-	"github.com/tietang/props/kvs"
 )
 
 // 全局配置
@@ -18,9 +17,9 @@ type GlobalStarter struct {
 }
 
 func (s *GlobalStarter) Init(sctx *infras.StarterContext) {
-	configs := sctx.Configs()
+	viper := sctx.Configs()
 	define := GlobalConfig{}
-	err := kvs.Unmarshal(configs, &define, "Global")
+	err := viper.UnmarshalKey("Global", &define)
 	infras.FailHandler(err)
 	cfg = &define
 }

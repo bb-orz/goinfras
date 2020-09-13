@@ -2,7 +2,6 @@ package cron
 
 import (
 	"GoWebScaffold/infras"
-	"github.com/tietang/props/kvs"
 	"go.uber.org/zap"
 )
 
@@ -14,9 +13,9 @@ type CronStarter struct {
 }
 
 func (s *CronStarter) Init(sctx *infras.StarterContext) {
-	configs := sctx.Configs()
+	viper := sctx.Configs()
 	define := CronConfig{}
-	err := kvs.Unmarshal(configs, &define, "Cron")
+	err := viper.UnmarshalKey("Cron", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
@@ -45,14 +44,8 @@ func (s *CronStarter) Stop(sctx *infras.StarterContext) {
 func RunForTesting(config *CronConfig, tasks []*Task) error {
 	var err error
 	if config == nil {
-		config = &CronConfig{}
-		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(config)
-		if err != nil {
-			return err
-		}
+		config = &CronConfig{Location: "Local"}
 	}
-
 	// 1.获取Cron执行管理器
 	manager := NewCronManager(config, zap.L())
 	// 2.注册定时运行任务

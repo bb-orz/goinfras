@@ -1,7 +1,7 @@
 package global
 
 type GlobalConfig struct {
-	Env        string `val:"debug"`
-	AppName    string `val:"My App"`
-	ServerName string `val:"example.com"`
+	Env        string // 允许环境：dev、testing、product
+	AppName    string // 应用名称
+	ServerName string // 服务名称
 }

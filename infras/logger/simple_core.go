@@ -19,7 +19,7 @@ func SimpleCoreList(cfg *LoggerConfig, format zapcore.EncoderConfig) zapcore.Cor
 	return zapcore.NewTee(coreList...)
 }
 
-//简单非错误信息(debug/info/warn)日志记录器:只输出到stdout和file
+// 简单非错误信息(debug/info/warn)日志记录器:只输出到stdout和file
 func SimpleInfoCore(cfg *LoggerConfig, format zapcore.EncoderConfig) zapcore.Core {
 	// 记录所有非错误日志级别
 	levelEnablerFunc := zap.LevelEnablerFunc(func(level zapcore.Level) bool {

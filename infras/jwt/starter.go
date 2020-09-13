@@ -3,7 +3,6 @@ package jwt
 import (
 	"GoWebScaffold/infras"
 	"GoWebScaffold/infras/store/redisStore"
-	"github.com/tietang/props/kvs"
 )
 
 var tku ITokenUtils
@@ -19,9 +18,9 @@ type JwtStarter struct {
 }
 
 func (s *JwtStarter) Init(sctx *infras.StarterContext) {
-	configs := sctx.Configs()
+	viper := sctx.Configs()
 	define := JwtConfig{}
-	err := kvs.Unmarshal(configs, &define, "Jwt")
+	err := viper.UnmarshalKey("Jwt", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
@@ -43,12 +42,11 @@ func (s *JwtStarter) Stop(sctx *infras.StarterContext) {}
 func RunForTesting(config *JwtConfig) error {
 	var err error
 	if config == nil {
-		config = &JwtConfig{}
-		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(config)
-		if err != nil {
-			return err
+		config = &JwtConfig{
+			PrivateKey: "ginger_key",
+			ExpSeconds: 60,
 		}
+
 	}
 	tku = NewTokenUtils([]byte(config.PrivateKey), config.ExpSeconds)
 	return err

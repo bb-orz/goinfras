@@ -1,7 +1,7 @@
 package infras
 
 import (
-	"github.com/tietang/props/kvs"
+	"github.com/spf13/viper"
 )
 
 // 应用程序启动管理器
@@ -10,11 +10,11 @@ type Application struct {
 }
 
 // 创建应用程序启动管理器
-func NewApplication(conf kvs.ConfigSource) *Application {
+func NewApplication(vpcfg *viper.Viper) *Application {
 	// 创建启动管理器
 	b := new(Application)
 	b.Sctx = &StarterContext{}
-	b.Sctx.SetConfigs(conf)
+	b.Sctx.SetConfigs(vpcfg)
 	return b
 }
 
