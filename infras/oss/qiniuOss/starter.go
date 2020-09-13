@@ -3,7 +3,6 @@ package qiniuOss
 import (
 	"GoWebScaffold/infras"
 	qiniuOss "github.com/qiniu/api.v7/v7/auth/qbox"
-	"github.com/tietang/props/kvs"
 )
 
 var qiniuOssClient *QnClient
@@ -28,11 +27,10 @@ type QiniuOssStarter struct {
 }
 
 func (s *QiniuOssStarter) Init(sctx *infras.StarterContext) {
-	configs := sctx.Configs()
+	viper := sctx.Configs()
 	define := QiniuOssConfig{}
-	err := kvs.Unmarshal(configs, &define, "QiniuOss")
+	err := viper.UnmarshalKey("QiniuOss", &define)
 	infras.FailHandler(err)
-
 	qiniuOssClient = new(QnClient)
 	qiniuOssClient.cfg = &define
 
@@ -46,11 +44,19 @@ func (s *QiniuOssStarter) Setup(sctx *infras.StarterContext) {
 func RunForTesting(config *QiniuOssConfig) error {
 	var err error
 	if config == nil {
-		config = &QiniuOssConfig{}
-		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(config)
-		if err != nil {
-			return err
+		config = &QiniuOssConfig{
+			"",
+			"",
+			"",
+			false,
+			false,
+			7200,
+			"",
+			"",
+			"",
+			1024,
+			10485760,
+			"",
 		}
 	}
 	mac := NewQiniuOssMac(config)

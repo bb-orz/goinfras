@@ -3,7 +3,6 @@ package redisStore
 import (
 	"GoWebScaffold/infras"
 	"github.com/garyburd/redigo/redis"
-	"github.com/tietang/props/kvs"
 	"go.uber.org/zap"
 )
 
@@ -20,9 +19,9 @@ type RedisStarter struct {
 }
 
 func (s *RedisStarter) Init(sctx *infras.StarterContext) {
-	configs := sctx.Configs()
+	viper := sctx.Configs()
 	define := RedisConfig{}
-	err := kvs.Unmarshal(configs, &define, "Redis")
+	err := viper.UnmarshalKey("Redis", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
@@ -40,12 +39,16 @@ func (s *RedisStarter) Stop(sctx *infras.StarterContext) {
 
 func RunForTesting() error {
 	var err error
-	config := &RedisConfig{}
-	p := kvs.NewEmptyCompositeConfigSource()
-	err = p.Unmarshal(config)
-	if err != nil {
-		return err
+	config := &RedisConfig{
+		"127.0.0.1",
+		6379,
+		false,
+		"",
+		0,
+		50,
+		60,
 	}
+
 	rPool, err = NewRedisPool(config, zap.L())
 	return err
 }

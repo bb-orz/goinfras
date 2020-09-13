@@ -1,12 +1,12 @@
 package redisPubSub
 
 type RedisPubSubConfig struct {
-	Switch      bool   `val:"false"`
-	DbHost      string `val:"127.0.0.1"`
-	DbPort      int    `val:"6379"`
-	DbAuth      bool   `val:"false"`
-	DbPasswd    string
-	MaxActive   int64 `val:"0"`
-	MaxIdle     int64 `val:"50"`
-	IdleTimeout int64 `val:"60"`
+	Switch      bool   // 开关
+	DbHost      string // 主机地址
+	DbPort      int    // 主机端口
+	DbAuth      bool   // 权限认证开关
+	DbPasswd    string // 权限密码
+	MaxActive   int64  // 最大活动连接数，0为无限
+	MaxIdle     int64  // 最大闲置连接数，0为无限
+	IdleTimeout int64  // 闲置超时时间，0位无限
 }

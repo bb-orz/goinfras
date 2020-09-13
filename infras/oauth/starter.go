@@ -2,7 +2,6 @@ package oauth
 
 import (
 	"GoWebScaffold/infras"
-	"github.com/tietang/props/kvs"
 )
 
 var oauthManager *oAuthManager
@@ -24,9 +23,9 @@ type OauthStarter struct {
 }
 
 func (s *OauthStarter) Init(sctx *infras.StarterContext) {
-	configs := sctx.Configs()
+	viper := sctx.Configs()
 	define := OAuthConfig{}
-	err := kvs.Unmarshal(configs, &define, "Oauth")
+	err := viper.UnmarshalKey("OAuth", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
@@ -48,13 +47,17 @@ func (s *OauthStarter) Setup(sctx *infras.StarterContext) {
 }
 
 func RunForTesting(config *OAuthConfig) error {
-	var err error
 	if config == nil {
-		config = &OAuthConfig{}
-		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(config)
-		if err != nil {
-			return err
+		config = &OAuthConfig{
+			false,
+			"",
+			"",
+			false,
+			"",
+			"",
+			false,
+			"",
+			"",
 		}
 	}
 

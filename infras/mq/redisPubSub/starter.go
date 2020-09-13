@@ -3,7 +3,6 @@ package redisPubSub
 import (
 	"GoWebScaffold/infras"
 	redigo "github.com/garyburd/redigo/redis"
-	"github.com/tietang/props/kvs"
 	"go.uber.org/zap"
 )
 
@@ -33,9 +32,9 @@ type RedisPubSubStarter struct {
 }
 
 func (s *RedisPubSubStarter) Init(sctx *infras.StarterContext) {
-	configs := sctx.Configs()
+	viper := sctx.Configs()
 	define := RedisPubSubConfig{}
-	err := kvs.Unmarshal(configs, &define, "RedisPubSub")
+	err := viper.UnmarshalKey("RedisPubSub", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
@@ -51,14 +50,18 @@ func (s *RedisPubSubStarter) Stop(sctx *infras.StarterContext) {
 
 /*For testing*/
 func RunForTesting(config *RedisPubSubConfig) error {
-	var err error
 	if config == nil {
-		config = &RedisPubSubConfig{}
-		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(config)
-		if err != nil {
-			return err
+		config = &RedisPubSubConfig{
+			true,
+			"127.0.0.1",
+			6380,
+			false,
+			"",
+			0,
+			50,
+			60,
 		}
+
 	}
 
 	redispsPool = NewRedisPubsubPool(config, zap.L())

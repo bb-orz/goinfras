@@ -45,7 +45,11 @@ func RunForTesting(config *NatsMqConfig) error {
 			Switch: true,
 			NatsServers: []natsServer{
 				{
-					Host: "",
+					"127.0.0.1",
+					4222,
+					false,
+					"",
+					"",
 				},
 			},
 		}

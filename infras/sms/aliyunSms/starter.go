@@ -3,7 +3,6 @@ package aliyunSms
 import (
 	"GoWebScaffold/infras"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi"
-	"github.com/tietang/props/kvs"
 )
 
 var aliyunSmsClient *dysmsapi.Client
@@ -25,9 +24,9 @@ type aliyunSmsStarter struct {
 }
 
 func (s *aliyunSmsStarter) Init(sctx *infras.StarterContext) {
-	configs := sctx.Configs()
+	viper := sctx.Configs()
 	define := AliyunSmsConfig{}
-	err := kvs.Unmarshal(configs, &define, "AliyunSms")
+	err := viper.UnmarshalKey("AliyunSms", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
@@ -42,11 +41,16 @@ func (s *aliyunSmsStarter) Setup(sctx *infras.StarterContext) {
 func RunForTesting(config *AliyunSmsConfig) error {
 	var err error
 	if config == nil {
-		config = &AliyunSmsConfig{}
-		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(config)
-		if err != nil {
-			return err
+		config = &AliyunSmsConfig{
+			"https",
+			"dysmsapi.aliyuncs.com",
+			"",
+			"",
+			"",
+			"",
+			"SendSms",
+			"",
+			"",
 		}
 	}
 	aliyunSmsClient, err = NewAliyunSmsClient(config)

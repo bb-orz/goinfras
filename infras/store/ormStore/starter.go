@@ -3,7 +3,6 @@ package ormStore
 import (
 	"GoWebScaffold/infras"
 	"github.com/jinzhu/gorm"
-	"github.com/tietang/props/kvs"
 )
 
 var gormDb *gorm.DB
@@ -20,9 +19,9 @@ type ORMStarter struct {
 
 // 读取配置
 func (s *ORMStarter) Init(sctx *infras.StarterContext) {
-	configs := sctx.Configs()
+	viper := sctx.Configs()
 	define := OrmConfig{}
-	err := kvs.Unmarshal(configs, &define, "OrmConfig")
+	err := viper.UnmarshalKey("OrmConfig", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
@@ -43,11 +42,18 @@ func (s *ORMStarter) Stop(sctx *infras.StarterContext) {
 func RunForTesting(config *OrmConfig) error {
 	var err error
 	if config == nil {
-		config = &OrmConfig{}
-		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(config)
-		if err != nil {
-			return err
+		config = &OrmConfig{
+			"mysql",
+			"127.0.0.1",
+			3306,
+			"dev",
+			"123456",
+			"dev_db",
+			"utf8",
+			true,
+			"Local",
+			"disable",
+			false,
 		}
 	}
 

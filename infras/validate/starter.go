@@ -3,7 +3,6 @@ package validate
 import (
 	"GoWebScaffold/infras"
 	"github.com/go-playground/universal-translator"
-	"github.com/tietang/props/kvs"
 	"go.uber.org/zap"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -29,9 +28,9 @@ type ValidatorStarter struct {
 }
 
 func (s *ValidatorStarter) Init(sctx infras.StarterContext) {
-	configs := sctx.Configs()
+	viper := sctx.Configs()
 	define := ValidateConfig{}
-	err := kvs.Unmarshal(configs, &define, "Validate")
+	err := viper.UnmarshalKey("Validate", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
@@ -52,11 +51,8 @@ func (s *ValidatorStarter) Setup(sctx infras.StarterContext) {
 func RunForTesting(config *ValidateConfig) error {
 	var err error
 	if config == nil {
-		config = &ValidateConfig{}
-		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(config)
-		if err != nil {
-			return err
+		config = &ValidateConfig{
+			true,
 		}
 	}
 

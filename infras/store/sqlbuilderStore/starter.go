@@ -4,7 +4,6 @@ import (
 	"GoWebScaffold/infras"
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/tietang/props/kvs"
 )
 
 var sqlBuilderClient *sql.DB
@@ -21,9 +20,9 @@ type SqlBuilderStarter struct {
 
 // 读取配置
 func (s *SqlBuilderStarter) Init(sctx *infras.StarterContext) {
-	configs := sctx.Configs()
+	viper := sctx.Configs()
 	define := MysqlConfig{}
-	err := kvs.Unmarshal(configs, &define, "Mysql")
+	err := viper.UnmarshalKey("Mysql", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
@@ -42,11 +41,22 @@ func (s *SqlBuilderStarter) Stop(sctx *infras.StarterContext) {
 func RunForTesting(config *MysqlConfig) error {
 	var err error
 	if config == nil {
-		config = &MysqlConfig{}
-		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(config)
-		if err != nil {
-			return err
+		config = &MysqlConfig{
+			"127.0.0.1",
+			3306,
+			"",
+			"",
+			"",
+			60,
+			100,
+			200,
+			"uft8",
+			true,
+			true,
+			5,
+			30,
+			true,
+			true,
 		}
 	}
 	sqlBuilderClient, err = NewMysqlClient(config)

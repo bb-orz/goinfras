@@ -3,7 +3,6 @@ package mongoStore
 import (
 	"GoWebScaffold/infras"
 	"context"
-	"github.com/tietang/props/kvs"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -20,9 +19,9 @@ type MongoDBStarter struct {
 }
 
 func (s *MongoDBStarter) Init(sctx *infras.StarterContext) {
-	configs := sctx.Configs()
+	viper := sctx.Configs()
 	define := MongoConfig{}
-	err := kvs.Unmarshal(configs, &define, "Mongodb")
+	err := viper.UnmarshalKey("Mongodb", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
@@ -41,13 +40,25 @@ func (s *MongoDBStarter) Stop(sctx *infras.StarterContext) {
 func RunForTesting(config *MongoConfig) error {
 	var err error
 	if config == nil {
-		config = &MongoConfig{}
-		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(config)
-		if err != nil {
-			return err
+		config = &MongoConfig{
+			[]string{"127.0.0.1:27017"},
+			"",
+			"",
+			"",
+			"",
+			true,
+			15,
+			nil,
+			true,
+			10,
+			100,
+			1000,
+			120,
+			false,
+			20,
+			true,
+			true,
 		}
-		config.DbHosts = []string{"127.0.0.1:27017"}
 	}
 
 	mClient, err = NewMongoClient(config)

@@ -3,7 +3,6 @@ package aliyunOss
 import (
 	"GoWebScaffold/infras"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
-	"github.com/tietang/props/kvs"
 )
 
 var aliyunOssClient *oss.Client
@@ -19,9 +18,9 @@ type AliyunOssStarter struct {
 }
 
 func (s *AliyunOssStarter) Init(sctx *infras.StarterContext) {
-	configs := sctx.Configs()
+	viper := sctx.Configs()
 	define := AliyunOssConfig{}
-	err := kvs.Unmarshal(configs, &define, "AliyunOss")
+	err := viper.UnmarshalKey("AliyunOss", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
@@ -36,11 +35,19 @@ func (s *AliyunOssStarter) Setup(sctx *infras.StarterContext) {
 func RunForTesting(config *AliyunOssConfig) error {
 	var err error
 	if config == nil {
-		config = &AliyunOssConfig{}
-		p := kvs.NewEmptyCompositeConfigSource()
-		err = p.Unmarshal(config)
-		if err != nil {
-			return err
+		config = &AliyunOssConfig{
+			"",
+			60,
+			60,
+			false,
+			false,
+			"",
+			"",
+			"",
+			"",
+			"http://oss-cn-shenzhen.aliyuncs.com",
+			false,
+			"",
 		}
 	}
 
