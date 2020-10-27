@@ -39,7 +39,6 @@ require (
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/coreos/bbolt v1.3.4 // indirect
 	github.com/coreos/etcd v3.3.20+incompatible // indirect
-	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/didi/gendry v1.3.2
 	github.com/fastly/go-utils v0.0.0-20180712184237-d95a45783239 // indirect
@@ -59,7 +58,6 @@ require (
 	github.com/json-iterator/go v1.1.9
 	github.com/lestrrat-go/file-rotatelogs v2.3.0+incompatible
 	github.com/lestrrat-go/strftime v1.0.1 // indirect
-	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/nats-io/nats-server/v2 v2.1.7 // indirect
 	github.com/nats-io/nats.go v1.10.0
 	github.com/prometheus/common v0.4.0
@@ -75,7 +73,6 @@ require (
 	github.com/tietang/go-utils v0.1.3 // indirect
 	github.com/tietang/props v2.3.0+incompatible
 	github.com/valyala/fasttemplate v1.1.0 // indirect
-	github.com/xxjwxc/gormt v1.1.2 // indirect
 	go.etcd.io/etcd v3.3.20+incompatible
 	go.mongodb.org/mongo-driver v1.3.2
 	go.uber.org/zap v1.10.0
