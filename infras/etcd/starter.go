@@ -15,12 +15,12 @@ func EtcdClientV3() *clientv3.Client {
 
 type EtcdStarter struct {
 	infras.BaseStarter
-	cfg *EtcdConfig
+	cfg *Config
 }
 
 func (s *EtcdStarter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
-	define := EtcdConfig{}
+	define := Config{}
 	err := viper.UnmarshalKey("Etcd", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
@@ -39,10 +39,10 @@ func (s *EtcdStarter) Stop(sctx *infras.StarterContext) {
 }
 
 /*For testing*/
-func RunForTesting(config *EtcdConfig) error {
+func RunForTesting(config *Config) error {
 	var err error
 	if config == nil {
-		config = &EtcdConfig{
+		config = &Config{
 			Endpoints: []string{"localhost:2379"},
 		}
 	}

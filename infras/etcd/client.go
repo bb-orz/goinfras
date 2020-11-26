@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func NewEtcdClient(ctx context.Context, cfg *EtcdConfig, zapLoggerConf *zap.Config) (cli *clientv3.Client, err error) {
+func NewEtcdClient(ctx context.Context, cfg *Config, zapLoggerConf *zap.Config) (cli *clientv3.Client, err error) {
 	EtcdConfig := clientv3.Config{
 		Endpoints:            cfg.Endpoints,                                         // 单机或集群主机地址
 		AutoSyncInterval:     time.Duration(cfg.AutoSyncInterval) * time.Second,     // 更新其最新成员端点的时间间隔。 0禁用自动同步。 默认情况下，自动同步被禁用。

@@ -2,7 +2,7 @@ package etcd
 
 import "crypto/tls"
 
-type EtcdConfig struct {
+type Config struct {
 	Endpoints            []string    // etcd服务节点列表
 	TLS                  *tls.Config // 加密配置
 	Username             string      // 用户名
