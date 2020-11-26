@@ -6,42 +6,42 @@ import (
 )
 
 var aliyunSmsClient *dysmsapi.Client
-var commonSms *CommonSms
+var sms *CommonSms
 
-func AliyunSmsClient() *dysmsapi.Client {
+func Client() *dysmsapi.Client {
 	infras.Check(aliyunSmsClient)
 	return aliyunSmsClient
 }
 
-func AliyunCommonSms() *CommonSms {
-	infras.Check(commonSms)
-	return commonSms
+func Sms() *CommonSms {
+	infras.Check(sms)
+	return sms
 }
 
-type aliyunSmsStarter struct {
+type Starter struct {
 	infras.BaseStarter
-	cfg *AliyunSmsConfig
+	cfg *Config
 }
 
-func (s *aliyunSmsStarter) Init(sctx *infras.StarterContext) {
+func (s *Starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
-	define := AliyunSmsConfig{}
+	define := Config{}
 	err := viper.UnmarshalKey("AliyunSms", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
 
-func (s *aliyunSmsStarter) Setup(sctx *infras.StarterContext) {
+func (s *Starter) Setup(sctx *infras.StarterContext) {
 	var err error
 	aliyunSmsClient, err = NewAliyunSmsClient(s.cfg)
 	infras.FailHandler(err)
-	commonSms = NewCommonSms(s.cfg)
+	sms = NewCommonSms(s.cfg)
 }
 
-func RunForTesting(config *AliyunSmsConfig) error {
+func RunForTesting(config *Config) error {
 	var err error
 	if config == nil {
-		config = &AliyunSmsConfig{
+		config = &Config{
 			"https",
 			"dysmsapi.aliyuncs.com",
 			"",

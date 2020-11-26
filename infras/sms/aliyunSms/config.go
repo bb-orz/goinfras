@@ -1,6 +1,6 @@
 package aliyunSms
 
-type AliyunSmsConfig struct {
+type Config struct {
 	Scheme          string
 	EndPoint        string // 必须，服务器节点
 	AccessKeyId     string // 必须，主账号AccessKey的ID。

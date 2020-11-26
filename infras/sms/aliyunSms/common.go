@@ -7,12 +7,12 @@ import (
 
 type CommonSms struct {
 	client *dysmsapi.Client
-	cfg    *AliyunSmsConfig
+	cfg    *Config
 }
 
-func NewCommonSms(config *AliyunSmsConfig) *CommonSms {
+func NewCommonSms(config *Config) *CommonSms {
 	c := new(CommonSms)
-	c.client = AliyunSmsClient()
+	c.client = Client()
 	c.cfg = config
 	return c
 }
