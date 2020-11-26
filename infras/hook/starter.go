@@ -15,11 +15,11 @@ func Register(fn func()) {
 	callbacks = append(callbacks, fn)
 }
 
-type HookStarter struct {
+type Starter struct {
 	infras.BaseStarter
 }
 
-func (s *HookStarter) Setup(sctx *infras.StarterContext) {
+func (s *Starter) Setup(sctx *infras.StarterContext) {
 	sigs := make(chan os.Signal)
 	signal.Notify(sigs, syscall.SIGQUIT, syscall.SIGTERM)
 	go func() {
@@ -36,7 +36,7 @@ func (s *HookStarter) Setup(sctx *infras.StarterContext) {
 
 }
 
-func (s *HookStarter) Start(sctx *infras.StarterContext) {
+func (s *Starter) Start(sctx *infras.StarterContext) {
 	starters := infras.StarterManager.GetAll()
 
 	for _, s := range starters {
@@ -49,4 +49,4 @@ func (s *HookStarter) Start(sctx *infras.StarterContext) {
 }
 
 // 优先级为最末位启动
-func (s *HookStarter) Priority() int { return infras.INT_MIN }
+func (s *Starter) Priority() int { return infras.INT_MIN }
