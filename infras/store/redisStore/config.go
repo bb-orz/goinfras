@@ -1,7 +1,7 @@
 package redisStore
 
 // RedisDB配置
-type RedisConfig struct {
+type Config struct {
 	DbHost      string // 主机地址
 	DbPort      int    // 主机端口
 	DbAuth      bool   // 是否开启鉴权

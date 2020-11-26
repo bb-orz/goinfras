@@ -11,10 +11,10 @@ func TestNewCommonRedisPool(t *testing.T) {
 	Convey("Redis Dao Test", t, func() {
 		err := RunForTesting()
 		So(err, ShouldBeNil)
-		Println("pool ActiveCount:", RedisPool().Stats().ActiveCount, ",pool IdleCount:", RedisPool().Stats().IdleCount)
+		Println("pool ActiveCount:", Pool().Stats().ActiveCount, ",pool IdleCount:", Pool().Stats().IdleCount)
 
-		conn := RedisPool().Get()
-		Println("pool ActiveCount:", RedisPool().Stats().ActiveCount, ",pool IdleCount:", RedisPool().Stats().IdleCount)
+		conn := Pool().Get()
+		Println("pool ActiveCount:", Pool().Stats().ActiveCount, ",pool IdleCount:", Pool().Stats().IdleCount)
 
 		reply, err := conn.Do("Ping")
 		So(err, ShouldBeNil)
@@ -22,7 +22,7 @@ func TestNewCommonRedisPool(t *testing.T) {
 
 		err = conn.Close()
 		So(err, ShouldBeNil)
-		Println("pool ActiveCount:", RedisPool().Stats().ActiveCount, ",pool IdleCount:", RedisPool().Stats().IdleCount)
+		Println("pool ActiveCount:", Pool().Stats().ActiveCount, ",pool IdleCount:", Pool().Stats().IdleCount)
 
 	})
 }

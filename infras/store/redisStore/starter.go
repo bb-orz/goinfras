@@ -6,40 +6,40 @@ import (
 	"go.uber.org/zap"
 )
 
-var rPool *redis.Pool
+var pool *redis.Pool
 
-func RedisPool() *redis.Pool {
-	infras.Check(rPool)
-	return rPool
+func Pool() *redis.Pool {
+	infras.Check(pool)
+	return pool
 }
 
-type RedisStarter struct {
+type Starter struct {
 	infras.BaseStarter
-	cfg *RedisConfig
+	cfg *Config
 }
 
-func (s *RedisStarter) Init(sctx *infras.StarterContext) {
+func (s *Starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
-	define := RedisConfig{}
+	define := Config{}
 	err := viper.UnmarshalKey("Redis", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
 
-func (s *RedisStarter) Setup(sctx *infras.StarterContext) {
+func (s *Starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	rPool, err = NewRedisPool(s.cfg, sctx.Logger())
+	pool, err = NewPool(s.cfg, sctx.Logger())
 	infras.FailHandler(err)
 	sctx.Logger().Info("RedisPool Setup Successful!")
 }
 
-func (s *RedisStarter) Stop(sctx *infras.StarterContext) {
-	RedisPool().Close()
+func (s *Starter) Stop(sctx *infras.StarterContext) {
+	Pool().Close()
 }
 
 func RunForTesting() error {
 	var err error
-	config := &RedisConfig{
+	config := &Config{
 		"127.0.0.1",
 		6379,
 		false,
@@ -49,6 +49,6 @@ func RunForTesting() error {
 		60,
 	}
 
-	rPool, err = NewRedisPool(config, zap.L())
+	pool, err = NewPool(config, zap.L())
 	return err
 }
