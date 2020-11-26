@@ -12,17 +12,17 @@ type oAuthManager struct {
 	QQ     *QQOAuthManager
 }
 
-func OAuthManager() *oAuthManager {
+func Manager() *oAuthManager {
 	infras.Check(oauthManager)
 	return oauthManager
 }
 
-type OauthStarter struct {
+type Starter struct {
 	infras.BaseStarter
 	cfg *Config
 }
 
-func (s *OauthStarter) Init(sctx *infras.StarterContext) {
+func (s *Starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
 	define := Config{}
 	err := viper.UnmarshalKey("OAuth", &define)
@@ -30,7 +30,7 @@ func (s *OauthStarter) Init(sctx *infras.StarterContext) {
 	s.cfg = &define
 }
 
-func (s *OauthStarter) Setup(sctx *infras.StarterContext) {
+func (s *Starter) Setup(sctx *infras.StarterContext) {
 	oauthManager = new(oAuthManager)
 	if s.cfg.QQSignSwitch {
 		oauthManager.QQ = NewQQOauthManager(s.cfg)
