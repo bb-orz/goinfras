@@ -6,8 +6,8 @@ import (
 )
 
 // 验证 DTO Struct
-func ValidateStruct(s interface{}) (err error) {
-	err = Validater().Struct(s)
+func Validate(s interface{}) (err error) {
+	err = Validator().Struct(s)
 	if err != nil {
 		_, ok := err.(*validator.InvalidValidationError)
 		if ok {
@@ -16,7 +16,7 @@ func ValidateStruct(s interface{}) (err error) {
 		errs, ok := err.(validator.ValidationErrors)
 		if ok {
 			for _, e := range errs {
-				log.Error(e.Translate(Translater()))
+				log.Error(e.Translate(Translator()))
 			}
 		}
 		return err

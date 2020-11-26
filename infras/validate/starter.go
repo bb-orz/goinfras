@@ -11,31 +11,31 @@ var validate *validator.Validate
 var translator ut.Translator
 
 // 验证器
-func Validater() *validator.Validate {
+func Validator() *validator.Validate {
 	infras.Check(validate)
 	return validate
 }
 
 // 验证信息翻译器
-func Translater() ut.Translator {
+func Translator() ut.Translator {
 	infras.Check(translator)
 	return translator
 }
 
-type ValidatorStarter struct {
+type Starter struct {
 	infras.BaseStarter
-	cfg *ValidateConfig
+	cfg *Config
 }
 
-func (s *ValidatorStarter) Init(sctx infras.StarterContext) {
+func (s *Starter) Init(sctx infras.StarterContext) {
 	viper := sctx.Configs()
-	define := ValidateConfig{}
+	define := Config{}
 	err := viper.UnmarshalKey("Validate", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
 
-func (s *ValidatorStarter) Setup(sctx infras.StarterContext) {
+func (s *Starter) Setup(sctx infras.StarterContext) {
 	var err error
 	if s.cfg.TransZh {
 		validate, translator, err = NewZhValidator()
@@ -48,10 +48,10 @@ func (s *ValidatorStarter) Setup(sctx infras.StarterContext) {
 }
 
 /*For testing*/
-func RunForTesting(config *ValidateConfig) error {
+func RunForTesting(config *Config) error {
 	var err error
 	if config == nil {
-		config = &ValidateConfig{
+		config = &Config{
 			true,
 		}
 	}

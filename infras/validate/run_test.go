@@ -12,7 +12,7 @@ type UserDemo struct {
 	RePassword string `validate:"required,alphanumunicode,eqfield=Password"`
 }
 
-func TestValidateStruct(t *testing.T) {
+func TestValidate(t *testing.T) {
 	Convey("Test Validate DTO Struct", t, func() {
 		err := RunForTesting(nil)
 		So(err, ShouldBeNil)
@@ -24,7 +24,7 @@ func TestValidateStruct(t *testing.T) {
 			RePassword: "123456",
 		}
 
-		err = ValidateStruct(userDemo1)
+		err = Validate(userDemo1)
 		So(err, ShouldBeNil)
 
 		userDemo2 := UserDemo{
@@ -34,7 +34,7 @@ func TestValidateStruct(t *testing.T) {
 			RePassword: "123456ddd",
 		}
 
-		err = ValidateStruct(userDemo2)
+		err = Validate(userDemo2)
 		So(err, ShouldNotBeNil)
 		Println("Validate Error:", err)
 	})
