@@ -12,23 +12,23 @@ func TokenUtils() ITokenUtils {
 	return tku
 }
 
-type JwtStarter struct {
+type Starter struct {
 	infras.BaseStarter
-	cfg *JwtConfig
+	cfg *Config
 }
 
-func (s *JwtStarter) Init(sctx *infras.StarterContext) {
+func (s *Starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
-	define := JwtConfig{}
+	define := Config{}
 	err := viper.UnmarshalKey("Jwt", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
 
-func (s *JwtStarter) Setup(sctx *infras.StarterContext) {
+func (s *Starter) Setup(sctx *infras.StarterContext) {
 }
 
-func (s *JwtStarter) Start(sctx *infras.StarterContext) {
+func (s *Starter) Start(sctx *infras.StarterContext) {
 	if redisStore.RedisPool() != nil {
 		tku = NewTokenUtilsX([]byte(s.cfg.PrivateKey), s.cfg.ExpSeconds, redisStore.RedisPool())
 	} else {
@@ -36,13 +36,13 @@ func (s *JwtStarter) Start(sctx *infras.StarterContext) {
 	}
 }
 
-func (s *JwtStarter) Stop(sctx *infras.StarterContext) {}
+func (s *Starter) Stop(sctx *infras.StarterContext) {}
 
 /*For testing*/
-func RunForTesting(config *JwtConfig) error {
+func RunForTesting(config *Config) error {
 	var err error
 	if config == nil {
-		config = &JwtConfig{
+		config = &Config{
 			PrivateKey: "ginger_key",
 			ExpSeconds: 60,
 		}
