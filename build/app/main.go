@@ -176,25 +176,25 @@ func registerComponent() {
 		panic(err.Error())
 	}
 	writers := []io.Writer{file}
-	infras.Register(&logger.LoggerStarter{Writers: writers})
+	infras.Register(&logger.Starter{Writers: writers})
 	// 注册mongodb启动器
-	infras.Register(&mongoStore.MongoDBStarter{})
+	infras.Register(&mongoStore.Starter{})
 	// 注册mysql启动器
-	infras.Register(&sqlbuilderStore.SqlBuilderStarter{})
+	infras.Register(&sqlbuilderStore.Starter{})
 	// 注册Redis连接池
-	infras.Register(&redisStore.RedisStarter{})
+	infras.Register(&redisStore.Starter{})
 	// 注册Oss
-	infras.Register(&aliyunOss.AliyunOssStarter{})
-	infras.Register(&qiniuOss.QiniuOssStarter{})
+	infras.Register(&aliyunOss.Starter{})
+	infras.Register(&qiniuOss.Starter{})
 	// 注册Mq
-	infras.Register(&redisPubSub.RedisPubSubStarter{})
-	infras.Register(&natsMq.NatsMQStarter{})
+	infras.Register(&redisPubSub.Starter{})
+	infras.Register(&natsMq.Starter{})
 	// 注册Oauth Manager
-	infras.Register(&oauth.OauthStarter{})
+	infras.Register(&oauth.Starter{})
 	// 注册Cron定时任务
 	infras.Register(&cron.Starter{})
 	// 注册hook
-	infras.Register(&hook.HookStarter{})
+	infras.Register(&hook.Starter{})
 	// 对资源组件启动器进行排序
 	infras.SortStarters()
 }

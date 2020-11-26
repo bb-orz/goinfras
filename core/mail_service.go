@@ -29,7 +29,7 @@ type MailService struct {
 func (service *MailService) SendEmailForVerified(dto services.SendEmailForVerifiedDTO) error {
 	var err error
 	// 校验传输参数
-	if err = validate.ValidateStruct(dto); err != nil {
+	if err = validate.Validate(dto); err != nil {
 		return err
 	}
 
@@ -44,7 +44,7 @@ func (service *MailService) SendEmailForVerified(dto services.SendEmailForVerifi
 func (service *MailService) SendEmailForgetPassword(dto services.SendEmailForgetPasswordDTO) error {
 	var err error
 	// 校验传输参数
-	if err = validate.ValidateStruct(dto); err != nil {
+	if err = validate.Validate(dto); err != nil {
 		return err
 	}
 

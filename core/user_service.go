@@ -40,7 +40,7 @@ func (service *UserService) CreateUserWithEmail(dto services.CreateUserWithEmail
 	var userDTO *services.UserDTO
 
 	// 校验传输参数
-	if err = validate.ValidateStruct(dto); err != nil {
+	if err = validate.Validate(dto); err != nil {
 		return nil, WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
@@ -65,7 +65,7 @@ func (service *UserService) CreateUserWithPhone(dto services.CreateUserWithPhone
 	var userDTO *services.UserDTO
 
 	// 校验传输参数
-	if err = validate.ValidateStruct(dto); err != nil {
+	if err = validate.Validate(dto); err != nil {
 		return nil, WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
@@ -90,7 +90,7 @@ func (service *UserService) EmailAuth(dto services.AuthWithEmailPasswordDTO) (st
 	var token string
 
 	// 校验传输参数
-	if err = validate.ValidateStruct(dto); err != nil {
+	if err = validate.Validate(dto); err != nil {
 		return "", WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
@@ -121,7 +121,7 @@ func (service *UserService) PhoneAuth(dto services.AuthWithPhonePasswordDTO) (st
 	var token string
 
 	// 校验传输参数
-	if err = validate.ValidateStruct(dto); err != nil {
+	if err = validate.Validate(dto); err != nil {
 		return "", WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
@@ -152,7 +152,7 @@ func (service *UserService) GetUserInfo(dto services.GetUserInfoDTO) (*services.
 	var userDTO *services.UserDTO
 
 	// 校验传输参数
-	if err = validate.ValidateStruct(dto); err != nil {
+	if err = validate.Validate(dto); err != nil {
 		return nil, WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
@@ -170,7 +170,7 @@ func (service *UserService) SetUserInfos(dto services.SetUserInfoDTO) error {
 	var err error
 
 	// 校验传输参数
-	if err = validate.ValidateStruct(dto); err != nil {
+	if err = validate.Validate(dto); err != nil {
 		return WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
@@ -189,7 +189,7 @@ func (service *UserService) ValidateEmail(dto services.ValidateEmailDTO) (bool, 
 	var pass bool
 
 	// 校验传输参数
-	if err = validate.ValidateStruct(dto); err != nil {
+	if err = validate.Validate(dto); err != nil {
 		return false, WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
@@ -212,7 +212,7 @@ func (service *UserService) ValidatePhone(dto services.ValidatePhoneDTO) (bool, 
 	var pass bool
 
 	// 校验传输参数
-	if err = validate.ValidateStruct(dto); err != nil {
+	if err = validate.Validate(dto); err != nil {
 		return false, WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
@@ -233,7 +233,7 @@ func (service *UserService) ValidatePhone(dto services.ValidatePhoneDTO) (bool, 
 func (service *UserService) SetStatus(dto services.SetStatusDTO) (int, error) {
 	var err error
 	// 校验传输参数
-	if err = validate.ValidateStruct(dto); err != nil {
+	if err = validate.Validate(dto); err != nil {
 		return -1, WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
@@ -251,7 +251,7 @@ func (service *UserService) ChangePassword(dto services.ChangePasswordDTO) error
 	var userDTO *services.UserDTO
 
 	// 校验传输参数
-	if err = validate.ValidateStruct(dto); err != nil {
+	if err = validate.Validate(dto); err != nil {
 		return WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
@@ -284,7 +284,7 @@ func (service *UserService) ForgetPassword(dto services.ForgetPasswordDTO) error
 	var isVerified bool
 
 	// 校验传输参数
-	if err = validate.ValidateStruct(dto); err != nil {
+	if err = validate.Validate(dto); err != nil {
 		return WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
@@ -326,7 +326,7 @@ func (service *UserService) QQOAuth(dto services.QQLoginDTO) (string, error) {
 	var userOAuthsInfo *services.UserOAuthsDTO     // 创建用户后的信息
 
 	// 校验传输参数
-	if err = validate.ValidateStruct(dto); err != nil {
+	if err = validate.Validate(dto); err != nil {
 		return "", WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
@@ -381,7 +381,7 @@ func (service *UserService) WechatOAuth(dto services.WechatLoginDTO) (string, er
 	var userOAuthsInfo *services.UserOAuthsDTO         // 创建用户后的信息
 
 	// 校验传输参数
-	if err = validate.ValidateStruct(dto); err != nil {
+	if err = validate.Validate(dto); err != nil {
 		return "", WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
@@ -436,7 +436,7 @@ func (service *UserService) WeiboOAuth(dto services.WeiboLoginDTO) (string, erro
 	var userOAuthsInfo *services.UserOAuthsDTO        // 创建用户后的信息
 
 	// 校验传输参数
-	if err = validate.ValidateStruct(dto); err != nil {
+	if err = validate.Validate(dto); err != nil {
 		return "", WrapError(err, ErrorFormatServiceDTOValidate)
 	}
 
