@@ -19,12 +19,12 @@ func OAuthManager() *oAuthManager {
 
 type OauthStarter struct {
 	infras.BaseStarter
-	cfg *OAuthConfig
+	cfg *Config
 }
 
 func (s *OauthStarter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
-	define := OAuthConfig{}
+	define := Config{}
 	err := viper.UnmarshalKey("OAuth", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
@@ -46,9 +46,9 @@ func (s *OauthStarter) Setup(sctx *infras.StarterContext) {
 	}
 }
 
-func RunForTesting(config *OAuthConfig) error {
+func RunForTesting(config *Config) error {
 	if config == nil {
-		config = &OAuthConfig{
+		config = &Config{
 			false,
 			"",
 			"",

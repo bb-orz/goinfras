@@ -15,7 +15,7 @@ type WeiboOAuthManager struct {
 	redirectUrl string
 }
 
-func NewWeiboOAuthManager(cfg *OAuthConfig) *WeiboOAuthManager {
+func NewWeiboOAuthManager(cfg *Config) *WeiboOAuthManager {
 	return &WeiboOAuthManager{
 		appKey:    cfg.WeiboOAuth2AppKey,
 		appSecret: cfg.WeiboOAuth2AppSecret,
