@@ -8,32 +8,32 @@ import (
 
 var redispsPool *redigo.Pool
 
-func RedisPubSubPool() *redigo.Pool {
+func Pool() *redigo.Pool {
 	infras.Check(redispsPool)
 	return redispsPool
 }
 
 // 从Redis连接池获取一个连接
 func GetRedisConn() redigo.Conn {
-	conn := RedisPubSubPool().Get()
+	conn := Pool().Get()
 	return conn
 }
 
 // 从Redis连接池获取一个PubSub连接
 func GetRedisPubSubConn() *redigo.PubSubConn {
-	conn := RedisPubSubPool().Get()
+	conn := Pool().Get()
 	psConn := redigo.PubSubConn{Conn: conn}
 	return &psConn
 }
 
 type RedisPubSubStarter struct {
 	infras.BaseStarter
-	cfg *RedisPubSubConfig
+	cfg *Config
 }
 
 func (s *RedisPubSubStarter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
-	define := RedisPubSubConfig{}
+	define := Config{}
 	err := viper.UnmarshalKey("RedisPubSub", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
@@ -45,13 +45,13 @@ func (s *RedisPubSubStarter) Setup(sctx *infras.StarterContext) {
 }
 
 func (s *RedisPubSubStarter) Stop(sctx *infras.StarterContext) {
-	_ = RedisPubSubPool().Close()
+	_ = Pool().Close()
 }
 
 /*For testing*/
-func RunForTesting(config *RedisPubSubConfig) error {
+func RunForTesting(config *Config) error {
 	if config == nil {
-		config = &RedisPubSubConfig{
+		config = &Config{
 			true,
 			"127.0.0.1",
 			6380,

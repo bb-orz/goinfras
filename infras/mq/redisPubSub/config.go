@@ -1,6 +1,6 @@
 package redisPubSub
 
-type RedisPubSubConfig struct {
+type Config struct {
 	Switch      bool   // 开关
 	DbHost      string // 主机地址
 	DbPort      int    // 主机端口
