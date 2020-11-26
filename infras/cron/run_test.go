@@ -17,13 +17,13 @@ func (j JobA) Run() {
 
 func TestCron(t *testing.T) {
 	Convey("Test Cron", t, func() {
-		config := CronConfig{}
+		config := Config{}
 		p := kvs.NewEmptyCompositeConfigSource()
 		err := p.Unmarshal(&config)
 		So(err, ShouldBeNil)
 		Println("Cron Config:", config)
 
-		manager := NewCronManager(&config, zap.L())
+		manager := NewManager(&config, zap.L())
 		// 注册任务
 		Println("Register Tasks...")
 		task1 := NewTask("*/2 * * * * *", &JobA{})

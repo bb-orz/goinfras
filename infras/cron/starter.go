@@ -5,35 +5,35 @@ import (
 	"go.uber.org/zap"
 )
 
-type CronStarter struct {
+type Starter struct {
 	infras.BaseStarter
-	cfg     *CronConfig
-	manager *CronManager
+	cfg     *Config
+	manager *Manager
 	Tasks   []*Task
 }
 
-func (s *CronStarter) Init(sctx *infras.StarterContext) {
+func (s *Starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
-	define := CronConfig{}
+	define := Config{}
 	err := viper.UnmarshalKey("Cron", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
 
-func (s *CronStarter) Setup(sctx *infras.StarterContext) {
+func (s *Starter) Setup(sctx *infras.StarterContext) {
 	// 1.获取Cron执行管理器
-	manager := NewCronManager(s.cfg, sctx.Logger())
+	manager := NewManager(s.cfg, sctx.Logger())
 	// 2.注册定时运行任务
 	manager.RegisterTasks(s.Tasks...)
 	sctx.Logger().Info("Cron Manager Setup Successful!")
 }
 
-func (s *CronStarter) Start(sctx *infras.StarterContext) {
+func (s *Starter) Start(sctx *infras.StarterContext) {
 	// 3.运行定时任务
 	s.manager.RunTasks()
 }
 
-func (s *CronStarter) Stop(sctx *infras.StarterContext) {
+func (s *Starter) Stop(sctx *infras.StarterContext) {
 	// 4.关闭定时任务
 	s.manager.StopCron()
 	sctx.Logger().Info("Cron Tasks Stopped!")
@@ -41,13 +41,13 @@ func (s *CronStarter) Stop(sctx *infras.StarterContext) {
 }
 
 /*For testing*/
-func RunForTesting(config *CronConfig, tasks []*Task) error {
+func RunForTesting(config *Config, tasks []*Task) error {
 	var err error
 	if config == nil {
-		config = &CronConfig{Location: "Local"}
+		config = &Config{Location: "Local"}
 	}
 	// 1.获取Cron执行管理器
-	manager := NewCronManager(config, zap.L())
+	manager := NewManager(config, zap.L())
 	// 2.注册定时运行任务
 	manager.RegisterTasks(tasks...)
 

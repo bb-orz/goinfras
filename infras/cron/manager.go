@@ -20,13 +20,13 @@ func NewTask(spec string, job cron.Job) *Task {
 }
 
 // 定时任务管理器
-type CronManager struct {
+type Manager struct {
 	client *cron.Cron
 	logger *zap.Logger
 	tasks  []*Task
 }
 
-func NewCronManager(cfg *CronConfig, logger *zap.Logger) *CronManager {
+func NewManager(cfg *Config, logger *zap.Logger) *Manager {
 	cronLogger := &LoggerCron{logger: logger}
 	location, err := time.LoadLocation(cfg.Location)
 	infras.FailHandler(err)
@@ -38,13 +38,13 @@ func NewCronManager(cfg *CronConfig, logger *zap.Logger) *CronManager {
 		cron.WithChain(cron.DelayIfStillRunning(cronLogger), cron.Recover(cronLogger)), // 全局cron执行链
 	)
 
-	manager := new(CronManager)
+	manager := new(Manager)
 	manager.client = c
 	manager.logger = logger
 	return manager
 }
 
-func (manager *CronManager) RegisterTasks(tasks ...*Task) {
+func (manager *Manager) RegisterTasks(tasks ...*Task) {
 	// Add Schedules and Jobs
 	for _, t := range tasks {
 		entryID, err := manager.client.AddJob(t.spec, t.job)
@@ -56,7 +56,7 @@ func (manager *CronManager) RegisterTasks(tasks ...*Task) {
 	manager.logger.Info("Cron Register Tasks Finish!")
 }
 
-func (manager *CronManager) RunTasks() {
+func (manager *Manager) RunTasks() {
 	if len(manager.client.Entries()) > 0 {
 		manager.client.Start()
 		manager.logger.Info("The Cron Tasks Running...")
@@ -66,7 +66,7 @@ func (manager *CronManager) RunTasks() {
 	}
 }
 
-func (manager *CronManager) StopCron() {
+func (manager *Manager) StopCron() {
 	if len(manager.client.Entries()) > 0 {
 		manager.client.Stop()
 	}

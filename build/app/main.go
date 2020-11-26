@@ -192,7 +192,7 @@ func registerComponent() {
 	// 注册Oauth Manager
 	infras.Register(&oauth.OauthStarter{})
 	// 注册Cron定时任务
-	infras.Register(&cron.CronStarter{})
+	infras.Register(&cron.Starter{})
 	// 注册hook
 	infras.Register(&hook.HookStarter{})
 	// 对资源组件启动器进行排序
