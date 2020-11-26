@@ -13,9 +13,9 @@ type BaseDao struct {
 	db *sql.DB
 }
 
-func NewCommonMysqlStore() *BaseDao {
+func NewCommonStore() *BaseDao {
 	dao := new(BaseDao)
-	dao.db = SqlBuilderClient()
+	dao.db = DB()
 	return dao
 }
 

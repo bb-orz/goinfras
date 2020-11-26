@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func NewMysqlClient(config *MysqlConfig) (db *sql.DB, err error) {
+func NewDB(config *Config) (db *sql.DB, err error) {
 	db, err = manager.New(config.DbName, config.DbUser, config.DbPasswd, config.DbHost).Set(
 		manager.SetCharset(config.ChartSet),                                   // 设置编码类型：utf8
 		manager.SetAllowCleartextPasswords(config.AllowCleartextPasswords),    // 开发环境中设置允许明文密码通信

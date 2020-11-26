@@ -1,7 +1,7 @@
 package sqlbuilderStore
 
 // MysqlDB 配置
-type MysqlConfig struct {
+type Config struct {
 	DbHost                  string // 主机地址
 	DbPort                  int64  // 主机端口
 	DbUser                  string // 用户名

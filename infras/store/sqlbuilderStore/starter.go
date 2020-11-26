@@ -6,42 +6,42 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var sqlBuilderClient *sql.DB
+var db *sql.DB
 
-func SqlBuilderClient() *sql.DB {
-	infras.Check(sqlBuilderClient)
-	return sqlBuilderClient
+func DB() *sql.DB {
+	infras.Check(db)
+	return db
 }
 
-type SqlBuilderStarter struct {
+type Starter struct {
 	infras.BaseStarter
-	cfg *MysqlConfig
+	cfg *Config
 }
 
 // 读取配置
-func (s *SqlBuilderStarter) Init(sctx *infras.StarterContext) {
+func (s *Starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
-	define := MysqlConfig{}
+	define := Config{}
 	err := viper.UnmarshalKey("Mysql", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
 
-func (s *SqlBuilderStarter) Setup(sctx *infras.StarterContext) {
+func (s *Starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	sqlBuilderClient, err = NewMysqlClient(s.cfg)
+	db, err = NewDB(s.cfg)
 	infras.FailHandler(err)
 	sctx.Logger().Info("MysqlClient Setup Successful ...")
 }
 
-func (s *SqlBuilderStarter) Stop(sctx *infras.StarterContext) {
-	SqlBuilderClient().Close()
+func (s *Starter) Stop(sctx *infras.StarterContext) {
+	DB().Close()
 }
 
-func RunForTesting(config *MysqlConfig) error {
+func RunForTesting(config *Config) error {
 	var err error
 	if config == nil {
-		config = &MysqlConfig{
+		config = &Config{
 			"127.0.0.1",
 			3306,
 			"",
@@ -59,6 +59,6 @@ func RunForTesting(config *MysqlConfig) error {
 			true,
 		}
 	}
-	sqlBuilderClient, err = NewMysqlClient(config)
+	db, err = NewDB(config)
 	return err
 }

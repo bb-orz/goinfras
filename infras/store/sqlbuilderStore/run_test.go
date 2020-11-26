@@ -3,17 +3,16 @@ package sqlbuilderStore
 import (
 	"context"
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/tietang/props/kvs"
 	"testing"
 )
 
 // 测试使用mysql client
-func TestMysqlClient(t *testing.T) {
+func TestMysqlDB(t *testing.T) {
 	Convey("测试使用mysql client", t, func() {
 		err := RunForTesting(nil)
 		So(err, ShouldBeNil)
 
-		err = MysqlClient().Ping()
+		err = DB().Ping()
 		So(err, ShouldBeNil)
 
 	})
@@ -26,7 +25,7 @@ func TestNewCommonMysqlStore(t *testing.T) {
 		err := RunForTesting(nil)
 		So(err, ShouldBeNil)
 
-		commonStore := NewCommonMysqlStore()
+		commonStore := NewCommonStore()
 		lastedId, err := commonStore.Insert("user", []map[string]interface{}{
 			{"name": "aaaa", "age": 18, "gender": 1}, {"name": "bbbb", "age": 20, "gender": 0},
 		})
@@ -74,7 +73,7 @@ func TestBaseDaoTx(t *testing.T) {
 		err := RunForTesting(nil)
 		So(err, ShouldBeNil)
 
-		tx, err := NewCommonMysqlStore().NewTx(context.Background(), nil)
+		tx, err := NewCommonStore().NewTx(context.Background(), nil)
 		lastedId, err := tx.Insert("user", []map[string]interface{}{
 			{"name": "fff", "age": 18, "gender": 1}, {"name": "kkk", "age": 20, "gender": 0},
 		})
