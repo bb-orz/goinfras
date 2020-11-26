@@ -6,41 +6,41 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-var mClient *mongo.Client
+var client *mongo.Client
 
-func MongoClient() *mongo.Client {
-	infras.Check(mClient)
-	return mClient
+func Client() *mongo.Client {
+	infras.Check(client)
+	return client
 }
 
-type MongoDBStarter struct {
+type Starter struct {
 	infras.BaseStarter
-	cfg *MongoConfig
+	cfg *Config
 }
 
-func (s *MongoDBStarter) Init(sctx *infras.StarterContext) {
+func (s *Starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
-	define := MongoConfig{}
+	define := Config{}
 	err := viper.UnmarshalKey("Mongodb", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
 
-func (s *MongoDBStarter) Setup(sctx *infras.StarterContext) {
+func (s *Starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	mClient, err = NewMongoClient(s.cfg)
+	client, err = NewClient(s.cfg)
 	infras.FailHandler(err)
 	sctx.Logger().Info("MongoClient Setup Successful!")
 }
 
-func (s *MongoDBStarter) Stop(sctx *infras.StarterContext) {
-	_ = MongoClient().Disconnect(context.TODO())
+func (s *Starter) Stop(sctx *infras.StarterContext) {
+	_ = Client().Disconnect(context.TODO())
 }
 
-func RunForTesting(config *MongoConfig) error {
+func RunForTesting(config *Config) error {
 	var err error
 	if config == nil {
-		config = &MongoConfig{
+		config = &Config{
 			[]string{"127.0.0.1:27017"},
 			"",
 			"",
@@ -61,6 +61,6 @@ func RunForTesting(config *MongoConfig) error {
 		}
 	}
 
-	mClient, err = NewMongoClient(config)
+	client, err = NewClient(config)
 	return err
 }

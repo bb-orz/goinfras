@@ -13,7 +13,7 @@ type CommonMongoDao struct {
 
 func NewCommonMongoDao(dbName string) *CommonMongoDao {
 	c := new(CommonMongoDao)
-	c.client = MongoClient()
+	c.client = Client()
 	c.defaultDb = c.client.Database(dbName)
 	return c
 }

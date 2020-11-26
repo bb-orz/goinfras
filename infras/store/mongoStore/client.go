@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func NewMongoClient(cfg *MongoConfig) (mc *mongo.Client, err error) {
+func NewClient(cfg *Config) (mc *mongo.Client, err error) {
 	opt := options.Client()
 	if cfg.DbUser != "" && cfg.DbPasswd != "" && cfg.PasswordSet {
 		opt.SetAuth(options.Credential{ // 设置权限认证

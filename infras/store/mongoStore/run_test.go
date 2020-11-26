@@ -13,7 +13,7 @@ func TestMongoClient(t *testing.T) {
 		err := RunForTesting(nil)
 		So(err, ShouldBeNil)
 
-		err = MongoClient().Ping(context.TODO(), nil)
+		err = Client().Ping(context.TODO(), nil)
 		So(err, ShouldBeNil)
 	})
 
