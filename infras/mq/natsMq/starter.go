@@ -12,36 +12,36 @@ func NatsMQPool() *NatsPool {
 	return natsMQPool
 }
 
-type NatsMQStarter struct {
+type Starter struct {
 	infras.BaseStarter
-	cfg *NatsMqConfig
+	cfg *Config
 }
 
-func (s *NatsMQStarter) Init(sctx *infras.StarterContext) {
+func (s *Starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
-	define := NatsMqConfig{}
+	define := Config{}
 	err := viper.UnmarshalKey("NatsMq", &define)
 	infras.FailHandler(err)
 
 	s.cfg = &define
 }
 
-func (s *NatsMQStarter) Setup(sctx *infras.StarterContext) {
+func (s *Starter) Setup(sctx *infras.StarterContext) {
 	var err error
 	natsMQPool, err = NewNatsMqPool(s.cfg, sctx.Logger())
 	infras.FailHandler(err)
 	sctx.Logger().Info("NatsMQPool Setup Successful!")
 }
 
-func (s *NatsMQStarter) Stop(sctx *infras.StarterContext) {
+func (s *Starter) Stop(sctx *infras.StarterContext) {
 	NatsMQPool().Close()
 }
 
 /*For testing*/
-func RunForTesting(config *NatsMqConfig) error {
+func RunForTesting(config *Config) error {
 	var err error
 	if config == nil {
-		config = &NatsMqConfig{
+		config = &Config{
 			Switch: true,
 			NatsServers: []natsServer{
 				{
