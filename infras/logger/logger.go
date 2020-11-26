@@ -9,7 +9,7 @@ import (
 /*
 通用zap日志记录器
 */
-func NewCommonLogger(cfg *LoggerConfig, syncWriters ...io.Writer) *zap.Logger {
+func NewCommonLogger(cfg *Config, syncWriters ...io.Writer) *zap.Logger {
 	var optionList []zap.Option
 	var appName, version, caller zap.Option
 	// Option：基本日志字段
@@ -51,7 +51,7 @@ func NewCommonLogger(cfg *LoggerConfig, syncWriters ...io.Writer) *zap.Logger {
 记录zap hook 异步日志中的日志信息，一般在记录远程日志记录出错时使用，记录异步信息出现的问题，如mongo记录异常，消息队列记录异常等
 该类别的日志信息只能输出到std和日志文件
 */
-func NewSyncErrorLogger(cfg *LoggerConfig) *zap.Logger {
+func NewSyncErrorLogger(cfg *Config) *zap.Logger {
 	var optionList []zap.Option
 	var appName, version, caller zap.Option
 	// Option：基本日志字段

@@ -1,7 +1,7 @@
 package logger
 
 // 日志配置
-type LoggerConfig struct {
+type Config struct {
 	AppName            string // 记录日志的应用名称
 	AppVersion         string // 版本
 	DevEnv             bool   // 是否开发环境运行

@@ -19,40 +19,40 @@ func SyncErrorLogger() *zap.Logger {
 	return syncErrorLogger
 }
 
-type LoggerStarter struct {
+type Starter struct {
 	infras.BaseStarter
-	cfg     *LoggerConfig
+	cfg     *Config
 	Writers []io.Writer
 }
 
-func (s *LoggerStarter) Init(sctx *infras.StarterContext) {
+func (s *Starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
-	define := LoggerConfig{}
+	define := Config{}
 	err := viper.UnmarshalKey("Logger", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
 
-func (s *LoggerStarter) Setup(sctx *infras.StarterContext) {
+func (s *Starter) Setup(sctx *infras.StarterContext) {
 	commonLogger = NewCommonLogger(s.cfg, s.Writers...)
 	syncErrorLogger = NewSyncErrorLogger(s.cfg)
 	sctx.SetLogger(commonLogger)
 	sctx.Logger().Info("CommonLogger And SyncErrorLogger Setup Successful!")
 }
 
-func (s *LoggerStarter) Stop(sctx *infras.StarterContext) {
+func (s *Starter) Stop(sctx *infras.StarterContext) {
 	// 关闭前刷入日志数据
 	CommonLogger().Sync()
 	SyncErrorLogger().Sync()
 }
 
-func (s *LoggerStarter) Priority() int { return infras.INT_MAX }
+func (s *Starter) Priority() int { return infras.INT_MAX }
 
 /*For testing*/
-func RunForTesting(config *LoggerConfig) error {
+func RunForTesting(config *Config) error {
 	var err error
 	if config == nil {
-		config = &LoggerConfig{
+		config = &Config{
 			AppName:           "",
 			AppVersion:        "",
 			DevEnv:            true,

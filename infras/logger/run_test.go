@@ -20,7 +20,7 @@ func TestCommonLogger(t *testing.T) {
 
 func TestCommonLoggerOutLogFile(t *testing.T) {
 	Convey("Test Common Logger", t, func() {
-		config := LoggerConfig{}
+		config := Config{}
 		p := kvs.NewEmptyCompositeConfigSource()
 		err := p.Unmarshal(&config)
 		So(err, ShouldBeNil)
@@ -40,7 +40,7 @@ func TestCommonLoggerOutLogFile(t *testing.T) {
 
 func TestNewSyncErrorLogger(t *testing.T) {
 	Convey("Test Sync Error Logger", t, func() {
-		config := LoggerConfig{}
+		config := Config{}
 		p := kvs.NewEmptyCompositeConfigSource()
 		err := p.Unmarshal(&config)
 		So(err, ShouldBeNil)
