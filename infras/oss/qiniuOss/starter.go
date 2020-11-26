@@ -9,7 +9,7 @@ var qiniuOssClient *QnClient
 
 type QnClient struct {
 	mac *qiniuOss.Mac
-	cfg *QiniuOssConfig
+	cfg *Config
 }
 
 func (client *QnClient) GetMac() *qiniuOss.Mac {
@@ -17,18 +17,18 @@ func (client *QnClient) GetMac() *qiniuOss.Mac {
 }
 
 // 对外暴露的客户端
-func QiniuOssClient() *QnClient {
+func Client() *QnClient {
 	infras.Check(qiniuOssClient)
 	return qiniuOssClient
 }
 
-type QiniuOssStarter struct {
+type Starter struct {
 	infras.BaseStarter
 }
 
-func (s *QiniuOssStarter) Init(sctx *infras.StarterContext) {
+func (s *Starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
-	define := QiniuOssConfig{}
+	define := Config{}
 	err := viper.UnmarshalKey("QiniuOss", &define)
 	infras.FailHandler(err)
 	qiniuOssClient = new(QnClient)
@@ -36,15 +36,15 @@ func (s *QiniuOssStarter) Init(sctx *infras.StarterContext) {
 
 }
 
-func (s *QiniuOssStarter) Setup(sctx *infras.StarterContext) {
+func (s *Starter) Setup(sctx *infras.StarterContext) {
 	qiniuOssClient.mac = NewQiniuOssMac(qiniuOssClient.cfg)
 	sctx.Logger().Info("QiniuOss Setup Successful!")
 }
 
-func RunForTesting(config *QiniuOssConfig) error {
+func RunForTesting(config *Config) error {
 	var err error
 	if config == nil {
-		config = &QiniuOssConfig{
+		config = &Config{
 			"",
 			"",
 			"",

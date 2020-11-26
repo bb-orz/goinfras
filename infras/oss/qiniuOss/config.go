@@ -1,6 +1,6 @@
 package qiniuOss
 
-type QiniuOssConfig struct {
+type Config struct {
 	AccessKey        string // 开发者key
 	SecretKey        string // 开发者secret
 	Bucket           string // 存储库名
