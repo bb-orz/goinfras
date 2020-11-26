@@ -16,12 +16,12 @@ func GinEngine() *gin.Engine {
 
 type GinStarter struct {
 	infras.BaseStarter
-	cfg *GinConfig
+	cfg *Config
 }
 
 func (s *GinStarter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
-	define := GinConfig{}
+	define := Config{}
 	err := viper.UnmarshalKey("Gin", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
@@ -71,10 +71,10 @@ func (s *GinStarter) Stop(sctx *infras.StarterContext) {
 }
 
 /*For testing*/
-func RunForTesting(config *GinConfig, apis []IApiModule) error {
+func RunForTesting(config *Config, apis []IApiModule) error {
 	var err error
 	if config == nil {
-		config = &GinConfig{
+		config = &Config{
 			ListenHost: "127.0.0.1",
 			ListenPort: 8090,
 		}

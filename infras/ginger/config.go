@@ -1,6 +1,6 @@
 package ginger
 
-type GinConfig struct {
+type Config struct {
 	ListenHost string      // 服务运行ip
 	ListenPort int         // 服务运行端口
 	Cors       *corsConfig // cors配置

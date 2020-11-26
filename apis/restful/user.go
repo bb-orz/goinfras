@@ -2,6 +2,7 @@ package restful
 
 import (
 	"GoWebScaffold/infras/ginger"
+	"GoWebScaffold/infras/ginger/middleware"
 	"GoWebScaffold/infras/jwt"
 	"GoWebScaffold/services"
 	"github.com/gin-gonic/gin"
@@ -31,7 +32,7 @@ func (api *UserApi) SetRoutes() {
 	// 如TokenUtils服务已初始化，添加中间件
 	var authMiddlerware gin.HandlerFunc
 	if tku := jwt.TokenUtils(); tku != nil {
-		authMiddlerware = ginger.JwtAuthMiddleware(tku)
+		authMiddlerware = middleware.JwtAuthMiddleware(tku)
 	}
 
 	engine.POST("/login", api.loginHandler)
