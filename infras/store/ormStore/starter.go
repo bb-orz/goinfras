@@ -5,44 +5,44 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-var gormDb *gorm.DB
+var db *gorm.DB
 
-func GormDb() *gorm.DB {
-	infras.Check(gormDb)
-	return gormDb
+func Db() *gorm.DB {
+	infras.Check(db)
+	return db
 }
 
-type ORMStarter struct {
+type Starter struct {
 	infras.BaseStarter
-	cfg *OrmConfig
+	cfg *Config
 }
 
 // 读取配置
-func (s *ORMStarter) Init(sctx *infras.StarterContext) {
+func (s *Starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
-	define := OrmConfig{}
+	define := Config{}
 	err := viper.UnmarshalKey("OrmConfig", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
 
 // 连接数据库
-func (s *ORMStarter) Setup(sctx *infras.StarterContext) {
+func (s *Starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	gormDb, err = NewORMDb(s.cfg)
+	db, err = NewORMDb(s.cfg)
 	infras.FailHandler(err)
 	sctx.Logger().Info("GormClient Setup Successful ...")
 }
 
-func (s *ORMStarter) Stop(sctx *infras.StarterContext) {
-	GormDb().Close()
+func (s *Starter) Stop(sctx *infras.StarterContext) {
+	Db().Close()
 }
 
 // 测试时启动db连接
-func RunForTesting(config *OrmConfig) error {
+func RunForTesting(config *Config) error {
 	var err error
 	if config == nil {
-		config = &OrmConfig{
+		config = &Config{
 			"mysql",
 			"127.0.0.1",
 			3306,
@@ -57,6 +57,6 @@ func RunForTesting(config *OrmConfig) error {
 		}
 	}
 
-	gormDb, err = NewORMDb(config)
+	db, err = NewORMDb(config)
 	return err
 }

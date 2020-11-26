@@ -7,7 +7,7 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-func NewORMDb(config *OrmConfig) (*gorm.DB, error) {
+func NewORMDb(config *Config) (*gorm.DB, error) {
 	var db *gorm.DB
 	var err error
 	switch config.Dialect {

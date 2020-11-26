@@ -1,7 +1,7 @@
 package ormStore
 
 // MysqlDB 配置
-type OrmConfig struct {
+type Config struct {
 	Dialect       string // 数据库驱动类型
 	DbHost        string // 主机地址
 	DbPort        int64  // 主机端口
