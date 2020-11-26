@@ -1,6 +1,6 @@
 package aliyunOss
 
-type AliyunOssConfig struct {
+type Config struct {
 	AccessKeySecret string // 开发者AccessKeySecret
 	ConnTimeout     int    // 请求超时时间，包括连接超时、Socket读写超时，单位秒,默认连接超时30秒，读写超时60秒
 	RWTimeout       int    // 读写超时设置

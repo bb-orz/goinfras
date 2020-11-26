@@ -25,7 +25,7 @@ OSS计算上传数据的MD5值，并与SDK计算的MD5值比较，如果不一�
 
 func MultipartUpload(bucketName, objectKeyName, localFilePath string) (*aliOss.CompleteMultipartUploadResult, error) {
 	// 获取存储空间。
-	bucket, err := AliyunOssClient().Bucket(bucketName)
+	bucket, err := Client().Bucket(bucketName)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func MultipartUpload(bucketName, objectKeyName, localFilePath string) (*aliOss.C
 // 取消分片上传
 func CancelMultipartUpload(bucketName, objectKeyName string) error {
 	// 获取存储空间。
-	bucket, err := AliyunOssClient().Bucket(bucketName)
+	bucket, err := Client().Bucket(bucketName)
 	if err != nil {
 		return err
 	}

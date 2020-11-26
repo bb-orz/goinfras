@@ -7,35 +7,35 @@ import (
 
 var aliyunOssClient *oss.Client
 
-func AliyunOssClient() *oss.Client {
+func Client() *oss.Client {
 	infras.Check(aliyunOssClient)
 	return aliyunOssClient
 }
 
-type AliyunOssStarter struct {
+type Starter struct {
 	infras.BaseStarter
-	cfg *AliyunOssConfig
+	cfg *Config
 }
 
-func (s *AliyunOssStarter) Init(sctx *infras.StarterContext) {
+func (s *Starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
-	define := AliyunOssConfig{}
+	define := Config{}
 	err := viper.UnmarshalKey("AliyunOss", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
 }
 
-func (s *AliyunOssStarter) Setup(sctx *infras.StarterContext) {
+func (s *Starter) Setup(sctx *infras.StarterContext) {
 	var err error
 	aliyunOssClient, err = NewClient(s.cfg)
 	infras.FailHandler(err)
 	sctx.Logger().Info("AliyunOss Setup Successful!")
 }
 
-func RunForTesting(config *AliyunOssConfig) error {
+func RunForTesting(config *Config) error {
 	var err error
 	if config == nil {
-		config = &AliyunOssConfig{
+		config = &Config{
 			"",
 			60,
 			60,

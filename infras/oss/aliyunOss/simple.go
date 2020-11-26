@@ -9,7 +9,7 @@ import (
 // 上传普通数据
 func UploadString(bucketName, objectKeyName, objectValue string) error {
 	// 获取存储空间
-	bucket, err := AliyunOssClient().Bucket(bucketName)
+	bucket, err := Client().Bucket(bucketName)
 	if err != nil {
 		return err
 	}
@@ -29,7 +29,7 @@ func UploadString(bucketName, objectKeyName, objectValue string) error {
 // 追加上传
 func AppendUpload(bucketName, objectKeyName string, appendContents ...string) error {
 	// 获取存储空间。
-	bucket, err := AliyunOssClient().Bucket(bucketName)
+	bucket, err := Client().Bucket(bucketName)
 	if err != nil {
 		return err
 	}
@@ -50,7 +50,7 @@ func AppendUpload(bucketName, objectKeyName string, appendContents ...string) er
 func Uploadfile(bucketName, objectKeyName, localFilePath string) error {
 
 	// 获取存储空间。
-	bucket, err := AliyunOssClient().Bucket(bucketName)
+	bucket, err := Client().Bucket(bucketName)
 	if err != nil {
 		return err
 	}
@@ -62,7 +62,7 @@ func Uploadfile(bucketName, objectKeyName, localFilePath string) error {
 // 流下载
 func StreamDownload(bucketName, objectKeyName string) ([]byte, error) {
 	// 获取存储空间。
-	bucket, err := AliyunOssClient().Bucket(bucketName)
+	bucket, err := Client().Bucket(bucketName)
 	if err != nil {
 		return nil, err
 	}
@@ -85,7 +85,7 @@ func StreamDownload(bucketName, objectKeyName string) ([]byte, error) {
 // 仅需要文件中的部分数据，您可以使用范围下载
 func RangeDownload(bucketName, objectKeyName string, start, end int64) ([]byte, error) {
 	// 获取存储空间。
-	bucket, err := AliyunOssClient().Bucket(bucketName)
+	bucket, err := Client().Bucket(bucketName)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +108,7 @@ func RangeDownload(bucketName, objectKeyName string, start, end int64) ([]byte, 
 // 下载文件到本地
 func DownLoadFile(bucketName, objectKeyName, dstFilePath string) error {
 	// 获取存储空间。
-	bucket, err := AliyunOssClient().Bucket(bucketName)
+	bucket, err := Client().Bucket(bucketName)
 	if err != nil {
 		return err
 	}
@@ -125,7 +125,7 @@ func DownLoadFile(bucketName, objectKeyName, dstFilePath string) error {
 // 文件压缩下载
 func CompressDownload(bucketName, objectKeyName, dstFilePath string) error {
 	// 获取存储空间。
-	bucket, err := AliyunOssClient().Bucket(bucketName)
+	bucket, err := Client().Bucket(bucketName)
 	if err != nil {
 		return err
 	}
@@ -151,7 +151,7 @@ IfNoneMatch				如果指定的ETag和OSS文件的ETag不匹配，则正常传输
 */
 func LimitConditionDownload(bucketName, objectKeyName, dstFilePath string, options ...aliOss.Option) error {
 	// 获取存储空间。
-	bucket, err := AliyunOssClient().Bucket(bucketName)
+	bucket, err := Client().Bucket(bucketName)
 	if err != nil {
 		return err
 	}

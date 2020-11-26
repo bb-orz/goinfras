@@ -30,7 +30,7 @@ func (listener *OssProgressListener) ProgressChanged(event *aliOss.ProgressEvent
 // 上传使用进度条
 func ProgressUpload(bucketName, objectKeyName, localFilePath string) error {
 	// 获取存储空间
-	bucket, err := AliyunOssClient().Bucket(bucketName)
+	bucket, err := Client().Bucket(bucketName)
 	if err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func ProgressUpload(bucketName, objectKeyName, localFilePath string) error {
 // 下载使用进度条
 func ProgressDownload(bucketName, objectKeyName, dstFilePath string) error {
 	// 获取存储空间
-	bucket, err := AliyunOssClient().Bucket(bucketName)
+	bucket, err := Client().Bucket(bucketName)
 	if err != nil {
 		return err
 	}
