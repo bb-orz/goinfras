@@ -1,6 +1,6 @@
 package mail
 
-type MailConfig struct {
+type Config struct {
 	NoAuth   bool   // 使用本地SMTP服务器发送电子邮件。
 	NoSmtp   bool   // 使用API​​或后缀发送电子邮件。
 	Server   string // 使用外部SMTP服务器

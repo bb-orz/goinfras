@@ -14,12 +14,12 @@ func MailDialer() *gomail.Dialer {
 
 type MailStarter struct {
 	infras.BaseStarter
-	cfg *MailConfig
+	cfg *Config
 }
 
 func (s *MailStarter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
-	define := MailConfig{}
+	define := Config{}
 	err := viper.UnmarshalKey("Mail", &define)
 	infras.FailHandler(err)
 	s.cfg = &define
@@ -34,9 +34,9 @@ func (s *MailStarter) Setup(sctx *infras.StarterContext) {
 }
 
 /*For testing*/
-func RunForTesting(config *MailConfig) {
+func RunForTesting(config *Config) {
 	if config == nil {
-		config = &MailConfig{
+		config = &Config{
 			NoAuth:   false,                   // 使用本地SMTP服务器发送电子邮件。
 			NoSmtp:   false,                   // 使用API​​或后缀发送电子邮件。
 			Server:   "smtp.qq.com",           // 使用外部SMTP服务器
