@@ -8,11 +8,11 @@ import "github.com/nats-io/nats.go"
 您可以拥有任意数量的队列组。普通订阅服务器将继续按预期工作。
 */
 func QueueSubscribe(subject, queue string, handler nats.Handler) error {
-	conn, err := NatsMQPool().Get()
+	conn, err := Pool().Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMQPool().Put(conn)
+	defer Pool().Put(conn)
 
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {

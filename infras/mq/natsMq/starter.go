@@ -7,7 +7,7 @@ import (
 
 var natsMQPool *NatsPool
 
-func NatsMQPool() *NatsPool {
+func Pool() *NatsPool {
 	infras.Check(natsMQPool)
 	return natsMQPool
 }
@@ -28,13 +28,13 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 
 func (s *Starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	natsMQPool, err = NewNatsMqPool(s.cfg, sctx.Logger())
+	natsMQPool, err = NewPool(s.cfg, sctx.Logger())
 	infras.FailHandler(err)
 	sctx.Logger().Info("NatsMQPool Setup Successful!")
 }
 
 func (s *Starter) Stop(sctx *infras.StarterContext) {
-	NatsMQPool().Close()
+	Pool().Close()
 }
 
 /*For testing*/
@@ -56,6 +56,6 @@ func RunForTesting(config *Config) error {
 
 	}
 
-	natsMQPool, err = NewNatsMqPool(config, zap.L())
+	natsMQPool, err = NewPool(config, zap.L())
 	return err
 }

@@ -12,11 +12,11 @@ import (
 @param msg interface{} 发布的消息
 */
 func Publish(subject string, msg interface{}) error {
-	conn, err := NatsMQPool().Get()
+	conn, err := Pool().Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMQPool().Put(conn)
+	defer Pool().Put(conn)
 
 	switch reflect.TypeOf(msg).Kind() {
 	case reflect.Struct, reflect.Map, reflect.Slice, reflect.Ptr:
@@ -68,11 +68,11 @@ handler := func(subject, reply string, o *obj)   for Request() reply
 */
 
 func Subscribe(subject string, handler nats.MsgHandler) error {
-	conn, err := NatsMQPool().Get()
+	conn, err := Pool().Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMQPool().Put(conn)
+	defer Pool().Put(conn)
 
 	_, err = conn.Subscribe(subject, handler)
 	if err != nil {
@@ -89,11 +89,11 @@ func Subscribe(subject string, handler nats.MsgHandler) error {
 type EncodedMsgHandler func(subject string, goDataMsg interface{})
 
 func SubscribeForEncodedMsg(subject string, handler EncodedMsgHandler) error {
-	conn, err := NatsMQPool().Get()
+	conn, err := Pool().Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMQPool().Put(conn)
+	defer Pool().Put(conn)
 
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {
@@ -113,11 +113,11 @@ func SubscribeForEncodedMsg(subject string, handler EncodedMsgHandler) error {
 param subject/subjects string 已订阅的主题
 */
 func Unsubscribe(subjects ...string) error {
-	conn, err := NatsMQPool().Get()
+	conn, err := Pool().Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMQPool().Put(conn)
+	defer Pool().Put(conn)
 
 	for _, subject := range subjects {
 		sub, err := conn.Subscribe(subject, nil)

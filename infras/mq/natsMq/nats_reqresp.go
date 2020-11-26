@@ -29,11 +29,11 @@ c.Subscribe("help", func(subj, reply string, msg string) {
 })
 */
 func Request(subject string, v interface{}, replyPtr interface{}, timeout time.Duration) error {
-	conn, err := NatsMQPool().Get()
+	conn, err := Pool().Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMQPool().Put(conn)
+	defer Pool().Put(conn)
 
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {
@@ -47,11 +47,11 @@ func Request(subject string, v interface{}, replyPtr interface{}, timeout time.D
 RequestWithContext将创建一个收件箱，并使用提供的取消上下文和数据v的收件箱回复执行请求。响应将被解码为vPtrResponse。
 */
 func RequestWithContext(ctx context.Context, subject string, msg interface{}, respPtr interface{}, timeout time.Duration) error {
-	conn, err := NatsMQPool().Get()
+	conn, err := Pool().Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMQPool().Put(conn)
+	defer Pool().Put(conn)
 
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {
@@ -66,11 +66,11 @@ func RequestWithContext(ctx context.Context, subject string, msg interface{}, re
 type RequestMsgHandler func(subject, reply string, msg interface{})
 
 func SubscribeForRequest(subject string, f RequestMsgHandler) error {
-	conn, err := NatsMQPool().Get()
+	conn, err := Pool().Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMQPool().Put(conn)
+	defer Pool().Put(conn)
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {
 		return err
