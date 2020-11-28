@@ -2,26 +2,24 @@ package restful
 
 import (
 	"GoWebScaffold/infras/ginger"
-	"GoWebScaffold/infras/ginger/middleware"
 	"GoWebScaffold/infras/jwt"
 	"GoWebScaffold/services"
 	"github.com/gin-gonic/gin"
 )
 
 /*
-APT层，调用相关Service，封装响应返回，并记录日志
+API层，调用相关Service，封装响应返回，并记录日志
 */
 
 func init() {
 	// 初始化时注册该模块API
-	ginger.RegisterApiModule(new(UserApi))
+	ginger.RegisterApi(new(UserApi))
 }
 
 type UserApi struct {
-	userService  services.IUserService
-	oauthService services.IOAuthService
-	mailService  services.IMailService
-	smsService   services.ISmsService
+	userService services.IUserService
+	mailService services.IMailService
+	smsService  services.ISmsService
 }
 
 // 设置该模块的API Router
@@ -32,7 +30,7 @@ func (api *UserApi) SetRoutes() {
 	// 如TokenUtils服务已初始化，添加中间件
 	var authMiddlerware gin.HandlerFunc
 	if tku := jwt.TokenUtils(); tku != nil {
-		authMiddlerware = middleware.JwtAuthMiddleware(tku)
+		authMiddlerware = ginger.JwtAuthMiddleware(tku)
 	}
 
 	engine.POST("/login", api.loginHandler)

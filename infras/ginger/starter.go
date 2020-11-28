@@ -14,12 +14,17 @@ func GinEngine() *gin.Engine {
 	return ginEngine
 }
 
-type GinStarter struct {
+func SetGinEngine(engine *gin.Engine) {
+	ginEngine = engine
+}
+
+type Starter struct {
 	infras.BaseStarter
 	cfg *Config
 }
 
-func (s *GinStarter) Init(sctx *infras.StarterContext) {
+// 初始化时：加载配置
+func (s *Starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
 	define := Config{}
 	err := viper.UnmarshalKey("Gin", &define)
@@ -27,8 +32,8 @@ func (s *GinStarter) Init(sctx *infras.StarterContext) {
 	s.cfg = &define
 }
 
-// 注册服务API
-func (s *GinStarter) Setup(sctx *infras.StarterContext) {
+// 启动时：添加中间件，实例化应用，注册项目实现的API
+func (s *Starter) Setup(sctx *infras.StarterContext) {
 
 	// 1.配置gin中间件
 	log := logger.CommonLogger()
@@ -43,14 +48,14 @@ func (s *GinStarter) Setup(sctx *infras.StarterContext) {
 	// 2.New Gin Engine
 	ginEngine = NewGinEngine(s.cfg, middlewares...)
 
-	// 3.服务API 模块路由注册
-	for _, v := range GetApiModules() {
+	// 3.API 路由注册
+	for _, v := range GetApis() {
 		v.SetRoutes()
 	}
 }
 
-// 启动运行gin service
-func (s *GinStarter) Start(sctx *infras.StarterContext) {
+// 启动时：运行gin engine
+func (s *Starter) Start(sctx *infras.StarterContext) {
 	var addr string
 	var err error
 	addr = fmt.Sprintf("%s:%d", s.cfg.ListenHost, s.cfg.ListenPort)
@@ -63,15 +68,16 @@ func (s *GinStarter) Start(sctx *infras.StarterContext) {
 	}
 }
 
-func (s *GinStarter) SetStartBlocking() bool {
+func (s *Starter) SetStartBlocking() bool {
 	return true
 }
 
-func (s *GinStarter) Stop(sctx *infras.StarterContext) {
+func (s *Starter) Stop(sctx *infras.StarterContext) {
+
 }
 
 /*For testing*/
-func RunForTesting(config *Config, apis []IApiModule) error {
+func RunForTesting(config *Config, apis []IApi) error {
 	var err error
 	if config == nil {
 		config = &Config{
@@ -94,8 +100,9 @@ func RunForTesting(config *Config, apis []IApiModule) error {
 	// 2.New Gin Engine
 	ginEngine = NewGinEngine(config, middlewares...)
 
-	// 3.服务API 模块路由注册
+	// 3.Restful API 模块注册
 	for _, v := range apis {
+		// 路由注册
 		v.SetRoutes()
 	}
 

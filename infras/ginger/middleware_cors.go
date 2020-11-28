@@ -7,7 +7,7 @@ import (
 )
 
 // Cors跨域请求处理中间件
-func CORSMiddleware(cfg *corsConfig) gin.HandlerFunc {
+func CORSMiddleware(cfg *CorsConfig) gin.HandlerFunc {
 	if cfg.AllowAllOrigins {
 
 		// 允许所有跨域请求

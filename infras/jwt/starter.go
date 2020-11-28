@@ -29,8 +29,8 @@ func (s *Starter) Setup(sctx *infras.StarterContext) {
 }
 
 func (s *Starter) Start(sctx *infras.StarterContext) {
-	if redisStore.RedisPool() != nil {
-		tku = NewTokenUtilsX([]byte(s.cfg.PrivateKey), s.cfg.ExpSeconds, redisStore.RedisPool())
+	if redisStore.Pool() != nil {
+		tku = NewTokenUtilsX([]byte(s.cfg.PrivateKey), s.cfg.ExpSeconds, redisStore.Pool())
 	} else {
 		tku = NewTokenUtils([]byte(s.cfg.PrivateKey), s.cfg.ExpSeconds)
 	}

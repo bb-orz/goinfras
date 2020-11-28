@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "GoWebScaffold/apis/restful" // 启动时自动注册apis/restful里所有的路由
 	"GoWebScaffold/infras"
 	"GoWebScaffold/infras/cron"
 	"GoWebScaffold/infras/hook"
@@ -13,6 +14,7 @@ import (
 	"GoWebScaffold/infras/store/mongoStore"
 	"GoWebScaffold/infras/store/redisStore"
 	"GoWebScaffold/infras/store/sqlbuilderStore"
+
 	"errors"
 	"flag"
 	"fmt"

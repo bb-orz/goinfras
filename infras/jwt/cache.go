@@ -11,7 +11,7 @@ type redisCache struct {
 
 func NewRedisCache(r *redis.Pool) *redisCache {
 	cache := new(redisCache)
-	cache.commonRedisDao = redisStore.NewCommonRedisDao(r)
+	cache.commonRedisDao = redisStore.NewCommonRedisDao()
 	return cache
 }
 
