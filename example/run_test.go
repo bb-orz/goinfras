@@ -2,7 +2,6 @@ package example
 
 import (
 	_ "GoWebScaffold/example/simple/apis" // 运行时自动注册api路由
-	"GoWebScaffold/infras"
 	"GoWebScaffold/infras/ginger"
 	"GoWebScaffold/infras/logger"
 	"fmt"
@@ -48,10 +47,10 @@ func TestGinger(t *testing.T) {
 		addr = fmt.Sprintf("%s:%d", config.ListenHost, config.ListenPort)
 		if config.Tls && config.CertFile != "" && config.KeyFile != "" {
 			err = ginEngine.RunTLS(addr, config.CertFile, config.KeyFile)
-			infras.FailHandler(err)
+			So(err, ShouldBeNil)
 		} else {
 			err = ginEngine.Run(addr)
-			infras.FailHandler(err)
+			So(err, ShouldBeNil)
 		}
 
 		fmt.Print("Ginger Running...")
