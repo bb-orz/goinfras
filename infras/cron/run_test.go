@@ -3,8 +3,6 @@ package cron
 import (
 	"fmt"
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/tietang/props/kvs"
-	"go.uber.org/zap"
 	"testing"
 	"time"
 )
@@ -15,25 +13,43 @@ func (j JobA) Run() {
 	fmt.Println("Running Job A ...")
 }
 
+type JobB struct{}
+
+func (j JobB) Run() {
+	fmt.Println("Running Job B ...")
+}
+
 func TestCron(t *testing.T) {
 	Convey("Test Cron", t, func() {
-		config := Config{}
-		p := kvs.NewEmptyCompositeConfigSource()
-		err := p.Unmarshal(&config)
+		err := RunForTesting(nil)
 		So(err, ShouldBeNil)
-		Println("Cron Config:", config)
 
-		manager := NewManager(&config, zap.L())
-		// 注册任务
-		Println("Register Tasks...")
+		// 1.定义定时任务
+		fmt.Println("定义第一个定时任务...")
+		tasks := make([]*Task, 0)
 		task1 := NewTask("*/2 * * * * *", &JobA{})
-		manager.RegisterTasks(task1)
+		tasks = append(tasks, task1)
 
-		Println("Run Tasks...")
-		manager.RunTasks()
+		// 2.注册定时运行任务
+		fmt.Println("注册第一个定时任务...")
+		RuntimeManager().RegisterTasks(tasks...)
 
-		time.Sleep(10 * time.Second)
-		Println("Stop Cron...")
-		manager.StopCron()
+		// 3.运行定时任务
+		fmt.Println("开始运行定时任务...")
+		RuntimeManager().RunTasks()
+
+		// 主协程运行5s
+		time.Sleep(time.Second * 5)
+
+		// 4.定义定时任务
+		fmt.Println("定义第二个定时任务...")
+		task2 := NewTask("*/1 * * * * *", &JobB{})
+
+		// 5.注册定时运行任务
+		fmt.Println("注册第二个定时任务...")
+		RuntimeManager().RegisterTasks(task2)
+
+		// 添加新的任务后主协程再运行10s
+		time.Sleep(time.Second * 10)
 	})
 }

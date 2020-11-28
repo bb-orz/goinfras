@@ -75,7 +75,6 @@ func runtimeViper() *viper.Viper {
 		err = loadConfigFromFile(runtimeViper, configFilePath, configFileName, configFileExt)
 		if err != nil {
 			panic("Viper Loading Config File Error:" + err.Error())
-
 		}
 	}
 

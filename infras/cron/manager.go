@@ -44,30 +44,41 @@ func NewManager(cfg *Config, logger *zap.Logger) *Manager {
 	return manager
 }
 
-func (manager *Manager) RegisterTasks(tasks ...*Task) {
+// 注册任务
+func (m *Manager) RegisterTasks(tasks ...*Task) {
 	// Add Schedules and Jobs
 	for _, t := range tasks {
-		entryID, err := manager.client.AddJob(t.spec, t.job)
+		entryID, err := m.client.AddJob(t.spec, t.job)
 		if err != nil {
-			manager.logger.Error("[Cron Add Task Error]", zap.Error(err))
+			m.logger.Error("[Cron Add Task Error]", zap.Error(err))
 		}
-		manager.logger.Info("[Cron Add Task]", zap.Int("Entry ID", int(entryID)))
+		m.logger.Info("[Cron Add Task]", zap.Int("Entry ID", int(entryID)))
 	}
-	manager.logger.Info("Cron Register Tasks Finish!")
+	m.logger.Info("Cron Register Tasks Finish!")
 }
 
-func (manager *Manager) RunTasks() {
+// 运行所有任务
+func (m *Manager) RunTasks() {
 	if len(manager.client.Entries()) > 0 {
-		manager.client.Start()
-		manager.logger.Info("The Cron Tasks Running...")
-		manager.logger.Info("Cron Entries:", zap.Any("Tasks", manager.client.Entries()))
+		m.client.Start()
+		m.logger.Info("The Cron Tasks Running...")
+		m.logger.Info("Cron Entries:", zap.Any("Tasks", manager.client.Entries()))
 	} else {
-		manager.logger.Info("No Cron Entries")
+		m.logger.Info("No Cron Entries")
 	}
 }
 
-func (manager *Manager) StopCron() {
-	if len(manager.client.Entries()) > 0 {
-		manager.client.Stop()
+// 停止所有任务
+func (m *Manager) StopCron() {
+	if len(m.client.Entries()) > 0 {
+		m.client.Stop()
 	}
+}
+
+// 重启所有任务
+func (m *Manager) RestartCron() {
+	m.logger.Info("The Cron Tasks Stopping...")
+	m.StopCron()
+	m.logger.Info("The Cron Tasks Restarting...")
+	m.RunTasks()
 }
