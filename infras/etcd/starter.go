@@ -6,19 +6,19 @@ import (
 	"go.etcd.io/etcd/clientv3"
 )
 
-var etcdClient *clientv3.Client
+var client *clientv3.Client
 
-func EtcdClientV3() *clientv3.Client {
-	infras.Check(etcdClient)
-	return etcdClient
+func ClientV3() *clientv3.Client {
+	infras.Check(client)
+	return client
 }
 
-type EtcdStarter struct {
+type Starter struct {
 	infras.BaseStarter
 	cfg *Config
 }
 
-func (s *EtcdStarter) Init(sctx *infras.StarterContext) {
+func (s *Starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
 	define := Config{}
 	err := viper.UnmarshalKey("Etcd", &define)
@@ -26,15 +26,15 @@ func (s *EtcdStarter) Init(sctx *infras.StarterContext) {
 	s.cfg = &define
 }
 
-func (s *EtcdStarter) Setup(sctx *infras.StarterContext) {
+func (s *Starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	etcdClient, err = NewEtcdClient(context.TODO(), s.cfg, nil)
+	client, err = NewEtcdClient(context.TODO(), s.cfg, nil)
 	infras.FailHandler(err)
 	sctx.Logger().Info("EtcdClientV3 Setup Successful!")
 }
 
-func (s *EtcdStarter) Stop(sctx *infras.StarterContext) {
-	_ = EtcdClientV3().Close()
+func (s *Starter) Stop(sctx *infras.StarterContext) {
+	_ = ClientV3().Close()
 	sctx.Logger().Info("EtcdClientV3 Closed!")
 }
 
@@ -46,6 +46,6 @@ func RunForTesting(config *Config) error {
 			Endpoints: []string{"localhost:2379"},
 		}
 	}
-	etcdClient, err = NewEtcdClient(context.TODO(), config, nil)
+	client, err = NewEtcdClient(context.TODO(), config, nil)
 	return err
 }

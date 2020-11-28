@@ -12,9 +12,9 @@ type CommonEtcd struct {
 
 func NewCommonEtcd() *CommonEtcd {
 	c := new(CommonEtcd)
-	c.client = EtcdClientV3()
+	c.client = ClientV3()
 	c.ctx = context.TODO()
 	return c
 }
 
-// TODO 编写常用的etcd操作
+// TODO 常用的etcd操作
