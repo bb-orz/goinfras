@@ -1,0 +1,15 @@
+# 阿里云对象存储配置
+AliyunOss:
+  Switch: false
+  AccessKeyId: "yourAccessKeyId"
+  AccessKeySecret: "yourAccessKeySecret"
+  BucketName: "yourBucketName"
+  Endpoint: "http://oss-cn-shenzhen.aliyuncs.com" #CDN空间机房
+  UseCname: false             #是否使用自定义域名CNAME
+  ConnTimeout:  10            #请求超时时间，包括连接超时、Socket读写超时，单位秒,默认连接超时30秒，读写超时60秒
+  RwTimeout: 120
+  SecurityToken: ""           #临时用户的SecurityToken
+  EnableMD5: false            #是否开启MD5校验。推荐使用CRC校验，CRC的效率高于MD5
+  EnableCRC: true             #是否开启CRC校验
+  Proxy: ""                   #代理服务器，如http://8.8.8.8:3128
+  AuthProxy: ""               #带账号密码的代理服务器
