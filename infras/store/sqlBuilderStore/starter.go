@@ -1,4 +1,4 @@
-package sqlbuilderStore
+package sqlBuilderStore
 
 import (
 	"GoWebScaffold/infras"
@@ -15,7 +15,7 @@ func DB() *sql.DB {
 
 type Starter struct {
 	infras.BaseStarter
-	cfg *Config
+	cfg Config
 }
 
 // 读取配置
@@ -24,12 +24,12 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	define := Config{}
 	err := viper.UnmarshalKey("Mysql", &define)
 	infras.FailHandler(err)
-	s.cfg = &define
+	s.cfg = define
 }
 
 func (s *Starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	db, err = NewDB(s.cfg)
+	db, err = NewDB(&s.cfg)
 	infras.FailHandler(err)
 	sctx.Logger().Info("MysqlClient Setup Successful ...")
 }

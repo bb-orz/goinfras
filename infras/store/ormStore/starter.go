@@ -14,7 +14,7 @@ func Db() *gorm.DB {
 
 type Starter struct {
 	infras.BaseStarter
-	cfg *Config
+	cfg Config
 }
 
 // 读取配置
@@ -23,13 +23,13 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	define := Config{}
 	err := viper.UnmarshalKey("OrmConfig", &define)
 	infras.FailHandler(err)
-	s.cfg = &define
+	s.cfg = define
 }
 
 // 连接数据库
 func (s *Starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	db, err = NewORMDb(s.cfg)
+	db, err = NewORMDb(&s.cfg)
 	infras.FailHandler(err)
 	sctx.Logger().Info("GormClient Setup Successful ...")
 }

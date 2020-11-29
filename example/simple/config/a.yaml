@@ -4,9 +4,17 @@ Global:
   AppName:     MyApp              #应用名
   ServerName:  exampler.com       #服务域名
 
+# Gin配置
+Gin:
+  ListenHost: "127.0.0.1"      # 服务运行ip
+  ListenPort: 8090             # 服务运行端口
+  Tls:        false            # HTTPS相关配置，开关
+  CertFile:   ""               # HTTPS相关配置，证书文件
+  KeyFile:    ""               # HTTPS相关配置，私匙文件
+
 # Cors配置
 Cors:
-  AllowAllOrigins: false      #AllowAllOrigins设置是否允许所有来源
+  AllowAllOrigins: true      #AllowAllOrigins设置是否允许所有来源
   AllowOrigins:               #AllowOrigins设置的地址是可以被执行的跨域请求来源。如果特殊值(*)出现在列表中,所有的跨域将被允许，它是一个列表
     - http://localhost:3000
   AllowMethods:               #AllowMethods 设置客户端允许使用的跨域请求的方法列表，如不设置默认值是简单方法(GET and POST)，它是一个列表

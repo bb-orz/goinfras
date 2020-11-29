@@ -15,7 +15,7 @@ func Pool() *redis.Pool {
 
 type Starter struct {
 	infras.BaseStarter
-	cfg *Config
+	cfg Config
 }
 
 func (s *Starter) Init(sctx *infras.StarterContext) {
@@ -23,12 +23,12 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	define := Config{}
 	err := viper.UnmarshalKey("Redis", &define)
 	infras.FailHandler(err)
-	s.cfg = &define
+	s.cfg = define
 }
 
 func (s *Starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	pool, err = NewPool(s.cfg, sctx.Logger())
+	pool, err = NewPool(&s.cfg, sctx.Logger())
 	infras.FailHandler(err)
 	sctx.Logger().Info("RedisPool Setup Successful!")
 }

@@ -5,7 +5,7 @@ import (
 )
 
 // 全局配置
-var cfg *GlobalConfig
+var cfg GlobalConfig
 
 func Config() *GlobalConfig {
 	infras.Check(cfg)
@@ -21,5 +21,5 @@ func (s *GlobalStarter) Init(sctx *infras.StarterContext) {
 	define := GlobalConfig{}
 	err := viper.UnmarshalKey("Global", &define)
 	infras.FailHandler(err)
-	cfg = &define
+	cfg = define
 }

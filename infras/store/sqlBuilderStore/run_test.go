@@ -1,4 +1,4 @@
-package sqlbuilderStore
+package sqlBuilderStore
 
 import (
 	"context"

@@ -14,7 +14,7 @@ func TokenUtils() ITokenUtils {
 
 type Starter struct {
 	infras.BaseStarter
-	cfg *Config
+	cfg Config
 }
 
 func (s *Starter) Init(sctx *infras.StarterContext) {
@@ -22,7 +22,7 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	define := Config{}
 	err := viper.UnmarshalKey("Jwt", &define)
 	infras.FailHandler(err)
-	s.cfg = &define
+	s.cfg = define
 }
 
 func (s *Starter) Setup(sctx *infras.StarterContext) {

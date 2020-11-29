@@ -28,7 +28,7 @@ func GetRedisPubSubConn() *redigo.PubSubConn {
 
 type Starter struct {
 	infras.BaseStarter
-	cfg *Config
+	cfg Config
 }
 
 func (s *Starter) Init(sctx *infras.StarterContext) {
@@ -36,11 +36,11 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	define := Config{}
 	err := viper.UnmarshalKey("RedisPubSub", &define)
 	infras.FailHandler(err)
-	s.cfg = &define
+	s.cfg = define
 }
 
 func (s *Starter) Setup(sctx *infras.StarterContext) {
-	redispsPool = NewRedisPubsubPool(s.cfg, sctx.Logger())
+	redispsPool = NewRedisPubsubPool(&s.cfg, sctx.Logger())
 	sctx.Logger().Info("RedisPubSubPool Setup Successful ...")
 }
 

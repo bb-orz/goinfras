@@ -9,6 +9,10 @@ import (
 	"syscall"
 )
 
+/*
+应用运行监听系统信号钩子组件，该组件运行后可让系统资源连接随应用一起优雅退出。
+*/
+
 var callbacks []func()
 
 func Register(fn func()) {

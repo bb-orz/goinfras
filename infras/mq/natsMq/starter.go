@@ -14,7 +14,7 @@ func Pool() *NatsPool {
 
 type Starter struct {
 	infras.BaseStarter
-	cfg *Config
+	cfg Config
 }
 
 func (s *Starter) Init(sctx *infras.StarterContext) {
@@ -23,12 +23,12 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	err := viper.UnmarshalKey("NatsMq", &define)
 	infras.FailHandler(err)
 
-	s.cfg = &define
+	s.cfg = define
 }
 
 func (s *Starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	natsMQPool, err = NewPool(s.cfg, sctx.Logger())
+	natsMQPool, err = NewPool(&s.cfg, sctx.Logger())
 	infras.FailHandler(err)
 	sctx.Logger().Info("NatsMQPool Setup Successful!")
 }

@@ -16,7 +16,7 @@ func RuntimeManager() *Manager {
 
 type Starter struct {
 	infras.BaseStarter
-	cfg     *Config
+	cfg     Config
 	manager *Manager
 	Tasks   []*Task
 }
@@ -26,12 +26,12 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	define := Config{}
 	err := viper.UnmarshalKey("Cron", &define)
 	infras.FailHandler(err)
-	s.cfg = &define
+	s.cfg = define
 }
 
 func (s *Starter) Setup(sctx *infras.StarterContext) {
 	// 1.获取Cron执行管理器
-	manager := NewManager(s.cfg, sctx.Logger())
+	manager := NewManager(&s.cfg, sctx.Logger())
 	// 2.注册定时运行任务
 	manager.RegisterTasks(s.Tasks...)
 	sctx.Logger().Info("Cron Manager Setup Successful!")

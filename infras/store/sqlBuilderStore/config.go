@@ -1,4 +1,4 @@
-package sqlbuilderStore
+package sqlBuilderStore
 
 // MysqlDB 配置
 type Config struct {

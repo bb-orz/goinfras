@@ -1,12 +1,16 @@
 package ginger
 
 type Config struct {
-	ListenHost string      // 服务运行ip
-	ListenPort int         // 服务运行端口
-	Cors       *CorsConfig // cors配置
-	Tls        bool        // HTTPS相关配置，开关
-	CertFile   string      // HTTPS相关配置，证书文件
-	KeyFile    string      // HTTPS相关配置，私匙文件
+	GinConfig
+	CorsConfig
+}
+
+type GinConfig struct {
+	ListenHost string // 服务运行ip
+	ListenPort int    // 服务运行端口
+	Tls        bool   // HTTPS相关配置，开关
+	CertFile   string // HTTPS相关配置，证书文件
+	KeyFile    string // HTTPS相关配置，私匙文件
 }
 
 // Cors配置

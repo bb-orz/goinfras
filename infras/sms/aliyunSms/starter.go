@@ -20,7 +20,7 @@ func Sms() *CommonSms {
 
 type Starter struct {
 	infras.BaseStarter
-	cfg *Config
+	cfg Config
 }
 
 func (s *Starter) Init(sctx *infras.StarterContext) {
@@ -28,14 +28,14 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	define := Config{}
 	err := viper.UnmarshalKey("AliyunSms", &define)
 	infras.FailHandler(err)
-	s.cfg = &define
+	s.cfg = define
 }
 
 func (s *Starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	aliyunSmsClient, err = NewAliyunSmsClient(s.cfg)
+	aliyunSmsClient, err = NewAliyunSmsClient(&s.cfg)
 	infras.FailHandler(err)
-	sms = NewCommonSms(s.cfg)
+	sms = NewCommonSms(&s.cfg)
 }
 
 func RunForTesting(config *Config) error {

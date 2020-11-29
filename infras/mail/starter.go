@@ -14,7 +14,7 @@ func MailDialer() *gomail.Dialer {
 
 type MailStarter struct {
 	infras.BaseStarter
-	cfg *Config
+	cfg Config
 }
 
 func (s *MailStarter) Init(sctx *infras.StarterContext) {
@@ -22,7 +22,7 @@ func (s *MailStarter) Init(sctx *infras.StarterContext) {
 	define := Config{}
 	err := viper.UnmarshalKey("Mail", &define)
 	infras.FailHandler(err)
-	s.cfg = &define
+	s.cfg = define
 }
 
 func (s *MailStarter) Setup(sctx *infras.StarterContext) {

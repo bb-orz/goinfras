@@ -20,16 +20,25 @@ func SetGinEngine(engine *gin.Engine) {
 
 type Starter struct {
 	infras.BaseStarter
-	cfg *Config
+	cfg Config
 }
 
 // 初始化时：加载配置
 func (s *Starter) Init(sctx *infras.StarterContext) {
+	var err error
 	viper := sctx.Configs()
-	define := Config{}
-	err := viper.UnmarshalKey("Gin", &define)
+	ginDefine := GinConfig{}
+	err = viper.UnmarshalKey("Gin", &ginDefine)
 	infras.FailHandler(err)
-	s.cfg = &define
+	fmt.Println(ginDefine)
+	fmt.Println(s.cfg)
+	s.cfg.GinConfig = ginDefine
+
+	corsDefine := CorsConfig{}
+	err = viper.UnmarshalKey("Cors", &corsDefine)
+	infras.FailHandler(err)
+	fmt.Println(corsDefine)
+	s.cfg.CorsConfig = corsDefine
 }
 
 // 启动时：添加中间件，实例化应用，注册项目实现的API
@@ -41,12 +50,12 @@ func (s *Starter) Setup(sctx *infras.StarterContext) {
 	middlewares = append(middlewares, ZapLoggerMiddleware(log), ZapRecoveryMiddleware(log, false))
 
 	// 如开启cors限制，添加中间件
-	if !s.cfg.Cors.AllowAllOrigins {
-		middlewares = append(middlewares, CORSMiddleware(s.cfg.Cors))
+	if !s.cfg.AllowAllOrigins {
+		middlewares = append(middlewares, CORSMiddleware(&s.cfg.CorsConfig))
 	}
 
 	// 2.New Gin Engine
-	ginEngine = NewGinEngine(s.cfg, middlewares...)
+	ginEngine = NewGinEngine(&s.cfg, middlewares...)
 
 	// 3.API 路由注册
 	for _, v := range GetApis() {
@@ -81,10 +90,12 @@ func RunForTesting(config *Config, apis []IApi) error {
 	var err error
 	if config == nil {
 		config = &Config{
-			ListenHost: "127.0.0.1",
-			ListenPort: 8090,
+			GinConfig{
+				ListenHost: "127.0.0.1",
+				ListenPort: 8090,
+			},
+			CorsConfig{},
 		}
-
 	}
 
 	// 1.配置gin中间件
@@ -93,8 +104,8 @@ func RunForTesting(config *Config, apis []IApi) error {
 	middlewares = append(middlewares, ZapLoggerMiddleware(log), ZapRecoveryMiddleware(log, false))
 
 	// 如开启cors限制，添加中间件
-	if !config.Cors.AllowAllOrigins {
-		middlewares = append(middlewares, CORSMiddleware(config.Cors))
+	if !config.AllowAllOrigins {
+		middlewares = append(middlewares, CORSMiddleware(&config.CorsConfig))
 	}
 
 	// 2.New Gin Engine

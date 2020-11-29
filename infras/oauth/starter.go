@@ -19,7 +19,7 @@ func Manager() *oAuthManager {
 
 type Starter struct {
 	infras.BaseStarter
-	cfg *Config
+	cfg Config
 }
 
 func (s *Starter) Init(sctx *infras.StarterContext) {
@@ -27,21 +27,21 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	define := Config{}
 	err := viper.UnmarshalKey("OAuth", &define)
 	infras.FailHandler(err)
-	s.cfg = &define
+	s.cfg = define
 }
 
 func (s *Starter) Setup(sctx *infras.StarterContext) {
 	oauthManager = new(oAuthManager)
 	if s.cfg.QQSignSwitch {
-		oauthManager.QQ = NewQQOauthManager(s.cfg)
+		oauthManager.QQ = NewQQOauthManager(&s.cfg)
 		sctx.Logger().Info("QQ OAuth Manager Setup Successful!")
 	}
 	if s.cfg.WechatSignSwitch {
-		oauthManager.Wechat = NewWechatOAuthManager(s.cfg)
+		oauthManager.Wechat = NewWechatOAuthManager(&s.cfg)
 		sctx.Logger().Info("Wechat OAuth Manager Setup Successful!")
 	}
 	if s.cfg.WeiboSignSwitch {
-		oauthManager.Weibo = NewWeiboOAuthManager(s.cfg)
+		oauthManager.Weibo = NewWeiboOAuthManager(&s.cfg)
 		sctx.Logger().Info("Weibo OAuth Manager Setup Successful!")
 	}
 }

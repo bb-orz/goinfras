@@ -2,6 +2,7 @@ package logger
 
 import (
 	"GoWebScaffold/infras"
+	"fmt"
 	"go.uber.org/zap"
 	"io"
 )
@@ -21,7 +22,7 @@ func SyncErrorLogger() *zap.Logger {
 
 type Starter struct {
 	infras.BaseStarter
-	cfg     *Config
+	cfg     Config
 	Writers []io.Writer
 }
 
@@ -30,12 +31,13 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	define := Config{}
 	err := viper.UnmarshalKey("Logger", &define)
 	infras.FailHandler(err)
-	s.cfg = &define
+	fmt.Println(s.cfg)
+	s.cfg = define
 }
 
 func (s *Starter) Setup(sctx *infras.StarterContext) {
-	commonLogger = NewCommonLogger(s.cfg, s.Writers...)
-	syncErrorLogger = NewSyncErrorLogger(s.cfg)
+	commonLogger = NewCommonLogger(&s.cfg, s.Writers...)
+	syncErrorLogger = NewSyncErrorLogger(&s.cfg)
 	sctx.SetLogger(commonLogger)
 	sctx.Logger().Info("CommonLogger And SyncErrorLogger Setup Successful!")
 }

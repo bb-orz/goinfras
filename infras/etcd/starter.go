@@ -15,7 +15,7 @@ func ClientV3() *clientv3.Client {
 
 type Starter struct {
 	infras.BaseStarter
-	cfg *Config
+	cfg Config
 }
 
 func (s *Starter) Init(sctx *infras.StarterContext) {
@@ -23,12 +23,12 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	define := Config{}
 	err := viper.UnmarshalKey("Etcd", &define)
 	infras.FailHandler(err)
-	s.cfg = &define
+	s.cfg = define
 }
 
 func (s *Starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	client, err = NewEtcdClient(context.TODO(), s.cfg, nil)
+	client, err = NewEtcdClient(context.TODO(), &s.cfg, nil)
 	infras.FailHandler(err)
 	sctx.Logger().Info("EtcdClientV3 Setup Successful!")
 }

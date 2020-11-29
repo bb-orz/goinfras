@@ -9,7 +9,7 @@ var qiniuOssClient *QnClient
 
 type QnClient struct {
 	mac *qiniuOss.Mac
-	cfg *Config
+	cfg Config
 }
 
 func (client *QnClient) GetMac() *qiniuOss.Mac {
@@ -32,12 +32,12 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	err := viper.UnmarshalKey("QiniuOss", &define)
 	infras.FailHandler(err)
 	qiniuOssClient = new(QnClient)
-	qiniuOssClient.cfg = &define
+	qiniuOssClient.cfg = define
 
 }
 
 func (s *Starter) Setup(sctx *infras.StarterContext) {
-	qiniuOssClient.mac = NewQiniuOssMac(qiniuOssClient.cfg)
+	qiniuOssClient.mac = NewQiniuOssMac(&qiniuOssClient.cfg)
 	sctx.Logger().Info("QiniuOss Setup Successful!")
 }
 
@@ -62,7 +62,7 @@ func RunForTesting(config *Config) error {
 	mac := NewQiniuOssMac(config)
 	client := new(QnClient)
 	client.mac = mac
-	client.cfg = config
+	client.cfg = *config
 	qiniuOssClient = client
 	return err
 }

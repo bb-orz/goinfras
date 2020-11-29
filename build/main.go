@@ -181,7 +181,7 @@ func registerComponent() {
 	// 注册mongodb启动器
 	infras.Register(&mongoStore.Starter{})
 	// 注册mysql启动器
-	infras.Register(&sqlbuilderStore.Starter{})
+	infras.Register(&sqlBuilderStore.Starter{})
 	// 注册Redis连接池
 	infras.Register(&redisStore.Starter{})
 	// 注册Oss
