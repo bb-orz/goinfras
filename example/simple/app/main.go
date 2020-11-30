@@ -25,7 +25,7 @@ func main() {
 
 	// 注册应用组件启动器
 	fmt.Println("Starting register app component  ......")
-	registerComponent()
+	registerStarter()
 
 	// 创建应用程序启动管理器
 	app := infras.NewApplication(runtimeViper)

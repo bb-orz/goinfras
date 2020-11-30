@@ -5,16 +5,15 @@ import (
 	"GoWebScaffold/infras/store/redisStore"
 )
 
-var tku ITokenUtils
-
-func TokenUtils() ITokenUtils {
-	infras.Check(tku)
-	return tku
-}
-
 type Starter struct {
 	infras.BaseStarter
 	cfg Config
+}
+
+func NewStarter() *Starter {
+	starter := new(Starter)
+	starter.cfg = Config{}
+	return starter
 }
 
 func (s *Starter) Init(sctx *infras.StarterContext) {
@@ -29,25 +28,13 @@ func (s *Starter) Setup(sctx *infras.StarterContext) {
 }
 
 func (s *Starter) Start(sctx *infras.StarterContext) {
+	var t ITokenUtils
 	if redisStore.Pool() != nil {
-		tku = NewTokenUtilsX([]byte(s.cfg.PrivateKey), s.cfg.ExpSeconds, redisStore.Pool())
+		t = NewTokenUtilsX([]byte(s.cfg.PrivateKey), s.cfg.ExpSeconds, redisStore.Pool())
 	} else {
-		tku = NewTokenUtils([]byte(s.cfg.PrivateKey), s.cfg.ExpSeconds)
+		t = NewTokenUtils([]byte(s.cfg.PrivateKey), s.cfg.ExpSeconds)
 	}
+	SetComponent(t)
 }
 
 func (s *Starter) Stop(sctx *infras.StarterContext) {}
-
-/*For testing*/
-func RunForTesting(config *Config) error {
-	var err error
-	if config == nil {
-		config = &Config{
-			PrivateKey: "ginger_key",
-			ExpSeconds: 60,
-		}
-
-	}
-	tku = NewTokenUtils([]byte(config.PrivateKey), config.ExpSeconds)
-	return err
-}

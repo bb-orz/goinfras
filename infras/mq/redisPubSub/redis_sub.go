@@ -8,13 +8,19 @@ import (
 	"time"
 )
 
+type RedisSubscriber struct{}
+
+func NewRedisSubscriber() *RedisSubscriber {
+	return new(RedisSubscriber)
+}
+
 // 订阅模式下的消息处理函数类型
 type RecSubMsgFunc func(topic string, msg interface{}) error
 
 // 订阅并接收消息
-func Subscribe(recMsgFuncs map[string]RecSubMsgFunc, channels ...interface{}) error {
+func (*RedisSubscriber) Subscribe(recMsgFuncs map[string]RecSubMsgFunc, channels ...interface{}) error {
 	var err error
-	conn := GetRedisPubSubConn()
+	conn := getRedisPubSubConn()
 	defer func() {
 		conn.Close()
 	}()
@@ -32,7 +38,7 @@ func Subscribe(recMsgFuncs map[string]RecSubMsgFunc, channels ...interface{}) er
 		fmt.Println("Redis Subscribe Receive Waiting...")
 		for {
 			receiveTimes++
-			logger.CommonLogger().Info("receiveTimes:", zap.Int("times", receiveTimes))
+			logger.CLogger().Info("receiveTimes:", zap.Int("times", receiveTimes))
 			switch res := conn.Receive().(type) {
 			case redigo.Message:
 				// 每接收一个已发布消息开一个协程执行消息处理函数
@@ -45,7 +51,7 @@ func Subscribe(recMsgFuncs map[string]RecSubMsgFunc, channels ...interface{}) er
 
 			case redigo.Subscription:
 				// 订阅与取消订阅的消息
-				logger.CommonLogger().Info("redis SubReceiver:", zap.String("receive kind", res.Kind), zap.String("receive Channel", res.Channel), zap.Int("receive Count", res.Count))
+				logger.CLogger().Info("redis SubReceiver:", zap.String("receive kind", res.Kind), zap.String("receive Channel", res.Channel), zap.Int("receive Count", res.Count))
 				if res.Count == 0 {
 					done <- nil
 				}
@@ -74,8 +80,8 @@ func Subscribe(recMsgFuncs map[string]RecSubMsgFunc, channels ...interface{}) er
 }
 
 // 取消订阅
-func Unsubscribe(channels ...interface{}) error {
-	conn := GetRedisPubSubConn()
+func (*RedisSubscriber) Unsubscribe(channels ...interface{}) error {
+	conn := getRedisPubSubConn()
 	defer func() {
 		conn.Close()
 	}()

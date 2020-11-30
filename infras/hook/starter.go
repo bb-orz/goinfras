@@ -23,6 +23,11 @@ type Starter struct {
 	infras.BaseStarter
 }
 
+func NewStarter() *Starter {
+	starter := new(Starter)
+	return starter
+}
+
 func (s *Starter) Setup(sctx *infras.StarterContext) {
 	sigs := make(chan os.Signal)
 	signal.Notify(sigs, syscall.SIGQUIT, syscall.SIGTERM)
@@ -52,5 +57,5 @@ func (s *Starter) Start(sctx *infras.StarterContext) {
 	}
 }
 
-// 优先级为最末位启动
+// 默认设置优先级为最末位启动
 func (s *Starter) Priority() int { return infras.INT_MIN }

@@ -2,23 +2,20 @@ package cron
 
 import (
 	"GoWebScaffold/infras"
-	"fmt"
-	"go.uber.org/zap"
 )
 
-var manager *Manager
-
-// 任务管理器运行示例调用
-func RuntimeManager() *Manager {
-	infras.Check(manager)
-	return manager
-}
+/* 资源启动器 */
 
 type Starter struct {
 	infras.BaseStarter
-	cfg     Config
-	manager *Manager
-	Tasks   []*Task
+	cfg   Config
+	Tasks []*Task
+}
+
+func NewStarter() *Starter {
+	starter := new(Starter)
+	starter.cfg = Config{}
+	return starter
 }
 
 func (s *Starter) Init(sctx *infras.StarterContext) {
@@ -30,33 +27,24 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 }
 
 func (s *Starter) Setup(sctx *infras.StarterContext) {
-	// 1.获取Cron执行管理器
-	manager := NewManager(&s.cfg, sctx.Logger())
-	// 2.注册定时运行任务
-	manager.RegisterTasks(s.Tasks...)
+	var m *Manager
+	// 1.创建Cron执行管理器并设置资源
+	m = NewManager(&s.cfg, sctx.Logger())
+	SetComponent(m)
+
+	// 2.创建后可立即注册定时运行任务
+	CronComponent().RegisterTasks(s.Tasks...)
 	sctx.Logger().Info("Cron Manager Setup Successful!")
 }
 
 func (s *Starter) Start(sctx *infras.StarterContext) {
 	// 3.运行定时任务
-	s.manager.RunTasks()
+	CronComponent().RunTasks()
 }
 
 func (s *Starter) Stop(sctx *infras.StarterContext) {
 	// 4.关闭定时任务
-	s.manager.StopCron()
+	CronComponent().StopCron()
 	sctx.Logger().Info("Cron Tasks Stopped!")
 
-}
-
-/*For testing*/
-func RunForTesting(config *Config) error {
-	var err error
-	if config == nil {
-		config = &Config{Location: "Local"}
-	}
-	// 1.获取Cron执行管理器
-	fmt.Println("创建任务执行管理器...")
-	manager = NewManager(config, zap.L())
-	return err
 }

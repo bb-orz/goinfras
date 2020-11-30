@@ -5,19 +5,18 @@ import (
 	"gopkg.in/gomail.v2"
 )
 
-var mailDialer *gomail.Dialer
-
-func MailDialer() *gomail.Dialer {
-	infras.Check(mailDialer)
-	return mailDialer
-}
-
-type MailStarter struct {
+type Starter struct {
 	infras.BaseStarter
 	cfg Config
 }
 
-func (s *MailStarter) Init(sctx *infras.StarterContext) {
+func NewStarter() *Starter {
+	starter := new(Starter)
+	starter.cfg = Config{}
+	return starter
+}
+
+func (s *Starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
 	define := Config{}
 	err := viper.UnmarshalKey("Mail", &define)
@@ -25,26 +24,13 @@ func (s *MailStarter) Init(sctx *infras.StarterContext) {
 	s.cfg = define
 }
 
-func (s *MailStarter) Setup(sctx *infras.StarterContext) {
+func (s *Starter) Setup(sctx *infras.StarterContext) {
+	var m *gomail.Dialer
 	if s.cfg.NoAuth {
-		mailDialer = NewNoAuthDialer(s.cfg.Server, s.cfg.Port)
+		m = NewNoAuthDialer(s.cfg.Server, s.cfg.Port)
 	} else {
-		mailDialer = NewAuthDialer(s.cfg.Server, s.cfg.User, s.cfg.Password, s.cfg.Port)
+		m = NewAuthDialer(s.cfg.Server, s.cfg.User, s.cfg.Password, s.cfg.Port)
 	}
-}
 
-/*For testing*/
-func RunForTesting(config *Config) {
-	if config == nil {
-		config = &Config{
-			NoAuth:   false,                   // 使用本地SMTP服务器发送电子邮件。
-			NoSmtp:   false,                   // 使用API​​或后缀发送电子邮件。
-			Server:   "smtp.qq.com",           // 使用外部SMTP服务器
-			Port:     587,                     // 外部SMTP服务端口
-			User:     "your qq mail account",  // 你的三方邮箱地址
-			Password: "your qq mail password", // 你的邮箱密码
-		}
-
-	}
-	// mailDialer = NewNoAuthDialer(config.Server, config.Port)
+	SetComponent(m)
 }

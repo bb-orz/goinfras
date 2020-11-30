@@ -7,14 +7,44 @@ import (
 	"testing"
 )
 
+/*实例化资源用于测试*/
+func TestingInstantiation(config *Config) error {
+	var err error
+	if config == nil {
+		config = &Config{
+			AppName:           "",
+			AppVersion:        "",
+			DevEnv:            true,
+			AddCaller:         true,
+			DebugLevelSwitch:  false,
+			InfoLevelSwitch:   true,
+			WarnLevelSwitch:   true,
+			ErrorLevelSwitch:  true,
+			DPanicLevelSwitch: true,
+			PanicLevelSwitch:  false,
+			FatalLevelSwitch:  true,
+			SimpleZapCore:     true,
+			SyncZapCore:       false,
+			SyncLogSwitch:     true,
+			StdoutLogSwitch:   true,
+			RotateLogSwitch:   false,
+			LogDir:            "../../log",
+		}
+	}
+
+	cl := NewCommonLogger(config)
+	SetComponentForCommonLogger(cl)
+	return err
+}
+
 func TestCommonLogger(t *testing.T) {
 	Convey("Test Common Logger", t, func() {
-		err := RunForTesting(nil)
+		err := TestingInstantiation(nil)
 		So(err, ShouldNotBeNil)
-		CommonLogger().Debug("Log Debug Message...")
-		CommonLogger().Info("Log Info Message...")
-		CommonLogger().Warn("Log Warn Message...")
-		CommonLogger().Error("Log Error Message...")
+		CLogger().Debug("Log Debug Message...")
+		CLogger().Info("Log Info Message...")
+		CLogger().Warn("Log Warn Message...")
+		CLogger().Error("Log Error Message...")
 	})
 }
 

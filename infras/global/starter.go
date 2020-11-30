@@ -4,22 +4,28 @@ import (
 	"GoWebScaffold/infras"
 )
 
-// 全局配置
-var cfg GlobalConfig
-
-func Config() *GlobalConfig {
-	infras.Check(cfg)
-	return cfg
-}
-
-type GlobalStarter struct {
+type Starter struct {
 	infras.BaseStarter
+	cfg Config
 }
 
-func (s *GlobalStarter) Init(sctx *infras.StarterContext) {
+func NewStarter() *Starter {
+	starter := new(Starter)
+	starter.cfg = Config{}
+	return starter
+}
+
+func (s *Starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
-	define := GlobalConfig{}
+	define := Config{}
 	err := viper.UnmarshalKey("Global", &define)
 	infras.FailHandler(err)
-	cfg = define
+	SetComponent(define)
+}
+
+func (s *Starter) Start(sctx *infras.StarterContext) {
+	// 把全局配置变量设置进viper
+	// sctx.Configs().Set("AppName", GlobalConfig().AppName)
+	// sctx.Configs().Set("ServerName", GlobalConfig().ServerName)
+	// sctx.Configs().Set("Env", GlobalConfig().Env)
 }

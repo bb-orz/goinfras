@@ -12,19 +12,27 @@ import (
 )
 
 // 注册应用组件启动器
-func registerComponent() {
+func registerStarter() {
 	// 注册日志记录启动器，并添加一个异步日志输出到文件
 	file, err := os.OpenFile("./info.log", os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		panic(err.Error())
 	}
-	writers := []io.Writer{file}
+
 	// 注册zap日志记录启动器
-	infras.Register(&logger.Starter{Writers: writers})
+	writers := []io.Writer{file}
+	loggerStarter := new(logger.Starter)
+	loggerStarter.Writers = writers
+	infras.Register(loggerStarter)
+
 	// 注册hook
-	infras.Register(&hook.Starter{})
+	hookStarter := new(hook.Starter)
+	infras.Register(hookStarter)
+
 	// 注册mongodb启动器
-	// infras.Register(new(mongoStore.Starter))
+	// mongoStarter := new(mongoStore.Starter)
+	// infras.Register(mongoStarter)
+
 	// 注册mysql启动器
 	// infras.Register(new(sqlBuilderStore.Starter{})
 	// 注册Redis连接池

@@ -9,8 +9,16 @@ import (
 	"time"
 )
 
+/*common 专门封装一些常用的操作*/
+
+type CommonMail struct{}
+
+func NewCommonMail() *CommonMail {
+	return new(CommonMail)
+}
+
 // 本机发邮件
-func SendMailNoSMTP(from, to, subject, body string) error {
+func (*CommonMail) SendMailNoSMTP(from, to, subject, body string) error {
 	m := gomail.NewMessage()
 	m.SetHeader("From", from)
 	m.SetHeader("To", to)
@@ -24,7 +32,7 @@ func SendMailNoSMTP(from, to, subject, body string) error {
 			"Subject":   subject,
 			"ext/plain": body,
 		}
-		logger.CommonLogger().Info("Send Email:", zap.Any("Mail Info", info))
+		logger.CLogger().Info("Send Email:", zap.Any("Mail Info", info))
 		return nil
 	})
 
@@ -36,7 +44,7 @@ func SendMailNoSMTP(from, to, subject, body string) error {
 }
 
 // 发送简单邮件
-func SendSimpleMail(from, to, subject, body string) error {
+func (*CommonMail) SendSimpleMail(from, to, subject, body string) error {
 	m := gomail.NewMessage()
 	m.SetHeader("From", from)
 	m.SetHeader("To", to)
@@ -44,11 +52,11 @@ func SendSimpleMail(from, to, subject, body string) error {
 	// m.SetAddressHeader()
 	m.SetBody("text/plain", body)
 
-	return MailDialer().DialAndSend(m)
+	return MailComponent().DialAndSend(m)
 }
 
 // 使用通道在窗口时间内批量发送邮件
-func SendBatchMails(msgCh <-chan *gomail.Message, duration time.Duration) error {
+func (*CommonMail) SendBatchMails(msgCh <-chan *gomail.Message, duration time.Duration) error {
 	go func() {
 		var s gomail.SendCloser
 		var err error
@@ -60,7 +68,7 @@ func SendBatchMails(msgCh <-chan *gomail.Message, duration time.Duration) error 
 					return
 				}
 				if !open {
-					if s, err = MailDialer().Dial(); err != nil {
+					if s, err = MailComponent().Dial(); err != nil {
 						panic(err)
 					}
 					open = true

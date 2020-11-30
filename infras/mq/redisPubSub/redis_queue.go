@@ -8,7 +8,7 @@ type RedisList struct {
 }
 
 // 获取一个redis连接的 list队列
-func GetRedisList(conn redigo.Conn) *RedisList {
+func NewRedisList(conn redigo.Conn) *RedisList {
 	list := new(RedisList)
 	list.conn = conn
 	return list
