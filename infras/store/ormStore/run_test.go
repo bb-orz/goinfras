@@ -8,6 +8,29 @@ import (
 	"time"
 )
 
+/*实例化资源用于测试*/
+func TestingInstantiation(config *Config) error {
+	var err error
+	if config == nil {
+		config = &Config{
+			"mysql",
+			"127.0.0.1",
+			3306,
+			"dev",
+			"123456",
+			"dev_db",
+			"utf8",
+			true,
+			"Local",
+			"disable",
+			false,
+		}
+	}
+
+	db, err = NewORMDb(config)
+	return err
+}
+
 type User struct {
 	gorm.Model
 	Birthday          time.Time
@@ -52,30 +75,30 @@ type CreditCard struct {
 
 func TestGormDb(t *testing.T) {
 	Convey("测试使用gorm：", t, func() {
-		err := RunForTesting(nil)
+		err := TestingInstantiation(nil)
 		So(err, ShouldBeNil)
 		// 检查模型`Address`表是否存在
-		hasAddressTable := gormDb.HasTable(&Address{})
+		hasAddressTable := ORMComponent().HasTable(&Address{})
 		Println("Address Table Is Exist:", hasAddressTable)
 		// 表不存在则创建表
 		if !hasAddressTable {
-			gormDb.Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&Address{})
+			ORMComponent().Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&Address{})
 		}
 
 		// 检查模型`Language`表是否存在
-		hasLanguageTable := gormDb.HasTable(&Language{})
+		hasLanguageTable := ORMComponent().HasTable(&Language{})
 		Println("Language Table Is Exist:", hasLanguageTable)
 		// 表不存在则创建表
 		if !hasLanguageTable {
-			gormDb.Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&Language{})
+			ORMComponent().Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&Language{})
 		}
 
 		// 检查模型`User`表是否存在
-		hasUserTable := gormDb.HasTable(&User{})
+		hasUserTable := ORMComponent().HasTable(&User{})
 		Println("User Table Is Exist:", hasUserTable)
 		// 表不存在则创建表
 		if !hasUserTable {
-			gormDb.Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&User{})
+			ORMComponent().Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&User{})
 		}
 
 	})
@@ -83,22 +106,22 @@ func TestGormDb(t *testing.T) {
 
 func TestGormInsert(t *testing.T) {
 	Convey("测试使用 Gorm Insert：", t, func() {
-		err := RunForTesting(nil)
+		err := TestingInstantiation(nil)
 		So(err, ShouldBeNil)
 
 		// 插入
 		user := User{Name: "Jinzhubbb", Age: 18, Birthday: time.Now()}
-		GormDb().Create(&user)
+		ORMComponent().Create(&user)
 
 		// 查询
-		GormDb().First(&user)
+		ORMComponent().First(&user)
 		Println(user)
 	})
 }
 
 func TestGormFind(t *testing.T) {
 	Convey("测试使用 Gorm Find：", t, func() {
-		err := RunForTesting(nil)
+		err := TestingInstantiation(nil)
 		So(err, ShouldBeNil)
 
 		var user User
@@ -106,19 +129,19 @@ func TestGormFind(t *testing.T) {
 		user = User{}
 		// 查询
 		// 获取第一条记录，按主键排序
-		GormDb().First(&user)
+		ORMComponent().First(&user)
 		Println("First:", user)
 		// SELECT * FROM users ORDER BY id LIMIT 1;
 
 		// 获取最后一条记录，按主键排序
 		user = User{}
-		GormDb().Last(&user)
+		ORMComponent().Last(&user)
 		Println("Last:", user)
 		// SELECT * FROM users ORDER BY id DESC LIMIT 1;
 
 		// 获取所有记录
 		users = make([]User, 0)
-		if err := GormDb().Find(&users).Error; err != nil {
+		if err := ORMComponent().Find(&users).Error; err != nil {
 			Println("Find More Error :", err)
 		} else {
 			Println("Find More:", users)
@@ -127,7 +150,7 @@ func TestGormFind(t *testing.T) {
 
 		// 使用主键获取记录
 		user = User{}
-		if err := GormDb().First(&user, 10).Error; err != nil {
+		if err := ORMComponent().First(&user, 10).Error; err != nil {
 			Println("Find By Key Error :", err)
 		} else {
 			Println("Find By Key:", user)
@@ -138,50 +161,50 @@ func TestGormFind(t *testing.T) {
 
 func TestGormSimpleWhere(t *testing.T) {
 	Convey("测试使用 Gorm Simple Where：", t, func() {
-		err := RunForTesting(nil)
+		err := TestingInstantiation(nil)
 		So(err, ShouldBeNil)
 
 		var user User
 		var users []User
 		// 获取第一个匹配记录
-		GormDb().Where("name = ?", "jinzhu").First(&user)
+		ORMComponent().Where("name = ?", "jinzhu").First(&user)
 		// SELECT * FROM users WHERE name = 'jinzhu' limit 1;
 		Println("Find By Name:", user)
 
 		// 获取所有匹配记录
 		users = nil
-		GormDb().Where("name = ?", "jinzhu").Find(&users)
+		ORMComponent().Where("name = ?", "jinzhu").Find(&users)
 		// SELECT * FROM users WHERE name = 'jinzhu';
 		Println("Find All By Name:", users)
 
 		users = nil
-		GormDb().Where("name <> ?", "jinzhu").Find(&users)
+		ORMComponent().Where("name <> ?", "jinzhu").Find(&users)
 		Println("Find NOT By Name:", users)
 
 		// IN
 		users = nil
-		GormDb().Where("name in (?)", []string{"jinzhu", "jinzhu 2"}).Find(&users)
+		ORMComponent().Where("name in (?)", []string{"jinzhu", "jinzhu 2"}).Find(&users)
 		Println("Find IN By Key:", users)
 
 		// LIKE
 		users = nil
-		GormDb().Where("name LIKE ?", "%jin%").Find(&users)
+		ORMComponent().Where("name LIKE ?", "%jin%").Find(&users)
 		Println("Find LIKE By Name:", users)
 
 		// AND
 		users = nil
-		GormDb().Where("name = ? AND age >= ?", "jinzhu", "22").Find(&users)
+		ORMComponent().Where("name = ? AND age >= ?", "jinzhu", "22").Find(&users)
 		Println("Find And By Name:", users)
 
 		// Time
 		lastWeek := time.Now().Unix() - 7*24*60*60
 		now := time.Now().Unix()
 		users = nil
-		GormDb().Where("updated_at > ?", lastWeek).Find(&users)
+		ORMComponent().Where("updated_at > ?", lastWeek).Find(&users)
 		Println("Find TimeGt By UpdateAt:", users)
 
 		users = nil
-		GormDb().Where("created_at BETWEEN ? AND ?", lastWeek, now).Find(&users)
+		ORMComponent().Where("created_at BETWEEN ? AND ?", lastWeek, now).Find(&users)
 		Println("Find TimeBETWEEN By UpdateAt:", users)
 
 	})
@@ -189,26 +212,26 @@ func TestGormSimpleWhere(t *testing.T) {
 
 func TestGormWhereByStructOrMap(t *testing.T) {
 	Convey("测试使用 Gorm Where By struct Or Map：", t, func() {
-		err := RunForTesting(nil)
+		err := TestingInstantiation(nil)
 		So(err, ShouldBeNil)
 
 		var user User
 		var users []User
 
 		// Struct
-		GormDb().Where(&User{Name: "jinzhu", Age: 18}).First(&user)
+		ORMComponent().Where(&User{Name: "jinzhu", Age: 18}).First(&user)
 		// SELECT * FROM users WHERE name = "jinzhu" AND age = 18 LIMIT 1;
 		Println("Find Where By Struct:", user)
 
 		// Map
 		users = make([]User, 0)
-		GormDb().Where(map[string]interface{}{"name": "jinzhu", "age": 18}).Find(&users)
+		ORMComponent().Where(map[string]interface{}{"name": "jinzhu", "age": 18}).Find(&users)
 		// SELECT * FROM users WHERE name = "jinzhu" AND age = 18;
 		Println("Find Where By Map:", users)
 
 		// 主键的Slice
 		users = nil
-		GormDb().Where([]int64{20, 21, 22}).Find(&users)
+		ORMComponent().Where([]int64{20, 21, 22}).Find(&users)
 		// SELECT * FROM users WHERE id IN (20, 21, 22);
 		Println("Find LIKE By slice:", users)
 
