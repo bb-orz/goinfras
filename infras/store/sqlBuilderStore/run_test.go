@@ -6,13 +6,39 @@ import (
 	"testing"
 )
 
+/*实例化资源用于测试*/
+func TestingInstantiation(config *Config) error {
+	var err error
+	if config == nil {
+		config = &Config{
+			"127.0.0.1",
+			3306,
+			"",
+			"",
+			"",
+			60,
+			100,
+			200,
+			"uft8",
+			true,
+			true,
+			5,
+			30,
+			true,
+			true,
+		}
+	}
+	db, err = NewDB(config)
+	return err
+}
+
 // 测试使用mysql client
 func TestMysqlDB(t *testing.T) {
 	Convey("测试使用mysql client", t, func() {
-		err := RunForTesting(nil)
+		err := TestingInstantiation(nil)
 		So(err, ShouldBeNil)
 
-		err = DB().Ping()
+		err = SqlBuilderComponent().Ping()
 		So(err, ShouldBeNil)
 
 	})
@@ -22,7 +48,7 @@ func TestMysqlDB(t *testing.T) {
 // 测试通用的mysql存储
 func TestNewCommonMysqlStore(t *testing.T) {
 	Convey("测试使用Common Mysql Store", t, func() {
-		err := RunForTesting(nil)
+		err := TestingInstantiation(nil)
 		So(err, ShouldBeNil)
 
 		commonStore := NewCommonStore()
@@ -70,7 +96,7 @@ func (u UserSchema) TableName() string {
 // 测试事务的mysql存储
 func TestBaseDaoTx(t *testing.T) {
 	Convey("测试使用mysql client", t, func() {
-		err := RunForTesting(nil)
+		err := TestingInstantiation(nil)
 		So(err, ShouldBeNil)
 
 		tx, err := NewCommonStore().NewTx(context.Background(), nil)

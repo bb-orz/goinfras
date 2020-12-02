@@ -15,7 +15,7 @@ type BaseDao struct {
 
 func NewCommonStore() *BaseDao {
 	dao := new(BaseDao)
-	dao.db = DB()
+	dao.db = SqlBuilderComponent()
 	return dao
 }
 
