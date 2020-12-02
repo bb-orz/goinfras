@@ -5,9 +5,33 @@ import (
 	"testing"
 )
 
+/*实例化资源用于测试*/
+func TestingInstantiation(config *Config) error {
+	var err error
+	if config == nil {
+		config = &Config{
+			"",
+			"",
+			"",
+			false,
+			false,
+			7200,
+			"",
+			"",
+			"",
+			1024,
+			10485760,
+			"",
+		}
+	}
+	SetQnClient(*config)
+	SetMac(NewQiniuOssMac(config))
+	return err
+}
+
 func TestQiniuOssClient(t *testing.T) {
 	Convey("Qiniu OSS Testing:", t, func() {
-		err := RunForTesting(nil)
+		err := TestingInstantiation(nil)
 		So(err, ShouldBeNil)
 	})
 

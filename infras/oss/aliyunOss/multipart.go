@@ -23,9 +23,15 @@ OSS计算上传数据的MD5值，并与SDK计算的MD5值比较，如果不一�
 所有分片上传完成后，调用Bucket.CompleteMultipartUpload方法将所有分片合并成完整的文件。
 */
 
-func MultipartUpload(bucketName, objectKeyName, localFilePath string) (*aliOss.CompleteMultipartUploadResult, error) {
+type MultipartOss struct{}
+
+func NewMultipartOss() *MultipartOss {
+	return new(MultipartOss)
+}
+
+func (*MultipartOss) MultipartUpload(bucketName, objectKeyName, localFilePath string) (*aliOss.CompleteMultipartUploadResult, error) {
 	// 获取存储空间。
-	bucket, err := Client().Bucket(bucketName)
+	bucket, err := AliyunOssComponent().Bucket(bucketName)
 	if err != nil {
 		return nil, err
 	}
@@ -70,9 +76,9 @@ func MultipartUpload(bucketName, objectKeyName, localFilePath string) (*aliOss.C
 }
 
 // 取消分片上传
-func CancelMultipartUpload(bucketName, objectKeyName string) error {
+func (*MultipartOss) CancelMultipartUpload(bucketName, objectKeyName string) error {
 	// 获取存储空间。
-	bucket, err := Client().Bucket(bucketName)
+	bucket, err := AliyunOssComponent().Bucket(bucketName)
 	if err != nil {
 		return err
 	}

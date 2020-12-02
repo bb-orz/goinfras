@@ -1,7 +1,14 @@
 package oauth
 
+import (
+	. "github.com/smartystreets/goconvey/convey"
+	"testing"
+)
+
 /*实例化资源用于测试*/
 func TestingInstantiation(config *Config) error {
+	var om *OAuthManager
+
 	if config == nil {
 		config = &Config{
 			false,
@@ -16,16 +23,27 @@ func TestingInstantiation(config *Config) error {
 		}
 	}
 
-	oauthManager = new(oAuthManager)
+	om = new(OAuthManager)
 	if config.QQSignSwitch {
-		oauthManager.QQ = NewQQOauthManager(config)
+		om.QQ = NewQQOauthManager(config)
 	}
 	if config.WechatSignSwitch {
-		oauthManager.Wechat = NewWechatOAuthManager(config)
+		om.Wechat = NewWechatOAuthManager(config)
 	}
 	if config.WeiboSignSwitch {
-		oauthManager.Weibo = NewWeiboOAuthManager(config)
+		om.Weibo = NewWeiboOAuthManager(config)
 	}
 
+	SetComponent(om)
 	return nil
+}
+
+func TestOAuthComponent(t *testing.T) {
+	Convey("OAuthManager Testing:", t, func() {
+		err := TestingInstantiation(nil)
+		So(err, ShouldBeNil)
+
+		// TODO
+
+	})
 }

@@ -5,6 +5,42 @@ import (
 	aliOss "github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 
+type ProgressOss struct{}
+
+func NewProgressOss() *ProgressOss {
+	return new(ProgressOss)
+}
+
+// 上传使用进度条
+func (*ProgressOss) ProgressUpload(bucketName, objectKeyName, localFilePath string) error {
+	// 获取存储空间
+	bucket, err := AliyunOssComponent().Bucket(bucketName)
+	if err != nil {
+		return err
+	}
+	// 带进度条的上传。
+	err = bucket.PutObjectFromFile(objectKeyName, localFilePath, aliOss.Progress(&OssProgressListener{}))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// 下载使用进度条
+func (*ProgressOss) ProgressDownload(bucketName, objectKeyName, dstFilePath string) error {
+	// 获取存储空间
+	bucket, err := AliyunOssComponent().Bucket(bucketName)
+	if err != nil {
+		return err
+	}
+	// 带进度条的下载。
+	err = bucket.GetObjectToFile(objectKeyName, dstFilePath, aliOss.Progress(&OssProgressListener{}))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // 定义进度条监听器。
 type OssProgressListener struct{}
 
@@ -25,34 +61,4 @@ func (listener *OssProgressListener) ProgressChanged(event *aliOss.ProgressEvent
 			event.ConsumedBytes, event.TotalBytes)
 	default:
 	}
-}
-
-// 上传使用进度条
-func ProgressUpload(bucketName, objectKeyName, localFilePath string) error {
-	// 获取存储空间
-	bucket, err := Client().Bucket(bucketName)
-	if err != nil {
-		return err
-	}
-	// 带进度条的上传。
-	err = bucket.PutObjectFromFile(objectKeyName, localFilePath, aliOss.Progress(&OssProgressListener{}))
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// 下载使用进度条
-func ProgressDownload(bucketName, objectKeyName, dstFilePath string) error {
-	// 获取存储空间
-	bucket, err := Client().Bucket(bucketName)
-	if err != nil {
-		return err
-	}
-	// 带进度条的下载。
-	err = bucket.GetObjectToFile(objectKeyName, dstFilePath, aliOss.Progress(&OssProgressListener{}))
-	if err != nil {
-		return err
-	}
-	return nil
 }
