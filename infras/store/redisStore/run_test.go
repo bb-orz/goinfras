@@ -2,19 +2,37 @@ package redisStore
 
 import (
 	"github.com/garyburd/redigo/redis"
+	"go.uber.org/zap"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
 
+/*实例化资源用于测试*/
+func TestingInstantiation() error {
+	var err error
+	config := &Config{
+		"127.0.0.1",
+		6379,
+		false,
+		"",
+		0,
+		50,
+		60,
+	}
+
+	pool, err = NewPool(config, zap.L())
+	return err
+}
+
 func TestNewCommonRedisPool(t *testing.T) {
 	Convey("Redis Dao Test", t, func() {
-		err := RunForTesting()
+		err := TestingInstantiation()
 		So(err, ShouldBeNil)
-		Println("pool ActiveCount:", Pool().Stats().ActiveCount, ",pool IdleCount:", Pool().Stats().IdleCount)
+		Println("pool ActiveCount:", RedisComponent().Stats().ActiveCount, ",pool IdleCount:", RedisComponent().Stats().IdleCount)
 
-		conn := Pool().Get()
-		Println("pool ActiveCount:", Pool().Stats().ActiveCount, ",pool IdleCount:", Pool().Stats().IdleCount)
+		conn := RedisComponent().Get()
+		Println("pool ActiveCount:", RedisComponent().Stats().ActiveCount, ",pool IdleCount:", RedisComponent().Stats().IdleCount)
 
 		reply, err := conn.Do("Ping")
 		So(err, ShouldBeNil)
@@ -22,14 +40,14 @@ func TestNewCommonRedisPool(t *testing.T) {
 
 		err = conn.Close()
 		So(err, ShouldBeNil)
-		Println("pool ActiveCount:", Pool().Stats().ActiveCount, ",pool IdleCount:", Pool().Stats().IdleCount)
+		Println("pool ActiveCount:", RedisComponent().Stats().ActiveCount, ",pool IdleCount:", RedisComponent().Stats().IdleCount)
 
 	})
 }
 
 func TestCommonRedisDao(t *testing.T) {
 	Convey("Redis Dao Test", t, func() {
-		err := RunForTesting()
+		err := TestingInstantiation()
 		So(err, ShouldBeNil)
 
 		commonRedisDao := NewCommonRedisDao()

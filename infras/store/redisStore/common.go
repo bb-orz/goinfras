@@ -11,7 +11,7 @@ type CommonRedisDao struct {
 
 func NewCommonRedisDao() *CommonRedisDao {
 	c := new(CommonRedisDao)
-	c.pool = Pool()
+	c.pool = RedisComponent()
 	return c
 }
 
