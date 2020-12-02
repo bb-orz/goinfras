@@ -10,11 +10,13 @@ type CommonSms struct {
 	cfg    *Config
 }
 
-func NewCommonSms(config *Config) *CommonSms {
+func NewCommonSms() {
 	c := new(CommonSms)
-	c.client = Client()
-	c.cfg = config
-	return c
+	c.client = SMSComponent()
+}
+
+func CommonCommonSms() *CommonSms {
+	return new(CommonSms)
 }
 
 // 单条发送
