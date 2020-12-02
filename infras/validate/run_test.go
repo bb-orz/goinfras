@@ -5,6 +5,23 @@ import (
 	"testing"
 )
 
+/*实例化资源用于测试*/
+func TestingInstantiation(config *Config) error {
+	var err error
+	if config == nil {
+		config = &Config{
+			true,
+		}
+	}
+
+	if config.TransZh {
+		validate, translator, err = NewZhValidator()
+	} else {
+		validate = NewValidator()
+	}
+	return err
+}
+
 type UserDemo struct {
 	Name       string `validate:"required,alphanum"`
 	Email      string `validate:"required,email"`
@@ -14,7 +31,7 @@ type UserDemo struct {
 
 func TestValidate(t *testing.T) {
 	Convey("Test Validate DTO Struct", t, func() {
-		err := RunForTesting(nil)
+		err := TestingInstantiation(nil)
 		So(err, ShouldBeNil)
 
 		userDemo1 := UserDemo{
@@ -24,7 +41,7 @@ func TestValidate(t *testing.T) {
 			RePassword: "123456",
 		}
 
-		err = Validate(userDemo1)
+		err = V(userDemo1)
 		So(err, ShouldBeNil)
 
 		userDemo2 := UserDemo{
@@ -34,7 +51,7 @@ func TestValidate(t *testing.T) {
 			RePassword: "123456ddd",
 		}
 
-		err = Validate(userDemo2)
+		err = V(userDemo2)
 		So(err, ShouldNotBeNil)
 		Println("Validate Error:", err)
 	})
