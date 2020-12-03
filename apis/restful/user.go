@@ -13,7 +13,7 @@ API层，调用相关Service，封装响应返回，并记录日志
 
 func init() {
 	// 初始化时注册该模块API
-	ginger.RegisterApi(new(UserApi))
+	Xgin.RegisterApi(new(UserApi))
 }
 
 type UserApi struct {
@@ -25,12 +25,12 @@ type UserApi struct {
 // 设置该模块的API Router
 func (api *UserApi) SetRoutes() {
 	api.userService = services.GetUserService()
-	engine := ginger.GinEngine()
+	engine := Xgin.GinEngine()
 
 	// 如TokenUtils服务已初始化，添加中间件
 	var authMiddlerware gin.HandlerFunc
-	if tku := jwt.TokenUtils(); tku != nil {
-		authMiddlerware = ginger.JwtAuthMiddleware(tku)
+	if tku := XJWT.TokenUtils(); tku != nil {
+		authMiddlerware = Xgin.JwtAuthMiddleware(tku)
 	}
 
 	engine.POST("/login", api.loginHandler)

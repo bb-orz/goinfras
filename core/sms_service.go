@@ -29,7 +29,7 @@ type SmsService struct {
 func (service *SmsService) SendPhoneVerifiedCode(dto services.SendPhoneVerifiedCodeDTO) error {
 	var err error
 	// 校验传输参数
-	if err = validate.Validate(dto); err != nil {
+	if err = XValidate.Validate(dto); err != nil {
 		return err
 	}
 

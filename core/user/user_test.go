@@ -12,7 +12,7 @@ import (
 func TestUserService_CreateUser(t *testing.T) {
 	Convey("User Service Create User Testing:", t, func() {
 		var err error
-		err = validate.RunForTesting(nil)
+		err = XValidate.RunForTesting(nil)
 		So(err, ShouldBeNil)
 		err = ormStore.RunForTesting(nil)
 		So(err, ShouldBeNil)
@@ -34,7 +34,7 @@ func TestUserService_CreateUser(t *testing.T) {
 func TestUserService_GetUserInfo(t *testing.T) {
 	Convey("User Service Get User Info Testing:", t, func() {
 		var err error
-		err = validate.RunForTesting(nil)
+		err = XValidate.RunForTesting(nil)
 		So(err, ShouldBeNil)
 		err = ormStore.RunForTesting(nil)
 		So(err, ShouldBeNil)

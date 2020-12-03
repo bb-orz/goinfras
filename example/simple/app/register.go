@@ -4,6 +4,11 @@ import (
 	_ "GoWebScaffold/example/simple/apis" // 初始化时自动注册apis层的所有接口
 	"GoWebScaffold/hub"
 	"GoWebScaffold/infras"
+	"GoWebScaffold/infras/XCron"
+	"GoWebScaffold/infras/XEtcd"
+	"GoWebScaffold/infras/XLogger"
+	"GoWebScaffold/infras/XValidate"
+	"GoWebScaffold/infras/Xgin"
 	"GoWebScaffold/infras/cron"
 	"GoWebScaffold/infras/ginger"
 	"GoWebScaffold/infras/hook"
@@ -25,16 +30,15 @@ func registerStarter() {
 
 	// 注册zap日志记录启动器
 	writers := []io.Writer{file}
-	loggerStarter := new(logger.Starter)
+	loggerStarter := new(XLogger.Starter)
 	loggerStarter.Writers = writers
-	infras.RegisterStarter(loggerStarter)
-
-	// 注册hook
-	hookStarter := new(hook.Starter)
-	infras.RegisterStarter(hookStarter)
+	infras.RegisterStarter(XLogger.NewStarter())
 
 	// 注册Cron定时任务
-	infras.RegisterStarter(new(cron.Starter))
+	infras.RegisterStarter(XCron.NewStarter())
+
+	// 注册ETCD
+	infras.RegisterStarter(XEtcd.NewStarter())
 
 	// 注册mongodb启动器
 	// mongoStarter := new(mongoStore.Starter)
@@ -54,9 +58,9 @@ func registerStarter() {
 	// infras.RegisterStarter(new(oauth.Starter))
 
 	// 注册gin web 服务
-	infras.RegisterStarter(&ginger.Starter{})
+	infras.RegisterStarter(Xgin.NewStarter())
 	// 注册验证器
-	infras.RegisterStarter(&validate.Starter{})
+	infras.RegisterStarter(XValidate.NewStarter())
 
 	// 对资源组件启动器进行排序
 	infras.SortStarters()

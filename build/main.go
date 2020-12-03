@@ -177,7 +177,7 @@ func registerComponent() {
 		panic(err.Error())
 	}
 	writers := []io.Writer{file}
-	infras.Register(&logger.Starter{Writers: writers})
+	infras.Register(&XLogger.Starter{Writers: writers})
 	// 注册mongodb启动器
 	infras.Register(&mongoStore.Starter{})
 	// 注册mysql启动器
@@ -191,9 +191,9 @@ func registerComponent() {
 	infras.Register(&redisPubSub.Starter{})
 	infras.Register(&natsMq.Starter{})
 	// 注册Oauth Manager
-	infras.Register(&oauth.Starter{})
+	infras.Register(&XOAuth.Starter{})
 	// 注册Cron定时任务
-	infras.Register(&cron.Starter{})
+	infras.Register(&cronInfras.Starter{})
 	// 注册hook
 	infras.Register(&hook.Starter{})
 	// 对资源组件启动器进行排序

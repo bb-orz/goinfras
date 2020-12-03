@@ -25,7 +25,7 @@ func (domain *VerifiedDomain) genEmailVerifiedCode(uid uint) (string, error) {
 	var err error
 	var code string
 	// 生成6位随机字符串
-	code = global.RandomString(6)
+	code = XGlobal.RandomString(6)
 
 	// 保存到缓存
 	err = domain.cache.SetUserVerifiedEmailCode(uid, code)
@@ -38,10 +38,10 @@ func (domain *VerifiedDomain) genEmailVerifiedCode(uid uint) (string, error) {
 
 // 构造验证邮箱邮件
 func (domain *VerifiedDomain) sendValidateEmail(email string, code string) error {
-	from := "no-reply@" + global.Config().ServerName
-	subject := "Verified Email Code From " + global.Config().AppName
+	from := "no-reply@" + XGlobal.Config().ServerName
+	subject := "Verified Email Code From " + XGlobal.Config().AppName
 	body := fmt.Sprintf("Verified Code: %s", code)
-	return mail.SendSimpleMail(from, email, subject, body)
+	return XMail.SendSimpleMail(from, email, subject, body)
 }
 
 // 发送验证码到邮箱
@@ -84,7 +84,7 @@ func (domain *VerifiedDomain) genResetPasswordCode(uid uint) (string, error) {
 	var err error
 	var code string
 	// 生成6位随机字符串
-	code = global.RandomString(40)
+	code = XGlobal.RandomString(40)
 
 	// 保存到缓存
 	err = domain.cache.SetForgetPasswordVerifiedCode(uid, code)
@@ -97,12 +97,12 @@ func (domain *VerifiedDomain) genResetPasswordCode(uid uint) (string, error) {
 
 // 构造验证邮箱邮件
 func (domain *VerifiedDomain) sendResetPasswordCodeEmail(email string, code string) error {
-	from := "no-reply@" + global.Config().ServerName
-	subject := "Reset Password Code From " + global.Config().AppName
+	from := "no-reply@" + XGlobal.Config().ServerName
+	subject := "Reset Password Code From " + XGlobal.Config().AppName
 	// TODO 设置重置密码的链接
-	url := global.Config().ServerName + "?code=" + code
+	url := XGlobal.Config().ServerName + "?code=" + code
 	body := fmt.Sprintf("Click This link To Reset Your Password: %s", url)
-	return mail.SendSimpleMail(from, email, subject, body)
+	return XMail.SendSimpleMail(from, email, subject, body)
 }
 
 // 发送验证码到邮箱
@@ -147,7 +147,7 @@ func (domain *VerifiedDomain) genPhoneVerifiedCode(uid uint) (string, error) {
 	var code string
 
 	// 生成4位随机数字
-	code, err = global.RandomNumber(4)
+	code, err = XGlobal.RandomNumber(4)
 	if err != nil {
 		return "", core.WrapError(err, core.ErrorFormatDomainAlgorithm, DomainName, "global.RandomNumber")
 	}

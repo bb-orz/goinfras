@@ -16,9 +16,9 @@ func NewOauthDomain() *OauthDomain {
 }
 
 // 通过accessCode获取qq user info
-func (domain *OauthDomain) GetQQOauthUserInfo(accessCode string) (*oauth.OAuthAccountInfo, error) {
-	var oAuthResult oauth.OAuthResult
-	oAuthResult = oauth.Manager().QQ.Authorize(accessCode)
+func (domain *OauthDomain) GetQQOauthUserInfo(accessCode string) (*XOAuth.OAuthAccountInfo, error) {
+	var oAuthResult XOAuth.OAuthResult
+	oAuthResult = XOAuth.Manager().QQ.Authorize(accessCode)
 
 	if oAuthResult.Error != nil || !oAuthResult.Result {
 		return nil, core.WrapError(oAuthResult.Error, core.ErrorFormatDomainThirdPart, "QQ.Authorize")
@@ -28,9 +28,9 @@ func (domain *OauthDomain) GetQQOauthUserInfo(accessCode string) (*oauth.OAuthAc
 }
 
 // 通过accessCode获取wechat user info
-func (domain *OauthDomain) GetWechatOauthUserInfo(accessCode string) (*oauth.OAuthAccountInfo, error) {
-	var oAuthResult oauth.OAuthResult
-	oAuthResult = oauth.Manager().Wechat.Authorize(accessCode)
+func (domain *OauthDomain) GetWechatOauthUserInfo(accessCode string) (*XOAuth.OAuthAccountInfo, error) {
+	var oAuthResult XOAuth.OAuthResult
+	oAuthResult = XOAuth.Manager().Wechat.Authorize(accessCode)
 
 	if oAuthResult.Error != nil || !oAuthResult.Result {
 		return nil, core.WrapError(oAuthResult.Error, core.ErrorFormatDomainThirdPart, "Wechat.Authorize")
@@ -40,9 +40,9 @@ func (domain *OauthDomain) GetWechatOauthUserInfo(accessCode string) (*oauth.OAu
 }
 
 // 通过accessCode获取weibo user info
-func (domain *OauthDomain) GetWeiboOauthUserInfo(accessCode string) (*oauth.OAuthAccountInfo, error) {
-	var oAuthResult oauth.OAuthResult
-	oAuthResult = oauth.Manager().Weibo.Authorize(accessCode)
+func (domain *OauthDomain) GetWeiboOauthUserInfo(accessCode string) (*XOAuth.OAuthAccountInfo, error) {
+	var oAuthResult XOAuth.OAuthResult
+	oAuthResult = XOAuth.Manager().Weibo.Authorize(accessCode)
 
 	if oAuthResult.Error != nil || !oAuthResult.Result {
 		return nil, core.WrapError(oAuthResult.Error, core.ErrorFormatDomainThirdPart, "Weibo.Authorize")

@@ -33,7 +33,7 @@ func (domain *UserDomain) generateUserNo() string {
 
 // 加密密码，设置密文和盐值
 func (domain *UserDomain) encryptPassword(password string) (hashStr, salt string) {
-	hashStr, salt = global.HashPassword(password)
+	hashStr, salt = XGlobal.HashPassword(password)
 	return
 }
 
@@ -42,7 +42,7 @@ func (domain *UserDomain) GenToken(no, name, avatar string) (string, error) {
 	var err error
 	var token string
 	// 生成
-	token, err = jwt.TokenUtils().Encode(jwt.UserClaim{
+	token, err = XJWT.TokenUtils().Encode(XJWT.UserClaim{
 		Id:     no,
 		Name:   name,
 		Avatar: avatar,
@@ -136,7 +136,7 @@ func (domain *UserDomain) CreateUserForPhone(dto services.CreateUserWithPhoneDTO
 }
 
 // Oauth三方账号绑定创建用户
-func (domain *UserDomain) CreateUserOAuthBinding(platform uint, oauthInfo *oauth.OAuthAccountInfo) (*services.UserOAuthsDTO, error) {
+func (domain *UserDomain) CreateUserOAuthBinding(platform uint, oauthInfo *XOAuth.OAuthAccountInfo) (*services.UserOAuthsDTO, error) {
 	var err error
 	var userOAuthsResult *services.UserOAuthsDTO
 

@@ -9,7 +9,7 @@ import (
 
 func init() {
 	// 初始化时注册该模块API
-	ginger.RegisterApi(new(SimpleApi))
+	Xgin.RegisterApi(new(SimpleApi))
 }
 
 type SimpleApi struct {
@@ -19,7 +19,7 @@ type SimpleApi struct {
 func (api *SimpleApi) SetRoutes() {
 	api.service1 = services.GetService1()
 
-	engine := ginger.GinComponent()
+	engine := Xgin.GinComponent()
 
 	engine.POST("simple/foo", api.Foo)
 	engine.POST("simple/bar", api.Bar)

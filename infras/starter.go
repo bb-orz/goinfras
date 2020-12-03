@@ -17,7 +17,7 @@ type Starter interface {
 	// 资源停止：
 	// 通常在启动时遇到异常时或者启用远程管理时，用于释放资源和终止资源的使用，
 	// 通常要优雅的释放，等待正在进行的任务继续，但不再接受新的任务
-	Stop(sctx *StarterContext)
+	Stop()
 	// 优先组：从高到低分：系统级别、基本资源级别、应用级别三组
 	PriorityGroup() PriorityGroup
 	// 设置该资源组件的启动优先级，默认为DEFAULT_PRIORITY，最大为INT_MAX
@@ -53,7 +53,7 @@ func (*BaseStarter) Start(*StarterContext) {}
 func (*BaseStarter) SetStartBlocking() bool { return false }
 
 // 关闭应用时的资源组件清理工作
-func (*BaseStarter) Stop(*StarterContext) {}
+func (*BaseStarter) Stop() {}
 
 // 为资源组件设置优先组
 func (s *BaseStarter) PriorityGroup() PriorityGroup { return BasicResourcesGroup }

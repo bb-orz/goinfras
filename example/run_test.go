@@ -14,30 +14,30 @@ import (
 func TestGinger(t *testing.T) {
 	Convey("Test Ginger...", t, func() {
 		var err error
-		config := &ginger.Config{
+		config := &Xgin.Config{
 			ListenHost: "127.0.0.1",
 			ListenPort: 8090,
-			Cors: &ginger.CorsConfig{
+			Cors: &Xgin.CorsConfig{
 				AllowAllOrigins: true,
 			},
 		}
 
 		// 1.配置gin中间件
-		log := logger.CommonLogger()
+		log := XLogger.CommonLogger()
 		middlewares := make([]gin.HandlerFunc, 0)
-		middlewares = append(middlewares, ginger.ZapLoggerMiddleware(log), ginger.ZapRecoveryMiddleware(log, false))
+		middlewares = append(middlewares, Xgin.ZapLoggerMiddleware(log), Xgin.ZapRecoveryMiddleware(log, false))
 
 		// 如开启cors限制，添加中间件
 		if !config.Cors.AllowAllOrigins {
-			middlewares = append(middlewares, ginger.CORSMiddleware(config.Cors))
+			middlewares = append(middlewares, Xgin.CORSMiddleware(config.Cors))
 		}
 
 		// 2.New Gin Engine
-		ginEngine := ginger.NewGinEngine(config, middlewares...)
-		ginger.SetGinEngine(ginEngine)
+		ginEngine := Xgin.NewGinEngine(config, middlewares...)
+		Xgin.SetGinEngine(ginEngine)
 
 		// 3.Restful API 模块注册
-		for _, v := range ginger.GetApis() {
+		for _, v := range Xgin.GetApis() {
 			// 路由注册
 			v.SetRoutes()
 		}

@@ -28,7 +28,7 @@ func (app *Application) Up() {
 // 停止或销毁应用程序所有基础资源
 func (app *Application) Down() {
 	for _, s := range StarterManager.GetAll() {
-		s.Stop(app.Sctx)
+		s.Stop()
 	}
 }
 
@@ -39,9 +39,13 @@ func (app *Application) init() {
 }
 
 func (app *Application) setup() {
+	// 安装所有注册启动器组件
 	for _, s := range StarterManager.GetAll() {
 		s.Setup(app.Sctx)
 	}
+
+	// 注册资源组件的关闭回调
+	RegisterStopFunc(app.Sctx.Logger())
 }
 
 func (app *Application) start() {
@@ -58,4 +62,7 @@ func (app *Application) start() {
 			s.Start(app.Sctx)
 		}
 	}
+
+	// 应用启动时开始监听系统信号
+	NotifySignal(app.Sctx.Logger())
 }
