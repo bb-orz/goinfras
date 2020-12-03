@@ -1,6 +1,9 @@
 package oauth
 
-import "GoWebScaffold/infras"
+import (
+	"GoWebScaffold/hub"
+	"GoWebScaffold/infras"
+)
 
 var oAuthManager *OAuthManager
 

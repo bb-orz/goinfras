@@ -1,6 +1,8 @@
 package natsMq
 
-import "GoWebScaffold/infras"
+import (
+	"GoWebScaffold/infras"
+)
 
 var natsMQPool *NatsPool
 

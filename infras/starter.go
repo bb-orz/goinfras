@@ -91,7 +91,7 @@ func (m starterManager) Less(i, j int) bool {
 var StarterManager = new(starterManager)
 
 // 开放启动注册器
-func Register(s Starter) {
+func RegisterStarter(s Starter) {
 	StarterManager.Register(s)
 }
 

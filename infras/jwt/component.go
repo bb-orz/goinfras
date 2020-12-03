@@ -1,6 +1,8 @@
 package jwt
 
-import "GoWebScaffold/infras"
+import (
+	"GoWebScaffold/infras"
+)
 
 var tku ITokenUtils
 

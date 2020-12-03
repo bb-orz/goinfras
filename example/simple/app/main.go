@@ -2,7 +2,9 @@ package main
 
 import (
 	_ "GoWebScaffold/example/simple/apis" // 运行时自动注册api路由
+	"GoWebScaffold/hub"
 	"GoWebScaffold/infras"
+	"GoWebScaffold/infras/cron"
 	"flag"
 	"fmt"
 )
@@ -32,5 +34,7 @@ func main() {
 
 	// 运行应用,启动已注册的资源组件
 	app.Up()
+
 	fmt.Println("Application Running  ......")
+
 }

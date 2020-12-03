@@ -8,8 +8,8 @@ import (
 )
 
 // 结构体指针检查验证，如果传入的interface为nil，就通过log.Panic函数抛出一个异常
-// 被用在starter中检查公共资源是否被实例化了
-func Check(a interface{}) {
+// 被用在starter中检查组件资源是否已启动
+func Check(a interface{}) error {
 	if a == nil {
 		_, f, l, _ := runtime.Caller(1)
 		strs := strings.Split(f, "/")
@@ -18,6 +18,7 @@ func Check(a interface{}) {
 			size = 4
 		}
 		f = filepath.Join(strs[len(strs)-size:]...)
-		_ = fmt.Errorf("object can't be nil, cause by: %s(%d)", f, l)
+		return fmt.Errorf("object can't be nil, cause by: %s(%d)", f, l)
 	}
+	return nil
 }

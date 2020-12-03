@@ -19,7 +19,7 @@ type SimpleApi struct {
 func (api *SimpleApi) SetRoutes() {
 	api.service1 = services.GetService1()
 
-	engine := ginger.GinEngine()
+	engine := ginger.GinComponent()
 
 	engine.POST("simple/foo", api.Foo)
 	engine.POST("simple/bar", api.Bar)

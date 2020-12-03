@@ -1,7 +1,7 @@
 package validate
 
 import (
-	"GoWebScaffold/infras"
+	"GoWebScaffold/hub"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/prometheus/common/log"
 	"gopkg.in/go-playground/validator.v9"

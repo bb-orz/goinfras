@@ -1,7 +1,7 @@
 package services
 
 import (
-	"GoWebScaffold/infras"
+	"GoWebScaffold/hub"
 	"time"
 )
 

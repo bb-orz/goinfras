@@ -1,6 +1,8 @@
 package services
 
-import "GoWebScaffold/infras"
+import (
+	"GoWebScaffold/hub"
+)
 
 /* 定义邮件服务模块的服务层方法，并定义数据传输对象DTO*/
 var mailService IMailService

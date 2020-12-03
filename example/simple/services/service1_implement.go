@@ -24,7 +24,6 @@ func (s *Service1) Foo(i InDTO) error {
 	var err error
 	// TODO 实现模块业务逻辑domain
 	fmt.Println("实现模块业务逻辑domain —— Foo")
-
 	return err
 }
 

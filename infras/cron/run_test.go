@@ -11,14 +11,12 @@ import (
 /*实例化资源用于测试*/
 func TestingInstantiation(config *Config) error {
 	var err error
-	var m *Manager
 	if config == nil {
 		config = &Config{Location: "Local"}
 	}
 	// 1.获取Cron执行管理器
 	fmt.Println("创建任务执行管理器...")
-	m = NewManager(config, zap.L())
-	SetComponent(m)
+	manager = NewManager(config, zap.L())
 	return err
 }
 
@@ -47,11 +45,11 @@ func TestCron(t *testing.T) {
 
 		// 2.注册定时运行任务
 		fmt.Println("注册第一个定时任务...")
-		CronComponent().RegisterTasks(tasks...)
+		manager.RegisterTasks(tasks...)
 
 		// 3.运行定时任务
 		fmt.Println("开始运行定时任务...")
-		CronComponent().RunTasks()
+		manager.RunTasks()
 
 		// 主协程运行5s
 		time.Sleep(time.Second * 5)
@@ -62,7 +60,7 @@ func TestCron(t *testing.T) {
 
 		// 5.注册定时运行任务
 		fmt.Println("注册第二个定时任务...")
-		CronComponent().RegisterTasks(task2)
+		manager.RegisterTasks(task2)
 
 		// 添加新的任务后主协程再运行10s
 		time.Sleep(time.Second * 10)

@@ -16,6 +16,6 @@ func SetComponent(c *clientv3.Client) {
 
 // 组件化使用
 func EtcdComponent() *clientv3.Client {
-	infras.Check(client)
+	_ = infras.Check(client)
 	return client
 }
