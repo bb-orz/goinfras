@@ -2,6 +2,7 @@ package XCron
 
 import (
 	"GoWebScaffold/infras"
+	"fmt"
 )
 
 // 实例化资源存储变量
@@ -20,6 +21,10 @@ func NewStarter() *starter {
 	return starter
 }
 
+func (s *starter) Name() string {
+	return "XCron"
+}
+
 // 应用初始化时加载配置数据
 func (s *starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
@@ -36,6 +41,16 @@ func (s *starter) Setup(sctx *infras.StarterContext) {
 	// 2.创建后可立即注册定时运行任务
 	manager.RegisterTasks(s.Tasks...)
 	sctx.Logger().Info("Cron Manager Setup Successful!")
+}
+
+func (s *starter) Check(sctx *infras.StarterContext) bool {
+	err := infras.Check(manager)
+	if err != nil {
+		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Cron Manager Setup Fail!", s.Name()))
+		return false
+	}
+	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Cron Manager Setup Successful!", s.Name()))
+	return true
 }
 
 // 应用开始运行时，执行任务

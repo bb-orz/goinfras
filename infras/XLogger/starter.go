@@ -6,19 +6,23 @@ import (
 	"io"
 )
 
-type Starter struct {
+type starter struct {
 	infras.BaseStarter
 	cfg     Config
 	Writers []io.Writer
 }
 
-func NewStarter() *Starter {
-	starter := new(Starter)
+func NewStarter() *starter {
+	starter := new(starter)
 	starter.cfg = Config{}
 	return starter
 }
 
-func (s *Starter) Init(sctx *infras.StarterContext) {
+func (s *starter) Name() string {
+	return "XLogger"
+}
+
+func (s *starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
 	define := Config{}
 	err := viper.UnmarshalKey("Logger", &define)
@@ -27,19 +31,33 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	s.cfg = define
 }
 
-func (s *Starter) Setup(sctx *infras.StarterContext) {
-	cl := NewCommonLogger(&s.cfg, s.Writers...)
-	SetComponentForCommonLogger(cl)
-	sel := NewSyncErrorLogger(&s.cfg)
-	SetComponentForSyncErrorLogger(sel)
+func (s *starter) Setup(sctx *infras.StarterContext) {
+	commonLogger = NewCommonLogger(&s.cfg, s.Writers...)
+	sctx.Logger().Info("CommonLogger Setup Successful!")
+
+	syncErrorLogger = NewSyncErrorLogger(&s.cfg)
+	sctx.Logger().Info("SyncErrorLogger Setup Successful!")
+
 	sctx.SetLogger(commonLogger)
-	sctx.Logger().Info("CommonLogger And SyncErrorLogger Setup Successful!")
 }
 
-func (s *Starter) Stop() {
+func (s *starter) Check(sctx *infras.StarterContext) bool {
+	var err1, err2 error
+	err1 = infras.Check(commonLogger)
+	err2 = infras.Check(syncErrorLogger)
+
+	if err1 != nil || err2 != nil {
+		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Zap Logger Setup Fail!", s.Name()))
+		return false
+	}
+	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Zap Logger Setup Successful!", s.Name()))
+	return true
+}
+
+func (s *starter) Stop() {
 	// 关闭前刷入日志数据
-	CLogger().Sync()
-	SELogger().Sync()
+	commonLogger.Sync()
+	syncErrorLogger.Sync()
 }
 
-func (s *Starter) Priority() int { return infras.INT_MAX }
+func (s *starter) Priority() int { return infras.INT_MAX }

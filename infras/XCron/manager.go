@@ -19,9 +19,6 @@ func NewTask(spec string, job cron.Job) *Task {
 	return task
 }
 
-// 实例变量
-var manager *Manager
-
 // 定时任务管理器
 type Manager struct {
 	client *cron.Cron

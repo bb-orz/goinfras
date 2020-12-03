@@ -19,13 +19,11 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 
 func (s *Starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	var pool *NatsPool
-	pool, err = NewPool(&s.cfg, sctx.Logger())
+	natsMQPool, err = NewPool(&s.cfg, sctx.Logger())
 	infras.FailHandler(err)
-	SetComponent(pool)
 	sctx.Logger().Info("NatsMQPool Setup Successful!")
 }
 
 func (s *Starter) Stop(sctx *infras.StarterContext) {
-	NatsMQComponent().Close()
+	natsMQPool.Close()
 }

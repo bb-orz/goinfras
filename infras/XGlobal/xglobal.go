@@ -1,15 +1,9 @@
 package XGlobal
 
-import "GoWebScaffold/infras"
-
 // 全局配置
 var global Config
 
-func SetComponent(cfg Config) {
-	global = cfg
-}
-
-func GlobalConfig() *Config {
-	infras.Check(global)
+// 资源组件实例调用
+func GConfig() *Config {
 	return &global
 }

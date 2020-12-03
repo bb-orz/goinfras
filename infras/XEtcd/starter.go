@@ -3,20 +3,25 @@ package XEtcd
 import (
 	"GoWebScaffold/infras"
 	"context"
+	"fmt"
 )
 
-type Starter struct {
+type starter struct {
 	infras.BaseStarter
 	cfg Config
 }
 
-func NewStarter() *Starter {
-	starter := new(Starter)
+func NewStarter() *starter {
+	starter := new(starter)
 	starter.cfg = Config{}
 	return starter
 }
 
-func (s *Starter) Init(sctx *infras.StarterContext) {
+func (s *starter) Name() string {
+	return "XEtcd"
+}
+
+func (s *starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
 	define := Config{}
 	err := viper.UnmarshalKey("Etcd", &define)
@@ -24,13 +29,23 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	s.cfg = define
 }
 
-func (s *Starter) Setup(sctx *infras.StarterContext) {
+func (s *starter) Setup(sctx *infras.StarterContext) {
 	var err error
 	client, err = NewEtcdClient(context.TODO(), &s.cfg, nil)
 	infras.FailHandler(err)
 	sctx.Logger().Info("EtcdClientV3 Setup Successful!")
 }
 
-func (s *Starter) Stop() {
+func (s *starter) Check(sctx *infras.StarterContext) bool {
+	err := infras.Check(client)
+	if err != nil {
+		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: ETCD Client Setup Fail!", s.Name()))
+		return false
+	}
+	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: ETCD Client Setup Successful!", s.Name()))
+	return true
+}
+
+func (s *starter) Stop() {
 	_ = client.Close()
 }

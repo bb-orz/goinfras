@@ -8,19 +8,19 @@ import (
 )
 
 // 异步日志记录器核心
-func SyncCoreList(cfg *Config, format zapcore.EncoderConfig, syncWriters ...io.Writer) zapcore.Core {
+func syncCoreList(cfg *Config, format zapcore.EncoderConfig, syncWriters ...io.Writer) zapcore.Core {
 	var coreList []zapcore.Core
 	if cfg.DebugLevelSwitch || cfg.InfoLevelSwitch || cfg.WarnLevelSwitch {
-		coreList = append(coreList, SyncInfoCore(cfg, format, syncWriters...))
+		coreList = append(coreList, syncInfoCore(cfg, format, syncWriters...))
 	}
 	if cfg.ErrorLevelSwitch || cfg.DPanicLevelSwitch || cfg.PanicLevelSwitch || cfg.FatalLevelSwitch {
-		coreList = append(coreList, SyncErrorCore(cfg, format, syncWriters...))
+		coreList = append(coreList, syncErrorCore(cfg, format, syncWriters...))
 	}
 	return zapcore.NewTee(coreList...)
 }
 
 // 异步非错误信息(debug/info/warn)日志记录器
-func SyncInfoCore(cfg *Config, format zapcore.EncoderConfig, syncWriters ...io.Writer) zapcore.Core {
+func syncInfoCore(cfg *Config, format zapcore.EncoderConfig, syncWriters ...io.Writer) zapcore.Core {
 	// 记录所有非错误日志级别
 	levelEnablerFunc := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
 		return level >= zapcore.DebugLevel && level <= zapcore.WarnLevel
@@ -50,7 +50,7 @@ func SyncInfoCore(cfg *Config, format zapcore.EncoderConfig, syncWriters ...io.W
 }
 
 // 异步错误信息(error/dpanic/panic/fatal)日志记录器:
-func SyncErrorCore(cfg *Config, format zapcore.EncoderConfig, syncWriters ...io.Writer) zapcore.Core {
+func syncErrorCore(cfg *Config, format zapcore.EncoderConfig, syncWriters ...io.Writer) zapcore.Core {
 	// 记录所有非错误日志级别
 	levelEnablerFunc := zap.LevelEnablerFunc(func(level zapcore.Level) bool {
 		return level >= zapcore.ErrorLevel && level <= zapcore.FatalLevel

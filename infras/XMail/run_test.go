@@ -19,8 +19,8 @@ func TestingInstantiation(config *Config) {
 		}
 
 	}
-	m := NewNoAuthDialer(config.Server, config.Port)
-	SetComponent(m)
+	mailDialer = NewNoAuthDialer(config.Server, config.Port)
+
 }
 
 func TestCommonMail(t *testing.T) {
@@ -33,7 +33,7 @@ func TestCommonMail(t *testing.T) {
 		message.SetBody("", "")
 
 		// 邮件组件发送
-		err := MailComponent().DialAndSend(message)
+		err := mailDialer.DialAndSend(message)
 		So(err, ShouldBeNil)
 
 	})

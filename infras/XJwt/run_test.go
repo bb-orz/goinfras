@@ -13,7 +13,6 @@ import (
 /*实例化资源用于测试*/
 func TestingInstantiation(config *Config) error {
 	var err error
-	var t ITokenUtils
 
 	if config == nil {
 		config = &Config{
@@ -22,8 +21,7 @@ func TestingInstantiation(config *Config) error {
 		}
 
 	}
-	t = NewTokenUtils([]byte(config.PrivateKey), config.ExpSeconds)
-	SetComponent(t)
+	tku = NewTokenUtils([]byte(config.PrivateKey), config.ExpSeconds)
 	return err
 }
 
@@ -37,18 +35,18 @@ func TestNewTokenUtils(t *testing.T) {
 		userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker"}
 
 		Println("Token Service Encode:")
-		token, err := JWTComponent().Encode(userClaim)
+		token, err := tku.Encode(userClaim)
 		So(err, ShouldBeNil)
 		Println("Token String", token)
 
 		Println("Token Service Decode:")
-		claim, err := JWTComponent().Decode(token)
+		claim, err := tku.Decode(token)
 		So(err, ShouldBeNil)
 		Println("Token Claim:", claim)
 
 		time.Sleep(6 * time.Second)
 		Println("Token Decode ExpTime:")
-		claim, err = JWTComponent().Decode(token)
+		claim, err = tku.Decode(token)
 		So(err, ShouldNotBeNil)
 
 		Println("Token Service Decode Expired Error:", err)

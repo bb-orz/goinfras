@@ -3,20 +3,25 @@ package XJwt
 import (
 	"GoWebScaffold/infras"
 	"GoWebScaffold/infras/store/redisStore"
+	"fmt"
 )
 
-type Starter struct {
+type starter struct {
 	infras.BaseStarter
 	cfg Config
 }
 
-func NewStarter() *Starter {
-	starter := new(Starter)
+func NewStarter() *starter {
+	starter := new(starter)
 	starter.cfg = Config{}
 	return starter
 }
 
-func (s *Starter) Init(sctx *infras.StarterContext) {
+func (s *starter) Name() string {
+	return "XJWT"
+}
+
+func (s *starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
 	define := Config{}
 	err := viper.UnmarshalKey("Jwt", &define)
@@ -24,17 +29,26 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	s.cfg = define
 }
 
-func (s *Starter) Setup(sctx *infras.StarterContext) {
-}
-
-func (s *Starter) Start(sctx *infras.StarterContext) {
-	var t ITokenUtils
+func (s *starter) Setup(sctx *infras.StarterContext) {
 	if redisStore.Pool() != nil {
-		t = NewTokenUtilsX([]byte(s.cfg.PrivateKey), s.cfg.ExpSeconds, redisStore.Pool())
+		tku = NewTokenUtilsX([]byte(s.cfg.PrivateKey), s.cfg.ExpSeconds, redisStore.Pool())
 	} else {
-		t = NewTokenUtils([]byte(s.cfg.PrivateKey), s.cfg.ExpSeconds)
+		tku = NewTokenUtils([]byte(s.cfg.PrivateKey), s.cfg.ExpSeconds)
 	}
-	SetComponent(t)
 }
 
-func (s *Starter) Stop(sctx *infras.StarterContext) {}
+func (s *starter) Check(sctx *infras.StarterContext) bool {
+	err := infras.Check(tku)
+	if err != nil {
+		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: JWT TokenUtils Setup Fail!", s.Name()))
+		return false
+	}
+	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: JWT TokenUtils Setup Successful!", s.Name()))
+	return true
+}
+
+func (s *starter) Start(sctx *infras.StarterContext) {
+
+}
+
+func (s *starter) Stop(sctx *infras.StarterContext) {}

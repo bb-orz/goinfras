@@ -3,21 +3,18 @@ package XEtcd
 import (
 	"context"
 	. "github.com/smartystreets/goconvey/convey"
-	"go.etcd.io/etcd/clientv3"
 	"testing"
 )
 
 /*实例化资源用于测试*/
 func TestingInstantiation(config *Config) error {
 	var err error
-	var c *clientv3.Client
 	if config == nil {
 		config = &Config{
 			Endpoints: []string{"localhost:2379"},
 		}
 	}
-	c, err = NewEtcdClient(context.TODO(), config, nil)
-	SetComponent(c)
+	client, err = NewEtcdClient(context.TODO(), config, nil)
 	return err
 }
 
@@ -30,7 +27,7 @@ func TestEtcdClientV3(t *testing.T) {
 
 		Println("Cron Config:", config)
 
-		response, err := EtcdComponent().Get(context.TODO(), "demo.a")
+		response, err := client.Get(context.TODO(), "demo.a")
 		So(err, ShouldBeNil)
 
 		values := response.Kvs

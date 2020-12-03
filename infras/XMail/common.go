@@ -1,7 +1,7 @@
 package XMail
 
 import (
-	"GoWebScaffold/infras/logger"
+	"GoWebScaffold/infras/XLogger"
 	"go.uber.org/zap"
 	"gopkg.in/gomail.v2"
 	"io"
@@ -11,10 +11,14 @@ import (
 
 /*common 专门封装一些常用的操作*/
 
-type CommonMail struct{}
+type CommonMail struct {
+	dialer *gomail.Dialer
+}
 
 func NewCommonMail() *CommonMail {
-	return new(CommonMail)
+	c := new(CommonMail)
+	c.dialer = XDialer()
+	return c
 }
 
 // 本机发邮件
@@ -32,7 +36,7 @@ func (*CommonMail) SendMailNoSMTP(from, to, subject, body string) error {
 			"Subject":   subject,
 			"ext/plain": body,
 		}
-		XLogger.CLogger().Info("Send Email:", zap.Any("Mail Info", info))
+		XLogger.XCommon().Info("Send Email:", zap.Any("Mail Info", info))
 		return nil
 	})
 
@@ -44,7 +48,7 @@ func (*CommonMail) SendMailNoSMTP(from, to, subject, body string) error {
 }
 
 // 发送简单邮件
-func (*CommonMail) SendSimpleMail(from, to, subject, body string) error {
+func (c *CommonMail) SendSimpleMail(from, to, subject, body string) error {
 	m := gomail.NewMessage()
 	m.SetHeader("From", from)
 	m.SetHeader("To", to)
@@ -52,11 +56,11 @@ func (*CommonMail) SendSimpleMail(from, to, subject, body string) error {
 	// m.SetAddressHeader()
 	m.SetBody("text/plain", body)
 
-	return MailComponent().DialAndSend(m)
+	return c.dialer.DialAndSend(m)
 }
 
 // 使用通道在窗口时间内批量发送邮件
-func (*CommonMail) SendBatchMails(msgCh <-chan *gomail.Message, duration time.Duration) error {
+func (c *CommonMail) SendBatchMails(msgCh <-chan *gomail.Message, duration time.Duration) error {
 	go func() {
 		var s gomail.SendCloser
 		var err error
@@ -68,7 +72,7 @@ func (*CommonMail) SendBatchMails(msgCh <-chan *gomail.Message, duration time.Du
 					return
 				}
 				if !open {
-					if s, err = MailComponent().Dial(); err != nil {
+					if s, err = c.dialer.Dial(); err != nil {
 						panic(err)
 					}
 					open = true

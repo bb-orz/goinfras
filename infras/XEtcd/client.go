@@ -7,8 +7,6 @@ import (
 	"time"
 )
 
-var client *clientv3.Client
-
 func NewEtcdClient(ctx context.Context, cfg *Config, zapLoggerConf *zap.Config) (cli *clientv3.Client, err error) {
 	EtcdConfig := clientv3.Config{
 		Endpoints:            cfg.Endpoints,                                         // 单机或集群主机地址

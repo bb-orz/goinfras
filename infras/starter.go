@@ -6,14 +6,19 @@ import (
 
 // 启动器接口
 type Starter interface {
+	// 组件名
+	Name() string
 	// 初始化：资源组件读取配置信息
 	Init(sctx *StarterContext)
 	// 安装：检查该组件的前置依赖
 	Setup(sctx *StarterContext)
 	// 启动：该资源组件的连接或启动以供应用程序后续使用
 	Start(sctx *StarterContext)
+	// 启动状态检查
+	Check(sctx *StarterContext) bool
 	// 阻塞启动：设置需要后置启动的资源组件，默认为false
 	SetStartBlocking() bool
+
 	// 资源停止：
 	// 通常在启动时遇到异常时或者启用远程管理时，用于释放资源和终止资源的使用，
 	// 通常要优雅的释放，等待正在进行的任务继续，但不再接受新的任务
@@ -40,6 +45,8 @@ const (
 // 基础空启动器，可便于被其他具体的基础资源嵌入
 type BaseStarter struct{}
 
+func (*BaseStarter) Name() string { return "" }
+
 // 载入启动器配置信息
 func (*BaseStarter) Init(*StarterContext) {}
 
@@ -48,6 +55,9 @@ func (*BaseStarter) Setup(*StarterContext) {}
 
 // 如需随应用运行需Start启动
 func (*BaseStarter) Start(*StarterContext) {}
+
+// 组件启动状态检查
+func (*BaseStarter) Check(*StarterContext) bool { return false }
 
 // 阻塞型组件需设置为true
 func (*BaseStarter) SetStartBlocking() bool { return false }

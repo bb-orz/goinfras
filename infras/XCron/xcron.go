@@ -1,22 +1,14 @@
 package XCron
 
-import "GoWebScaffold/infras"
+// 实例变量
+var manager *Manager
 
 // 资源组件实例调用
-func X() (*Manager, error) {
-	err := infras.Check(manager)
-	if err != nil {
-		return nil, err
-	}
-
-	return manager, nil
+func XManager() *Manager {
+	return manager
 }
 
 // 资源组件闭包执行
-func XF(f func(m *Manager) error) error {
-	err := infras.Check(manager)
-	if err != nil {
-		return err
-	}
+func XFManager(f func(m *Manager) error) error {
 	return f(manager)
 }

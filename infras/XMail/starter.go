@@ -2,21 +2,25 @@ package XMail
 
 import (
 	"GoWebScaffold/infras"
-	"gopkg.in/gomail.v2"
+	"fmt"
 )
 
-type Starter struct {
+type starter struct {
 	infras.BaseStarter
 	cfg Config
 }
 
-func NewStarter() *Starter {
-	starter := new(Starter)
+func NewStarter() *starter {
+	starter := new(starter)
 	starter.cfg = Config{}
 	return starter
 }
 
-func (s *Starter) Init(sctx *infras.StarterContext) {
+func (s *starter) Name() string {
+	return "XMail"
+}
+
+func (s *starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
 	define := Config{}
 	err := viper.UnmarshalKey("Mail", &define)
@@ -24,13 +28,20 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	s.cfg = define
 }
 
-func (s *Starter) Setup(sctx *infras.StarterContext) {
-	var m *gomail.Dialer
+func (s *starter) Setup(sctx *infras.StarterContext) {
 	if s.cfg.NoAuth {
-		m = NewNoAuthDialer(s.cfg.Server, s.cfg.Port)
+		mailDialer = NewNoAuthDialer(s.cfg.Server, s.cfg.Port)
 	} else {
-		m = NewAuthDialer(s.cfg.Server, s.cfg.User, s.cfg.Password, s.cfg.Port)
+		mailDialer = NewAuthDialer(s.cfg.Server, s.cfg.User, s.cfg.Password, s.cfg.Port)
 	}
+}
 
-	SetComponent(m)
+func (s *starter) Check(sctx *infras.StarterContext) bool {
+	err := infras.Check(mailDialer)
+	if err != nil {
+		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Mail Dialer Setup Fail!", s.Name()))
+		return false
+	}
+	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Mail Dialer Setup Successful!", s.Name()))
+	return true
 }

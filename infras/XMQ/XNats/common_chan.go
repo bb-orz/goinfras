@@ -2,15 +2,18 @@ package XNats
 
 import "github.com/nats-io/nats.go"
 
-type CommonNatsChan struct{}
+type CommonNatsChan struct {
+	pool *NatsPool
+}
 
 func NewCommonNatsChan() *CommonNatsChan {
-	return new(CommonNatsChan)
+	c := new(CommonNatsChan)
+
 }
 
 // 发送消息到一个主题，绑定管道
 func (*CommonNatsChan) BindSendChan(subject string, sendCh chan interface{}) error {
-	conn, err := NatsMQComponent().Get()
+	conn, err := XPool().Get()
 	if err != nil {
 		return err
 	}

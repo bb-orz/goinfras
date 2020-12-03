@@ -2,7 +2,7 @@ package Xgin
 
 import (
 	"GoWebScaffold/infras"
-	"GoWebScaffold/infras/logger"
+	"GoWebScaffold/infras/XLogger"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	. "github.com/smartystreets/goconvey/convey"
@@ -23,7 +23,7 @@ func TestingInstantiation(config *Config, apis []IApi) error {
 	}
 
 	// 1.配置gin中间件
-	log := XLogger.CLogger()
+	log := XLogger.XCommon()
 	middlewares := make([]gin.HandlerFunc, 0)
 	middlewares = append(middlewares, ZapLoggerMiddleware(log), ZapRecoveryMiddleware(log, false))
 
@@ -45,10 +45,10 @@ func TestingInstantiation(config *Config, apis []IApi) error {
 	var addr string
 	addr = fmt.Sprintf("%s:%d", config.ListenHost, config.ListenPort)
 	if config.Tls && config.CertFile != "" && config.KeyFile != "" {
-		err = GinComponent().RunTLS(addr, config.CertFile, config.KeyFile)
+		err = ginEngine.RunTLS(addr, config.CertFile, config.KeyFile)
 		infras.FailHandler(err)
 	} else {
-		err = GinComponent().Run(addr)
+		err = ginEngine.Run(addr)
 		infras.FailHandler(err)
 	}
 

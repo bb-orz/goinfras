@@ -36,13 +36,13 @@ func NewCommonLogger(cfg *Config, syncWriters ...io.Writer) *zap.Logger {
 	// Option:配置日志记录器核心列表
 	var zCore zapcore.Core
 	if cfg.SimpleZapCore {
-		zCore = zapcore.NewTee(SimpleCoreList(cfg, commonFormatConfig()))
+		zCore = zapcore.NewTee(simpleCoreList(cfg, commonFormatConfig()))
 	} else if cfg.RotateZapCore {
-		zCore = zapcore.NewTee(RotateCoreList(cfg, commonFormatConfig()))
+		zCore = zapcore.NewTee(rotateCoreList(cfg, commonFormatConfig()))
 	} else if cfg.SyncLogSwitch {
-		zCore = zapcore.NewTee(SyncCoreList(cfg, commonFormatConfig(), syncWriters...))
+		zCore = zapcore.NewTee(syncCoreList(cfg, commonFormatConfig(), syncWriters...))
 	} else {
-		zCore = SimpleCore(cfg, commonFormatConfig())
+		zCore = simpleCore(cfg, commonFormatConfig())
 	}
 	return zap.New(zCore, optionList...)
 }
@@ -76,6 +76,6 @@ func NewSyncErrorLogger(cfg *Config) *zap.Logger {
 	}
 
 	// 配置核心
-	c := SimpleErrorCore(cfg, commonFormatConfig())
+	c := simpleErrorCore(cfg, commonFormatConfig())
 	return zap.New(c, optionList...)
 }
