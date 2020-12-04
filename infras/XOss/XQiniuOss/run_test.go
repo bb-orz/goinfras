@@ -24,8 +24,7 @@ func TestingInstantiation(config *Config) error {
 			"",
 		}
 	}
-	SetQnClient(*config)
-	SetMac(NewQiniuOssMac(config))
+	qiniuOssClient = NewQnClient(config)
 	return err
 }
 

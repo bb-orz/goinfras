@@ -11,7 +11,7 @@ func XClient() *oss.Client {
 }
 
 // 资源组件闭包执行
-func XFManager(f func(c *oss.Client) error) error {
+func XFClient(f func(c *oss.Client) error) error {
 	return f(aliyunOssClient)
 }
 
