@@ -2,14 +2,19 @@ package XOAuth
 
 import (
 	"GoWebScaffold/infras"
+	"fmt"
 )
 
-type Starter struct {
+type starter struct {
 	infras.BaseStarter
 	cfg Config
 }
 
-func (s *Starter) Init(sctx *infras.StarterContext) {
+func (s *starter) Name() string {
+	return "XOAuth"
+}
+
+func (s *starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
 	define := Config{}
 	err := viper.UnmarshalKey("OAuth", &define)
@@ -17,21 +22,29 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	s.cfg = define
 }
 
-func (s *Starter) Setup(sctx *infras.StarterContext) {
-	var om *OAuthManager
-	om = new(OAuthManager)
+func (s *starter) Setup(sctx *infras.StarterContext) {
+	oAuthManager = new(OAuthManager)
 	if s.cfg.QQSignSwitch {
-		om.QQ = NewQQOauthManager(&s.cfg)
+		oAuthManager.QQ = NewQQOauthManager(&s.cfg)
 		sctx.Logger().Info("QQ OAuth Manager Setup Successful!")
 	}
 	if s.cfg.WechatSignSwitch {
-		om.Wechat = NewWechatOAuthManager(&s.cfg)
+		oAuthManager.Wechat = NewWechatOAuthManager(&s.cfg)
 		sctx.Logger().Info("Wechat OAuth Manager Setup Successful!")
 	}
 	if s.cfg.WeiboSignSwitch {
-		om.Weibo = NewWeiboOAuthManager(&s.cfg)
+		oAuthManager.Weibo = NewWeiboOAuthManager(&s.cfg)
 		sctx.Logger().Info("Weibo OAuth Manager Setup Successful!")
 	}
 
-	SetComponent(om)
+}
+
+func (s *starter) Check(sctx *infras.StarterContext) bool {
+	err := infras.Check(oAuthManager)
+	if err != nil {
+		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: OAuth Manager Setup Fail!", s.Name()))
+		return false
+	}
+	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: OAuth Manager Setup Successful!", s.Name()))
+	return true
 }

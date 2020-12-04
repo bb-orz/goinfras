@@ -7,8 +7,6 @@ import (
 
 /*实例化资源用于测试*/
 func TestingInstantiation(config *Config) error {
-	var om *OAuthManager
-
 	if config == nil {
 		config = &Config{
 			false,
@@ -23,18 +21,17 @@ func TestingInstantiation(config *Config) error {
 		}
 	}
 
-	om = new(OAuthManager)
+	oAuthManager = new(OAuthManager)
 	if config.QQSignSwitch {
-		om.QQ = NewQQOauthManager(config)
+		oAuthManager.QQOAuthManager = NewQQOauthManager(config)
 	}
 	if config.WechatSignSwitch {
-		om.Wechat = NewWechatOAuthManager(config)
+		oAuthManager.WechatOAuthManager = NewWechatOAuthManager(config)
 	}
 	if config.WeiboSignSwitch {
-		om.Weibo = NewWeiboOAuthManager(config)
+		oAuthManager.WeiboOAuthManager = NewWeiboOAuthManager(config)
 	}
 
-	SetComponent(om)
 	return nil
 }
 
