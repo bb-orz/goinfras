@@ -4,15 +4,16 @@ import (
 	aliOss "github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 
-type BreakPointOss struct{}
-
-func NewBreakPointOss() *BreakPointOss {
-	return new(BreakPointOss)
+/*
+断点上传和断点下载通用操作
+*/
+type BreakPointOss struct {
+	client *aliOss.Client
 }
 
-func (*BreakPointOss) BreakPointUpload(bucketName, objectKeyName, localFilePath string) error {
+func (bp *BreakPointOss) BreakPointUpload(bucketName, objectKeyName, localFilePath string) error {
 	// 获取存储空间。
-	bucket, err := AliyunOssComponent().Bucket(bucketName)
+	bucket, err := bp.client.Bucket(bucketName)
 	if err != nil {
 		return err
 	}
@@ -24,9 +25,9 @@ func (*BreakPointOss) BreakPointUpload(bucketName, objectKeyName, localFilePath 
 	return nil
 }
 
-func (*BreakPointOss) BreakPointDownload(bucketName, objectKeyName, dstFilePath string) error {
+func (bp *BreakPointOss) BreakPointDownload(bucketName, objectKeyName, dstFilePath string) error {
 	// 获取存储空间。
-	bucket, err := AliyunOssComponent().Bucket(bucketName)
+	bucket, err := bp.client.Bucket(bucketName)
 	if err != nil {
 		return err
 	}

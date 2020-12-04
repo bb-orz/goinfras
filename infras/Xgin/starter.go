@@ -84,6 +84,7 @@ func (s *starter) Start(sctx *infras.StarterContext) {
 	} else {
 		err = ginEngine.Run(addr)
 		infras.FailHandler(err)
+		sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Gin Engine Running Successful!", s.Name()))
 	}
 }
 

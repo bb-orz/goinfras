@@ -32,7 +32,6 @@ func (s *starter) Setup(sctx *infras.StarterContext) {
 	var err error
 	natsMQPool, err = NewPool(&s.cfg, sctx.Logger())
 	infras.FailHandler(err)
-	sctx.Logger().Info("NatsMQPool Setup Successful!")
 }
 
 func (s *starter) Check(sctx *infras.StarterContext) bool {

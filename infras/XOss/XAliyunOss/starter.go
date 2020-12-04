@@ -2,15 +2,25 @@ package XAliyunOss
 
 import (
 	"GoWebScaffold/infras"
-	"github.com/aliyun/aliyun-oss-go-sdk/oss"
+	"fmt"
 )
 
-type Starter struct {
+type starter struct {
 	infras.BaseStarter
 	cfg Config
 }
 
-func (s *Starter) Init(sctx *infras.StarterContext) {
+func NewStarter() *starter {
+	starter := new(starter)
+	starter.cfg = Config{}
+	return starter
+}
+
+func (s *starter) Name() string {
+	return "XAliyunOss"
+}
+
+func (s *starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
 	define := Config{}
 	err := viper.UnmarshalKey("AliyunOss", &define)
@@ -18,11 +28,18 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	s.cfg = define
 }
 
-func (s *Starter) Setup(sctx *infras.StarterContext) {
+func (s *starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	var c *oss.Client
-	c, err = NewClient(&s.cfg)
+	aliyunOssClient, err = NewClient(&s.cfg)
 	infras.FailHandler(err)
-	SetComponent(c)
-	sctx.Logger().Info("AliyunOss Setup Successful!")
+}
+
+func (s *starter) Check(sctx *infras.StarterContext) bool {
+	err := infras.Check(aliyunOssClient)
+	if err != nil {
+		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: AliyunOss Client Setup Fail!", s.Name()))
+		return false
+	}
+	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: AliyunOss Client Setup Successful!", s.Name()))
+	return true
 }

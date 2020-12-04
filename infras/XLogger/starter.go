@@ -33,10 +33,7 @@ func (s *starter) Init(sctx *infras.StarterContext) {
 
 func (s *starter) Setup(sctx *infras.StarterContext) {
 	commonLogger = NewCommonLogger(&s.cfg, s.Writers...)
-	sctx.Logger().Info("CommonLogger Setup Successful!")
-
 	syncErrorLogger = NewSyncErrorLogger(&s.cfg)
-	sctx.Logger().Info("SyncErrorLogger Setup Successful!")
 
 	sctx.SetLogger(commonLogger)
 }

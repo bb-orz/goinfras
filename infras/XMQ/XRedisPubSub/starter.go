@@ -30,7 +30,6 @@ func (s *starter) Init(sctx *infras.StarterContext) {
 
 func (s *starter) Setup(sctx *infras.StarterContext) {
 	redisPubSubPool = NewRedisPubsubPool(&s.cfg, sctx.Logger())
-	sctx.Logger().Info("RedisPubSubPool Setup Successful ...")
 }
 
 func (s *starter) Check(sctx *infras.StarterContext) bool {

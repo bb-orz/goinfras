@@ -15,3 +15,10 @@ func XDialer() *gomail.Dialer {
 func XFDialer(f func(c *gomail.Dialer) error) error {
 	return f(mailDialer)
 }
+
+// 邮件组件的通用操作实例
+func XCommonMail() *CommonMail {
+	c := new(CommonMail)
+	c.dialer = XDialer()
+	return c
+}

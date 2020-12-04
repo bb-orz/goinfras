@@ -40,7 +40,6 @@ func (s *starter) Setup(sctx *infras.StarterContext) {
 	manager = NewManager(&s.cfg, sctx.Logger())
 	// 2.创建后可立即注册定时运行任务
 	manager.RegisterTasks(s.Tasks...)
-	sctx.Logger().Info("Cron Manager Setup Successful!")
 }
 
 func (s *starter) Check(sctx *infras.StarterContext) bool {

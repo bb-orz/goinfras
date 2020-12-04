@@ -6,16 +6,14 @@ import (
 	"strings"
 )
 
-type CommonAliyunOss struct{}
-
-func NewCommonAliyunOss() *CommonAliyunOss {
-	return new(CommonAliyunOss)
+type CommonAliyunOss struct {
+	client *aliOss.Client
 }
 
 // 上传普通数据
-func (*CommonAliyunOss) UploadString(bucketName, objectKeyName, objectValue string) error {
+func (c *CommonAliyunOss) UploadString(bucketName, objectKeyName, objectValue string) error {
 	// 获取存储空间
-	bucket, err := AliyunOssComponent().Bucket(bucketName)
+	bucket, err := c.client.Bucket(bucketName)
 	if err != nil {
 		return err
 	}
@@ -33,9 +31,9 @@ func (*CommonAliyunOss) UploadString(bucketName, objectKeyName, objectValue stri
 }
 
 // 追加上传
-func (*CommonAliyunOss) AppendUpload(bucketName, objectKeyName string, appendContents ...string) error {
+func (c *CommonAliyunOss) AppendUpload(bucketName, objectKeyName string, appendContents ...string) error {
 	// 获取存储空间。
-	bucket, err := AliyunOssComponent().Bucket(bucketName)
+	bucket, err := c.client.Bucket(bucketName)
 	if err != nil {
 		return err
 	}
@@ -53,10 +51,10 @@ func (*CommonAliyunOss) AppendUpload(bucketName, objectKeyName string, appendCon
 }
 
 // 上传普通文件
-func (*CommonAliyunOss) Uploadfile(bucketName, objectKeyName, localFilePath string) error {
+func (c *CommonAliyunOss) Uploadfile(bucketName, objectKeyName, localFilePath string) error {
 
 	// 获取存储空间。
-	bucket, err := AliyunOssComponent().Bucket(bucketName)
+	bucket, err := c.client.Bucket(bucketName)
 	if err != nil {
 		return err
 	}
@@ -66,9 +64,9 @@ func (*CommonAliyunOss) Uploadfile(bucketName, objectKeyName, localFilePath stri
 }
 
 // 流下载
-func (*CommonAliyunOss) StreamDownload(bucketName, objectKeyName string) ([]byte, error) {
+func (c *CommonAliyunOss) StreamDownload(bucketName, objectKeyName string) ([]byte, error) {
 	// 获取存储空间。
-	bucket, err := AliyunOssComponent().Bucket(bucketName)
+	bucket, err := c.client.Bucket(bucketName)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +77,9 @@ func (*CommonAliyunOss) StreamDownload(bucketName, objectKeyName string) ([]byte
 		return nil, err
 	}
 	// 数据读取完成后，获取的流必须关闭，否则会造成连接泄漏，导致请求无连接可用，程序无法正常工作。
-	defer body.Close()
+	defer func() {
+		body.Close()
+	}()
 
 	data, err := ioutil.ReadAll(body)
 	if err != nil {
@@ -89,9 +89,9 @@ func (*CommonAliyunOss) StreamDownload(bucketName, objectKeyName string) ([]byte
 }
 
 // 仅需要文件中的部分数据，您可以使用范围下载
-func (*CommonAliyunOss) RangeDownload(bucketName, objectKeyName string, start, end int64) ([]byte, error) {
+func (c *CommonAliyunOss) RangeDownload(bucketName, objectKeyName string, start, end int64) ([]byte, error) {
 	// 获取存储空间。
-	bucket, err := AliyunOssComponent().Bucket(bucketName)
+	bucket, err := c.client.Bucket(bucketName)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +102,9 @@ func (*CommonAliyunOss) RangeDownload(bucketName, objectKeyName string, start, e
 	if err != nil {
 		return nil, err
 	} // 数据读取完成后，获取的流必须关闭，否则会造成连接泄漏，导致请求无连接可用，程序无法正常工作。
-	defer body.Close()
+	defer func() {
+		body.Close()
+	}()
 
 	data, err := ioutil.ReadAll(body)
 	if err != nil {
@@ -112,9 +114,9 @@ func (*CommonAliyunOss) RangeDownload(bucketName, objectKeyName string, start, e
 }
 
 // 下载文件到本地
-func (*CommonAliyunOss) DownLoadFile(bucketName, objectKeyName, dstFilePath string) error {
+func (c *CommonAliyunOss) DownLoadFile(bucketName, objectKeyName, dstFilePath string) error {
 	// 获取存储空间。
-	bucket, err := AliyunOssComponent().Bucket(bucketName)
+	bucket, err := c.client.Bucket(bucketName)
 	if err != nil {
 		return err
 	}
@@ -129,9 +131,9 @@ func (*CommonAliyunOss) DownLoadFile(bucketName, objectKeyName, dstFilePath stri
 }
 
 // 文件压缩下载
-func (*CommonAliyunOss) CompressDownload(bucketName, objectKeyName, dstFilePath string) error {
+func (c *CommonAliyunOss) CompressDownload(bucketName, objectKeyName, dstFilePath string) error {
 	// 获取存储空间。
-	bucket, err := AliyunOssComponent().Bucket(bucketName)
+	bucket, err := c.client.Bucket(bucketName)
 	if err != nil {
 		return err
 	}
@@ -155,9 +157,9 @@ IfUnmodifiedSince		如果指定的时间等于或者晚于文件实际修改时�
 IfMatch					如果指定的ETag和OSS文件的ETag匹配，则正常传输文件，否则返回错误（412 Precondition failed）。		oss.IfMatch
 IfNoneMatch				如果指定的ETag和OSS文件的ETag不匹配，则正常传输文件，否则返回错误（304 Not modified）。				oss.IfNoneMatch
 */
-func (*CommonAliyunOss) LimitConditionDownload(bucketName, objectKeyName, dstFilePath string, options ...aliOss.Option) error {
+func (c *CommonAliyunOss) LimitConditionDownload(bucketName, objectKeyName, dstFilePath string, options ...aliOss.Option) error {
 	// 获取存储空间。
-	bucket, err := AliyunOssComponent().Bucket(bucketName)
+	bucket, err := c.client.Bucket(bucketName)
 	if err != nil {
 		return err
 	}

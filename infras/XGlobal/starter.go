@@ -28,6 +28,13 @@ func (s *starter) Init(sctx *infras.StarterContext) {
 	global = define
 }
 
+func (s *starter) Setup(sctx *infras.StarterContext) {
+	// 把全局配置变量设置进viper
+	sctx.Configs().Set("AppName", global.AppName)
+	sctx.Configs().Set("ServerName", global.ServerName)
+	sctx.Configs().Set("Env", global.Env)
+}
+
 func (s *starter) Check(sctx *infras.StarterContext) bool {
 	err := infras.Check(global)
 	if err != nil {
@@ -36,11 +43,4 @@ func (s *starter) Check(sctx *infras.StarterContext) bool {
 	}
 	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Global Config And Common Function Setup Successful!", s.Name()))
 	return true
-}
-
-func (s *starter) Start(sctx *infras.StarterContext) {
-	// 把全局配置变量设置进viper
-	sctx.Configs().Set("AppName", global.AppName)
-	sctx.Configs().Set("ServerName", global.ServerName)
-	sctx.Configs().Set("Env", global.Env)
 }

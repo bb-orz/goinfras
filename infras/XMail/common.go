@@ -15,12 +15,6 @@ type CommonMail struct {
 	dialer *gomail.Dialer
 }
 
-func NewCommonMail() *CommonMail {
-	c := new(CommonMail)
-	c.dialer = XDialer()
-	return c
-}
-
 // 本机发邮件
 func (*CommonMail) SendMailNoSMTP(from, to, subject, body string) error {
 	m := gomail.NewMessage()

@@ -5,21 +5,25 @@ import (
 	aliOss "github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 
-type ProgressOss struct{}
+type ProgressOss struct {
+	client *aliOss.Client
+}
 
-func NewProgressOss() *ProgressOss {
-	return new(ProgressOss)
+func XProgressOss() *ProgressOss {
+	p := new(ProgressOss)
+	p.client = XClient()
+	return p
 }
 
 // 上传使用进度条
-func (*ProgressOss) ProgressUpload(bucketName, objectKeyName, localFilePath string) error {
+func (p *ProgressOss) ProgressUpload(bucketName, objectKeyName, localFilePath string) error {
 	// 获取存储空间
-	bucket, err := AliyunOssComponent().Bucket(bucketName)
+	bucket, err := p.client.Bucket(bucketName)
 	if err != nil {
 		return err
 	}
 	// 带进度条的上传。
-	err = bucket.PutObjectFromFile(objectKeyName, localFilePath, aliOss.Progress(&OssProgressListener{}))
+	err = bucket.PutObjectFromFile(objectKeyName, localFilePath, aliOss.Progress(&ossProgressListener{}))
 	if err != nil {
 		return err
 	}
@@ -27,14 +31,14 @@ func (*ProgressOss) ProgressUpload(bucketName, objectKeyName, localFilePath stri
 }
 
 // 下载使用进度条
-func (*ProgressOss) ProgressDownload(bucketName, objectKeyName, dstFilePath string) error {
+func (p *ProgressOss) ProgressDownload(bucketName, objectKeyName, dstFilePath string) error {
 	// 获取存储空间
-	bucket, err := AliyunOssComponent().Bucket(bucketName)
+	bucket, err := p.client.Bucket(bucketName)
 	if err != nil {
 		return err
 	}
 	// 带进度条的下载。
-	err = bucket.GetObjectToFile(objectKeyName, dstFilePath, aliOss.Progress(&OssProgressListener{}))
+	err = bucket.GetObjectToFile(objectKeyName, dstFilePath, aliOss.Progress(&ossProgressListener{}))
 	if err != nil {
 		return err
 	}
@@ -42,10 +46,10 @@ func (*ProgressOss) ProgressDownload(bucketName, objectKeyName, dstFilePath stri
 }
 
 // 定义进度条监听器。
-type OssProgressListener struct{}
+type ossProgressListener struct{}
 
 // 定义进度变更事件处理函数。
-func (listener *OssProgressListener) ProgressChanged(event *aliOss.ProgressEvent) {
+func (listener *ossProgressListener) ProgressChanged(event *aliOss.ProgressEvent) {
 	switch event.EventType {
 	case aliOss.TransferStartedEvent:
 		fmt.Printf("Transfer Started, ConsumedBytes: %d, TotalBytes %d.\n",

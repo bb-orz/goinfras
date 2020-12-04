@@ -23,15 +23,13 @@ OSS计算上传数据的MD5值，并与SDK计算的MD5值比较，如果不一�
 所有分片上传完成后，调用Bucket.CompleteMultipartUpload方法将所有分片合并成完整的文件。
 */
 
-type MultipartOss struct{}
-
-func NewMultipartOss() *MultipartOss {
-	return new(MultipartOss)
+type MultipartOss struct {
+	client *aliOss.Client
 }
 
-func (*MultipartOss) MultipartUpload(bucketName, objectKeyName, localFilePath string) (*aliOss.CompleteMultipartUploadResult, error) {
+func (mp *MultipartOss) MultipartUpload(bucketName, objectKeyName, localFilePath string) (*aliOss.CompleteMultipartUploadResult, error) {
 	// 获取存储空间。
-	bucket, err := AliyunOssComponent().Bucket(bucketName)
+	bucket, err := mp.client.Bucket(bucketName)
 	if err != nil {
 		return nil, err
 	}
@@ -40,7 +38,9 @@ func (*MultipartOss) MultipartUpload(bucketName, objectKeyName, localFilePath st
 	if err != nil {
 		return nil, err
 	}
-	defer fd.Close()
+	defer func() {
+		fd.Close()
+	}()
 
 	// 指定存储类型为标准存储，缺省也为标准存储。
 	storageType := aliOss.ObjectStorageClass(aliOss.StorageStandard)
@@ -76,9 +76,9 @@ func (*MultipartOss) MultipartUpload(bucketName, objectKeyName, localFilePath st
 }
 
 // 取消分片上传
-func (*MultipartOss) CancelMultipartUpload(bucketName, objectKeyName string) error {
+func (mp *MultipartOss) CancelMultipartUpload(bucketName, objectKeyName string) error {
 	// 获取存储空间。
-	bucket, err := AliyunOssComponent().Bucket(bucketName)
+	bucket, err := mp.client.Bucket(bucketName)
 	if err != nil {
 		return err
 	}

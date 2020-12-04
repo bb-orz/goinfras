@@ -33,7 +33,6 @@ func (s *starter) Setup(sctx *infras.StarterContext) {
 	var err error
 	client, err = NewEtcdClient(context.TODO(), &s.cfg, nil)
 	infras.FailHandler(err)
-	sctx.Logger().Info("EtcdClientV3 Setup Successful!")
 }
 
 func (s *starter) Check(sctx *infras.StarterContext) bool {

@@ -10,6 +10,12 @@ type starter struct {
 	cfg Config
 }
 
+func NewStarter() *starter {
+	starter := new(starter)
+	starter.cfg = Config{}
+	return starter
+}
+
 func (s *starter) Name() string {
 	return "XOAuth"
 }
@@ -25,16 +31,13 @@ func (s *starter) Init(sctx *infras.StarterContext) {
 func (s *starter) Setup(sctx *infras.StarterContext) {
 	oAuthManager = new(OAuthManager)
 	if s.cfg.QQSignSwitch {
-		oAuthManager.QQ = NewQQOauthManager(&s.cfg)
-		sctx.Logger().Info("QQ OAuth Manager Setup Successful!")
+		oAuthManager.QQOAuthManager = NewQQOauthManager(&s.cfg)
 	}
 	if s.cfg.WechatSignSwitch {
-		oAuthManager.Wechat = NewWechatOAuthManager(&s.cfg)
-		sctx.Logger().Info("Wechat OAuth Manager Setup Successful!")
+		oAuthManager.WechatOAuthManager = NewWechatOAuthManager(&s.cfg)
 	}
 	if s.cfg.WeiboSignSwitch {
-		oAuthManager.Weibo = NewWeiboOAuthManager(&s.cfg)
-		sctx.Logger().Info("Weibo OAuth Manager Setup Successful!")
+		oAuthManager.WeiboOAuthManager = NewWeiboOAuthManager(&s.cfg)
 	}
 
 }
