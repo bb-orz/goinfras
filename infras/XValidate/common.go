@@ -1,31 +1,16 @@
 package XValidate
 
 import (
-	"GoWebScaffold/hub"
-	ut "github.com/go-playground/universal-translator"
 	"github.com/prometheus/common/log"
 	"gopkg.in/go-playground/validator.v9"
 )
 
-var validate *validator.Validate
-var translator ut.Translator
-
-// 验证器
-func Validator() *validator.Validate {
-	infras.Check(validate)
-	return validate
-}
-
-// 验证信息翻译器
-func Translator() ut.Translator {
-	infras.Check(translator)
-	return translator
-}
-
 // 验证 DTO Struct
 func V(s interface{}) (err error) {
-	err = Validator().Struct(s)
+	// 开始验证并判断错误类型
+	err = XValidater().Struct(s)
 	if err != nil {
+		// 无效验证打印
 		_, ok := err.(*validator.InvalidValidationError)
 		if ok {
 			log.Error("验证错误", err)
@@ -33,7 +18,8 @@ func V(s interface{}) (err error) {
 		errs, ok := err.(validator.ValidationErrors)
 		if ok {
 			for _, e := range errs {
-				log.Error(e.Translate(Translator()))
+				// 错误类型翻译打印
+				log.Error(e.Translate(XTranslater()))
 			}
 		}
 		return err

@@ -8,13 +8,26 @@ import (
 	vtzh "gopkg.in/go-playground/validator.v9/translations/zh"
 )
 
+var validater *validator.Validate
+var translater ut.Translator
+
+// 验证器
+func XValidater() *validator.Validate {
+	return validater
+}
+
+// 验证信息翻译器
+func XTranslater() ut.Translator {
+	return translater
+}
+
 // 默认验证器
-func NewValidator() *validator.Validate {
+func NewValidater() *validator.Validate {
 	return validator.New()
 }
 
 // 中文翻译验证器
-func NewZhValidator() (*validator.Validate, ut.Translator, error) {
+func NewZhValidater() (*validator.Validate, ut.Translator, error) {
 	valid := validator.New()
 	// 创建消息国际化通用翻译器
 	cn := zh.New()
