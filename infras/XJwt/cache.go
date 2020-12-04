@@ -1,17 +1,17 @@
 package XJwt
 
 import (
-	"GoWebScaffold/infras/store/redisStore"
+	"GoWebScaffold/infras/XStore/XRedis"
 	"github.com/garyburd/redigo/redis"
 )
 
 type redisCache struct {
-	commonRedisDao *redisStore.CommonRedisDao // 服务端缓存保存用于校验
+	dao *XRedis.CommonRedisDao // 服务端缓存保存用于校验
 }
 
-func NewRedisCache(r *redis.Pool) *redisCache {
+func NewRedisCache() *redisCache {
 	cache := new(redisCache)
-	cache.commonRedisDao = redisStore.NewCommonRedisDao()
+	cache.dao = XRedis.XCommon()
 	return cache
 }
 
@@ -20,7 +20,7 @@ const TokenCacheKeyPrefix = "user.jwt.token."
 // 设置Token到redis
 func (cache *redisCache) SetToken(id, token string) error {
 	key := TokenCacheKeyPrefix + id
-	_, err := cache.commonRedisDao.R("SET", key, token, "EX", 3600)
+	_, err := cache.dao.R("SET", key, token, "EX", 3600)
 	if err != nil {
 		return err
 	}
@@ -33,7 +33,7 @@ func (cache *redisCache) SetToken(id, token string) error {
 func (cache *redisCache) GetToken(id string) (string, error) {
 	key := TokenCacheKeyPrefix + id
 
-	rs, err := redis.String(cache.commonRedisDao.R("GET", key))
+	rs, err := redis.String(cache.dao.R("GET", key))
 	if err != nil {
 		return "", err
 	}
@@ -45,7 +45,7 @@ func (cache *redisCache) GetToken(id string) (string, error) {
 func (cache *redisCache) DeleteToken(id string) error {
 	key := TokenCacheKeyPrefix + id
 
-	_, err := cache.commonRedisDao.R("DEL", key)
+	_, err := cache.dao.R("DEL", key)
 	if err != nil {
 		return err
 	}

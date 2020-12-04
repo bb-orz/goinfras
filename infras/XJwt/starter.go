@@ -2,7 +2,7 @@ package XJwt
 
 import (
 	"GoWebScaffold/infras"
-	"GoWebScaffold/infras/store/redisStore"
+	"GoWebScaffold/infras/XStore/XRedis"
 	"fmt"
 )
 
@@ -30,8 +30,9 @@ func (s *starter) Init(sctx *infras.StarterContext) {
 }
 
 func (s *starter) Setup(sctx *infras.StarterContext) {
-	if redisStore.Pool() != nil {
-		tku = NewTokenUtilsX([]byte(s.cfg.PrivateKey), s.cfg.ExpSeconds, redisStore.Pool())
+	// 如果redis 组件已安装，则缓存token到redis服务器
+	if XRedis.XPool() != nil {
+		tku = NewTokenUtilsX([]byte(s.cfg.PrivateKey), s.cfg.ExpSeconds)
 	} else {
 		tku = NewTokenUtils([]byte(s.cfg.PrivateKey), s.cfg.ExpSeconds)
 	}

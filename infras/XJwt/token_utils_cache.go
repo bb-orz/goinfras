@@ -2,7 +2,6 @@ package XJwt
 
 import (
 	"errors"
-	"github.com/garyburd/redigo/redis"
 	"time"
 )
 
@@ -11,11 +10,11 @@ type tokenUtilsX struct {
 	cache *redisCache
 }
 
-func NewTokenUtilsX(privateKey []byte, expSeconds int, pool *redis.Pool) *tokenUtilsX {
+func NewTokenUtilsX(privateKey []byte, expSeconds int) *tokenUtilsX {
 	ts := new(tokenUtilsX)
 	ts.privateKey = privateKey
 	ts.expTime = time.Now().Add(time.Second * time.Duration(expSeconds))
-	ts.cache = NewRedisCache(pool)
+	ts.cache = NewRedisCache()
 	return ts
 }
 
