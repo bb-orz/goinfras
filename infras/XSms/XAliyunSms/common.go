@@ -10,15 +10,6 @@ type CommonSms struct {
 	cfg    *Config
 }
 
-func NewCommonSms() {
-	c := new(CommonSms)
-	c.client = SMSComponent()
-}
-
-func CommonCommonSms() *CommonSms {
-	return new(CommonSms)
-}
-
 // 单条发送
 func (c *CommonSms) SendSmsMsg(tel, code string) (*dysmsapi.SendSmsResponse, error) {
 	request := dysmsapi.CreateSendSmsRequest()

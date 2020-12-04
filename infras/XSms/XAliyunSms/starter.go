@@ -2,15 +2,25 @@ package XAliyunSms
 
 import (
 	"GoWebScaffold/infras"
-	"github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi"
+	"fmt"
 )
 
-type Starter struct {
+type starter struct {
 	infras.BaseStarter
 	cfg Config
 }
 
-func (s *Starter) Init(sctx *infras.StarterContext) {
+func NewStarter() *starter {
+	starter := new(starter)
+	starter.cfg = Config{}
+	return starter
+}
+
+func (s *starter) Name() string {
+	return "XAliyunSms"
+}
+
+func (s *starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
 	define := Config{}
 	err := viper.UnmarshalKey("AliyunSms", &define)
@@ -18,10 +28,18 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	s.cfg = define
 }
 
-func (s *Starter) Setup(sctx *infras.StarterContext) {
+func (s *starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	var c *dysmsapi.Client
-	c, err = NewAliyunSmsClient(&s.cfg)
+	aliyunSmsClient, err = NewAliyunSmsClient(&s.cfg)
 	infras.FailHandler(err)
-	SetCommponent(c)
+}
+
+func (s *starter) Check(sctx *infras.StarterContext) bool {
+	err := infras.Check(aliyunSmsClient)
+	if err != nil {
+		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: AliyunSms Client Setup Fail!", s.Name()))
+		return false
+	}
+	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: AliyunSms Client Setup Successful!", s.Name()))
+	return true
 }
