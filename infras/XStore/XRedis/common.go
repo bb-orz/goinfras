@@ -9,12 +9,6 @@ type CommonRedisDao struct {
 	pool *redis.Pool
 }
 
-func NewCommonRedisDao() *CommonRedisDao {
-	c := new(CommonRedisDao)
-	c.pool = RedisComponent()
-	return c
-}
-
 // 从Redis连接池获取一个连接
 func (p *CommonRedisDao) GetRedisConn() redis.Conn {
 	conn := p.pool.Get()

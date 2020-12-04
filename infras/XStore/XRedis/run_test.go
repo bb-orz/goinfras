@@ -29,10 +29,10 @@ func TestNewCommonRedisPool(t *testing.T) {
 	Convey("Redis Dao Test", t, func() {
 		err := TestingInstantiation()
 		So(err, ShouldBeNil)
-		Println("pool ActiveCount:", RedisComponent().Stats().ActiveCount, ",pool IdleCount:", RedisComponent().Stats().IdleCount)
+		Println("pool ActiveCount:", pool.Stats().ActiveCount, ",pool IdleCount:", pool.Stats().IdleCount)
 
-		conn := RedisComponent().Get()
-		Println("pool ActiveCount:", RedisComponent().Stats().ActiveCount, ",pool IdleCount:", RedisComponent().Stats().IdleCount)
+		conn := pool.Get()
+		Println("pool ActiveCount:", pool.Stats().ActiveCount, ",pool IdleCount:", pool.Stats().IdleCount)
 
 		reply, err := conn.Do("Ping")
 		So(err, ShouldBeNil)
@@ -40,7 +40,7 @@ func TestNewCommonRedisPool(t *testing.T) {
 
 		err = conn.Close()
 		So(err, ShouldBeNil)
-		Println("pool ActiveCount:", RedisComponent().Stats().ActiveCount, ",pool IdleCount:", RedisComponent().Stats().IdleCount)
+		Println("pool ActiveCount:", pool.Stats().ActiveCount, ",pool IdleCount:", pool.Stats().IdleCount)
 
 	})
 }
@@ -50,13 +50,13 @@ func TestCommonRedisDao(t *testing.T) {
 		err := TestingInstantiation()
 		So(err, ShouldBeNil)
 
-		commonRedisDao := NewCommonRedisDao()
+		common := XCommon()
 
-		reply1, err := commonRedisDao.R("Set", "name", "joker")
+		reply1, err := common.R("Set", "name", "joker")
 		So(err, ShouldBeNil)
 		Println("Set reply:", reply1)
 
-		reply2, err := redis.String(commonRedisDao.R("Get", "name"))
+		reply2, err := redis.String(common.R("Get", "name"))
 		So(err, ShouldBeNil)
 		Println("Get reply:", reply2)
 	})

@@ -2,15 +2,25 @@ package XRedis
 
 import (
 	"GoWebScaffold/infras"
-	"github.com/garyburd/redigo/redis"
+	"fmt"
 )
 
-type Starter struct {
+type starter struct {
 	infras.BaseStarter
 	cfg Config
 }
 
-func (s *Starter) Init(sctx *infras.StarterContext) {
+func NewStarter() *starter {
+	starter := new(starter)
+	starter.cfg = Config{}
+	return starter
+}
+
+func (s *starter) Name() string {
+	return "XRedis"
+}
+
+func (s *starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
 	define := Config{}
 	err := viper.UnmarshalKey("Redis", &define)
@@ -18,15 +28,22 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	s.cfg = define
 }
 
-func (s *Starter) Setup(sctx *infras.StarterContext) {
+func (s *starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	var p *redis.Pool
-	p, err = NewPool(&s.cfg, sctx.Logger())
+	pool, err = NewPool(&s.cfg, sctx.Logger())
 	infras.FailHandler(err)
-	SetComponent(p)
-	sctx.Logger().Info("RedisPool Setup Successful!")
 }
 
-func (s *Starter) Stop(sctx *infras.StarterContext) {
-	RedisComponent().Close()
+func (s *starter) Stop(sctx *infras.StarterContext) {
+	pool.Close()
+}
+
+func (s *starter) Check(sctx *infras.StarterContext) bool {
+	err := infras.Check(pool)
+	if err != nil {
+		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Redis Pool Setup Fail!", s.Name()))
+		return false
+	}
+	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Redis Pool Setup Successful!", s.Name()))
+	return true
 }
