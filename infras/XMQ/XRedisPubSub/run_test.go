@@ -1,14 +1,12 @@
 package XRedisPubSub
 
 import (
-	redigo "github.com/garyburd/redigo/redis"
 	"go.uber.org/zap"
 )
 
 /*实例化资源用于测试*/
 func TestingInstantiation(config *Config) error {
 	var err error
-	var pool *redigo.Pool
 	if config == nil {
 		config = &Config{
 			true,
@@ -23,7 +21,6 @@ func TestingInstantiation(config *Config) error {
 
 	}
 
-	pool = NewRedisPubsubPool(config, zap.L())
-	SetComponent(pool)
+	redisPubSubPool = NewRedisPubsubPool(config, zap.L())
 	return err
 }

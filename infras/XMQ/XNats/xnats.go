@@ -22,7 +22,9 @@ func XF(f func(c *nats.Conn) error) error {
 	}
 
 	// 放回连接池
-	defer natsMQPool.Put(conn)
+	defer func() {
+		natsMQPool.Put(conn)
+	}()
 
 	// 执行用户操作
 	err = f(conn)

@@ -1,15 +1,13 @@
-package redisPubSub
+package XRedisPubSub
 
 import (
-	"GoWebScaffold/infras/logger"
+	"GoWebScaffold/infras/XLogger"
 	redigo "github.com/garyburd/redigo/redis"
 	"go.uber.org/zap"
 )
 
-type RedisPublisher struct{}
-
-func NewRedisPublisher() *RedisPublisher {
-	return new(RedisPublisher)
+type redisPublisher struct {
+	pool *redigo.Pool
 }
 
 /*
@@ -17,19 +15,21 @@ func NewRedisPublisher() *RedisPublisher {
 @param channel string 发布频道
 @param msg interface{} 发布的消息
 */
-func (*RedisPublisher) Publish(channel string, msg interface{}) error {
-	conn := getRedisConn()
-	defer conn.Close()
+func (c *redisPublisher) Publish(channel string, msg interface{}) error {
+	conn := c.pool.Get()
+	defer func() {
+		conn.Close()
+	}()
 
 	receiveNum, err := redigo.Int(conn.Do("PUBLISH", channel, redigo.Args{}.AddFlat(msg)))
-	XLogger.CLogger().Info("Redis Publish Topic Message:", zap.String("channel", channel), zap.String("message", msg.(string)), zap.Int("receive count", receiveNum))
+	XLogger.XCommon().Info("Redis Publish Topic Message:", zap.String("channel", channel), zap.String("message", msg.(string)), zap.Int("receive count", receiveNum))
 	if err != nil {
 		return err
 	}
 
 	if receiveNum == 0 {
 		// 订阅并接收到该channel的数量为receiveNum
-		XLogger.CLogger().Warn("No subscriber subscribe or receive this channel", zap.String("channel", channel))
+		XLogger.XCommon().Warn("No subscriber subscribe or receive this channel", zap.String("channel", channel))
 	}
 
 	return nil
