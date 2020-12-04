@@ -6,10 +6,8 @@ import (
 	"time"
 )
 
-type CommonNatsReqResp struct{}
-
-func NewCommonNatsReqResp() *CommonNatsReqResp {
-	return new(CommonNatsReqResp)
+type commonNatsReqResp struct {
+	pool *NatsPool
 }
 
 /*
@@ -34,12 +32,12 @@ c.Subscribe("help", func(subj, reply string, msg string) {
     c.Publish(reply, "I can help!")
 })
 */
-func (*CommonNatsReqResp) Request(subject string, v interface{}, replyPtr interface{}, timeout time.Duration) error {
-	conn, err := NatsMQComponent().Get()
+func (c *commonNatsReqResp) Request(subject string, v interface{}, replyPtr interface{}, timeout time.Duration) error {
+	conn, err := c.pool.Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMQComponent().Put(conn)
+	defer c.pool.Put(conn)
 
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {
@@ -52,12 +50,12 @@ func (*CommonNatsReqResp) Request(subject string, v interface{}, replyPtr interf
 /*
 RequestWithContext将创建一个收件箱，并使用提供的取消上下文和数据v的收件箱回复执行请求。响应将被解码为vPtrResponse。
 */
-func (*CommonNatsReqResp) RequestWithContext(ctx context.Context, subject string, msg interface{}, respPtr interface{}, timeout time.Duration) error {
-	conn, err := NatsMQComponent().Get()
+func (c *CommonNatsReqResp) RequestWithContext(ctx context.Context, subject string, msg interface{}, respPtr interface{}, timeout time.Duration) error {
+	conn, err := c.pool.Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMQComponent().Put(conn)
+	defer c.pool.Put(conn)
 
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {
@@ -71,12 +69,12 @@ func (*CommonNatsReqResp) RequestWithContext(ctx context.Context, subject string
 // 针对Request 主题的响应处理函数，RequestMsgHandler函数需向请求收件箱的reply主题发布一个响应消息，可使用PublishRequest处理
 type RequestMsgHandler func(subject, reply string, msg interface{})
 
-func (*CommonNatsReqResp) SubscribeForRequest(subject string, f RequestMsgHandler) error {
-	conn, err := NatsMQComponent().Get()
+func (c *CommonNatsReqResp) SubscribeForRequest(subject string, f RequestMsgHandler) error {
+	conn, err := c.pool.Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMQComponent().Put(conn)
+	defer c.pool.Put(conn)
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {
 		return err

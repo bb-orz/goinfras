@@ -36,5 +36,6 @@ func TestNatsMQComponent(t *testing.T) {
 		So(err, ShouldBeNil)
 
 		// TODO
+
 	})
 }

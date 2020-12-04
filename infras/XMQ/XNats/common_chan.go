@@ -2,22 +2,17 @@ package XNats
 
 import "github.com/nats-io/nats.go"
 
-type CommonNatsChan struct {
+type commonNatsChan struct {
 	pool *NatsPool
 }
 
-func NewCommonNatsChan() *CommonNatsChan {
-	c := new(CommonNatsChan)
-
-}
-
 // 发送消息到一个主题，绑定管道
-func (*CommonNatsChan) BindSendChan(subject string, sendCh chan interface{}) error {
-	conn, err := XPool().Get()
+func (c *commonNatsChan) BindSendChan(subject string, sendCh chan interface{}) error {
+	conn, err := c.pool.Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMQComponent().Put(conn)
+	defer c.pool.Put(conn)
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {
 		return err
@@ -27,12 +22,12 @@ func (*CommonNatsChan) BindSendChan(subject string, sendCh chan interface{}) err
 }
 
 // 接收主题消息，绑定管道
-func (*CommonNatsChan) BindRecvChan(subject string, recvCh chan interface{}) error {
-	conn, err := NatsMQComponent().Get()
+func (c *commonNatsChan) BindRecvChan(subject string, recvCh chan interface{}) error {
+	conn, err := c.pool.Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMQComponent().Put(conn)
+	defer c.pool.Put(conn)
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {
 		return err
@@ -42,12 +37,12 @@ func (*CommonNatsChan) BindRecvChan(subject string, recvCh chan interface{}) err
 }
 
 // 基于队列的接收操作，绑定通道。
-func (*CommonNatsChan) BindRecvQueueChan(subject, queue string, recvCh chan interface{}) error {
-	conn, err := NatsMQComponent().Get()
+func (c *commonNatsChan) BindRecvQueueChan(subject, queue string, recvCh chan interface{}) error {
+	conn, err := c.pool.Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMQComponent().Put(conn)
+	defer c.pool.Put(conn)
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {
 		return err

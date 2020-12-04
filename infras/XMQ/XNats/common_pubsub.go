@@ -6,10 +6,8 @@ import (
 	"reflect"
 )
 
-type CommonNatsPubSub struct{}
-
-func NewCommonNatsPubSub() *CommonNatsPubSub {
-	return new(CommonNatsPubSub)
+type commonNatsPubSub struct {
+	pool *NatsPool
 }
 
 /*
@@ -17,12 +15,12 @@ func NewCommonNatsPubSub() *CommonNatsPubSub {
 @param subject string  发布主题
 @param msg interface{} 发布的消息
 */
-func (c *CommonNatsPubSub) Publish(subject string, msg interface{}) error {
-	conn, err := NatsMQComponent().Get()
+func (c *commonNatsPubSub) Publish(subject string, msg interface{}) error {
+	conn, err := c.pool.Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMQComponent().Put(conn)
+	defer c.pool.Put(conn)
 
 	switch reflect.TypeOf(msg).Kind() {
 	case reflect.Struct, reflect.Map, reflect.Slice, reflect.Ptr:
@@ -35,12 +33,12 @@ func (c *CommonNatsPubSub) Publish(subject string, msg interface{}) error {
 }
 
 // 发送字符串消息类型，自动转[]byte
-func (*CommonNatsPubSub) publishCommon(conn *nats.Conn, subject string, msg string) error {
+func (*commonNatsPubSub) publishCommon(conn *nats.Conn, subject string, msg string) error {
 	return conn.Publish(subject, []byte(msg))
 }
 
 // 发送需要编码的go type消息类型
-func (*CommonNatsPubSub) publishEncodedJson(conn *nats.Conn, subject string, msg interface{}) error {
+func (*commonNatsPubSub) publishEncodedJson(conn *nats.Conn, subject string, msg interface{}) error {
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {
 		return err
@@ -73,12 +71,12 @@ handler := func(subject string, o *obj)
 handler := func(subject, reply string, o *obj)   for Request() reply
 */
 
-func (*CommonNatsPubSub) Subscribe(subject string, handler nats.MsgHandler) error {
-	conn, err := NatsMQComponent().Get()
+func (c *commonNatsPubSub) Subscribe(subject string, handler nats.MsgHandler) error {
+	conn, err := c.pool.Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMQComponent().Put(conn)
+	defer c.pool.Put(conn)
 
 	_, err = conn.Subscribe(subject, handler)
 	if err != nil {
@@ -94,12 +92,12 @@ func (*CommonNatsPubSub) Subscribe(subject string, handler nats.MsgHandler) erro
 */
 type EncodedMsgHandler func(subject string, goDataMsg interface{})
 
-func (*CommonNatsPubSub) SubscribeForEncodedMsg(subject string, handler EncodedMsgHandler) error {
-	conn, err := NatsMQComponent().Get()
+func (c *commonNatsPubSub) SubscribeForEncodedMsg(subject string, handler EncodedMsgHandler) error {
+	conn, err := c.pool.Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMQComponent().Put(conn)
+	defer c.pool.Put(conn)
 
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {
@@ -118,12 +116,12 @@ func (*CommonNatsPubSub) SubscribeForEncodedMsg(subject string, handler EncodedM
 取消订阅一个或多个主题
 param subject/subjects string 已订阅的主题
 */
-func (*CommonNatsPubSub) Unsubscribe(subjects ...string) error {
-	conn, err := NatsMQComponent().Get()
+func (c *commonNatsPubSub) Unsubscribe(subjects ...string) error {
+	conn, err := c.pool.Get()
 	if err != nil {
 		return err
 	}
-	defer NatsMQComponent().Put(conn)
+	defer c.pool.Put(conn)
 
 	for _, subject := range subjects {
 		sub, err := conn.Subscribe(subject, nil)
