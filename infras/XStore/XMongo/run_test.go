@@ -36,8 +36,7 @@ func TestingInstantiation(config *Config) error {
 		}
 	}
 
-	c, err = NewClient(config)
-	SetComponent(c)
+	client, err = NewClient(config)
 	return err
 }
 
@@ -46,7 +45,7 @@ func TestMongoClient(t *testing.T) {
 		err := TestingInstantiation(nil)
 		So(err, ShouldBeNil)
 
-		err = MongoComponent().Ping(context.TODO(), nil)
+		err = client.Ping(context.TODO(), nil)
 		So(err, ShouldBeNil)
 	})
 
@@ -59,7 +58,7 @@ func TestNewCommonMongoDao(t *testing.T) {
 		So(err, ShouldBeNil)
 
 		// 通用操作：增删改查
-		commonMongoDao := NewCommonMongoDao("dev_test")
+		commonMongoDao := XCommon("dev_test")
 		// 增
 		insertID, err := commonMongoDao.InsertOne(context.TODO(), "demo", bson.M{"name": "joker"})
 		So(err, ShouldBeNil)

@@ -11,13 +11,6 @@ type CommonMongoDao struct {
 	defaultDb *mongo.Database
 }
 
-func NewCommonMongoDao(dbName string) *CommonMongoDao {
-	c := new(CommonMongoDao)
-	c.client = MongoComponent()
-	c.defaultDb = c.client.Database(dbName)
-	return c
-}
-
 func (mp *CommonMongoDao) M(colName string, f func(c *mongo.Collection) error) error {
 	collection := mp.defaultDb.Collection(colName)
 	return f(collection)

@@ -3,15 +3,25 @@ package XMongo
 import (
 	"GoWebScaffold/infras"
 	"context"
-	"go.mongodb.org/mongo-driver/mongo"
+	"fmt"
 )
 
-type Starter struct {
+type starter struct {
 	infras.BaseStarter
 	cfg Config
 }
 
-func (s *Starter) Init(sctx *infras.StarterContext) {
+func NewStarter() *starter {
+	starter := new(starter)
+	starter.cfg = Config{}
+	return starter
+}
+
+func (s *starter) Name() string {
+	return "XMongo"
+}
+
+func (s *starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
 	define := Config{}
 	err := viper.UnmarshalKey("Mongodb", &define)
@@ -19,15 +29,22 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	s.cfg = define
 }
 
-func (s *Starter) Setup(sctx *infras.StarterContext) {
+func (s *starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	var c *mongo.Client
-	c, err = NewClient(&s.cfg)
+	client, err = NewClient(&s.cfg)
 	infras.FailHandler(err)
-	SetComponent(c)
-	sctx.Logger().Info("MongoClient Setup Successful!")
 }
 
-func (s *Starter) Stop(sctx *infras.StarterContext) {
-	_ = MongoComponent().Disconnect(context.TODO())
+func (s *starter) Check(sctx *infras.StarterContext) bool {
+	err := infras.Check(client)
+	if err != nil {
+		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: MongoDB Client Setup Fail!", s.Name()))
+		return false
+	}
+	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: MongoDB Client Setup Successful!", s.Name()))
+	return true
+}
+
+func (s *starter) Stop(sctx *infras.StarterContext) {
+	_ = XClient().Disconnect(context.TODO())
 }
