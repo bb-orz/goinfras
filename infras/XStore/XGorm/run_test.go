@@ -78,27 +78,27 @@ func TestGormDb(t *testing.T) {
 		err := TestingInstantiation(nil)
 		So(err, ShouldBeNil)
 		// 检查模型`Address`表是否存在
-		hasAddressTable := ORMComponent().HasTable(&Address{})
+		hasAddressTable := XDB().HasTable(&Address{})
 		Println("Address Table Is Exist:", hasAddressTable)
 		// 表不存在则创建表
 		if !hasAddressTable {
-			ORMComponent().Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&Address{})
+			XDB().Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&Address{})
 		}
 
 		// 检查模型`Language`表是否存在
-		hasLanguageTable := ORMComponent().HasTable(&Language{})
+		hasLanguageTable := XDB().HasTable(&Language{})
 		Println("Language Table Is Exist:", hasLanguageTable)
 		// 表不存在则创建表
 		if !hasLanguageTable {
-			ORMComponent().Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&Language{})
+			XDB().Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&Language{})
 		}
 
 		// 检查模型`User`表是否存在
-		hasUserTable := ORMComponent().HasTable(&User{})
+		hasUserTable := XDB().HasTable(&User{})
 		Println("User Table Is Exist:", hasUserTable)
 		// 表不存在则创建表
 		if !hasUserTable {
-			ORMComponent().Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&User{})
+			XDB().Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&User{})
 		}
 
 	})
@@ -111,10 +111,10 @@ func TestGormInsert(t *testing.T) {
 
 		// 插入
 		user := User{Name: "Jinzhubbb", Age: 18, Birthday: time.Now()}
-		ORMComponent().Create(&user)
+		XDB().Create(&user)
 
 		// 查询
-		ORMComponent().First(&user)
+		XDB().First(&user)
 		Println(user)
 	})
 }
@@ -129,19 +129,19 @@ func TestGormFind(t *testing.T) {
 		user = User{}
 		// 查询
 		// 获取第一条记录，按主键排序
-		ORMComponent().First(&user)
+		XDB().First(&user)
 		Println("First:", user)
 		// SELECT * FROM users ORDER BY id LIMIT 1;
 
 		// 获取最后一条记录，按主键排序
 		user = User{}
-		ORMComponent().Last(&user)
+		XDB().Last(&user)
 		Println("Last:", user)
 		// SELECT * FROM users ORDER BY id DESC LIMIT 1;
 
 		// 获取所有记录
 		users = make([]User, 0)
-		if err := ORMComponent().Find(&users).Error; err != nil {
+		if err := XDB().Find(&users).Error; err != nil {
 			Println("Find More Error :", err)
 		} else {
 			Println("Find More:", users)
@@ -150,7 +150,7 @@ func TestGormFind(t *testing.T) {
 
 		// 使用主键获取记录
 		user = User{}
-		if err := ORMComponent().First(&user, 10).Error; err != nil {
+		if err := XDB().First(&user, 10).Error; err != nil {
 			Println("Find By Key Error :", err)
 		} else {
 			Println("Find By Key:", user)
@@ -167,44 +167,44 @@ func TestGormSimpleWhere(t *testing.T) {
 		var user User
 		var users []User
 		// 获取第一个匹配记录
-		ORMComponent().Where("name = ?", "jinzhu").First(&user)
+		XDB().Where("name = ?", "jinzhu").First(&user)
 		// SELECT * FROM users WHERE name = 'jinzhu' limit 1;
 		Println("Find By Name:", user)
 
 		// 获取所有匹配记录
 		users = nil
-		ORMComponent().Where("name = ?", "jinzhu").Find(&users)
+		XDB().Where("name = ?", "jinzhu").Find(&users)
 		// SELECT * FROM users WHERE name = 'jinzhu';
 		Println("Find All By Name:", users)
 
 		users = nil
-		ORMComponent().Where("name <> ?", "jinzhu").Find(&users)
+		XDB().Where("name <> ?", "jinzhu").Find(&users)
 		Println("Find NOT By Name:", users)
 
 		// IN
 		users = nil
-		ORMComponent().Where("name in (?)", []string{"jinzhu", "jinzhu 2"}).Find(&users)
+		XDB().Where("name in (?)", []string{"jinzhu", "jinzhu 2"}).Find(&users)
 		Println("Find IN By Key:", users)
 
 		// LIKE
 		users = nil
-		ORMComponent().Where("name LIKE ?", "%jin%").Find(&users)
+		XDB().Where("name LIKE ?", "%jin%").Find(&users)
 		Println("Find LIKE By Name:", users)
 
 		// AND
 		users = nil
-		ORMComponent().Where("name = ? AND age >= ?", "jinzhu", "22").Find(&users)
+		XDB().Where("name = ? AND age >= ?", "jinzhu", "22").Find(&users)
 		Println("Find And By Name:", users)
 
 		// Time
 		lastWeek := time.Now().Unix() - 7*24*60*60
 		now := time.Now().Unix()
 		users = nil
-		ORMComponent().Where("updated_at > ?", lastWeek).Find(&users)
+		XDB().Where("updated_at > ?", lastWeek).Find(&users)
 		Println("Find TimeGt By UpdateAt:", users)
 
 		users = nil
-		ORMComponent().Where("created_at BETWEEN ? AND ?", lastWeek, now).Find(&users)
+		XDB().Where("created_at BETWEEN ? AND ?", lastWeek, now).Find(&users)
 		Println("Find TimeBETWEEN By UpdateAt:", users)
 
 	})
@@ -219,19 +219,19 @@ func TestGormWhereByStructOrMap(t *testing.T) {
 		var users []User
 
 		// Struct
-		ORMComponent().Where(&User{Name: "jinzhu", Age: 18}).First(&user)
+		XDB().Where(&User{Name: "jinzhu", Age: 18}).First(&user)
 		// SELECT * FROM users WHERE name = "jinzhu" AND age = 18 LIMIT 1;
 		Println("Find Where By Struct:", user)
 
 		// Map
 		users = make([]User, 0)
-		ORMComponent().Where(map[string]interface{}{"name": "jinzhu", "age": 18}).Find(&users)
+		XDB().Where(map[string]interface{}{"name": "jinzhu", "age": 18}).Find(&users)
 		// SELECT * FROM users WHERE name = "jinzhu" AND age = 18;
 		Println("Find Where By Map:", users)
 
 		// 主键的Slice
 		users = nil
-		ORMComponent().Where([]int64{20, 21, 22}).Find(&users)
+		XDB().Where([]int64{20, 21, 22}).Find(&users)
 		// SELECT * FROM users WHERE id IN (20, 21, 22);
 		Println("Find LIKE By slice:", users)
 
