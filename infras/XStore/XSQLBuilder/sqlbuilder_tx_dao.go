@@ -9,7 +9,7 @@ import (
 )
 
 // 创建一个事务
-func (m *BaseDao) NewTx(ctx context.Context, options *sql.TxOptions) (*MysqlTx, error) {
+func (m *CommonDao) NewTx(ctx context.Context, options *sql.TxOptions) (*MysqlTx, error) {
 	var err error
 	mysqlTx := new(MysqlTx)
 	mysqlTx.tx, err = m.db.BeginTx(ctx, options)

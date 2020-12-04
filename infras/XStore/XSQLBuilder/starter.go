@@ -2,17 +2,27 @@ package XSQLBuilder
 
 import (
 	"GoWebScaffold/infras"
-	"database/sql"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-type Starter struct {
+type starter struct {
 	infras.BaseStarter
 	cfg Config
 }
 
+func NewStarter() *starter {
+	starter := new(starter)
+	starter.cfg = Config{}
+	return starter
+}
+
+func (s *starter) Name() string {
+	return "XSQLBuilder"
+}
+
 // 读取配置
-func (s *Starter) Init(sctx *infras.StarterContext) {
+func (s *starter) Init(sctx *infras.StarterContext) {
 	viper := sctx.Configs()
 	define := Config{}
 	err := viper.UnmarshalKey("Mysql", &define)
@@ -20,15 +30,22 @@ func (s *Starter) Init(sctx *infras.StarterContext) {
 	s.cfg = define
 }
 
-func (s *Starter) Setup(sctx *infras.StarterContext) {
+func (s *starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	var d *sql.DB
-	d, err = NewDB(&s.cfg)
+	db, err = NewDB(&s.cfg)
 	infras.FailHandler(err)
-	SetComponent(d)
-	sctx.Logger().Info("MysqlClient Setup Successful ...")
 }
 
-func (s *Starter) Stop(sctx *infras.StarterContext) {
-	SqlBuilderComponent().Close()
+func (s *starter) Check(sctx *infras.StarterContext) bool {
+	err := infras.Check(db)
+	if err != nil {
+		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: SQL Builder DB Setup Fail!", s.Name()))
+		return false
+	}
+	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: SQL Builder DB Setup Successful!", s.Name()))
+	return true
+}
+
+func (s *starter) Stop(sctx *infras.StarterContext) {
+	db.Close()
 }

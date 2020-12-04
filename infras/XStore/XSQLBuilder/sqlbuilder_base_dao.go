@@ -9,14 +9,8 @@ import (
 )
 
 // 通用Mysql数据访问操作
-type BaseDao struct {
+type CommonDao struct {
 	db *sql.DB
-}
-
-func NewCommonStore() *BaseDao {
-	dao := new(BaseDao)
-	dao.db = SqlBuilderComponent()
-	return dao
 }
 
 // 以下提供通用的几个curd方法，具体构建方式可查看本目录的README
@@ -27,7 +21,7 @@ func NewCommonStore() *BaseDao {
 @param selectField 	[]string				查询选择返回的字段
 @param result 		DaoMysqlSchema			带表结构存储结果的指针，接收返回的数据，实现DaoMysqlSchema接口
 */
-func (m *BaseDao) GetOne(tableName string, where map[string]interface{}, selectField []string, result interface{}) error {
+func (m *CommonDao) GetOne(tableName string, where map[string]interface{}, selectField []string, result interface{}) error {
 	if nil == m.db {
 		return errors.New("*sql.DB object couldn't be nil")
 	}
@@ -51,7 +45,7 @@ func (m *BaseDao) GetOne(tableName string, where map[string]interface{}, selectF
 @param selectField 	[]string				查询选择返回的字段
 @param results 		interface{}				带表结构存储结果的指针数组，接收返回的数据，接收results应与table schema struct相对应
 */
-func (m *BaseDao) GetMulti(tableName string, where map[string]interface{}, selectField []string, results []interface{}) error {
+func (m *CommonDao) GetMulti(tableName string, where map[string]interface{}, selectField []string, results []interface{}) error {
 	if nil == m.db {
 		return errors.New("*sql.DB object couldn't be nil")
 	}
@@ -75,7 +69,7 @@ func (m *BaseDao) GetMulti(tableName string, where map[string]interface{}, selec
 
 @return LastInsertId int64						返回最新的插入id
 */
-func (m *BaseDao) Insert(tableName string, data []map[string]interface{}) (int64, error) {
+func (m *CommonDao) Insert(tableName string, data []map[string]interface{}) (int64, error) {
 	if nil == m.db {
 		return -1, errors.New("*sql.DB object couldn't be nil")
 	}
@@ -97,7 +91,7 @@ func (m *BaseDao) Insert(tableName string, data []map[string]interface{}) (int64
 
 @return LastInsertId int64						返回最新的插入id
 */
-func (m *BaseDao) InsertIgnore(tableName string, data []map[string]interface{}) (int64, error) {
+func (m *CommonDao) InsertIgnore(tableName string, data []map[string]interface{}) (int64, error) {
 	if nil == m.db {
 		return -1, errors.New("*sql.DB object couldn't be nil")
 	}
@@ -119,7 +113,7 @@ func (m *BaseDao) InsertIgnore(tableName string, data []map[string]interface{}) 
 
 @return LastInsertId int64						返回最新的插入id
 */
-func (m *BaseDao) InsertReplace(tableName string, data []map[string]interface{}) (int64, error) {
+func (m *CommonDao) InsertReplace(tableName string, data []map[string]interface{}) (int64, error) {
 	if nil == m.db {
 		return -1, errors.New("*sql.DB object couldn't be nil")
 	}
@@ -142,7 +136,7 @@ func (m *BaseDao) InsertReplace(tableName string, data []map[string]interface{})
 
 @return RowsAffected int64						更新影响的行数
 */
-func (m *BaseDao) Update(tableName string, where, data map[string]interface{}) (int64, error) {
+func (m *CommonDao) Update(tableName string, where, data map[string]interface{}) (int64, error) {
 	if nil == m.db {
 		return -1, errors.New("*sql.DB object couldn't be nil")
 	}
@@ -163,7 +157,7 @@ func (m *BaseDao) Update(tableName string, where, data map[string]interface{}) (
 @param where 		map[string]interface{}		查询条件
 
 @return RowsAffected int64						删除影响的行数
-*/func (m *BaseDao) Delete(tableName string, where map[string]interface{}) (int64, error) {
+*/func (m *CommonDao) Delete(tableName string, where map[string]interface{}) (int64, error) {
 	if nil == m.db {
 		return -1, errors.New("*sql.DB object couldn't be nil")
 	}
@@ -184,7 +178,7 @@ func (m *BaseDao) Update(tableName string, where, data map[string]interface{}) (
 @param where 		map[string]interface{}		查询条件
 
 @return count 		int64						符合条件的行数
-*/func (m *BaseDao) GetCount(tableName string, where map[string]interface{}) (int64, error) {
+*/func (m *CommonDao) GetCount(tableName string, where map[string]interface{}) (int64, error) {
 	if nil == m.db {
 		return -1, errors.New("*sql.DB object couldn't be nil")
 	}

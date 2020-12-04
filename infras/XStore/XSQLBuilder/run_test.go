@@ -38,7 +38,7 @@ func TestMysqlDB(t *testing.T) {
 		err := TestingInstantiation(nil)
 		So(err, ShouldBeNil)
 
-		err = SqlBuilderComponent().Ping()
+		err = db.Ping()
 		So(err, ShouldBeNil)
 
 	})
@@ -51,7 +51,7 @@ func TestNewCommonMysqlStore(t *testing.T) {
 		err := TestingInstantiation(nil)
 		So(err, ShouldBeNil)
 
-		commonStore := NewCommonStore()
+		commonStore := XCommon()
 		lastedId, err := commonStore.Insert("user", []map[string]interface{}{
 			{"name": "aaaa", "age": 18, "gender": 1}, {"name": "bbbb", "age": 20, "gender": 0},
 		})
@@ -99,7 +99,7 @@ func TestBaseDaoTx(t *testing.T) {
 		err := TestingInstantiation(nil)
 		So(err, ShouldBeNil)
 
-		tx, err := NewCommonStore().NewTx(context.Background(), nil)
+		tx, err := XCommon().NewTx(context.Background(), nil)
 		lastedId, err := tx.Insert("user", []map[string]interface{}{
 			{"name": "fff", "age": 18, "gender": 1}, {"name": "kkk", "age": 20, "gender": 0},
 		})
