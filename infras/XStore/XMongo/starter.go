@@ -46,5 +46,5 @@ func (s *starter) Check(sctx *infras.StarterContext) bool {
 }
 
 func (s *starter) Stop(sctx *infras.StarterContext) {
-	_ = XClient().Disconnect(context.TODO())
+	_ = client.Disconnect(context.TODO())
 }

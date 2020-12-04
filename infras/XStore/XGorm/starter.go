@@ -47,5 +47,5 @@ func (s *starter) Check(sctx *infras.StarterContext) bool {
 }
 
 func (s *starter) Stop(sctx *infras.StarterContext) {
-	XDB().Close()
+	db.Close()
 }
