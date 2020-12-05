@@ -1,7 +1,7 @@
 package main
 
 import (
-	_ "GoWebScaffold/example/simple/apis" // 运行时自动注册api路由
+	_ "GoWebScaffold/example/simple/restful" // 运行时自动注册api路由
 	"GoWebScaffold/infras"
 	"flag"
 	"fmt"
