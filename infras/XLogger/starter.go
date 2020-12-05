@@ -12,9 +12,10 @@ type starter struct {
 	Writers []io.Writer
 }
 
-func NewStarter() *starter {
+func NewStarter(writer ...io.Writer) *starter {
 	starter := new(starter)
 	starter.cfg = Config{}
+	starter.Writers = writer
 	return starter
 }
 

@@ -1,40 +1,31 @@
 package main
 
 import (
-	_ "GoWebScaffold/example/simple/apis" // 初始化时自动注册apis层的所有接口
-	"GoWebScaffold/hub"
+	_ "GoWebScaffold/example/simple/restful" // 初始化时自动注册restful apis层的所有接口
+	// _ "GoWebScaffold/example/simple/rpc" // 初始化时自动注册rpc apis层的所有接口
 	"GoWebScaffold/infras"
 	"GoWebScaffold/infras/XCron"
 	"GoWebScaffold/infras/XEtcd"
 	"GoWebScaffold/infras/XLogger"
 	"GoWebScaffold/infras/XValidate"
 	"GoWebScaffold/infras/Xgin"
-	"GoWebScaffold/infras/cron"
-	"GoWebScaffold/infras/ginger"
-	"GoWebScaffold/infras/hook"
-	"GoWebScaffold/infras/logger"
-	"GoWebScaffold/infras/validate"
+
 	"io"
 	"os"
 )
 
-// 注册应用组件启动器
+// 注册应用组件启动器，把基础设施各资源组件化
 func registerStarter() {
 	// 注册日志记录启动器，并添加一个异步日志输出到文件
 	file, err := os.OpenFile("./info.log", os.O_RDWR|os.O_CREATE, os.ModePerm)
 	if err != nil {
 		panic(err.Error())
 	}
-
-	// TODO 把各基础设施的资源组件化，如cron组件
-
-	// 注册zap日志记录启动器
 	writers := []io.Writer{file}
-	loggerStarter := new(XLogger.Starter)
-	loggerStarter.Writers = writers
-	infras.RegisterStarter(XLogger.NewStarter())
+	infras.RegisterStarter(XLogger.NewStarter(writers...))
 
 	// 注册Cron定时任务
+	// 可以自定义一些定时任务给starter启动
 	infras.RegisterStarter(XCron.NewStarter())
 
 	// 注册ETCD

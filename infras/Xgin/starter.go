@@ -57,7 +57,7 @@ func (s *starter) Setup(sctx *infras.StarterContext) {
 	// 2.New Gin Engine
 	ginEngine = NewGinEngine(&s.cfg, middlewares...)
 
-	// 3.API 路由注册
+	// 3.API路由注册
 	for _, v := range GetApis() {
 		v.SetRoutes()
 	}

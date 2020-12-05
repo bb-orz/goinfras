@@ -2,9 +2,7 @@ package main
 
 import (
 	_ "GoWebScaffold/example/simple/apis" // 运行时自动注册api路由
-	"GoWebScaffold/hub"
 	"GoWebScaffold/infras"
-	"GoWebScaffold/infras/cron"
 	"flag"
 	"fmt"
 )
@@ -26,7 +24,7 @@ func main() {
 	fmt.Println("Viper config loaded  ......")
 
 	// 注册应用组件启动器
-	fmt.Println("Starting register app component  ......")
+	fmt.Println("Register component starter  ......")
 	registerStarter()
 
 	// 创建应用程序启动管理器

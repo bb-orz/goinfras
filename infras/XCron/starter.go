@@ -15,9 +15,10 @@ type starter struct {
 }
 
 // 应用注册启动器时创建
-func NewStarter() *starter {
+func NewStarter(tasks ...*Task) *starter {
 	starter := new(starter)
 	starter.cfg = Config{}
+	starter.Tasks = tasks
 	return starter
 }
 
