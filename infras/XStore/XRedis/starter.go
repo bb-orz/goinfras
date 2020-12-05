@@ -34,10 +34,6 @@ func (s *starter) Setup(sctx *infras.StarterContext) {
 	infras.FailHandler(err)
 }
 
-func (s *starter) Stop(sctx *infras.StarterContext) {
-	pool.Close()
-}
-
 func (s *starter) Check(sctx *infras.StarterContext) bool {
 	err := infras.Check(pool)
 	if err != nil {
@@ -46,4 +42,8 @@ func (s *starter) Check(sctx *infras.StarterContext) bool {
 	}
 	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Redis Pool Setup Successful!", s.Name()))
 	return true
+}
+
+func (s *starter) Stop() {
+	pool.Close()
 }

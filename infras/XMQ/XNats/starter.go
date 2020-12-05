@@ -44,6 +44,6 @@ func (s *starter) Check(sctx *infras.StarterContext) bool {
 	return true
 }
 
-func (s *starter) Stop(sctx *infras.StarterContext) {
+func (s *starter) Stop() {
 	natsMQPool.Close()
 }

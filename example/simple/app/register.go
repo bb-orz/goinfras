@@ -4,9 +4,18 @@ import (
 	_ "GoWebScaffold/example/simple/restful" // 初始化时自动注册restful apis层的所有接口
 	// _ "GoWebScaffold/example/simple/rpc" // 初始化时自动注册rpc apis层的所有接口
 	"GoWebScaffold/infras"
+
 	"GoWebScaffold/infras/XCron"
 	"GoWebScaffold/infras/XEtcd"
 	"GoWebScaffold/infras/XLogger"
+	"GoWebScaffold/infras/XMQ/XNats"
+	"GoWebScaffold/infras/XMQ/XRedisPubSub"
+	"GoWebScaffold/infras/XOAuth"
+	"GoWebScaffold/infras/XOss/XAliyunOss"
+	"GoWebScaffold/infras/XOss/XQiniuOss"
+	"GoWebScaffold/infras/XStore/XMongo"
+	"GoWebScaffold/infras/XStore/XRedis"
+	"GoWebScaffold/infras/XStore/XSQLBuilder"
 	"GoWebScaffold/infras/XValidate"
 	"GoWebScaffold/infras/Xgin"
 
@@ -32,21 +41,20 @@ func registerStarter() {
 	infras.RegisterStarter(XEtcd.NewStarter())
 
 	// 注册mongodb启动器
-	// mongoStarter := new(mongoStore.Starter)
-	// infras.RegisterStarter(mongoStarter)
+	infras.RegisterStarter(XMongo.NewStarter())
 
 	// 注册mysql启动器
-	// infras.RegisterStarter(new(sqlBuilderStore.Starter{})
+	infras.RegisterStarter(XSQLBuilder.NewStarter())
 	// 注册Redis连接池
-	// infras.RegisterStarter(new(redisStore.Starter{})
+	infras.RegisterStarter(XRedis.NewStarter())
 	// 注册Oss
-	// infras.RegisterStarter(new(aliyunOss.Starter{})
-	// infras.RegisterStarter(new(qiniuOss.Starter{})
+	infras.RegisterStarter(XAliyunOss.NewStarter())
+	infras.RegisterStarter(XQiniuOss.NewStarter())
 	// 注册Mq
-	// infras.RegisterStarter(new(redisPubSub.Starter{})
-	// infras.RegisterStarter(new(natsMq.Starter{})
+	infras.RegisterStarter(XNats.NewStarter())
+	infras.RegisterStarter(XRedisPubSub.NewStarter())
 	// 注册Oauth Manager
-	// infras.RegisterStarter(new(oauth.Starter))
+	infras.RegisterStarter(XOAuth.NewStarter())
 
 	// 注册gin web 服务
 	infras.RegisterStarter(Xgin.NewStarter())
