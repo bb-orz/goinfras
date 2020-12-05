@@ -2,28 +2,10 @@ package XRedis
 
 import (
 	"github.com/garyburd/redigo/redis"
-	"go.uber.org/zap"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
 )
-
-/*实例化资源用于测试*/
-func TestingInstantiation() error {
-	var err error
-	config := &Config{
-		"127.0.0.1",
-		6379,
-		false,
-		"",
-		0,
-		50,
-		60,
-	}
-
-	pool, err = NewPool(config, zap.L())
-	return err
-}
 
 func TestNewCommonRedisPool(t *testing.T) {
 	Convey("Redis Dao Test", t, func() {

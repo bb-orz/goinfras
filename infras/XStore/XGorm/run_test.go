@@ -8,29 +8,6 @@ import (
 	"time"
 )
 
-/*实例化资源用于测试*/
-func TestingInstantiation(config *Config) error {
-	var err error
-	if config == nil {
-		config = &Config{
-			"mysql",
-			"127.0.0.1",
-			3306,
-			"dev",
-			"123456",
-			"dev_db",
-			"utf8",
-			true,
-			"Local",
-			"disable",
-			false,
-		}
-	}
-
-	db, err = NewORMDb(config)
-	return err
-}
-
 type User struct {
 	gorm.Model
 	Birthday          time.Time

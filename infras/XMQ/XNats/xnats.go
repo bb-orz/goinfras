@@ -2,6 +2,7 @@ package XNats
 
 import (
 	"github.com/nats-io/nats.go"
+	"go.uber.org/zap"
 )
 
 var natsMQPool *NatsPool
@@ -61,4 +62,27 @@ func XCommonNatsReqResp() *commonNatsReqResp {
 	c := new(commonNatsReqResp)
 	c.pool = XPool()
 	return c
+}
+
+/*实例化资源用于测试*/
+func TestingInstantiation(config *Config) error {
+	var err error
+	if config == nil {
+		config = &Config{
+			Switch: true,
+			NatsServers: []natsServer{
+				{
+					"127.0.0.1",
+					4222,
+					false,
+					"",
+					"",
+				},
+			},
+		}
+
+	}
+
+	natsMQPool, err = NewPool(config, zap.L())
+	return err
 }

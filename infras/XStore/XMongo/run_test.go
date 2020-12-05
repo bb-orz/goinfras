@@ -4,41 +4,9 @@ import (
 	"context"
 	. "github.com/smartystreets/goconvey/convey"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"testing"
 )
-
-/*实例化资源用于测试*/
-func TestingInstantiation(config *Config) error {
-	var err error
-	var c *mongo.Client
-
-	if config == nil {
-		config = &Config{
-			[]string{"127.0.0.1:27017"},
-			"",
-			"",
-			"",
-			"",
-			true,
-			15,
-			nil,
-			true,
-			10,
-			100,
-			1000,
-			120,
-			false,
-			20,
-			true,
-			true,
-		}
-	}
-
-	client, err = NewClient(config)
-	return err
-}
 
 func TestMongoClient(t *testing.T) {
 	Convey("测试使用mysql client", t, func() {

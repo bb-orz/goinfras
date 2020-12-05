@@ -3,22 +3,9 @@ package XCron
 import (
 	"fmt"
 	. "github.com/smartystreets/goconvey/convey"
-	"go.uber.org/zap"
 	"testing"
 	"time"
 )
-
-/*实例化资源用于测试*/
-func TestingInstantiation(config *Config) error {
-	var err error
-	if config == nil {
-		config = &Config{Location: "Local"}
-	}
-	// 1.获取Cron执行管理器
-	fmt.Println("创建任务执行管理器...")
-	manager = NewManager(config, zap.L())
-	return err
-}
 
 type JobA struct{}
 
@@ -45,11 +32,11 @@ func TestCron(t *testing.T) {
 
 		// 2.注册定时运行任务
 		fmt.Println("注册第一个定时任务...")
-		manager.RegisterTasks(tasks...)
+		XManager().RegisterTasks(tasks...)
 
 		// 3.运行定时任务
 		fmt.Println("开始运行定时任务...")
-		manager.RunTasks()
+		XManager().RunTasks()
 
 		// 主协程运行5s
 		time.Sleep(time.Second * 5)
@@ -60,7 +47,7 @@ func TestCron(t *testing.T) {
 
 		// 5.注册定时运行任务
 		fmt.Println("注册第二个定时任务...")
-		manager.RegisterTasks(task2)
+		XManager().RegisterTasks(task2)
 
 		// 添加新的任务后主协程再运行10s
 		time.Sleep(time.Second * 10)

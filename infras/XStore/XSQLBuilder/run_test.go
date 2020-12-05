@@ -6,32 +6,6 @@ import (
 	"testing"
 )
 
-/*实例化资源用于测试*/
-func TestingInstantiation(config *Config) error {
-	var err error
-	if config == nil {
-		config = &Config{
-			"127.0.0.1",
-			3306,
-			"",
-			"",
-			"",
-			60,
-			100,
-			200,
-			"uft8",
-			true,
-			true,
-			5,
-			30,
-			true,
-			true,
-		}
-	}
-	db, err = NewDB(config)
-	return err
-}
-
 // 测试使用mysql client
 func TestMysqlDB(t *testing.T) {
 	Convey("测试使用mysql client", t, func() {
@@ -51,32 +25,31 @@ func TestNewCommonMysqlStore(t *testing.T) {
 		err := TestingInstantiation(nil)
 		So(err, ShouldBeNil)
 
-		commonStore := XCommon()
-		lastedId, err := commonStore.Insert("user", []map[string]interface{}{
+		lastedId, err := XCommon().Insert("user", []map[string]interface{}{
 			{"name": "aaaa", "age": 18, "gender": 1}, {"name": "bbbb", "age": 20, "gender": 0},
 		})
 		So(err, ShouldBeNil)
 		Println("Lasted Insert Id:", lastedId)
 
-		count, err := commonStore.GetCount("user", nil)
+		count, err := XCommon().GetCount("user", nil)
 		So(err, ShouldBeNil)
 		Println("User Count:", count)
 
 		rs := UserSchema{}
-		err = commonStore.GetOne("user", map[string]interface{}{"name": "joker"}, nil, &rs)
+		err = XCommon().GetOne("user", map[string]interface{}{"name": "joker"}, nil, &rs)
 		So(err, ShouldBeNil)
 		Println("GetOne:", rs)
 
 		rsList := make([]UserSchema, 0)
-		commonStore.GetMulti("user", map[string]interface{}{"name": "aaaa"}, nil, &rsList)
+		XCommon().GetMulti("user", map[string]interface{}{"name": "aaaa"}, nil, &rsList)
 		So(err, ShouldBeNil)
 		Println("GetMulti:", rsList)
 
-		update, err := commonStore.Update("user", map[string]interface{}{"age": 18}, map[string]interface{}{"age": 28})
+		update, err := XCommon().Update("user", map[string]interface{}{"age": 18}, map[string]interface{}{"age": 28})
 		So(err, ShouldBeNil)
 		Println("Update Lasted Id:", update)
 
-		deleteId, err := commonStore.Delete("user", map[string]interface{}{"name": "ken"})
+		deleteId, err := XCommon().Delete("user", map[string]interface{}{"name": "ken"})
 		So(err, ShouldBeNil)
 		Println("Delete Id:", deleteId)
 	})

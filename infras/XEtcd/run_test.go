@@ -6,18 +6,6 @@ import (
 	"testing"
 )
 
-/*实例化资源用于测试*/
-func TestingInstantiation(config *Config) error {
-	var err error
-	if config == nil {
-		config = &Config{
-			Endpoints: []string{"localhost:2379"},
-		}
-	}
-	client, err = NewEtcdClient(context.TODO(), config, nil)
-	return err
-}
-
 func TestEtcdClientV3(t *testing.T) {
 	Convey("ETCD Client Test", t, func() {
 		var err error
@@ -27,11 +15,13 @@ func TestEtcdClientV3(t *testing.T) {
 
 		Println("Cron Config:", config)
 
-		response, err := client.Get(context.TODO(), "demo.a")
+		response, err := XClient().Get(context.TODO(), "demo.a")
 		So(err, ShouldBeNil)
 
 		values := response.Kvs
-		Println(values)
+		_, err = Println(values)
+		So(err, ShouldBeNil)
+
 	})
 
 }

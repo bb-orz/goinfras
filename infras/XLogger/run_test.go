@@ -2,40 +2,9 @@ package XLogger
 
 import (
 	. "github.com/smartystreets/goconvey/convey"
-	"io"
 	"os"
 	"testing"
 )
-
-/*实例化资源用于测试*/
-func TestingInstantiation(config *Config, syncWriters ...io.Writer) error {
-
-	var err error
-	if config == nil {
-		config = &Config{
-			AppName:           "",
-			AppVersion:        "",
-			DevEnv:            true,
-			AddCaller:         true,
-			DebugLevelSwitch:  false,
-			InfoLevelSwitch:   true,
-			WarnLevelSwitch:   true,
-			ErrorLevelSwitch:  true,
-			DPanicLevelSwitch: true,
-			PanicLevelSwitch:  false,
-			FatalLevelSwitch:  true,
-			SimpleZapCore:     true,
-			SyncZapCore:       false,
-			SyncLogSwitch:     true,
-			StdoutLogSwitch:   true,
-			RotateLogSwitch:   false,
-			LogDir:            "../../log",
-		}
-	}
-
-	commonLogger = NewCommonLogger(config)
-	return err
-}
 
 func TestCommonLogger(t *testing.T) {
 	Convey("Test Common Logger", t, func() {

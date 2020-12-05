@@ -1,26 +1,17 @@
 package XRedisPubSub
 
 import (
-	"go.uber.org/zap"
+	. "github.com/smartystreets/goconvey/convey"
+	"testing"
 )
 
-/*实例化资源用于测试*/
-func TestingInstantiation(config *Config) error {
-	var err error
-	if config == nil {
-		config = &Config{
-			true,
-			"127.0.0.1",
-			6380,
-			false,
-			"",
-			0,
-			50,
-			60,
-		}
+func TestRedisPubsubPool(t *testing.T) {
+	Convey("Test Redis PubSub Component", t, func() {
+		var err error
+		err = TestingInstantiation(nil)
+		So(err, ShouldBeNil)
 
-	}
+		// TODO
 
-	redisPubSubPool = NewRedisPubsubPool(config, zap.L())
-	return err
+	})
 }

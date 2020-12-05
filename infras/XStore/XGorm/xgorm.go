@@ -14,3 +14,26 @@ func XDB() *gorm.DB {
 func XFDB(f func(c *gorm.DB) error) error {
 	return f(db)
 }
+
+/*实例化资源用于测试*/
+func TestingInstantiation(config *Config) error {
+	var err error
+	if config == nil {
+		config = &Config{
+			"mysql",
+			"127.0.0.1",
+			3306,
+			"dev",
+			"123456",
+			"dev_db",
+			"utf8",
+			true,
+			"Local",
+			"disable",
+			false,
+		}
+	}
+
+	db, err = NewORMDb(config)
+	return err
+}

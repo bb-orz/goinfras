@@ -5,23 +5,6 @@ import (
 	"testing"
 )
 
-/*实例化资源用于测试*/
-func TestingInstantiation(config *Config) error {
-	var err error
-	if config == nil {
-		config = &Config{
-			true,
-		}
-	}
-
-	if config.TransZh {
-		validate, translator, err = NewZhValidator()
-	} else {
-		validate = NewValidator()
-	}
-	return err
-}
-
 type UserDemo struct {
 	Name       string `validate:"required,alphanum"`
 	Email      string `validate:"required,email"`
