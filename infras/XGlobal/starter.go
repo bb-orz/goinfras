@@ -3,16 +3,17 @@ package XGlobal
 import (
 	"GoWebScaffold/infras"
 	"fmt"
+	"go.uber.org/zap"
 )
 
 type starter struct {
 	infras.BaseStarter
-	cfg Config
+	cfg *Config
 }
 
 func NewStarter() *starter {
 	starter := new(starter)
-	starter.cfg = Config{}
+	starter.cfg = &Config{}
 	return starter
 }
 
@@ -21,11 +22,18 @@ func (s *starter) Name() string {
 }
 
 func (s *starter) Init(sctx *infras.StarterContext) {
+	var err error
+	var define *Config
 	viper := sctx.Configs()
-	define := Config{}
-	err := viper.UnmarshalKey("Global", &define)
-	infras.FailHandler(err)
-	global = define
+	if viper != nil {
+		err = viper.UnmarshalKey("Global", &define)
+		infras.ErrorHandler(err)
+	}
+	if define == nil {
+		define = DefaultConfig()
+	}
+	sctx.Logger().Info("Print Global Config:", zap.Any("GlobalConfig", *define))
+	s.cfg = define
 }
 
 func (s *starter) Setup(sctx *infras.StarterContext) {
