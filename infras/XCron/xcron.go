@@ -1,5 +1,7 @@
 package XCron
 
+import "go.uber.org/zap"
+
 // 实例变量
 var manager *Manager
 
@@ -11,4 +13,9 @@ func XManager() *Manager {
 // 资源组件闭包执行
 func XFManager(f func(m *Manager) error) error {
 	return f(manager)
+}
+
+// 创建一个默认配置的Manager
+func CreateDefaultManager() {
+	manager = NewManager(DefaultConfig(), zap.L())
 }

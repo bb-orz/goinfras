@@ -10,26 +10,6 @@ import (
 	"time"
 )
 
-/*实例化资源用于测试*/
-func TestingInstantiation(config *Config) error {
-	var err error
-	if config == nil {
-		config = DefaultConfig()
-	}
-	// 1.获取Cron执行管理器
-	fmt.Println("创建任务执行管理器...")
-	manager = NewManager(config, zap.L())
-	return err
-}
-
-// 创建一个空的启动器上下文供测试
-func CreateDefaultSystemContext() *infras.StarterContext {
-	sctx := &infras.StarterContext{}
-	sctx.SetConfigs(viper.New())
-	sctx.SetLogger(zap.L())
-	return sctx
-}
-
 type JobA struct{}
 
 func (j JobA) Run() {
@@ -44,8 +24,7 @@ func (j JobB) Run() {
 
 func TestCron(t *testing.T) {
 	Convey("Test Cron", t, func() {
-		err := TestingInstantiation(nil)
-		So(err, ShouldBeNil)
+		CreateDefaultManager()
 
 		// 1.定义定时任务
 		fmt.Println("定义第一个定时任务...")
@@ -75,6 +54,14 @@ func TestCron(t *testing.T) {
 		// 添加新的任务后主协程再运行10s
 		time.Sleep(time.Second * 10)
 	})
+}
+
+// 创建一个空的启动器上下文供测试
+func CreateDefaultSystemContext() *infras.StarterContext {
+	sctx := &infras.StarterContext{}
+	sctx.SetConfigs(viper.New())
+	sctx.SetLogger(zap.L())
+	return sctx
 }
 
 // 测试启动器
