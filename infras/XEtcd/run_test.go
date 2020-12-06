@@ -32,7 +32,7 @@ func TestEtcdClientV3(t *testing.T) {
 
 // 测试启动器
 func TestStarter(t *testing.T) {
-	Convey("Test Cron", t, func() {
+	Convey("Test XEtcd Starter", t, func() {
 
 		s := NewStarter()
 		sctx := infras.CreateDefaultSystemContext()

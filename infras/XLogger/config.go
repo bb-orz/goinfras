@@ -26,3 +26,26 @@ type Config struct {
 	MongoLogCollection string // mongo集合名称
 	MongoLogExpire     int    // mongo日志超时时间
 }
+
+// 默认最小启动配置
+func DefaultConfig() *Config {
+	return &Config{
+		AppName:           "",
+		AppVersion:        "",
+		DevEnv:            true,
+		AddCaller:         true,
+		DebugLevelSwitch:  false,
+		InfoLevelSwitch:   true,
+		WarnLevelSwitch:   true,
+		ErrorLevelSwitch:  true,
+		DPanicLevelSwitch: true,
+		PanicLevelSwitch:  false,
+		FatalLevelSwitch:  true,
+		SimpleZapCore:     true,
+		SyncZapCore:       false,
+		SyncLogSwitch:     true,
+		StdoutLogSwitch:   true,
+		RotateLogSwitch:   false,
+		LogDir:            "../../log",
+	}
+}

@@ -56,7 +56,7 @@ func TestCron(t *testing.T) {
 
 // 测试启动器
 func TestStarter(t *testing.T) {
-	Convey("Test Cron", t, func() {
+	Convey("Test XCron Starter", t, func() {
 
 		// 1.定义定时任务
 		fmt.Println("定义第一个定时任务...")

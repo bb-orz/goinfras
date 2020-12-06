@@ -1,0 +1,4 @@
+{"level":"\u001b[35mDEBUG\u001b[0m","time":"2020-12-07 00:39:54.985436","caller":"/Users/fun/Code/MyProject/GoWebScaffold/infras/XLogger/run_test.go:34","message":"Log Debug Message..."}
+{"level":"\u001b[34mINFO\u001b[0m","time":"2020-12-07 00:39:54.985661","caller":"/Users/fun/Code/MyProject/GoWebScaffold/infras/XLogger/run_test.go:35","message":"Log Info Message..."}
+{"level":"\u001b[33mWARN\u001b[0m","time":"2020-12-07 00:39:54.985683","caller":"/Users/fun/Code/MyProject/GoWebScaffold/infras/XLogger/run_test.go:36","message":"Log Warn Message..."}
+{"level":"\u001b[31mERROR\u001b[0m","time":"2020-12-07 00:39:54.985700","caller":"/Users/fun/Code/MyProject/GoWebScaffold/infras/XLogger/run_test.go:37","message":"Log Error Message..."}

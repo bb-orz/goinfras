@@ -3,18 +3,19 @@ package XLogger
 import (
 	"GoWebScaffold/infras"
 	"fmt"
+	"go.uber.org/zap"
 	"io"
 )
 
 type starter struct {
 	infras.BaseStarter
-	cfg     Config
+	cfg     *Config
 	Writers []io.Writer
 }
 
 func NewStarter(writer ...io.Writer) *starter {
 	starter := new(starter)
-	starter.cfg = Config{}
+	starter.cfg = &Config{}
 	starter.Writers = writer
 	return starter
 }
@@ -24,17 +25,26 @@ func (s *starter) Name() string {
 }
 
 func (s *starter) Init(sctx *infras.StarterContext) {
+	var err error
+	var define *Config
+
 	viper := sctx.Configs()
-	define := Config{}
-	err := viper.UnmarshalKey("Logger", &define)
-	infras.FailHandler(err)
-	fmt.Println(s.cfg)
+	if viper != nil {
+		err = viper.UnmarshalKey("Logger", &define)
+		infras.ErrorHandler(err)
+	}
+
+	if define == nil {
+		define = DefaultConfig()
+	}
+
+	sctx.Logger().Info("Print Logger Config:", zap.Any("EtcdConfig", *define))
 	s.cfg = define
 }
 
 func (s *starter) Setup(sctx *infras.StarterContext) {
-	commonLogger = NewCommonLogger(&s.cfg, s.Writers...)
-	syncErrorLogger = NewSyncErrorLogger(&s.cfg)
+	commonLogger = NewCommonLogger(s.cfg, s.Writers...)
+	syncErrorLogger = NewSyncErrorLogger(s.cfg)
 
 	sctx.SetLogger(commonLogger)
 }

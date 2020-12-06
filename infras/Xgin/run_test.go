@@ -28,10 +28,10 @@ func TestGinEngine(t *testing.T) {
 		var err error
 		addr = fmt.Sprintf("%s:%d", config.ListenHost, config.ListenPort)
 		if config.Tls && config.CertFile != "" && config.KeyFile != "" {
-			err = ginEngine.RunTLS(addr, config.CertFile, config.KeyFile)
+			err = XEngine().RunTLS(addr, config.CertFile, config.KeyFile)
 			infras.FailHandler(err)
 		} else {
-			err = ginEngine.Run(addr)
+			err = XEngine().Run(addr)
 			infras.FailHandler(err)
 		}
 	})
@@ -71,7 +71,7 @@ func (s *SimpleApi) Bar(ctx *gin.Context) {
 
 // 测试启动器
 func TestStarter(t *testing.T) {
-	Convey("Test Cron", t, func() {
+	Convey("Test XGin Starter", t, func() {
 
 		s := NewStarter()
 		sctx := infras.CreateDefaultSystemContext()
