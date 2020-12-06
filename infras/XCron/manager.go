@@ -70,8 +70,12 @@ func (m *Manager) RunTasks() {
 
 // 停止所有任务
 func (m *Manager) StopCron() {
-	if len(m.client.Entries()) > 0 {
+	entries := m.client.Entries()
+	if len(entries) > 0 {
 		m.client.Stop()
+		for _, e := range entries {
+			m.client.Remove(e.ID)
+		}
 	}
 }
 

@@ -1,11 +1,34 @@
 package XCron
 
 import (
+	"GoWebScaffold/infras"
 	"fmt"
 	. "github.com/smartystreets/goconvey/convey"
+	"github.com/spf13/viper"
+	"go.uber.org/zap"
 	"testing"
 	"time"
 )
+
+/*实例化资源用于测试*/
+func TestingInstantiation(config *Config) error {
+	var err error
+	if config == nil {
+		config = DefaultConfig()
+	}
+	// 1.获取Cron执行管理器
+	fmt.Println("创建任务执行管理器...")
+	manager = NewManager(config, zap.L())
+	return err
+}
+
+// 创建一个空的启动器上下文供测试
+func CreateDefaultSystemContext() *infras.StarterContext {
+	sctx := &infras.StarterContext{}
+	sctx.SetConfigs(viper.New())
+	sctx.SetLogger(zap.L())
+	return sctx
+}
 
 type JobA struct{}
 
@@ -51,5 +74,39 @@ func TestCron(t *testing.T) {
 
 		// 添加新的任务后主协程再运行10s
 		time.Sleep(time.Second * 10)
+	})
+}
+
+// 测试启动器
+func TestStarter(t *testing.T) {
+	Convey("Test Cron", t, func() {
+		sctx := CreateDefaultSystemContext()
+
+		// 1.定义定时任务
+		fmt.Println("定义第一个定时任务...")
+		tasks := make([]*Task, 0)
+		task1 := NewTask("*/2 * * * * *", &JobA{})
+		tasks = append(tasks, task1)
+
+		s := NewStarter(tasks...)
+		s.Init(sctx)
+		Println("Starter Init Successful!")
+		s.Setup(sctx)
+		Println("Starter Setup Successful!")
+		s.Start(sctx)
+		Println("Starter Start Successful!")
+		if s.Check(sctx) {
+			Println("Component Check Successful!")
+		} else {
+			Println("Component Check Fail!")
+		}
+		time.Sleep(time.Second * 20)
+		s.Stop()
+		if len(XManager().client.Entries()) == 0 {
+			Println("Starter Stop Successful!")
+		} else {
+			Println("Starter Stop Exception!")
+		}
+
 	})
 }
