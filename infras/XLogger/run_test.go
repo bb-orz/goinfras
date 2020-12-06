@@ -14,7 +14,6 @@ func TestCommonLogger(t *testing.T) {
 		var err error
 		err = CreateDefaultLogger(nil)
 		So(err, ShouldBeNil)
-
 		XCommon().Debug("Log Debug Message...")
 		XCommon().Info("Log Info Message...")
 		XCommon().Warn("Log Warn Message...")
@@ -30,7 +29,6 @@ func TestCommonLoggerOutLogFile(t *testing.T) {
 		So(err, ShouldBeNil)
 		err = CreateDefaultLogger(nil, fileWriter)
 		So(err, ShouldBeNil)
-
 		XCommon().Debug("Log Debug Message...")
 		XCommon().Info("Log Info Message...")
 		XCommon().Warn("Log Warn Message...")
@@ -53,7 +51,6 @@ func TestNewSyncErrorLogger(t *testing.T) {
 // 测试启动器
 func TestStarter(t *testing.T) {
 	Convey("Test XLogger Starter", t, func() {
-
 		s := NewStarter()
 		sctx := infras.CreateDefaultSystemContext()
 		s.Init(sctx)
@@ -67,9 +64,7 @@ func TestStarter(t *testing.T) {
 		} else {
 			Println("Component Check Fail!")
 		}
-
 		XCommon().Info("Test Logger Info", zap.Any("info", "information"))
-
 		s.Stop()
 		time.Sleep(time.Second * 3)
 		XCommon().Info("Test Logger Info", zap.Any("info", "information"))
