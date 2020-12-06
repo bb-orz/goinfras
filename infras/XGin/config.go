@@ -1,4 +1,4 @@
-package Xgin
+package XGin
 
 type Config struct {
 	*GinConfig

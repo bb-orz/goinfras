@@ -4,16 +4,18 @@ import (
 	"GoWebScaffold/infras"
 	"GoWebScaffold/infras/XStore/XRedis"
 	"fmt"
+	"github.com/spf13/viper"
+	"go.uber.org/zap"
 )
 
 type starter struct {
 	infras.BaseStarter
-	cfg Config
+	cfg *Config
 }
 
 func NewStarter() *starter {
 	starter := new(starter)
-	starter.cfg = Config{}
+	starter.cfg = &Config{}
 	return starter
 }
 
@@ -22,19 +24,30 @@ func (s *starter) Name() string {
 }
 
 func (s *starter) Init(sctx *infras.StarterContext) {
-	viper := sctx.Configs()
-	define := Config{}
-	err := viper.UnmarshalKey("Jwt", &define)
-	infras.FailHandler(err)
+	var err error
+	var define *Config
+
+	// 先从viper读取配置信息
+	viperConfig := sctx.Configs()
+	if viperConfig != nil {
+		err = viper.UnmarshalKey("Jwt", &define)
+		infras.ErrorHandler(err)
+	}
+
+	// Viper读取不到配置时，default设置
+	if define == nil {
+		define = DefaultConfig()
+	}
 	s.cfg = define
+	sctx.Logger().Info("Print Jwt Config:", zap.Any("JwtConfig", *define))
 }
 
 func (s *starter) Setup(sctx *infras.StarterContext) {
 	// 如果redis 组件已安装，则缓存token到redis服务器
 	if XRedis.XPool() != nil {
-		tku = NewTokenUtilsX([]byte(s.cfg.PrivateKey), s.cfg.ExpSeconds)
+		tku = NewTokenUtilsX(s.cfg.PrivateKey, s.cfg.ExpSeconds)
 	} else {
-		tku = NewTokenUtils([]byte(s.cfg.PrivateKey), s.cfg.ExpSeconds)
+		tku = NewTokenUtils(s.cfg.PrivateKey, s.cfg.ExpSeconds)
 	}
 }
 
@@ -52,4 +65,4 @@ func (s *starter) Start(sctx *infras.StarterContext) {
 
 }
 
-func (s *starter) Stop(sctx *infras.StarterContext) {}
+func (s *starter) Stop() {}

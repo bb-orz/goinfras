@@ -1,10 +1,11 @@
-package Xgin
+package XGin
 
 import (
 	"GoWebScaffold/infras"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	. "github.com/smartystreets/goconvey/convey"
+	"go.uber.org/zap"
 	"testing"
 )
 
@@ -72,9 +73,8 @@ func (s *SimpleApi) Bar(ctx *gin.Context) {
 // 测试启动器
 func TestStarter(t *testing.T) {
 	Convey("Test XGin Starter", t, func() {
-
 		s := NewStarter()
-		sctx := infras.CreateDefaultSystemContext()
+		sctx := infras.CreateDefaultStarterContext(nil, zap.L())
 		s.Init(sctx)
 		Println("Starter Init Successful!")
 

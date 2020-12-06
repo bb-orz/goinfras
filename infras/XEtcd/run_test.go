@@ -5,6 +5,7 @@ import (
 	"context"
 	. "github.com/smartystreets/goconvey/convey"
 	"go.etcd.io/etcd/clientv3"
+	"go.uber.org/zap"
 	"testing"
 	"time"
 )
@@ -35,7 +36,7 @@ func TestStarter(t *testing.T) {
 	Convey("Test XEtcd Starter", t, func() {
 
 		s := NewStarter()
-		sctx := infras.CreateDefaultSystemContext()
+		sctx := infras.CreateDefaultStarterContext(nil, zap.L())
 		s.Init(sctx)
 		Println("Starter Init Successful!")
 		s.Setup(sctx)

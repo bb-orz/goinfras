@@ -39,8 +39,8 @@ func (s *starter) Init(sctx *infras.StarterContext) {
 	if define == nil {
 		define = DefaultConfig()
 	}
-	sctx.Logger().Info("Print Cron Config:", zap.Any("CronConfig", *define))
 	s.cfg = define
+	sctx.Logger().Info("Print Cron Config:", zap.Any("CronConfig", *define))
 }
 
 // 应用安装阶段创建Cron管理器，并注册为应用组件

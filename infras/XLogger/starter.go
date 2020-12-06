@@ -35,8 +35,8 @@ func (s *starter) Init(sctx *infras.StarterContext) {
 	if define == nil {
 		define = DefaultConfig()
 	}
-	sctx.Logger().Info("Print Logger Config:", zap.Any("EtcdConfig", *define))
 	s.cfg = define
+	sctx.Logger().Info("Print Logger Config:", zap.Any("EtcdConfig", *define))
 }
 
 func (s *starter) Setup(sctx *infras.StarterContext) {

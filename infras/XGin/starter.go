@@ -1,4 +1,4 @@
-package Xgin
+package XGin
 
 import (
 	"GoWebScaffold/infras"

@@ -1,4 +1,4 @@
-package Xgin
+package XGin
 
 /*
  注册项目所提供的api，由具体项目实现

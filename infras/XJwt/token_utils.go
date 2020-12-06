@@ -29,9 +29,9 @@ type tokenUtils struct {
 	expTime    time.Time // 超时秒数
 }
 
-func NewTokenUtils(privateKey []byte, expSeconds int) *tokenUtils {
+func NewTokenUtils(privateKey string, expSeconds int) *tokenUtils {
 	ts := new(tokenUtils)
-	ts.privateKey = privateKey
+	ts.privateKey = []byte(privateKey)
 	ts.expTime = time.Now().Add(time.Second * time.Duration(expSeconds))
 	return ts
 }

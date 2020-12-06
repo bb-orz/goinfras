@@ -32,8 +32,8 @@ func (s *starter) Init(sctx *infras.StarterContext) {
 	if define == nil {
 		define = DefaultConfig()
 	}
-	sctx.Logger().Info("Print Global Config:", zap.Any("GlobalConfig", *define))
 	s.cfg = define
+	sctx.Logger().Info("Print Global Config:", zap.Any("GlobalConfig", *define))
 }
 
 func (s *starter) Setup(sctx *infras.StarterContext) {

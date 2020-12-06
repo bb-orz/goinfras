@@ -10,9 +10,9 @@ type tokenUtilsX struct {
 	cache *redisCache
 }
 
-func NewTokenUtilsX(privateKey []byte, expSeconds int) *tokenUtilsX {
+func NewTokenUtilsX(privateKey string, expSeconds int) *tokenUtilsX {
 	ts := new(tokenUtilsX)
-	ts.privateKey = privateKey
+	ts.privateKey = []byte(privateKey)
 	ts.expTime = time.Now().Add(time.Second * time.Duration(expSeconds))
 	ts.cache = NewRedisCache()
 	return ts

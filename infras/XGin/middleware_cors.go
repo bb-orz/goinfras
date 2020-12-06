@@ -1,4 +1,4 @@
-package Xgin
+package XGin
 
 import (
 	"github.com/gin-contrib/cors"

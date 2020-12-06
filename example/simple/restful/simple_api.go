@@ -9,7 +9,7 @@ import (
 
 func init() {
 	// 初始化时自动注册该API到Gin Engine
-	Xgin.RegisterApi(new(SimpleApi))
+	XGin.RegisterApi(new(SimpleApi))
 }
 
 type SimpleApi struct {
@@ -20,7 +20,7 @@ type SimpleApi struct {
 func (s *SimpleApi) SetRoutes() {
 	s.service1 = services.GetService1()
 
-	engine := Xgin.XEngine()
+	engine := XGin.XEngine()
 
 	engine.POST("simple/foo", s.Foo)
 	engine.POST("simple/bar", s.Bar)

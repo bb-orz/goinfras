@@ -57,7 +57,7 @@ func registerStarter() {
 	infras.RegisterStarter(XOAuth.NewStarter())
 
 	// 注册gin web 服务
-	infras.RegisterStarter(Xgin.NewStarter())
+	infras.RegisterStarter(XGin.NewStarter())
 	// 注册验证器
 	infras.RegisterStarter(XValidate.NewStarter())
 

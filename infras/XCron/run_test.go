@@ -4,6 +4,7 @@ import (
 	"GoWebScaffold/infras"
 	"fmt"
 	. "github.com/smartystreets/goconvey/convey"
+	"go.uber.org/zap"
 	"testing"
 	"time"
 )
@@ -65,7 +66,7 @@ func TestStarter(t *testing.T) {
 		tasks = append(tasks, task1)
 
 		s := NewStarter(tasks...)
-		sctx := infras.CreateDefaultSystemContext()
+		sctx := infras.CreateDefaultStarterContext(nil, zap.L())
 		s.Init(sctx)
 		Println("Starter Init Successful!")
 		s.Setup(sctx)

@@ -14,6 +14,14 @@ const (
 // 用来在服务资源初始化、安装、启动和停止的生命周期中变量和对象的传递
 type StarterContext map[string]interface{}
 
+// 创建一个默认最少配置启动器上下文
+func CreateDefaultStarterContext(vpcfg *viper.Viper, logger *zap.Logger) *StarterContext {
+	sctx := &StarterContext{}
+	sctx.SetConfigs(vpcfg)
+	sctx.SetLogger(logger)
+	return sctx
+}
+
 func (s StarterContext) Configs() *viper.Viper {
 	p := s[KeyConfig]
 	if p == nil {
@@ -34,12 +42,4 @@ func (s StarterContext) Logger() *zap.Logger {
 }
 func (s StarterContext) SetLogger(logger *zap.Logger) {
 	s[KeyLogger] = logger
-}
-
-// 创建一个默认最少配置启动器上下文
-func CreateDefaultSystemContext() *StarterContext {
-	sctx := &StarterContext{}
-	sctx.SetConfigs(viper.New())
-	sctx.SetLogger(zap.L())
-	return sctx
 }
