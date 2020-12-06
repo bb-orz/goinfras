@@ -33,13 +33,13 @@ func (s *starter) Init(sctx *infras.StarterContext) {
 	var define *Config
 	viper := sctx.Configs()
 	if viper != nil {
-		err = viper.UnmarshalKey("Cron", define)
+		err = viper.UnmarshalKey("Cron", &define)
 		infras.ErrorHandler(err)
 	}
 	if define == nil {
 		define = DefaultConfig()
 	}
-	sctx.Logger().Info("Print Cron Config:", zap.Any("Config", *define))
+	sctx.Logger().Info("Print Cron Config:", zap.Any("CronConfig", *define))
 	s.cfg = define
 }
 

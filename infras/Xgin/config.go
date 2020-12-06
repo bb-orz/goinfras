@@ -1,8 +1,8 @@
 package Xgin
 
 type Config struct {
-	GinConfig
-	CorsConfig
+	*GinConfig
+	*CorsConfig
 }
 
 type GinConfig struct {
@@ -22,4 +22,15 @@ type CorsConfig struct {
 	MaxAge           int      // 指定预检前（option请求）请求的结果可以缓存多长时间（以秒为单位）
 	AllowOrigins     []string // 设置允许的主机源列表
 	AllowMethods     []string // 设置允许的请求方法列表
+}
+
+// 默认最小启动配置
+func DefaultConfig() *Config {
+	return &Config{
+		&GinConfig{
+			ListenHost: "127.0.0.1",
+			ListenPort: 8090,
+		},
+		nil,
+	}
 }

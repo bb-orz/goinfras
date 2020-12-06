@@ -1,13 +1,13 @@
 package Xgin
 
 import (
-	"GoWebScaffold/infras/jwt"
+	"GoWebScaffold/infras/XJwt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 // 用户鉴权中间件
-func JwtAuthMiddleware(tku XJWT.ITokenUtils) gin.HandlerFunc {
+func JwtAuthMiddleware(tku XJwt.ITokenUtils) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 1.从http头获取token string
 		tkStr := c.GetHeader("Authorization")

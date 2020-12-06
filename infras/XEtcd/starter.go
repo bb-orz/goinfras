@@ -25,15 +25,18 @@ func (s *starter) Name() string {
 func (s *starter) Init(sctx *infras.StarterContext) {
 	var err error
 	var define *Config
+
 	viper := sctx.Configs()
 	if viper != nil {
-		err = viper.UnmarshalKey("Etcd", define)
+		err = viper.UnmarshalKey("Etcd", &define)
 		infras.ErrorHandler(err)
 	}
+
 	if define == nil {
 		define = DefaultConfig()
 	}
-	sctx.Logger().Info("Print ETCD Config:", zap.Any("Config", *define))
+
+	sctx.Logger().Info("Print ETCD Config:", zap.Any("EtcdConfig", *define))
 	s.cfg = define
 }
 
