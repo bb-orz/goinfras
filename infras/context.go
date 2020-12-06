@@ -35,3 +35,11 @@ func (s StarterContext) Logger() *zap.Logger {
 func (s StarterContext) SetLogger(logger *zap.Logger) {
 	s[KeyLogger] = logger
 }
+
+// 创建一个默认最少配置启动器上下文
+func CreateDefaultSystemContext() *StarterContext {
+	sctx := &StarterContext{}
+	sctx.SetConfigs(viper.New())
+	sctx.SetLogger(zap.L())
+	return sctx
+}

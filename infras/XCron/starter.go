@@ -3,6 +3,7 @@ package XCron
 import (
 	"GoWebScaffold/infras"
 	"fmt"
+	"go.uber.org/zap"
 )
 
 // 实例化资源存储变量
@@ -38,6 +39,7 @@ func (s *starter) Init(sctx *infras.StarterContext) {
 	if define == nil {
 		define = DefaultConfig()
 	}
+	sctx.Logger().Info("Print Cron Config:", zap.Any("Config", *define))
 	s.cfg = define
 }
 

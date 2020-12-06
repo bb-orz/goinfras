@@ -16,3 +16,10 @@ type Config struct {
 	MaxCallRecvMsgSize   int         // 客户端响应接收限制。如果为0，则默认为“math.MaxInt32”，因为范围响应可能会明显超过请求发送限制。请确保“MaxCallRecvMsgSize”>=服务器端默认发送/接收限制。（--etcd的“max request bytes”标志或“embed.Config.MaxRequestBytes”）。
 	MaxCallSendMsgSize   int         // 客户端请求发送限制（字节）。如果为0，则默认为2.0 MiB（2*1024*1024）。请确保“MaxCallSendMsgSize”<服务器端默认发送/接收限制。 （“--max request bytes”标记为etcd或“embed.Config.MaxRequestBytes”）。
 }
+
+// 默认最小启动配置
+func DefaultConfig() *Config {
+	return &Config{
+		Endpoints: []string{"127.0.0.1:2379", "127.0.0.1:2380"},
+	}
+}

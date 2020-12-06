@@ -5,6 +5,11 @@ import "go.uber.org/zap"
 // 实例变量
 var manager *Manager
 
+// 创建一个默认配置的Manager
+func CreateDefaultManager() {
+	manager = NewManager(DefaultConfig(), zap.L())
+}
+
 // 资源组件实例调用
 func XManager() *Manager {
 	return manager
@@ -13,9 +18,4 @@ func XManager() *Manager {
 // 资源组件闭包执行
 func XFManager(f func(m *Manager) error) error {
 	return f(manager)
-}
-
-// 创建一个默认配置的Manager
-func CreateDefaultManager() {
-	manager = NewManager(DefaultConfig(), zap.L())
 }

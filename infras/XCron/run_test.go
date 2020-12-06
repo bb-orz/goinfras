@@ -4,8 +4,6 @@ import (
 	"GoWebScaffold/infras"
 	"fmt"
 	. "github.com/smartystreets/goconvey/convey"
-	"github.com/spf13/viper"
-	"go.uber.org/zap"
 	"testing"
 	"time"
 )
@@ -56,26 +54,18 @@ func TestCron(t *testing.T) {
 	})
 }
 
-// 创建一个空的启动器上下文供测试
-func CreateDefaultSystemContext() *infras.StarterContext {
-	sctx := &infras.StarterContext{}
-	sctx.SetConfigs(viper.New())
-	sctx.SetLogger(zap.L())
-	return sctx
-}
-
 // 测试启动器
 func TestStarter(t *testing.T) {
 	Convey("Test Cron", t, func() {
-		sctx := CreateDefaultSystemContext()
 
 		// 1.定义定时任务
 		fmt.Println("定义第一个定时任务...")
 		tasks := make([]*Task, 0)
-		task1 := NewTask("*/2 * * * * *", &JobA{})
+		task1 := NewTask("*/1 * * * * *", &JobA{})
 		tasks = append(tasks, task1)
 
 		s := NewStarter(tasks...)
+		sctx := infras.CreateDefaultSystemContext()
 		s.Init(sctx)
 		Println("Starter Init Successful!")
 		s.Setup(sctx)
