@@ -8,7 +8,6 @@ import (
 )
 
 func NewORMDb(config *Config) (*gorm.DB, error) {
-	var db *gorm.DB
 	var err error
 	switch config.Dialect {
 	case "mysql":

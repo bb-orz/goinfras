@@ -14,3 +14,19 @@ type Config struct {
 	SSLMode       string // 加密传输
 	SingularTable bool   // 是否设置全局复数表名
 }
+
+func DefaultConfig() *Config {
+	return &Config{
+		"mysql",
+		"127.0.0.1",
+		3306,
+		"dev",
+		"123456",
+		"dev_db",
+		"utf8",
+		true,
+		"Local",
+		"disable",
+		false,
+	}
+}

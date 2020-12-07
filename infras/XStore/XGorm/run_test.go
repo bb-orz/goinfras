@@ -1,9 +1,11 @@
 package XGorm
 
 import (
+	"GoWebScaffold/infras"
 	"database/sql"
 	"github.com/jinzhu/gorm"
 	. "github.com/smartystreets/goconvey/convey"
+	"go.uber.org/zap"
 	"testing"
 	"time"
 )
@@ -52,7 +54,7 @@ type CreditCard struct {
 
 func TestGormDb(t *testing.T) {
 	Convey("测试使用gorm：", t, func() {
-		err := TestingInstantiation(nil)
+		err := CreateDefaultDB(nil)
 		So(err, ShouldBeNil)
 		// 检查模型`Address`表是否存在
 		hasAddressTable := XDB().HasTable(&Address{})
@@ -83,7 +85,7 @@ func TestGormDb(t *testing.T) {
 
 func TestGormInsert(t *testing.T) {
 	Convey("测试使用 Gorm Insert：", t, func() {
-		err := TestingInstantiation(nil)
+		err := CreateDefaultDB(nil)
 		So(err, ShouldBeNil)
 
 		// 插入
@@ -98,7 +100,7 @@ func TestGormInsert(t *testing.T) {
 
 func TestGormFind(t *testing.T) {
 	Convey("测试使用 Gorm Find：", t, func() {
-		err := TestingInstantiation(nil)
+		err := CreateDefaultDB(nil)
 		So(err, ShouldBeNil)
 
 		var user User
@@ -138,7 +140,7 @@ func TestGormFind(t *testing.T) {
 
 func TestGormSimpleWhere(t *testing.T) {
 	Convey("测试使用 Gorm Simple Where：", t, func() {
-		err := TestingInstantiation(nil)
+		err := CreateDefaultDB(nil)
 		So(err, ShouldBeNil)
 
 		var user User
@@ -189,7 +191,7 @@ func TestGormSimpleWhere(t *testing.T) {
 
 func TestGormWhereByStructOrMap(t *testing.T) {
 	Convey("测试使用 Gorm Where By struct Or Map：", t, func() {
-		err := TestingInstantiation(nil)
+		err := CreateDefaultDB(nil)
 		So(err, ShouldBeNil)
 
 		var user User
@@ -217,3 +219,26 @@ func TestGormWhereByStructOrMap(t *testing.T) {
 }
 
 // 更多CURD 查找http://gorm.book.jasperxu.com/crud.html
+
+func TestStarter(t *testing.T) {
+	Convey("TestStarter", t, func() {
+		err := CreateDefaultDB(nil)
+		So(err, ShouldBeNil)
+
+		s := NewStarter()
+		logger, err := zap.NewDevelopment()
+		So(err, ShouldBeNil)
+		sctx := infras.CreateDefaultStarterContext(nil, logger)
+		s.Init(sctx)
+		Println("Starter Init Successful!")
+		s.Setup(sctx)
+		Println("Starter Setup Successful!")
+
+		if s.Check(sctx) {
+			Println("Component Check Successful!")
+		} else {
+			Println("Component Check Fail!")
+		}
+
+	})
+}
