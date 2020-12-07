@@ -4,16 +4,17 @@ import (
 	"GoWebScaffold/infras"
 	"context"
 	"fmt"
+	"go.uber.org/zap"
 )
 
 type starter struct {
 	infras.BaseStarter
-	cfg Config
+	cfg *Config
 }
 
 func NewStarter() *starter {
 	starter := new(starter)
-	starter.cfg = Config{}
+	starter.cfg = &Config{}
 	return starter
 }
 
@@ -22,16 +23,23 @@ func (s *starter) Name() string {
 }
 
 func (s *starter) Init(sctx *infras.StarterContext) {
+	var err error
+	var define *Config
 	viper := sctx.Configs()
-	define := Config{}
-	err := viper.UnmarshalKey("Mongodb", &define)
-	infras.FailHandler(err)
+	if viper != nil {
+		err = viper.UnmarshalKey("Mongodb", &define)
+		infras.ErrorHandler(err)
+	}
+	if define == nil {
+		define = DefaultConfig()
+	}
 	s.cfg = define
+	sctx.Logger().Info("Print Mongodb Config:", zap.Any("Mongodb", *define))
 }
 
 func (s *starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	client, err = NewClient(&s.cfg)
+	client, err = NewClient(s.cfg)
 	infras.FailHandler(err)
 }
 

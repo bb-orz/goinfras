@@ -6,6 +6,16 @@ import (
 
 var client *mongo.Client
 
+// 创建一个默认配置的Manager
+func CreateDefaultDB(config *Config) error {
+	var err error
+	if config == nil {
+		config = DefaultConfig()
+	}
+	client, err = NewClient(config)
+	return err
+}
+
 func XClient() *mongo.Client {
 	return client
 }
@@ -21,34 +31,4 @@ func XCommon(dbName string) *CommonMongoDao {
 	c.client = XClient()
 	c.defaultDb = c.client.Database(dbName)
 	return c
-}
-
-/*实例化资源用于测试*/
-func TestingInstantiation(config *Config) error {
-	var err error
-
-	if config == nil {
-		config = &Config{
-			[]string{"127.0.0.1:27017"},
-			"",
-			"",
-			"",
-			"",
-			true,
-			15,
-			nil,
-			true,
-			10,
-			100,
-			1000,
-			120,
-			false,
-			20,
-			true,
-			true,
-		}
-	}
-
-	client, err = NewClient(config)
-	return err
 }

@@ -21,3 +21,25 @@ type Config struct {
 	RetryWrites           bool     // 指定是否应在某些错误（如网络）上重试一次受支持的写入操作
 
 }
+
+func DefaultConfig() *Config {
+	return &Config{
+		[]string{"127.0.0.1:27017"},
+		"",
+		"",
+		"",
+		"",
+		true,
+		15,
+		nil,
+		true,
+		10,
+		100,
+		1000,
+		120,
+		false,
+		20,
+		true,
+		true,
+	}
+}
