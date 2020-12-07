@@ -7,6 +7,15 @@ import (
 
 var pool *redis.Pool
 
+// 创建一个默认配置的DB
+func CreateDefaultPool(config *Config, logger *zap.Logger) error {
+	var err error
+	if config == nil {
+		config = DefaultConfig()
+	}
+	pool, err = NewPool(config, logger)
+	return err
+}
 func XPool() *redis.Pool {
 	return pool
 }
@@ -21,21 +30,4 @@ func XCommon() *CommonRedisDao {
 	dao := new(CommonRedisDao)
 	dao.pool = XPool()
 	return dao
-}
-
-/*实例化资源用于测试*/
-func TestingInstantiation() error {
-	var err error
-	config := &Config{
-		"127.0.0.1",
-		6379,
-		false,
-		"",
-		0,
-		50,
-		60,
-	}
-
-	pool, err = NewPool(config, zap.L())
-	return err
 }

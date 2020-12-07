@@ -6,7 +6,7 @@ import (
 
 var db *gorm.DB
 
-// 创建一个默认配置的Manager
+// 创建一个默认配置的DB
 func CreateDefaultDB(config *Config) error {
 	var err error
 	if config == nil {
