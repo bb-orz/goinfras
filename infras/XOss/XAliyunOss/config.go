@@ -14,3 +14,20 @@ type Config struct {
 	UseCname        bool   // 是否使用自定义域名CNAME
 	SecurityToken   string // 临时用户的SecurityToken
 }
+
+func DefaultConfig() *Config {
+	return &Config{
+		"",
+		60,
+		60,
+		false,
+		false,
+		"",
+		"",
+		"",
+		"",
+		"http://oss-cn-shenzhen.aliyuncs.com",
+		false,
+		"",
+	}
+}

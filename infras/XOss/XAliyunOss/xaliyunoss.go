@@ -6,6 +6,16 @@ import (
 
 var aliyunOssClient *oss.Client
 
+// 创建一个默认配置的Manager
+func CreateDefaultClient(config *Config) error {
+	var err error
+	if config == nil {
+		config = DefaultConfig()
+	}
+	aliyunOssClient, err = NewClient(config)
+	return err
+}
+
 func XClient() *oss.Client {
 	return aliyunOssClient
 }
@@ -16,7 +26,7 @@ func XFClient(f func(c *oss.Client) error) error {
 }
 
 // 通用实例
-func XCommonAliyunOss() *CommonAliyunOss {
+func XCommonOss() *CommonAliyunOss {
 	common := new(CommonAliyunOss)
 	common.client = XClient()
 	return common
@@ -34,28 +44,4 @@ func XMultipartOss() *MultipartOss {
 	mp := new(MultipartOss)
 	mp.client = XClient()
 	return mp
-}
-
-/*实例化资源用于测试*/
-func TestingInstantiation(config *Config) error {
-	var err error
-	if config == nil {
-		config = &Config{
-			"",
-			60,
-			60,
-			false,
-			false,
-			"",
-			"",
-			"",
-			"",
-			"http://oss-cn-shenzhen.aliyuncs.com",
-			false,
-			"",
-		}
-	}
-
-	aliyunOssClient, err = NewClient(config)
-	return err
 }
