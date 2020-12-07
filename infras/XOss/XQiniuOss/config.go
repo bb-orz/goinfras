@@ -14,3 +14,20 @@ type Config struct {
 	FsizeMax         int    // 限定上传文件大小最大值，单位Byte。超过限制上传文件大小的最大值会被判为上传失败，返回 413 状态码。
 	MimeLimit        string // 限定上传类型
 }
+
+func DefaultConfig() *Config {
+	return &Config{
+		"",
+		"",
+		"",
+		false,
+		false,
+		7200,
+		"",
+		"",
+		"",
+		1024,
+		10485760,
+		"",
+	}
+}

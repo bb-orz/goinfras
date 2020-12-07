@@ -107,6 +107,5 @@ func (client *QnClient) BreakPointUpload(bucket, fileKey, localFilePath, recordD
 	}
 	// 上传成功之后，删除这个进度文件
 	os.Remove(recordPath)
-	//fmt.Println(ret.Key, ret.Hash)
 	return ret, nil
 }
