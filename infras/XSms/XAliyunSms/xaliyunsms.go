@@ -6,6 +6,16 @@ import (
 
 var aliyunSmsClient *dysmsapi.Client
 
+// 创建一个默认配置的Manager
+func CreateDefaultClient(config *Config) error {
+	var err error
+	if config == nil {
+		config = DefaultConfig()
+	}
+	aliyunSmsClient, err = NewAliyunSmsClient(config)
+	return err
+}
+
 func XClient() *dysmsapi.Client {
 	return aliyunSmsClient
 }
@@ -20,24 +30,4 @@ func XCommonSms(config *Config) *CommonSms {
 	c.client = XClient()
 	c.cfg = config
 	return c
-}
-
-/*实例化资源用于测试*/
-func TestingInstantiation(config *Config) error {
-	var err error
-	if config == nil {
-		config = &Config{
-			"https",
-			"dysmsapi.aliyuncs.com",
-			"",
-			"",
-			"",
-			"",
-			"SendSms",
-			"",
-			"",
-		}
-	}
-	aliyunSmsClient, err = NewAliyunSmsClient(config)
-	return err
 }

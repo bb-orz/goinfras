@@ -11,3 +11,17 @@ type Config struct {
 	OutId           string // 外部流水扩展字段。
 	SmsUpExtendCode string // 上行短信扩展码，无特殊需要此字段的用户请忽略此字段。
 }
+
+func DefaultConfig() *Config {
+	return &Config{
+		"https",
+		"dysmsapi.aliyuncs.com",
+		"",
+		"",
+		"",
+		"",
+		"SendSms",
+		"",
+		"",
+	}
+}

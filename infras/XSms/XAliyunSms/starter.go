@@ -3,16 +3,17 @@ package XAliyunSms
 import (
 	"GoWebScaffold/infras"
 	"fmt"
+	"go.uber.org/zap"
 )
 
 type starter struct {
 	infras.BaseStarter
-	cfg Config
+	cfg *Config
 }
 
 func NewStarter() *starter {
 	starter := new(starter)
-	starter.cfg = Config{}
+	starter.cfg = &Config{}
 	return starter
 }
 
@@ -21,16 +22,23 @@ func (s *starter) Name() string {
 }
 
 func (s *starter) Init(sctx *infras.StarterContext) {
+	var err error
+	var define *Config
 	viper := sctx.Configs()
-	define := Config{}
-	err := viper.UnmarshalKey("AliyunSms", &define)
-	infras.FailHandler(err)
+	if viper != nil {
+		err = viper.UnmarshalKey("AliyunSms", &define)
+		infras.ErrorHandler(err)
+	}
+	if define == nil {
+		define = DefaultConfig()
+	}
 	s.cfg = define
+	sctx.Logger().Info("Print AliyunSms Config:", zap.Any("AliyunSms", *define))
 }
 
 func (s *starter) Setup(sctx *infras.StarterContext) {
 	var err error
-	aliyunSmsClient, err = NewAliyunSmsClient(&s.cfg)
+	aliyunSmsClient, err = NewAliyunSmsClient(s.cfg)
 	infras.FailHandler(err)
 }
 
