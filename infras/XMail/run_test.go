@@ -43,7 +43,7 @@ func TestStarter(t *testing.T) {
 			Println("Component Check Fail!")
 		}
 
-		err := XCommonMail().SendSimpleMail(
+		err = XCommonMail().SendSimpleMail(
 			"",
 			"",
 			"",

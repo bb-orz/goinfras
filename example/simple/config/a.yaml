@@ -41,7 +41,7 @@ Cors:
 Cron:
   Location: local
 
-Oauth:
+OAuth:
   WechatSignSwitch: false
   WechatOAuth2AppKey:
   WechatOAuth2AppSecret:

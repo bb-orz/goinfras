@@ -11,3 +11,17 @@ type Config struct {
 	QQOAuth2AppKey        string // qq开发者appkey
 	QQOAuth2AppSecret     string // qq开发者secret
 }
+
+func DefaultConfig() *Config {
+	return &Config{
+		false,
+		"",
+		"",
+		false,
+		"",
+		"",
+		false,
+		"",
+		"",
+	}
+}
