@@ -41,17 +41,17 @@ func XF(f func(c redigo.Conn) error) error {
 }
 
 // 通用Publisher实例
-func XRedisPublisher() *redisPublisher {
+func XRedisPublisher(logger *zap.Logger) *redisPublisher {
 	publisher := new(redisPublisher)
 	publisher.pool = XPool()
-	publisher.logger = zap.L()
+	publisher.logger = logger
 	return publisher
 }
 
 // 通用Subscriber实例
-func XRedisSubscriber() *RedisSubscriber {
+func XRedisSubscriber(logger *zap.Logger) *RedisSubscriber {
 	subscriber := new(RedisSubscriber)
 	subscriber.pool = XPool()
-	subscriber.logger = zap.L()
+	subscriber.logger = logger
 	return subscriber
 }

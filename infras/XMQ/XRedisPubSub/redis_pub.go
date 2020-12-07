@@ -22,7 +22,7 @@ func (c *redisPublisher) Publish(channel string, msg interface{}) error {
 	}()
 
 	receiveNum, err := redigo.Int(conn.Do("PUBLISH", channel, redigo.Args{}.AddFlat(msg)))
-	c.logger.Info("Redis Publish Topic Message:", zap.String("channel", channel), zap.String("message", msg.(string)), zap.Int("receive count", receiveNum))
+	c.logger.Info("Redis Publish Message:", zap.String("channel", channel), zap.String("message", msg.(string)), zap.Int("receive count", receiveNum))
 	if err != nil {
 		return err
 	}
@@ -32,5 +32,5 @@ func (c *redisPublisher) Publish(channel string, msg interface{}) error {
 		c.logger.Warn("No subscriber subscribe or receive this channel", zap.String("channel", channel))
 	}
 
-	return nil
+	return err
 }

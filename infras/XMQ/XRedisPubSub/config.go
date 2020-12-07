@@ -15,7 +15,7 @@ func DefaultConfig() *Config {
 	return &Config{
 		true,
 		"127.0.0.1",
-		6380,
+		6379,
 		false,
 		"",
 		0,

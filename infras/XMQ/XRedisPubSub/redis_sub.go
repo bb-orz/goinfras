@@ -1,7 +1,6 @@
 package XRedisPubSub
 
 import (
-	"fmt"
 	redigo "github.com/garyburd/redigo/redis"
 	"go.uber.org/zap"
 	"time"
@@ -16,12 +15,17 @@ type RedisSubscriber struct {
 type RecSubMsgFunc func(channel string, msg interface{}) error
 
 // 订阅并接收消息
-func (c *RedisSubscriber) Subscribe(recMsgFuncs map[string]RecSubMsgFunc, channels ...interface{}) error {
+func (c *RedisSubscriber) Subscribe(recMsgFuncs map[string]RecSubMsgFunc) error {
 	var err error
 	conn := c.pool.Get()
 	defer func() {
 		conn.Close()
 	}()
+
+	var channels []interface{}
+	for c := range recMsgFuncs {
+		channels = append(channels, c)
+	}
 
 	// 订阅
 	psConn := redigo.PubSubConn{Conn: conn}
@@ -34,7 +38,6 @@ func (c *RedisSubscriber) Subscribe(recMsgFuncs map[string]RecSubMsgFunc, channe
 	var done = make(chan error, 1)
 	go func() {
 		var receiveTimes = 0
-		fmt.Println("Redis Subscribe Receive Waiting...")
 		for {
 			receiveTimes++
 			c.logger.Info("receiveTimes:", zap.Int("times", receiveTimes))
@@ -42,12 +45,11 @@ func (c *RedisSubscriber) Subscribe(recMsgFuncs map[string]RecSubMsgFunc, channe
 			case redigo.Message:
 				// 每接收一个已发布消息开一个协程执行消息处理函数
 				go func() {
-					err := recMsgFuncs[res.Channel](res.Channel, res.Data)
+					err := recMsgFuncs[res.Channel](res.Channel, string(res.Data))
 					if err != nil {
 						done <- err
 					}
 				}()
-
 			case redigo.Subscription:
 				// 订阅与取消订阅的消息
 				c.logger.Info("redis SubReceiver:", zap.String("receive kind", res.Kind), zap.String("receive Channel", res.Channel), zap.Int("receive Count", res.Count))
@@ -58,7 +60,6 @@ func (c *RedisSubscriber) Subscribe(recMsgFuncs map[string]RecSubMsgFunc, channe
 				// 接收到错误信息
 				done <- res
 			}
-
 		}
 	}()
 
@@ -70,8 +71,7 @@ func (c *RedisSubscriber) Subscribe(recMsgFuncs map[string]RecSubMsgFunc, channe
 		case err := <-done:
 			return err
 		case <-tick.C:
-			if err := psConn.Ping(""); err != nil {
-
+			if err := psConn.Ping("test conn"); err != nil {
 				return err
 			}
 		}
