@@ -1,7 +1,9 @@
 package XValidate
 
 import (
+	"GoWebScaffold/infras"
 	. "github.com/smartystreets/goconvey/convey"
+	"go.uber.org/zap"
 	"testing"
 )
 
@@ -14,7 +16,7 @@ type UserDemo struct {
 
 func TestValidate(t *testing.T) {
 	Convey("Test Validate DTO Struct", t, func() {
-		err := TestingInstantiation(nil)
+		err := CreateDefaultValidater(nil)
 		So(err, ShouldBeNil)
 
 		userDemo1 := UserDemo{
@@ -39,4 +41,27 @@ func TestValidate(t *testing.T) {
 		Println("Validate Error:", err)
 	})
 
+}
+
+func TestStarter(t *testing.T) {
+	Convey("TestStarter", t, func() {
+		err := CreateDefaultValidater(nil)
+		So(err, ShouldBeNil)
+
+		s := NewStarter()
+		logger, err := zap.NewDevelopment()
+		So(err, ShouldBeNil)
+		sctx := infras.CreateDefaultStarterContext(nil, logger)
+		s.Init(sctx)
+		Println("Starter Init Successful!")
+		s.Setup(sctx)
+		Println("Starter Setup Successful!")
+
+		if s.Check(sctx) {
+			Println("Component Check Successful!")
+		} else {
+			Println("Component Check Fail!")
+		}
+
+	})
 }

@@ -8,23 +8,11 @@ import (
 var validater *validator.Validate
 var translater ut.Translator
 
-// 验证器
-func XValidater() *validator.Validate {
-	return validater
-}
-
-// 验证信息翻译器
-func XTranslater() ut.Translator {
-	return translater
-}
-
-/*实例化资源用于测试*/
-func TestingInstantiation(config *Config) error {
+// 创建一个默认配置的Manager
+func CreateDefaultValidater(config *Config) error {
 	var err error
 	if config == nil {
-		config = &Config{
-			true,
-		}
+		config = DefaultConfig()
 	}
 
 	if config.TransZh {
@@ -33,4 +21,14 @@ func TestingInstantiation(config *Config) error {
 		validater = NewValidater()
 	}
 	return err
+}
+
+// 验证器
+func XValidater() *validator.Validate {
+	return validater
+}
+
+// 验证信息翻译器
+func XTranslater() ut.Translator {
+	return translater
 }

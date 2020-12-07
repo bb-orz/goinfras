@@ -203,4 +203,5 @@ AliyunOss:
   EnableCRC: true             #是否开启CRC校验
   Proxy: ""                   #代理服务器，如http://8.8.8.8:3128
   AuthProxy: ""               #带账号密码的代理服务器
-
+Validate:
+  TransZh: true
