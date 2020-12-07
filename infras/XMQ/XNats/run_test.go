@@ -189,16 +189,20 @@ func testNatsMQRequest(t *testing.T) {
 func testNatsMQSubscribeReply(t *testing.T) {
 	Convey("TestNatsMQSubscribeReply", t, func() {
 		var err error
+		var subscriber *nats.Subscription
 		err = CreateDefaultPool(nil, zap.L())
 		So(err, ShouldBeNil)
 
 		// 订阅接收到消息后发送回执
-		err = XCommonNatsPubSub().Subscribe(TestReqRespSubjectName, func(msg *nats.Msg) {
+		subscriber, err = XCommonNatsPubSub().Subscribe(TestReqRespSubjectName, func(msg *nats.Msg) {
 			fmt.Println("Subscriber Receive Message:", string(msg.Data))
 			err = XCommonNatsPubSub().Publish(msg.Reply, fmt.Sprintf("I Receive Message :%s", string(msg.Data)))
 		})
 		So(err, ShouldBeNil)
 
 		time.Sleep(time.Second * 10)
+		err = subscriber.Unsubscribe()
+		So(err, ShouldBeNil)
+
 	})
 }

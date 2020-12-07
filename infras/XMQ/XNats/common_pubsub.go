@@ -70,19 +70,19 @@ handler := func(subject string, o *obj)
 handler := func(subject, reply string, o *obj)   for Request() reply
 */
 
-func (c *commonNatsPubSub) Subscribe(subject string, handler nats.MsgHandler) error {
+func (c *commonNatsPubSub) Subscribe(subject string, handler nats.MsgHandler) (*nats.Subscription, error) {
 	conn, err := c.pool.Get()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer c.pool.Put(conn)
 
-	_, err = conn.Subscribe(subject, handler)
+	s, err := conn.Subscribe(subject, handler)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return s, nil
 }
 
 /*
@@ -91,44 +91,34 @@ func (c *commonNatsPubSub) Subscribe(subject string, handler nats.MsgHandler) er
 */
 type EncodedMsgHandler func(subject string, goDataMsg interface{})
 
-func (c *commonNatsPubSub) SubscribeForEncodedMsg(subject string, handler EncodedMsgHandler) error {
+func (c *commonNatsPubSub) SubscribeForEncodedMsg(subject string, handler EncodedMsgHandler) (*nats.Subscription, error) {
 	conn, err := c.pool.Get()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	defer c.pool.Put(conn)
 
 	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	_, err = encodedConn.Subscribe(subject, handler)
+	s, err := encodedConn.Subscribe(subject, handler)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return s, nil
 }
 
 /*
 取消订阅一个或多个主题
 param subject/subjects string 已订阅的主题
 */
-func (c *commonNatsPubSub) Unsubscribe(subjects ...string) error {
-	conn, err := c.pool.Get()
-	if err != nil {
-		return err
-	}
-	defer c.pool.Put(conn)
-
-	for _, subject := range subjects {
-		sub, err := conn.Subscribe(subject, nil)
-		if err != nil {
-			return err
-		}
-
-		err = sub.Unsubscribe()
+func (c *commonNatsPubSub) Unsubscribe(subscribers ...*nats.Subscription) error {
+	for _, subscriber := range subscribers {
+		var err error
+		err = subscriber.Unsubscribe()
 		if err != nil {
 			return err
 		}
