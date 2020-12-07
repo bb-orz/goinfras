@@ -7,6 +7,16 @@ import (
 
 var natsMQPool *NatsPool
 
+func CreateDefaultPool(config *Config, logger *zap.Logger) error {
+	var err error
+	if config == nil {
+		config = DefaultConfig()
+	}
+
+	natsMQPool, err = NewPool(config, logger)
+	return err
+}
+
 // 资源组件实例调用
 func XPool() *NatsPool {
 	return natsMQPool
@@ -51,8 +61,8 @@ func XCommonNatsPubSub() *commonNatsPubSub {
 }
 
 // 基于队列组的主题订阅方法实例
-func XCommonNatsSubscribe() *commonNatsSubscribe {
-	c := new(commonNatsSubscribe)
+func XCommonNatsQueue() *commonNatsQueue {
+	c := new(commonNatsQueue)
 	c.pool = XPool()
 	return c
 }
@@ -62,27 +72,4 @@ func XCommonNatsReqResp() *commonNatsReqResp {
 	c := new(commonNatsReqResp)
 	c.pool = XPool()
 	return c
-}
-
-/*实例化资源用于测试*/
-func TestingInstantiation(config *Config) error {
-	var err error
-	if config == nil {
-		config = &Config{
-			Switch: true,
-			NatsServers: []natsServer{
-				{
-					"127.0.0.1",
-					4222,
-					false,
-					"",
-					"",
-				},
-			},
-		}
-
-	}
-
-	natsMQPool, err = NewPool(config, zap.L())
-	return err
 }

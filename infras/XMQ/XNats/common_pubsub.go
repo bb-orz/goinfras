@@ -26,14 +26,14 @@ func (c *commonNatsPubSub) Publish(subject string, msg interface{}) error {
 	case reflect.Struct, reflect.Map, reflect.Slice, reflect.Ptr:
 		return c.publishEncodedJson(conn, subject, msg)
 	case reflect.String:
-		return c.publishCommon(conn, subject, msg.(string))
+		return c.publishString(conn, subject, msg.(string))
 	default:
 		return errors.New("Message Type Illegal")
 	}
 }
 
 // 发送字符串消息类型，自动转[]byte
-func (*commonNatsPubSub) publishCommon(conn *nats.Conn, subject string, msg string) error {
+func (*commonNatsPubSub) publishString(conn *nats.Conn, subject string, msg string) error {
 	return conn.Publish(subject, []byte(msg))
 }
 
@@ -44,7 +44,6 @@ func (*commonNatsPubSub) publishEncodedJson(conn *nats.Conn, subject string, msg
 		return err
 	}
 	return encodedConn.Publish(subject, msg)
-
 }
 
 /*

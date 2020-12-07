@@ -14,3 +14,18 @@ type natsServer struct {
 	UserName   string
 	Password   string
 }
+
+func DefaultConfig() *Config {
+	return &Config{
+		Switch: true,
+		NatsServers: []natsServer{
+			{
+				"127.0.0.1",
+				4222,
+				false,
+				"",
+				"",
+			},
+		},
+	}
+}

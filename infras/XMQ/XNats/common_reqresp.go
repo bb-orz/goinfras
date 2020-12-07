@@ -2,7 +2,9 @@ package XNats
 
 import (
 	"context"
+	"errors"
 	"github.com/nats-io/nats.go"
+	"reflect"
 	"time"
 )
 
@@ -50,7 +52,7 @@ func (c *commonNatsReqResp) Request(subject string, v interface{}, replyPtr inte
 /*
 RequestWithContext将创建一个收件箱，并使用提供的取消上下文和数据v的收件箱回复执行请求。响应将被解码为vPtrResponse。
 */
-func (c *CommonNatsReqResp) RequestWithContext(ctx context.Context, subject string, msg interface{}, respPtr interface{}, timeout time.Duration) error {
+func (c *commonNatsReqResp) RequestWithContext(ctx context.Context, subject string, msg interface{}, respPtr interface{}, timeout time.Duration) error {
 	conn, err := c.pool.Get()
 	if err != nil {
 		return err
@@ -69,7 +71,7 @@ func (c *CommonNatsReqResp) RequestWithContext(ctx context.Context, subject stri
 // 针对Request 主题的响应处理函数，RequestMsgHandler函数需向请求收件箱的reply主题发布一个响应消息，可使用PublishRequest处理
 type RequestMsgHandler func(subject, reply string, msg interface{})
 
-func (c *CommonNatsReqResp) SubscribeForRequest(subject string, f RequestMsgHandler) error {
+func (c *commonNatsReqResp) SubscribeForRequest(subject string, f RequestMsgHandler) error {
 	conn, err := c.pool.Get()
 	if err != nil {
 		return err
@@ -85,4 +87,40 @@ func (c *CommonNatsReqResp) SubscribeForRequest(subject string, f RequestMsgHand
 	}
 
 	return nil
+}
+
+/*
+发布消息到一个主题
+@param replyBoxName string Request reply box subject name
+@param msg interface{} 发布的消息
+*/
+func (c *commonNatsReqResp) PublishReply(replyBoxName string, msg interface{}) error {
+	conn, err := c.pool.Get()
+	if err != nil {
+		return err
+	}
+	defer c.pool.Put(conn)
+
+	switch reflect.TypeOf(msg).Kind() {
+	case reflect.Struct, reflect.Map, reflect.Slice, reflect.Ptr:
+		return c.publishEncodedJson(conn, replyBoxName, msg)
+	case reflect.String:
+		return c.publishString(conn, replyBoxName, msg.(string))
+	default:
+		return errors.New("Message Type Illegal! ")
+	}
+}
+
+// 发送字符串消息类型，自动转[]byte
+func (c *commonNatsReqResp) publishString(conn *nats.Conn, subject string, msg string) error {
+	return conn.Publish(subject, []byte(msg))
+}
+
+// 发送需要编码的go type消息类型
+func (c *commonNatsReqResp) publishEncodedJson(conn *nats.Conn, subject string, msg interface{}) error {
+	encodedConn, err := nats.NewEncodedConn(conn, nats.JSON_ENCODER)
+	if err != nil {
+		return err
+	}
+	return encodedConn.Publish(subject, msg)
 }
