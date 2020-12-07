@@ -1,15 +1,17 @@
 package XSQLBuilder
 
 import (
+	"GoWebScaffold/infras"
 	"context"
 	. "github.com/smartystreets/goconvey/convey"
+	"go.uber.org/zap"
 	"testing"
 )
 
 // 测试使用mysql client
 func TestMysqlDB(t *testing.T) {
 	Convey("测试使用mysql client", t, func() {
-		err := TestingInstantiation(nil)
+		err := CreateDefaultDB(nil)
 		So(err, ShouldBeNil)
 
 		err = db.Ping()
@@ -22,7 +24,7 @@ func TestMysqlDB(t *testing.T) {
 // 测试通用的mysql存储
 func TestNewCommonMysqlStore(t *testing.T) {
 	Convey("测试使用Common Mysql Store", t, func() {
-		err := TestingInstantiation(nil)
+		err := CreateDefaultDB(nil)
 		So(err, ShouldBeNil)
 
 		lastedId, err := XCommon().Insert("user", []map[string]interface{}{
@@ -40,8 +42,8 @@ func TestNewCommonMysqlStore(t *testing.T) {
 		So(err, ShouldBeNil)
 		Println("GetOne:", rs)
 
-		rsList := make([]UserSchema, 0)
-		XCommon().GetMulti("user", map[string]interface{}{"name": "aaaa"}, nil, &rsList)
+		rsList := make([]interface{}, 0)
+		XCommon().GetMulti("user", map[string]interface{}{"name": "aaaa"}, nil, rsList)
 		So(err, ShouldBeNil)
 		Println("GetMulti:", rsList)
 
@@ -69,7 +71,7 @@ func (u UserSchema) TableName() string {
 // 测试事务的mysql存储
 func TestBaseDaoTx(t *testing.T) {
 	Convey("测试使用mysql client", t, func() {
-		err := TestingInstantiation(nil)
+		err := CreateDefaultDB(nil)
 		So(err, ShouldBeNil)
 
 		tx, err := XCommon().NewTx(context.Background(), nil)
@@ -84,8 +86,8 @@ func TestBaseDaoTx(t *testing.T) {
 		So(err, ShouldBeNil)
 		Println("GetOne:", rs)
 
-		rsList := make([]UserSchema, 0)
-		tx.GetMulti("user", map[string]interface{}{"name": "fff"}, nil, &rsList)
+		rsList := make([]interface{}, 0)
+		tx.GetMulti("user", map[string]interface{}{"name": "fff"}, nil, rsList)
 		So(err, ShouldBeNil)
 		Println("GetMulti:", rsList)
 
@@ -99,6 +101,29 @@ func TestBaseDaoTx(t *testing.T) {
 
 		// TODO 解决没有commit也保存的问题
 		//tx.tx.Commit()
+
+	})
+}
+
+func TestStarter(t *testing.T) {
+	Convey("TestStarter", t, func() {
+		err := CreateDefaultDB(nil)
+		So(err, ShouldBeNil)
+
+		s := NewStarter()
+		logger, err := zap.NewDevelopment()
+		So(err, ShouldBeNil)
+		sctx := infras.CreateDefaultStarterContext(nil, logger)
+		s.Init(sctx)
+		Println("Starter Init Successful!")
+		s.Setup(sctx)
+		Println("Starter Setup Successful!")
+
+		if s.Check(sctx) {
+			Println("Component Check Successful!")
+		} else {
+			Println("Component Check Fail!")
+		}
 
 	})
 }

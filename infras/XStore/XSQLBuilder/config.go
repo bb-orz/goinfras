@@ -18,3 +18,23 @@ type Config struct {
 	ParseTime               bool   // 将数据库的datetime时间格式转换为go time包数据类型
 	PING                    bool   // 连接时PING测试
 }
+
+func DefaultConfig() *Config {
+	return &Config{
+		"127.0.0.1",
+		3306,
+		"dev",
+		"123456",
+		"dev_db",
+		60,
+		100,
+		200,
+		"utf8",
+		true,
+		true,
+		5,
+		30,
+		true,
+		true,
+	}
+}
