@@ -8,9 +8,12 @@ import (
 var client *clientv3.Client
 
 // 创建一个默认配置的Manager
-func CreateDefaultClient() error {
+func CreateDefaultClient(config *Config) error {
 	var err error
-	client, err = NewEtcdClient(context.TODO(), DefaultConfig(), nil)
+	if config == nil {
+		config = DefaultConfig()
+	}
+	client, err = NewEtcdClient(context.TODO(), config, nil)
 	return err
 }
 

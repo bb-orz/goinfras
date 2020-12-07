@@ -2,7 +2,6 @@ package XJwt
 
 import (
 	"GoWebScaffold/infras"
-	"GoWebScaffold/infras/XStore/XRedis"
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
@@ -42,10 +41,10 @@ func TestNewTokenUtils(t *testing.T) {
 func TestTokenUtilsX(t *testing.T) {
 	Convey("Test JWT Token Utils Cache", t, func() {
 		var err error
-		CreateDefaultTku(nil)
+		CreateDefaultTkuX(nil)
 
 		// 打印redis pool 状态
-		Println("pool ActiveCount:", XRedis.XPool().Stats().ActiveCount, ",pool IdleCount:", XRedis.XPool().Stats().IdleCount)
+		// Println("pool ActiveCount:", XRedis.XPool().Stats().ActiveCount, ",pool IdleCount:", XRedis.XPool().Stats().IdleCount)
 
 		// 启动带redis缓存的token加解码工具
 		userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker"}

@@ -12,8 +12,10 @@ import (
 func TestGinEngine(t *testing.T) {
 	Convey("Gin Server Run Test", t, func() {
 		config := DefaultConfig()
+		logger, err := zap.NewDevelopment()
+		So(err, ShouldBeNil)
 		// 初始化默认引擎
-		CreateDefaultEngine(config)
+		CreateDefaultEngine(nil, logger)
 
 		// 注册API接口
 		RegisterApi(new(SimpleApi))
@@ -26,7 +28,6 @@ func TestGinEngine(t *testing.T) {
 
 		// 启动
 		var addr string
-		var err error
 		addr = fmt.Sprintf("%s:%d", config.ListenHost, config.ListenPort)
 		if config.Tls && config.CertFile != "" && config.KeyFile != "" {
 			err = XEngine().RunTLS(addr, config.CertFile, config.KeyFile)

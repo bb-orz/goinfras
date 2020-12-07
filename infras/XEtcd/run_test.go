@@ -12,7 +12,7 @@ import (
 
 func TestEtcdClientV3(t *testing.T) {
 	Convey("ETCD Client Test", t, func() {
-		err := CreateDefaultClient()
+		err := CreateDefaultClient(nil)
 		So(err, ShouldBeNil)
 
 		Println("Put Key...")
