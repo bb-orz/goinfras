@@ -1,6 +1,7 @@
 package XNats
 
 import (
+	"GoWebScaffold/infras"
 	"fmt"
 	"github.com/nats-io/nats.go"
 	. "github.com/smartystreets/goconvey/convey"
@@ -181,7 +182,6 @@ func testNatsMQRequest(t *testing.T) {
 		fmt.Println("Received Reply Message From Subscriber:", reply)
 		fmt.Println("----------------------------------")
 
-		// TODO 订阅并发送回执
 	})
 
 }
@@ -203,6 +203,30 @@ func testNatsMQSubscribeReply(t *testing.T) {
 		time.Sleep(time.Second * 10)
 		err = subscriber.Unsubscribe()
 		So(err, ShouldBeNil)
+
+	})
+}
+
+func TestStarter(t *testing.T) {
+	Convey("Test XNats Starter", t, func() {
+		s := NewStarter()
+		logger, err := zap.NewDevelopment()
+		So(err, ShouldBeNil)
+		sctx := infras.CreateDefaultStarterContext(nil, logger)
+		s.Init(sctx)
+		Println("Starter Init Successful!")
+		s.Setup(sctx)
+		Println("Starter Setup Successful!")
+
+		if s.Check(sctx) {
+			Println("Component Check Successful!")
+		} else {
+			Println("Component Check Fail!")
+		}
+
+		s.Stop()
+		time.Sleep(time.Second * 3)
+		Println("Starter Stop Successful!")
 
 	})
 }

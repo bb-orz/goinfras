@@ -74,7 +74,9 @@ func (s *SimpleApi) Bar(ctx *gin.Context) {
 func TestStarter(t *testing.T) {
 	Convey("Test XGin Starter", t, func() {
 		s := NewStarter()
-		sctx := infras.CreateDefaultStarterContext(nil, zap.L())
+		logger, err := zap.NewDevelopment()
+		So(err, ShouldBeNil)
+		sctx := infras.CreateDefaultStarterContext(nil, logger)
 		s.Init(sctx)
 		Println("Starter Init Successful!")
 

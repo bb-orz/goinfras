@@ -1,13 +1,13 @@
 package XRedisPubSub
 
 import (
-	"GoWebScaffold/infras/XLogger"
 	redigo "github.com/garyburd/redigo/redis"
 	"go.uber.org/zap"
 )
 
 type redisPublisher struct {
-	pool *redigo.Pool
+	pool   *redigo.Pool
+	logger *zap.Logger
 }
 
 /*
@@ -22,14 +22,14 @@ func (c *redisPublisher) Publish(channel string, msg interface{}) error {
 	}()
 
 	receiveNum, err := redigo.Int(conn.Do("PUBLISH", channel, redigo.Args{}.AddFlat(msg)))
-	XLogger.XCommon().Info("Redis Publish Topic Message:", zap.String("channel", channel), zap.String("message", msg.(string)), zap.Int("receive count", receiveNum))
+	c.logger.Info("Redis Publish Topic Message:", zap.String("channel", channel), zap.String("message", msg.(string)), zap.Int("receive count", receiveNum))
 	if err != nil {
 		return err
 	}
 
 	if receiveNum == 0 {
 		// 订阅并接收到该channel的数量为receiveNum
-		XLogger.XCommon().Warn("No subscriber subscribe or receive this channel", zap.String("channel", channel))
+		c.logger.Warn("No subscriber subscribe or receive this channel", zap.String("channel", channel))
 	}
 
 	return nil

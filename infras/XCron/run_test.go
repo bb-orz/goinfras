@@ -66,7 +66,9 @@ func TestStarter(t *testing.T) {
 		tasks = append(tasks, task1)
 
 		s := NewStarter(tasks...)
-		sctx := infras.CreateDefaultStarterContext(nil, zap.L())
+		logger, err := zap.NewDevelopment()
+		So(err, ShouldBeNil)
+		sctx := infras.CreateDefaultStarterContext(nil, logger)
 		s.Init(sctx)
 		Println("Starter Init Successful!")
 		s.Setup(sctx)

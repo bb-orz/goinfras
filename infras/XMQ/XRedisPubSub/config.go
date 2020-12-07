@@ -10,3 +10,16 @@ type Config struct {
 	MaxIdle     int64  // 最大闲置连接数，0为无限
 	IdleTimeout int64  // 闲置超时时间，0位无限
 }
+
+func DefaultConfig() *Config {
+	return &Config{
+		true,
+		"127.0.0.1",
+		6380,
+		false,
+		"",
+		0,
+		50,
+		60,
+	}
+}

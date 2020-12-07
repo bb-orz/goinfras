@@ -7,13 +7,16 @@ import (
 
 var redisPubSubPool *redigo.Pool
 
+func CreateDefaultPool(config *Config, logger *zap.Logger) {
+	if config == nil {
+		config = DefaultConfig()
+	}
+	redisPubSubPool = NewRedisPubsubPool(config, logger)
+}
+
 // 资源组件实例调用
 func XPool() *redigo.Pool {
 	return redisPubSubPool
-}
-
-func XPBPool() {
-
 }
 
 // 资源组件闭包执行
@@ -41,6 +44,7 @@ func XF(f func(c redigo.Conn) error) error {
 func XRedisPublisher() *redisPublisher {
 	publisher := new(redisPublisher)
 	publisher.pool = XPool()
+	publisher.logger = zap.L()
 	return publisher
 }
 
@@ -48,33 +52,6 @@ func XRedisPublisher() *redisPublisher {
 func XRedisSubscriber() *RedisSubscriber {
 	subscriber := new(RedisSubscriber)
 	subscriber.pool = XPool()
+	subscriber.logger = zap.L()
 	return subscriber
-}
-
-// 获取一个redis list队列
-func XRedisList() *redisList {
-	list := new(redisList)
-	list.conn = XPool().Get()
-	return list
-}
-
-/*实例化资源用于测试*/
-func TestingInstantiation(config *Config) error {
-	var err error
-	if config == nil {
-		config = &Config{
-			true,
-			"127.0.0.1",
-			6380,
-			false,
-			"",
-			0,
-			50,
-			60,
-		}
-
-	}
-
-	redisPubSubPool = NewRedisPubsubPool(config, zap.L())
-	return err
 }

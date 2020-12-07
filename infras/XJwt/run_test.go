@@ -76,7 +76,9 @@ func TestStarter(t *testing.T) {
 		newViper := viper.New()
 		newViper.Set("Jwt.PrivateKey", DefaultConfig().PrivateKey)
 		newViper.Set("Jwt.ExpSeconds", DefaultConfig().ExpSeconds)
-		sctx := infras.CreateDefaultStarterContext(newViper, zap.L())
+		logger, err := zap.NewDevelopment()
+		So(err, ShouldBeNil)
+		sctx := infras.CreateDefaultStarterContext(newViper, logger)
 		sctx.SetConfigs(newViper)
 
 		s := NewStarter()

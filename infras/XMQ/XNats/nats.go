@@ -99,16 +99,16 @@ func NewDefaultPool(addr string, logger *zap.Logger) (*NatsPool, error) {
 			nats.ReconnectWait(2 * time.Second),
 			// 断开连接的错误处理
 			nats.DisconnectErrHandler(func(nc *nats.Conn, err error) {
-				logger.Warn("Nats server disconnected Reason:" + err.Error())
+				if err != nil {
+					logger.Warn("Nats server disconnected Error Reason:" + err.Error())
+				}
 			}),
 			// 重连时的错误处理
 			nats.ReconnectHandler(func(nc *nats.Conn) {
 				logger.Warn("Nats server reconnected to " + nc.ConnectedUrl())
 			}),
 			// 关闭连接时的错误处理
-			nats.ClosedHandler(func(nc *nats.Conn) {
-				logger.Warn("Nats server connection closed. Reason: " + nc.LastError().Error())
-			}),
+			nats.ClosedHandler(func(nc *nats.Conn) {}),
 		}
 		ops = append(ops, options...)
 
@@ -155,5 +155,5 @@ func (p *NatsPool) Avail() int {
 }
 
 func (p *NatsPool) Close() {
-	p.Close()
+	p.Empty()
 }

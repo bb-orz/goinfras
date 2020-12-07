@@ -12,7 +12,6 @@ func CreateDefaultPool(config *Config, logger *zap.Logger) error {
 	if config == nil {
 		config = DefaultConfig()
 	}
-
 	natsMQPool, err = NewPool(config, logger)
 	return err
 }

@@ -1,7 +1,6 @@
 package XRedisPubSub
 
 import (
-	"GoWebScaffold/infras/XLogger"
 	"fmt"
 	redigo "github.com/garyburd/redigo/redis"
 	"go.uber.org/zap"
@@ -9,11 +8,12 @@ import (
 )
 
 type RedisSubscriber struct {
-	pool *redigo.Pool
+	pool   *redigo.Pool
+	logger *zap.Logger
 }
 
 // 订阅模式下的消息处理函数类型
-type RecSubMsgFunc func(topic string, msg interface{}) error
+type RecSubMsgFunc func(channel string, msg interface{}) error
 
 // 订阅并接收消息
 func (c *RedisSubscriber) Subscribe(recMsgFuncs map[string]RecSubMsgFunc, channels ...interface{}) error {
@@ -37,7 +37,7 @@ func (c *RedisSubscriber) Subscribe(recMsgFuncs map[string]RecSubMsgFunc, channe
 		fmt.Println("Redis Subscribe Receive Waiting...")
 		for {
 			receiveTimes++
-			XLogger.XCommon().Info("receiveTimes:", zap.Int("times", receiveTimes))
+			c.logger.Info("receiveTimes:", zap.Int("times", receiveTimes))
 			switch res := psConn.Receive().(type) {
 			case redigo.Message:
 				// 每接收一个已发布消息开一个协程执行消息处理函数
@@ -50,7 +50,7 @@ func (c *RedisSubscriber) Subscribe(recMsgFuncs map[string]RecSubMsgFunc, channe
 
 			case redigo.Subscription:
 				// 订阅与取消订阅的消息
-				XLogger.XCommon().Info("redis SubReceiver:", zap.String("receive kind", res.Kind), zap.String("receive Channel", res.Channel), zap.Int("receive Count", res.Count))
+				c.logger.Info("redis SubReceiver:", zap.String("receive kind", res.Kind), zap.String("receive Channel", res.Channel), zap.Int("receive Count", res.Count))
 				if res.Count == 0 {
 					done <- nil
 				}
