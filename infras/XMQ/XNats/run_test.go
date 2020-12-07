@@ -2,6 +2,7 @@ package XNats
 
 import (
 	"fmt"
+	"github.com/nats-io/nats.go"
 	. "github.com/smartystreets/goconvey/convey"
 	"go.uber.org/zap"
 	"testing"
@@ -15,6 +16,7 @@ const (
 	TestReqRespSubjectName = "testReqRespSubject"
 )
 
+// 发送消息秒级消息方法for testing
 func sendTickerMsg(subjectName string) {
 	// 发送
 	var err error
@@ -36,6 +38,7 @@ func sendTickerMsg(subjectName string) {
 
 }
 
+// 通道发送接收模式测试
 func TestNatsMQChan(t *testing.T) {
 	Convey("TestNatsMQChan", t, func() {
 		var err error
@@ -68,6 +71,7 @@ type person struct {
 	Age  uint   `json:"age,omitempty"`
 }
 
+// 队列组订阅器测试
 func TestNatsMQQueueSubscribe(t *testing.T) {
 	Convey("TestNatsMQQueueSubscribe", t, func() {
 		var err error
@@ -117,6 +121,7 @@ func TestNatsMQQueueSubscribe(t *testing.T) {
 	})
 }
 
+// 通道队列组接收测试
 func TestNatsMQQueueChanRecv(t *testing.T) {
 	Convey("TestNatsMQQueueChanRecv", t, func() {
 		var err error
@@ -149,41 +154,51 @@ func TestNatsMQQueueChanRecv(t *testing.T) {
 	})
 }
 
-func TestNatsMQReqResp(t *testing.T) {
-	Convey("TestNatsMQReqResp", t, func() {
+// request/reply模式测试
+func TestNatsMQReqSub(t *testing.T) {
+	t.Run("mmm", func(t *testing.T) {
+		testNatsMQSubscribeReply(t)
+		time.Sleep(time.Second)
+		testNatsMQRequest(t)
+	})
+}
+
+func testNatsMQRequest(t *testing.T) {
+	Convey("TestNatsMQRequest", t, func() {
 		var err error
 		err = CreateDefaultPool(nil, zap.L())
 		So(err, ShouldBeNil)
 
-		// 发布等待响应的请求
-		go func() {
-			for {
-				msg := <-time.NewTicker(time.Second).C // 生成时间消息
-				var reply interface{}                  // 接收订阅者响应的消息
-				err = XCommonNatsReqResp().Request(TestReqRespSubjectName, msg, reply, time.Second)
-				fmt.Println("Request----------------------------------")
-				fmt.Println("Subject:", TestReqRespSubjectName)
-				fmt.Println("Msg:", msg)
-				fmt.Println("Receive Reply Message:", reply)
-				fmt.Println("----------------------------------")
-			}
-		}()
-		So(err, ShouldBeNil)
+		// Request
+		msg := "help me" // 生成时间消息
+		var reply string // 接收订阅者响应的消息
+		var exp = time.Second * 10
+		// 请求时阻塞等待回执
+		err = XCommonNatsRequest().Request(TestReqRespSubjectName, msg, &reply, exp)
+		fmt.Println("Request----------------------------------")
+		fmt.Println("Subject:", TestReqRespSubjectName)
+		fmt.Println("Msg:", msg)
+		fmt.Println("Received Reply Message From Subscriber:", reply)
+		fmt.Println("----------------------------------")
 
-		// 订阅一个请求并发送一个reply消息
-		err = XCommonNatsReqResp().SubscribeForRequest(TestReqRespSubjectName, func(subject, reply string, msg interface{}) {
-			fmt.Println("Subscribe Receive==============================")
-			fmt.Println("subject:", subject)
-			fmt.Println("Request Reply Box:", reply)
-			fmt.Println("Receive Message:", msg)
-
-			// 返回一个消息给请求者收件箱
-			err = XCommonNatsReqResp().PublishReply(reply, "I can help you!")
-			fmt.Println("==============================")
-		})
-		So(err, ShouldBeNil)
-		time.Sleep(time.Second * 10)
-
+		// TODO 订阅并发送回执
 	})
 
+}
+
+func testNatsMQSubscribeReply(t *testing.T) {
+	Convey("TestNatsMQSubscribeReply", t, func() {
+		var err error
+		err = CreateDefaultPool(nil, zap.L())
+		So(err, ShouldBeNil)
+
+		// 订阅接收到消息后发送回执
+		err = XCommonNatsPubSub().Subscribe(TestReqRespSubjectName, func(msg *nats.Msg) {
+			fmt.Println("Subscriber Receive Message:", string(msg.Data))
+			err = XCommonNatsPubSub().Publish(msg.Reply, fmt.Sprintf("I Receive Message :%s", string(msg.Data)))
+		})
+		So(err, ShouldBeNil)
+
+		time.Sleep(time.Second * 10)
+	})
 }

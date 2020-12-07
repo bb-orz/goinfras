@@ -68,8 +68,8 @@ func XCommonNatsQueue() *commonNatsQueue {
 }
 
 // 基于请求响应方式的通用方法实例
-func XCommonNatsReqResp() *commonNatsReqResp {
-	c := new(commonNatsReqResp)
+func XCommonNatsRequest() *commonNatsRequest {
+	c := new(commonNatsRequest)
 	c.pool = XPool()
 	return c
 }
