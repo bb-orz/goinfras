@@ -7,10 +7,10 @@ import (
 
 var ginEngine *gin.Engine
 
-func CreateDefaultEngine(config *Config) {
+func CreateDefaultEngine(config *Config, logger *zap.Logger) {
 	// 1.配置gin中间件
 	middlewares := make([]gin.HandlerFunc, 0)
-	middlewares = append(middlewares, ZapLoggerMiddleware(zap.L()), ZapRecoveryMiddleware(zap.L(), false))
+	middlewares = append(middlewares, ZapLoggerMiddleware(logger), ZapRecoveryMiddleware(logger, false))
 
 	if config == nil {
 		config = DefaultConfig()

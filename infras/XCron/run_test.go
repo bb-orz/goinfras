@@ -23,7 +23,9 @@ func (j JobB) Run() {
 
 func TestCron(t *testing.T) {
 	Convey("Test Cron", t, func() {
-		CreateDefaultManager()
+		logger, err := zap.NewDevelopment()
+		So(err, ShouldBeNil)
+		CreateDefaultManager(nil, logger)
 
 		// 1.定义定时任务
 		fmt.Println("定义第一个定时任务...")

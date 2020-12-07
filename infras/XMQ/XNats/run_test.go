@@ -43,7 +43,9 @@ func sendTickerMsg(subjectName string) {
 func TestNatsMQChan(t *testing.T) {
 	Convey("TestNatsMQChan", t, func() {
 		var err error
-		err = CreateDefaultPool(nil, zap.L())
+		logger, err := zap.NewDevelopment()
+		So(err, ShouldBeNil)
+		err = CreateDefaultPool(nil, logger)
 		So(err, ShouldBeNil)
 
 		// 接收
@@ -76,7 +78,9 @@ type person struct {
 func TestNatsMQQueueSubscribe(t *testing.T) {
 	Convey("TestNatsMQQueueSubscribe", t, func() {
 		var err error
-		err = CreateDefaultPool(nil, zap.L())
+		logger, err := zap.NewDevelopment()
+		So(err, ShouldBeNil)
+		err = CreateDefaultPool(nil, logger)
 		So(err, ShouldBeNil)
 
 		// 4个go程订阅特定消息person的队列组
@@ -126,7 +130,9 @@ func TestNatsMQQueueSubscribe(t *testing.T) {
 func TestNatsMQQueueChanRecv(t *testing.T) {
 	Convey("TestNatsMQQueueChanRecv", t, func() {
 		var err error
-		err = CreateDefaultPool(nil, zap.L())
+		logger, err := zap.NewDevelopment()
+		So(err, ShouldBeNil)
+		err = CreateDefaultPool(nil, logger)
 		So(err, ShouldBeNil)
 
 		// 4个go程接收统一队列组消息
@@ -167,7 +173,9 @@ func TestNatsMQReqSub(t *testing.T) {
 func testNatsMQRequest(t *testing.T) {
 	Convey("TestNatsMQRequest", t, func() {
 		var err error
-		err = CreateDefaultPool(nil, zap.L())
+		logger, err := zap.NewDevelopment()
+		So(err, ShouldBeNil)
+		err = CreateDefaultPool(nil, logger)
 		So(err, ShouldBeNil)
 
 		// Request
@@ -190,7 +198,9 @@ func testNatsMQSubscribeReply(t *testing.T) {
 	Convey("TestNatsMQSubscribeReply", t, func() {
 		var err error
 		var subscriber *nats.Subscription
-		err = CreateDefaultPool(nil, zap.L())
+		logger, err := zap.NewDevelopment()
+		So(err, ShouldBeNil)
+		err = CreateDefaultPool(nil, logger)
 		So(err, ShouldBeNil)
 
 		// 订阅接收到消息后发送回执

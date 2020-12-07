@@ -15,10 +15,9 @@ const (
 
 func TestRedisSubscriber(t *testing.T) {
 	Convey("TestRedisSubscriber", t, func() {
-		CreateDefaultPool(nil, zap.L())
 		logger, err := zap.NewDevelopment()
 		So(err, ShouldBeNil)
-
+		CreateDefaultPool(nil, logger)
 		recSubMsgFuncs := make(map[string]RecSubMsgFunc)
 		// ChannelName1 订阅频道消息的处理函数
 		recSubMsgFuncs[ChannelName1] = func(channel string, msg interface{}) error {
@@ -40,10 +39,9 @@ func TestRedisSubscriber(t *testing.T) {
 
 func TestPublisher(t *testing.T) {
 	Convey("TestRedisSubscriber", t, func() {
-		CreateDefaultPool(nil, zap.L())
 		logger, err := zap.NewDevelopment()
 		So(err, ShouldBeNil)
-
+		CreateDefaultPool(nil, logger)
 		publisher := XRedisPublisher(logger)
 		err = publisher.Publish(ChannelName1, "this a message from TestPublisher To ChannelName1")
 		So(err, ShouldBeNil)
