@@ -3,7 +3,6 @@ package XRedis
 import (
 	"github.com/garyburd/redigo/redis"
 	"go.uber.org/zap"
-	"goinfras"
 	"strconv"
 	"time"
 )

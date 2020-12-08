@@ -58,7 +58,7 @@ func TestStarter(t *testing.T) {
 		So(err, ShouldBeNil)
 
 		s := NewStarter()
-		sctx := CreateDefaultStarterContext(nil, logger)
+		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
 		s.Init(sctx)
 		Println("Starter Init Successful!")
 		s.Setup(sctx)
