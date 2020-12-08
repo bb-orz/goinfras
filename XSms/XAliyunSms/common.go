@@ -3,7 +3,6 @@ package XAliyunSms
 import (
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi"
 	jsoniter "github.com/json-iterator/go"
-	"goinfras"
 )
 
 type CommonSms struct {

@@ -2,7 +2,6 @@ package XAliyunSms
 
 import (
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/dysmsapi"
-	"goinfras"
 )
 
 func NewAliyunSmsClient(config *Config) (*dysmsapi.Client, error) {
