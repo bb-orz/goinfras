@@ -2,7 +2,6 @@ package XGorm
 
 import (
 	"github.com/jinzhu/gorm"
-	"goinfras"
 )
 
 type CommonGORM struct {

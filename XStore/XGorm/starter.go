@@ -7,7 +7,7 @@ import (
 )
 
 type starter struct {
-	BaseStarter
+	goinfras.BaseStarter
 	cfg *Config
 }
 
@@ -22,13 +22,13 @@ func (s *starter) Name() string {
 }
 
 // 读取配置
-func (s *starter) Init(sctx *StarterContext) {
+func (s *starter) Init(sctx *goinfras.StarterContext) {
 	var err error
 	var define *Config
 	viper := sctx.Configs()
 	if viper != nil {
 		err = viper.UnmarshalKey("Gorm", &define)
-		ErrorHandler(err)
+		goinfras.ErrorHandler(err)
 	}
 	if define == nil {
 		define = DefaultConfig()
@@ -38,14 +38,14 @@ func (s *starter) Init(sctx *StarterContext) {
 }
 
 // 连接数据库
-func (s *starter) Setup(sctx *StarterContext) {
+func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	var err error
 	db, err = NewORMDb(s.cfg)
-	ErrorHandler(err)
+	goinfras.ErrorHandler(err)
 }
 
-func (s *starter) Check(sctx *StarterContext) bool {
-	err := Check(db)
+func (s *starter) Check(sctx *goinfras.StarterContext) bool {
+	err := goinfras.Check(db)
 	if err != nil {
 		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: GORM DB Setup Fail!", s.Name()))
 		return false
@@ -55,6 +55,6 @@ func (s *starter) Check(sctx *StarterContext) bool {
 	return true
 }
 
-func (s *starter) Stop(sctx *StarterContext) {
+func (s *starter) Stop(sctx *goinfras.StarterContext) {
 	db.Close()
 }
