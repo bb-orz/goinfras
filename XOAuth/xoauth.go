@@ -1,7 +1,5 @@
 package XOAuth
 
-import "goinfras"
-
 var oAuthManager *OAuthManager
 
 // 创建一个默认配置的Manager

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/imroc/req"
-	"goinfras"
 	"strings"
 )
 

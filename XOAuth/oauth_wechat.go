@@ -3,7 +3,6 @@ package XOAuth
 import (
 	"errors"
 	"github.com/imroc/req"
-	"goinfras"
 )
 
 const wechatGetAccessTokenUrl = "https://api.weixin.qq.com/sns/oauth2/access_token"

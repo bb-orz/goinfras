@@ -3,7 +3,6 @@ package XOAuth
 import (
 	"errors"
 	"github.com/imroc/req"
-	"goinfras"
 )
 
 const weiboGetAccessTokenUrl = "https://api.weibo.com/oauth2/access_token"
