@@ -122,12 +122,12 @@ func (job *DemoJob) Run() {
 ```
 // ...
 
-taskList := make([]*cron.NewTask,0)
+taskList := make([]*XCron.NewTask,0)
 task1 := NewTask("*/2 * * * * *", &JobA{})
 ...
 taskList = append(taskList,task1)
 
-infras.Register(&cron.CronStarter{Tasks:taskList})
+goinfras.Register(&XCron.NewStarter(taskList...)
 
 // ...
 ```
