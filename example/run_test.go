@@ -1,12 +1,12 @@
 package example
 
 import (
-	_ "GoWebScaffold/example/simple/apis" // 运行时自动注册api路由
-	"GoWebScaffold/infras/ginger"
-	"GoWebScaffold/infras/logger"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	. "github.com/smartystreets/goconvey/convey"
+	_ "goinfras/example/simple/apis" // 运行时自动注册api路由
+	"goinfras/infras/ginger"
+	"goinfras/infras/logger"
 
 	"testing"
 )

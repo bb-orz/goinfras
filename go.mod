@@ -1,4 +1,4 @@
-module GoWebScaffold
+module goinfras
 
 go 1.14
 
@@ -11,7 +11,7 @@ replace (
 	go.uber.org/tools => github.com/uber-go/tools v0.0.0-20190618225709-2cfd321de3ee
 	go.uber.org/zap => github.com/uber-go/zap v1.12.0
 	// 本地开发包目录替换
-	// github.com/gofuncchan/GoWebScaffold => /Users/fun/Code/MyProject/GoWebScaffold
+	// github.com/gofuncchan/goinfras => /Users/fun/Code/MyProject/goinfras
 	golang.org/x/crypto => github.com/golang/crypto v0.0.0-20190325154230-a5d413f7728c
 	golang.org/x/exp => github.com/golang/exp v0.0.0-20191030013958-a1ab85dbe136
 	golang.org/x/image => github.com/golang/image v0.0.0-20191009234506-e7c1f5e7dbb8

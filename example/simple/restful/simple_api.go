@@ -1,10 +1,10 @@
 package restful
 
 import (
-	"GoWebScaffold/example/simple/services"
-	"GoWebScaffold/infras/Xgin"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"goinfras/XGin"
+	"goinfras/example/simple/services"
 )
 
 func init() {

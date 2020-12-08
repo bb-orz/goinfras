@@ -3,7 +3,7 @@
 ### 目录结构
 
 ```
-GoWebScaffold       项目
+goinfras       项目
 |-- core            核心业务：服务层业务逻辑、领域层、持久层
 |-- apis            用户接口层
 |-- build           构建程序文件：makefile、dockerfile、sh、ini... 

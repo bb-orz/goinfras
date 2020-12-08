@@ -1,10 +1,10 @@
 package main
 
 import (
-	_ "GoWebScaffold/example/simple/restful" // 运行时自动注册api路由
-	"GoWebScaffold/infras"
 	"flag"
 	"fmt"
+	"goinfras"
+	_ "goinfras/example/simple/restful" // 运行时自动注册api路由
 )
 
 // 应用启动时注册资源组件启动器并按启动优先级进行排序
@@ -28,7 +28,7 @@ func main() {
 	registerStarter()
 
 	// 创建应用程序启动管理器
-	app := infras.NewApplication(runtimeViper)
+	app := NewApplication(runtimeViper)
 
 	// 运行应用,启动已注册的资源组件
 	app.Up()

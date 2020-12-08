@@ -1,6 +1,8 @@
 package services
 
-import "GoWebScaffold/infras"
+import (
+	"goinfras"
+)
 
 /*
 定义服务及数据传输对象
@@ -12,7 +14,7 @@ func SetService1(sv IService1) {
 }
 
 func GetService1() IService1 {
-	infras.Check(service1)
+	Check(service1)
 	return service1
 }
 
