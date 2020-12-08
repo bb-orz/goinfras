@@ -2,7 +2,6 @@ package XMongo
 
 import (
 	"go.mongodb.org/mongo-driver/mongo"
-	"goinfras"
 )
 
 var client *mongo.Client
