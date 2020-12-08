@@ -2,7 +2,6 @@ package XNats
 
 import (
 	"github.com/nats-io/nats.go"
-	"goinfras"
 )
 
 type commonNatsChan struct {

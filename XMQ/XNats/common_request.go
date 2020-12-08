@@ -3,7 +3,6 @@ package XNats
 import (
 	"context"
 	"github.com/nats-io/nats.go"
-	"goinfras"
 	"time"
 )
 

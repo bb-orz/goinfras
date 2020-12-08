@@ -3,7 +3,6 @@ package XNats
 import (
 	"github.com/nats-io/nats.go"
 	"go.uber.org/zap"
-	"goinfras"
 	"strconv"
 	"strings"
 	"sync"

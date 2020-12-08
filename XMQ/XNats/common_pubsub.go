@@ -3,7 +3,6 @@ package XNats
 import (
 	"errors"
 	"github.com/nats-io/nats.go"
-	"goinfras"
 	"reflect"
 )
 
