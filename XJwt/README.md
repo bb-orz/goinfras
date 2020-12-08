@@ -34,10 +34,9 @@ goinfras.RegisterStarter(XJwt.NewStarter(middlewares...))
 
 ```
 
-### XJwt Usage
+### Usage
 ```
 userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker", Avatar: "", Gender: 1}
-
 token, err := XJwt.XTokenUtils().Encode(userClaim)
 So(err, ShouldBeNil)
 Println("Token String", token)
