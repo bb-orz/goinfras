@@ -1,3 +1,33 @@
+# Starter
+
+> 基于  包
+
+### Documentation
+
+> Documentation 
+
+> Example 
+
+
+
+### Starter Usage
+```
+goinfras.RegisterStarter(X.NewStarter())
+
+```
+
+### X Config Setting
+
+```
+
+```
+
+### X  Usage
+
+```
+
+```
+
 ### 关于请求参数验证器
 
 > 以下文档来源： https://github.com/go-playground/validator/tree/v9/_examples 
