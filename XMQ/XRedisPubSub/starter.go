@@ -7,7 +7,7 @@ import (
 )
 
 type starter struct {
-	BaseStarter
+	goinfras.BaseStarter
 	cfg *Config
 }
 
@@ -21,13 +21,13 @@ func (s *starter) Name() string {
 	return "XRedisPubSub"
 }
 
-func (s *starter) Init(sctx *StarterContext) {
+func (s *starter) Init(sctx *goinfras.StarterContext) {
 	var err error
 	var define *Config
 	viper := sctx.Configs()
 	if viper != nil {
 		err = viper.UnmarshalKey("RedisPubSub", &define)
-		ErrorHandler(err)
+		goinfras.ErrorHandler(err)
 	}
 	if define == nil {
 		define = DefaultConfig()
@@ -36,12 +36,12 @@ func (s *starter) Init(sctx *StarterContext) {
 	sctx.Logger().Info("Print RedisPubSub Config:", zap.Any("RedisPubSubConfig", *define))
 }
 
-func (s *starter) Setup(sctx *StarterContext) {
+func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	redisPubSubPool = NewRedisPubsubPool(s.cfg, sctx.Logger())
 }
 
-func (s *starter) Check(sctx *StarterContext) bool {
-	err := Check(redisPubSubPool)
+func (s *starter) Check(sctx *goinfras.StarterContext) bool {
+	err := goinfras.Check(redisPubSubPool)
 	if err != nil {
 		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: RedisPubSub Pool Setup Fail!", s.Name()))
 		return false

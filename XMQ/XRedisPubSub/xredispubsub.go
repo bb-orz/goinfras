@@ -3,7 +3,6 @@ package XRedisPubSub
 import (
 	redigo "github.com/garyburd/redigo/redis"
 	"go.uber.org/zap"
-	"goinfras"
 )
 
 var redisPubSubPool *redigo.Pool
