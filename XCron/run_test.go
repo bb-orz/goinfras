@@ -60,8 +60,7 @@ func TestCron(t *testing.T) {
 // 测试启动器
 func TestStarter(t *testing.T) {
 	Convey("Test XCron Starter", t, func() {
-
-		// 1.定义定时任务
+		// 定义定时任务
 		fmt.Println("定义第一个定时任务...")
 		tasks := make([]*Task, 0)
 		task1 := NewTask("*/1 * * * * *", &JobA{})
