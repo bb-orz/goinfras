@@ -21,7 +21,7 @@ func XPool() *redis.Pool {
 }
 
 // 资源组件闭包执行
-func XFDB(f func(p *redis.Pool) error) error {
+func XFPool(f func(p *redis.Pool) error) error {
 	return f(pool)
 }
 
@@ -30,4 +30,12 @@ func XCommon() *CommonRedisDao {
 	dao := new(CommonRedisDao)
 	dao.pool = XPool()
 	return dao
+}
+
+// 检查连接池实例
+func CheckPool() bool {
+	if pool != nil {
+		return true
+	}
+	return false
 }

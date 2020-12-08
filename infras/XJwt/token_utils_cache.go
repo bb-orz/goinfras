@@ -10,10 +10,10 @@ type tokenUtilsX struct {
 	cache *redisCache
 }
 
-func NewTokenUtilsX(privateKey string, expSeconds int) *tokenUtilsX {
+func NewTokenUtilsX(config *Config) *tokenUtilsX {
 	ts := new(tokenUtilsX)
-	ts.privateKey = []byte(privateKey)
-	ts.expTime = time.Now().Add(time.Second * time.Duration(expSeconds))
+	ts.privateKey = []byte(config.PrivateKey)
+	ts.expTime = time.Now().Add(time.Second * time.Duration(config.ExpSeconds))
 	ts.cache = NewRedisCache()
 	return ts
 }
@@ -28,7 +28,8 @@ func (tks *tokenUtilsX) Encode(user UserClaim) (string, error) {
 	if user.Id == "" {
 		return "", errors.New("user id empty not allowed")
 	}
-	err = tks.cache.SetToken(user.Id, token)
+	exp := tks.expTime.Sub(time.Now())
+	err = tks.cache.SetToken(user.Id, token, int(exp))
 	if err != nil {
 		return "", err
 	}

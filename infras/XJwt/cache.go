@@ -6,21 +6,22 @@ import (
 )
 
 type redisCache struct {
-	dao *XRedis.CommonRedisDao // 服务端缓存保存用于校验
+	cacheDao *XRedis.CommonRedisDao // 服务端缓存保存用于校验
 }
 
 func NewRedisCache() *redisCache {
 	cache := new(redisCache)
-	cache.dao = XRedis.XCommon()
+	// 使用XRedis组件的通用操作实例
+	cache.cacheDao = XRedis.XCommon()
 	return cache
 }
 
 const TokenCacheKeyPrefix = "user.jwt.token."
 
 // 设置Token到redis
-func (cache *redisCache) SetToken(id, token string) error {
+func (cache *redisCache) SetToken(id, token string, exp int) error {
 	key := TokenCacheKeyPrefix + id
-	_, err := cache.dao.R("SET", key, token, "EX", 3600)
+	_, err := cache.cacheDao.R("SET", key, token, "EX", exp)
 	if err != nil {
 		return err
 	}
@@ -33,7 +34,7 @@ func (cache *redisCache) SetToken(id, token string) error {
 func (cache *redisCache) GetToken(id string) (string, error) {
 	key := TokenCacheKeyPrefix + id
 
-	rs, err := redis.String(cache.dao.R("GET", key))
+	rs, err := redis.String(cache.cacheDao.R("GET", key))
 	if err != nil {
 		return "", err
 	}
@@ -45,7 +46,7 @@ func (cache *redisCache) GetToken(id string) (string, error) {
 func (cache *redisCache) DeleteToken(id string) error {
 	key := TokenCacheKeyPrefix + id
 
-	_, err := cache.dao.R("DEL", key)
+	_, err := cache.cacheDao.R("DEL", key)
 	if err != nil {
 		return err
 	}

@@ -18,7 +18,10 @@ func (p *CommonRedisDao) GetRedisConn() redis.Conn {
 // 单次执行命令的R函数,执行完命令自动关闭连接
 func (p *CommonRedisDao) R(command string, args ...interface{}) (reply interface{}, err error) {
 	conn := p.GetRedisConn()
-	defer conn.Close()
+	defer func() {
+		conn.Flush()
+		conn.Close()
+	}()
 	return conn.Do(command, args...)
 }
 
@@ -29,7 +32,10 @@ type ReplysPipe []interface{}
 
 func (p *CommonRedisDao) P(commands CommandPipe) (ReplysPipe, error) {
 	conn := p.GetRedisConn()
-	defer conn.Close()
+	defer func() {
+		conn.Flush()
+		conn.Close()
+	}()
 
 	var err error
 	var replys ReplysPipe

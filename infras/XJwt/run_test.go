@@ -2,6 +2,7 @@ package XJwt
 
 import (
 	"GoWebScaffold/infras"
+	"GoWebScaffold/infras/XStore/XRedis"
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
@@ -15,7 +16,7 @@ func TestNewTokenUtils(t *testing.T) {
 		var err error
 		CreateDefaultTkuX(nil)
 
-		userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker"}
+		userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker", Avatar: "", Gender: 1}
 
 		Println("Token Service Encode:")
 		token, err := XTokenUtils().Encode(userClaim)
@@ -27,7 +28,8 @@ func TestNewTokenUtils(t *testing.T) {
 		So(err, ShouldBeNil)
 		Println("Token Claim:", claim)
 
-		time.Sleep(6 * time.Second)
+		exp := DefaultConfig().ExpSeconds + 1
+		time.Sleep(time.Duration(exp) * time.Second)
 		Println("Token Decode ExpTime:")
 		claim, err = XTokenUtils().Decode(token)
 		So(err, ShouldNotBeNil)
@@ -41,13 +43,18 @@ func TestNewTokenUtils(t *testing.T) {
 func TestTokenUtilsX(t *testing.T) {
 	Convey("Test JWT Token Utils Cache", t, func() {
 		var err error
-		CreateDefaultTkuX(nil)
+		// 测试前先启动XRedis 组件的默认连接池
+		logger, err := zap.NewDevelopment()
+		err = XRedis.CreateDefaultPool(nil, logger)
+		So(err, ShouldBeNil)
+		err = CreateDefaultTkuX(nil)
+		So(err, ShouldBeNil)
 
 		// 打印redis pool 状态
-		// Println("pool ActiveCount:", XRedis.XPool().Stats().ActiveCount, ",pool IdleCount:", XRedis.XPool().Stats().IdleCount)
+		Println("pool ActiveCount:", XRedis.XPool().Stats().ActiveCount, ",pool IdleCount:", XRedis.XPool().Stats().IdleCount)
 
 		// 启动带redis缓存的token加解码工具
-		userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker"}
+		userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker", Avatar: "", Gender: 1}
 
 		Println("Token Service Encode And Save:")
 		token, err := XTokenUtils().Encode(userClaim)
@@ -61,10 +68,13 @@ func TestTokenUtilsX(t *testing.T) {
 		So(err, ShouldBeNil)
 		Println("Token Claim:", claim)
 
-		time.Sleep(6 * time.Second)
-		Println("Token Decode ExpTime:")
+		exp := DefaultConfig().ExpSeconds + 1
+		time.Sleep(time.Duration(exp) * time.Second)
+
 		claim, err = XTokenUtils().Decode(token)
 		So(err, ShouldNotBeNil)
+		Println("Exp Token Claim:", claim)
+
 	})
 }
 
@@ -93,7 +103,7 @@ func TestStarter(t *testing.T) {
 			Println("Component Check Fail!")
 		}
 
-		userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker"}
+		userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker", Avatar: "", Gender: 1}
 
 		Println("Token Service Encode:")
 		token, err := XTokenUtils().Encode(userClaim)

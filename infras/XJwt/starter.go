@@ -43,11 +43,11 @@ func (s *starter) Init(sctx *infras.StarterContext) {
 }
 
 func (s *starter) Setup(sctx *infras.StarterContext) {
-	// 如果redis 组件已安装，则缓存token到redis服务器
-	if XRedis.XPool() != nil {
-		tku = NewTokenUtilsX(s.cfg.PrivateKey, s.cfg.ExpSeconds)
+	// 如果redis 连接池组件已安装，则缓存token到redis服务器
+	if XRedis.CheckPool() {
+		tku = NewTokenUtilsX(s.cfg)
 	} else {
-		tku = NewTokenUtils(s.cfg.PrivateKey, s.cfg.ExpSeconds)
+		tku = NewTokenUtils(s.cfg)
 	}
 }
 

@@ -15,6 +15,7 @@ type UserClaim struct {
 	Id     string `json:id`
 	Name   string `json:name`
 	Avatar string `json:avatar`
+	Gender uint8  `json:gender`
 }
 
 // 聚合jwt内部实现的Claims
@@ -29,10 +30,10 @@ type tokenUtils struct {
 	expTime    time.Time // 超时秒数
 }
 
-func NewTokenUtils(privateKey string, expSeconds int) *tokenUtils {
+func NewTokenUtils(config *Config) *tokenUtils {
 	ts := new(tokenUtils)
-	ts.privateKey = []byte(privateKey)
-	ts.expTime = time.Now().Add(time.Second * time.Duration(expSeconds))
+	ts.privateKey = []byte(config.PrivateKey)
+	ts.expTime = time.Now().Add(time.Second * time.Duration(config.ExpSeconds))
 	return ts
 }
 
