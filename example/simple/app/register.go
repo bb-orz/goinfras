@@ -1,7 +1,14 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	"goinfras"
+	"goinfras/XCron"
+	"goinfras/XLogger"
+	"goinfras/XOAuth"
+	"goinfras/XStore/XGorm"
+	"goinfras/XStore/XRedis"
+	"goinfras/XValidate"
 	_ "goinfras/example/simple/restful" // 初始化时自动注册restful apis层的所有接口
 
 	"goinfras/XGin"
@@ -17,36 +24,38 @@ func registerStarter() {
 		panic(err.Error())
 	}
 	writers := []io.Writer{file}
-	RegisterStarter(NewStarter(writers...))
+	goinfras.RegisterStarter(XLogger.NewStarter(writers...))
 
 	// 注册Cron定时任务
 	// 可以自定义一些定时任务给starter启动
-	RegisterStarter(NewStarter())
+	goinfras.RegisterStarter(XCron.NewStarter())
 
 	// 注册ETCD
-	RegisterStarter(NewStarter())
+	// goinfras.RegisterStarter(XEtcd.NewStarter())
 
 	// 注册mongodb启动器
-	RegisterStarter(NewStarter())
+	// goinfras.RegisterStarter(XMongo.NewStarter())
 
 	// 注册mysql启动器
-	RegisterStarter(NewStarter())
+	goinfras.RegisterStarter(XGorm.NewStarter())
 	// 注册Redis连接池
-	RegisterStarter(NewStarter())
+	goinfras.RegisterStarter(XRedis.NewStarter())
 	// 注册Oss
-	RegisterStarter(NewStarter())
-	RegisterStarter(NewStarter())
+	// goinfras.RegisterStarter(XAliyunOss.NewStarter())
+	// goinfras.RegisterStarter(XQiniuOss.NewStarter())
 	// 注册Mq
-	RegisterStarter(NewStarter())
-	RegisterStarter(NewStarter())
+	// goinfras.RegisterStarter(XNats.NewStarter())
+	// goinfras.RegisterStarter(XRedisPubSub.NewStarter())
 	// 注册Oauth Manager
-	RegisterStarter(NewStarter())
+	goinfras.RegisterStarter(XOAuth.NewStarter())
 
 	// 注册gin web 服务
-	RegisterStarter(XGin.NewStarter())
+	middlewares := make([]gin.HandlerFunc, 0)
+	// TODO add your gin middlewares
+	goinfras.RegisterStarter(XGin.NewStarter(middlewares...))
 	// 注册验证器
-	RegisterStarter(NewStarter())
+	goinfras.RegisterStarter(XValidate.NewStarter())
 
 	// 对资源组件启动器进行排序
-	SortStarters()
+	goinfras.SortStarters()
 }

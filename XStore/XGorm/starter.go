@@ -55,6 +55,6 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	return true
 }
 
-func (s *starter) Stop(sctx *goinfras.StarterContext) {
+func (s *starter) Stop() {
 	db.Close()
 }

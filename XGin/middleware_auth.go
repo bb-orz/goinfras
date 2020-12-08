@@ -7,7 +7,7 @@ import (
 )
 
 // 用户鉴权中间件
-func JwtAuthMiddleware(tku XJwt.ITokenUtils) gin.HandlerFunc {
+func JwtAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 1.从http头获取token string
 		tkStr := c.GetHeader("Authorization")
@@ -21,7 +21,7 @@ func JwtAuthMiddleware(tku XJwt.ITokenUtils) gin.HandlerFunc {
 		}
 
 		// 2.解码校验token是否合法
-		customerClaim, err := tku.Decode(tkStr)
+		customerClaim, err := XJwt.XTokenUtils().Decode(tkStr)
 		if err != nil {
 			c.Abort()
 			c.JSON(http.StatusUnauthorized, gin.H{
