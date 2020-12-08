@@ -10,12 +10,18 @@
 ### Starter Usage
 
 1、实现IApi接口，以模块方式注册实现的API
+
+模块接口需实现 IApi interface
 ```
 // 每个模块服务应该实现的接口
 type IApi interface {
 	SetRoutes() // 模块服务应该实现的方法，各模块启动器设置相应路由
 }
+```
 
+以下为API模块简单示例：
+
+```
 // 包初始化时注册API模块
 func init() {
 	// 初始化时自动注册该API到Gin Engine
