@@ -34,6 +34,13 @@ goinfras.RegisterStarter(XJwt.NewStarter(middlewares...))
 
 ```
 
+### Jwt Config Setting
+```
+PrivateKey string // jwt编码私钥
+ExpSeconds int64  // jwt编码超时时间
+UseCache   bool   // 是否打开redis缓存
+```
+
 ### Usage
 ```
 userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker", Avatar: "", Gender: 1}

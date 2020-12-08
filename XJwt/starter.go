@@ -44,7 +44,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	// 如果redis 连接池组件已安装，则缓存token到redis服务器
-	if XRedis.CheckPool() {
+	if s.cfg.UseCache && XRedis.CheckPool() {
 		tku = NewTokenUtilsX(s.cfg)
 	} else {
 		tku = NewTokenUtils(s.cfg)
