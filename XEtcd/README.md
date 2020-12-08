@@ -33,3 +33,18 @@ DialKeepAliveTimeout uint        // 客户端等待keep-alive探测响应的时�
 MaxCallRecvMsgSize   int         // 客户端响应接收限制。如果为0，则默认为“math.MaxInt32”，因为范围响应可能会明显超过请求发送限制。请确保“MaxCallRecvMsgSize”>=服务器端默认发送/接收限制。（--etcd的“max request bytes”标志或“embed.Config.MaxRequestBytes”）。
 MaxCallSendMsgSize   int         // 客户端请求发送限制（字节）。如果为0，则默认为2.0 MiB（2*1024*1024）。请确保“MaxCallSendMsgSize”<服务器端默认发送/接收限制。 （“--max request bytes”标记为etcd或“embed.Config.MaxRequestBytes”）。
 ```
+
+
+### XEtcd Usage
+```
+sr, err := Xetcd.XClient().Put(context.Background(), "mykeya", "aaaaaaa")
+So(err, ShouldBeNil)
+Println("Set Key Response:", sr)
+
+gr, err := Xetcd.XClient().Get(context.Background(), "mykeya")
+So(err, ShouldBeNil)
+Println("Get Key Response:", gr)
+
+
+Other Usage... 
+```
