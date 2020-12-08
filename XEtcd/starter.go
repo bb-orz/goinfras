@@ -25,13 +25,11 @@ func (s *starter) Name() string {
 func (s *starter) Init(sctx *goinfras.StarterContext) {
 	var err error
 	var define *Config
-
 	viper := sctx.Configs()
 	if viper != nil {
 		err = viper.UnmarshalKey("Etcd", &define)
 		goinfras.ErrorHandler(err)
 	}
-
 	if define == nil {
 		define = DefaultConfig()
 	}
@@ -52,7 +50,6 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: ETCD Client Setup Fail!", s.Name()))
 		return false
 	}
-
 	status, err := client.Status(context.TODO(), s.cfg.Endpoints[0])
 	if err != nil {
 		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Check ETCD Client Status Error:%s", s.Name(), err.Error()))
