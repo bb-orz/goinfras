@@ -46,3 +46,17 @@ MongoLogSwitch     bool   // mongo存储日志开关
 MongoLogCollection string // mongo集合名称
 MongoLogExpire     int    // mongo日志超时时间
 ```
+
+### XLogger Usage
+该启动器提供两个基本的日志记录实例
+XLogger.XCommon()  =>  通用日志记录器
+XLogger.XSyncError()  => 异步输出错误记录器，用于记录异步输出时出现的错误
+
+```
+// 通用记录器用法
+XLogger.XCommon().Debug("Log Debug Message...")
+XLogger.XCommon().Info("Log Info Message...")
+XLogger.XCommon().Warn("Log Warn Message...")
+XLogger.XCommon().Error("Log Error Message...")
+... 
+```
