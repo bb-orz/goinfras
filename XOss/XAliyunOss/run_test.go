@@ -3,7 +3,6 @@ package XAliyunOss
 import (
 	. "github.com/smartystreets/goconvey/convey"
 	"go.uber.org/zap"
-	"goinfras"
 	"testing"
 )
 

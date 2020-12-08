@@ -2,7 +2,6 @@ package XAliyunOss
 
 import (
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
-	"goinfras"
 )
 
 var aliyunOssClient *oss.Client

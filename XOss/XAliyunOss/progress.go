@@ -3,7 +3,6 @@ package XAliyunOss
 import (
 	"fmt"
 	aliOss "github.com/aliyun/aliyun-oss-go-sdk/oss"
-	"goinfras"
 )
 
 type ProgressOss struct {
