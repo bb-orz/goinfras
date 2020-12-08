@@ -127,7 +127,7 @@ task1 := NewTask("*/2 * * * * *", &JobA{})
 ...
 taskList = append(taskList,task1)
 
-goinfras.Register(&XCron.NewStarter(taskList...)
+goinfras.Register(XCron.NewStarter(taskList...)
 
 // ...
 ```
