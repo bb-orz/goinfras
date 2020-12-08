@@ -41,7 +41,7 @@ ExpSeconds int64  // jwt编码超时时间
 UseCache   bool   // 是否打开redis缓存
 ```
 
-### Usage
+### XJwt Usage
 ```
 userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker", Avatar: "", Gender: 1}
 token, err := XJwt.XTokenUtils().Encode(userClaim)
