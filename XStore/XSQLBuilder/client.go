@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"github.com/didi/gendry/manager"
 	_ "github.com/go-sql-driver/mysql"
-	"goinfras"
 	"time"
 )
 

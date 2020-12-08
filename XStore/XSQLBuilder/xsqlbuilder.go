@@ -2,7 +2,6 @@ package XSQLBuilder
 
 import (
 	"database/sql"
-	"goinfras"
 )
 
 var db *sql.DB

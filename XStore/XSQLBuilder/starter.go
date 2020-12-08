@@ -8,7 +8,7 @@ import (
 )
 
 type starter struct {
-	BaseStarter
+	goinfras.BaseStarter
 	cfg *Config
 }
 
@@ -23,13 +23,13 @@ func (s *starter) Name() string {
 }
 
 // 读取配置
-func (s *starter) Init(sctx *StarterContext) {
+func (s *starter) Init(sctx *goinfras.StarterContext) {
 	var err error
 	var define *Config
 	viper := sctx.Configs()
 	if viper != nil {
 		err = viper.UnmarshalKey("Mysql", &define)
-		ErrorHandler(err)
+		goinfras.ErrorHandler(err)
 	}
 	if define == nil {
 		define = DefaultConfig()
@@ -38,14 +38,14 @@ func (s *starter) Init(sctx *StarterContext) {
 	sctx.Logger().Info("Print Mysql Config:", zap.Any("Mysql", *define))
 }
 
-func (s *starter) Setup(sctx *StarterContext) {
+func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	var err error
 	db, err = NewDB(s.cfg)
-	FailHandler(err)
+	goinfras.ErrorHandler(err)
 }
 
-func (s *starter) Check(sctx *StarterContext) bool {
-	err := Check(db)
+func (s *starter) Check(sctx *goinfras.StarterContext) bool {
+	err := goinfras.Check(db)
 	if err != nil {
 		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: SQL Builder DB Setup Fail!", s.Name()))
 		return false
