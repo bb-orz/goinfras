@@ -19,7 +19,7 @@ func NewApplication(vpcfg *viper.Viper) *Application {
 	return app
 }
 
-// 启动应用程序所有基础资源 （初始化 -> 安装 -> 启动）
+// 启动应用程序所有基础资源 （初始化 -> 安装 -> 检查 -> 启动）
 func (app *Application) Up() {
 	app.init()
 	app.setup()
