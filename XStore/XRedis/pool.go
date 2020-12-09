@@ -1,7 +1,7 @@
 package XRedis
 
 import (
-	"github.com/garyburd/redigo/redis"
+	"github.com/gomodule/redigo/redis"
 	"go.uber.org/zap"
 	"strconv"
 	"time"
