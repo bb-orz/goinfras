@@ -2,10 +2,10 @@ package XGorm
 
 import (
 	"database/sql"
-	"github.com/jinzhu/gorm"
 	. "github.com/smartystreets/goconvey/convey"
 	"go.uber.org/zap"
 	"goinfras"
+	"gorm.io/gorm"
 	"testing"
 	"time"
 )
@@ -50,37 +50,6 @@ type CreditCard struct {
 	gorm.Model
 	UserID uint
 	Number string
-}
-
-func TestGormDb(t *testing.T) {
-	Convey("测试使用gorm：", t, func() {
-		err := CreateDefaultDB(nil)
-		So(err, ShouldBeNil)
-		// 检查模型`Address`表是否存在
-		hasAddressTable := XDB().HasTable(&Address{})
-		Println("Address Table Is Exist:", hasAddressTable)
-		// 表不存在则创建表
-		if !hasAddressTable {
-			XDB().Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&Address{})
-		}
-
-		// 检查模型`Language`表是否存在
-		hasLanguageTable := XDB().HasTable(&Language{})
-		Println("Language Table Is Exist:", hasLanguageTable)
-		// 表不存在则创建表
-		if !hasLanguageTable {
-			XDB().Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&Language{})
-		}
-
-		// 检查模型`User`表是否存在
-		hasUserTable := XDB().HasTable(&User{})
-		Println("User Table Is Exist:", hasUserTable)
-		// 表不存在则创建表
-		if !hasUserTable {
-			XDB().Set("gorm:table_options", "ENGINE=InnoDB").CreateTable(&User{})
-		}
-
-	})
 }
 
 func TestGormInsert(t *testing.T) {

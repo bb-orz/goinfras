@@ -37,6 +37,7 @@ require (
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.296
 	github.com/aliyun/aliyun-oss-go-sdk v2.0.8+incompatible
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
+	github.com/bmizerany/pq v0.0.0-20131128184720-da2b95e392c1
 	github.com/coreos/bbolt v1.3.4 // indirect
 	github.com/coreos/etcd v3.3.20+incompatible // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -54,8 +55,6 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0 // indirect
 	github.com/imroc/req v0.3.0
 	github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869 // indirect
-	github.com/jinzhu/gorm v1.9.14
-	github.com/jinzhu/now v1.1.1 // indirect
 	github.com/json-iterator/go v1.1.9
 	github.com/lestrrat-go/file-rotatelogs v2.3.0+incompatible
 	github.com/lestrrat-go/strftime v1.0.1 // indirect
@@ -64,7 +63,6 @@ require (
 	github.com/prometheus/common v0.4.0
 	github.com/qiniu/api.v7/v7 v7.4.1
 	github.com/robfig/cron/v3 v3.0.1
-	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/sirupsen/logrus v1.6.0 // indirect
 	github.com/smartystreets/assertions v1.1.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4
@@ -79,5 +77,9 @@ require (
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
+	gorm.io/driver/mysql v1.0.3
+	gorm.io/driver/postgres v1.0.5
+	gorm.io/driver/sqlite v1.1.4
+	gorm.io/gorm v1.20.8
 	sigs.k8s.io/yaml v1.2.0 // indirect
 )
