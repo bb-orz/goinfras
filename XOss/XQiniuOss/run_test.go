@@ -39,7 +39,7 @@ func TestQiniuOssServerBreakPointUpload(t *testing.T) {
 	})
 }
 
-// 服务端断点上传测试
+// 服务端表单上传测试
 func TestQiniuOssServerFormUpload(t *testing.T) {
 	Convey("TestQiniuOssServerFormUpload", t, func() {
 		CreateDefaultClient(nil)
@@ -62,7 +62,7 @@ func TestQiniuOssServerFormUpload(t *testing.T) {
 	})
 }
 
-// 服务端断点上传测试
+// 服务端分块上传测试
 func TestQiniuOssServerMultipartUpload(t *testing.T) {
 	Convey("TestQiniuOssServerMultipartUpload", t, func() {
 		CreateDefaultClient(nil)

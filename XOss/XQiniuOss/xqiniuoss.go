@@ -1,7 +1,5 @@
 package XQiniuOss
 
-import "goinfras"
-
 var qiniuOssClient *QnClient
 
 // 创建一个默认配置的Manager
