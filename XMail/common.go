@@ -1,11 +1,7 @@
 package XMail
 
 import (
-	"bytes"
-	"go.uber.org/zap"
-	"goinfras/XLogger"
 	"gopkg.in/gomail.v2"
-	"io"
 	"log"
 	"time"
 )
@@ -22,58 +18,29 @@ type CommonMail struct {
 }
 
 /**
- * @Description: NoSMTP发邮件
+ * @Description: 非本地邮件服务器，通过API发送邮件
  * @receiver c
  * @param from 发送方
  * @param subject 邮件主题
  * @param body 邮件主体
  * @param bodyType 邮件主体格式：BodyTypePlain(文本格式)或BodyTypeHTML(HTML格式)
  * @param to 接收方
- * @param sendFunc 发送处理函数
+ * @param sendFunc 发送处理函数,闭包执行非本服务器的API发送邮件
  * @return error
  */
-func (c *CommonMail) SendMailNoSMTP(from, subject, body, bodyType string, to []string, sendFunc SendFunc) error {
+func (c *CommonMail) SendMailNoSMTP(from, subject, body, bodyType string, to []string, sendFunc gomail.SendFunc) error {
 	msg := gomail.NewMessage()
 	msg.SetHeader("From", from)
 	msg.SetHeader("To", to...)
 	msg.SetHeader("Subject", subject)
 	msg.SetBody(bodyType, body)
 
-	if sendFunc == nil {
-		sendFunc = defaultSendFunc
-	}
-	sf := gomail.SendFunc(sendFunc)
-
-	if err := gomail.Send(sf, msg); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-type SendFunc func(from string, to []string, msg io.WriterTo) error
-
-var defaultSendFunc = func(from string, to []string, msg io.WriterTo) error {
-	var msgBuf []byte
-	var err error
-	buf := bytes.NewBuffer(msgBuf)
-	_, err = msg.WriteTo(buf)
-	if err != nil {
-		return err
-	}
-
-	mailInfo := map[string]interface{}{
-		"From": from,
-		"To":   to,
-		"msg":  msgBuf,
-	}
-
-	XLogger.XCommon().Info("Send NoSMTP Email:", zap.Any("Mail Info", mailInfo))
-	return nil
+	err := gomail.Send(sendFunc, msg)
+	return err
 }
 
 /**
- * @Description: 发送简单邮件
+ * @Description: 使用SMTP服务器发送简单邮件
  * @receiver c
  * @param from 发送方
  * @param to 接收方（可多个）
@@ -102,7 +69,7 @@ type NewsLetterReceiver struct {
 }
 
 /**
- * @Description: 批量发送邮件
+ * @Description: 使用SMTP服务器批量发送邮件
  * @receiver c
  * @param receivers 接收者
  * @param from 发送方
@@ -132,7 +99,7 @@ func (c *CommonMail) SendNewsLetter(receivers []NewsLetterReceiver, from, subjec
 }
 
 /**
- * @Description: 守护进程使用通道在窗口时间内批量发送邮件
+ * @Description: 使用SMTP服务器，使用通道在窗口时间内批量发送邮件
  * @receiver c
  * @param msgCh 发送邮件信息的通道
  * @param duration 发送超时时间
@@ -160,7 +127,7 @@ func (c *CommonMail) SendBatchMails(msgCh <-chan *gomail.Message, duration time.
 					log.Print(err)
 				}
 			case <-time.After(duration):
-				// 超时之前保持连接
+				// 超时之后关闭发送连接
 				if open {
 					if err := s.Close(); err != nil {
 						panic(err)
