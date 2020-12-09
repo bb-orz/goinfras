@@ -6,6 +6,7 @@ import (
 	"go.uber.org/zap"
 	"goinfras"
 	"testing"
+	"time"
 )
 
 const (
@@ -32,8 +33,18 @@ func TestRedisSubscriber(t *testing.T) {
 			return nil
 		}
 
-		err = XRedisSubscriber(logger).Subscribe(recSubMsgFuncs)
+		// 取消订阅通道信号，传入需要取消订阅的频道名称
+		unSubCh := make(chan string, 1)
+
+		go func() {
+			// 10s后发送取消订阅信号
+			time.Sleep(10 * time.Second)
+			unSubCh <- ChannelName1
+			unSubCh <- ChannelName2
+		}()
+		err = XRedisSubscriber(logger).Subscribe(recSubMsgFuncs, unSubCh)
 		So(err, ShouldBeNil)
+
 	})
 }
 

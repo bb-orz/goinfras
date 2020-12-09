@@ -14,11 +14,12 @@ type RedisSubscriber struct {
 // 订阅模式下的消息处理函数类型
 type RecSubMsgFunc func(channel string, msg interface{}) error
 
-// 订阅并接收消息
-func (c *RedisSubscriber) Subscribe(recMsgFuncs map[string]RecSubMsgFunc) error {
+// 订阅并接收消息，该方法阻塞
+func (c *RedisSubscriber) Subscribe(recMsgFuncs map[string]RecSubMsgFunc, unSubChannel <-chan string) error {
 	var err error
 	conn := c.pool.Get()
 	defer func() {
+
 		conn.Close()
 	}()
 
@@ -69,22 +70,20 @@ func (c *RedisSubscriber) Subscribe(recMsgFuncs map[string]RecSubMsgFunc) error 
 	for {
 		select {
 		case err := <-done:
+			// 接收到错误信息
 			return err
+		case channelName := <-unSubChannel:
+			// 取消订阅
+			if _, ok := recMsgFuncs[channelName]; ok {
+				if err := psConn.Unsubscribe(channelName); err != nil {
+					return err
+				}
+			}
 		case <-tick.C:
+			// 定时检测连接
 			if err := psConn.Ping("test conn"); err != nil {
 				return err
 			}
 		}
 	}
-}
-
-// 取消订阅
-func (c *RedisSubscriber) Unsubscribe(channels ...interface{}) error {
-	conn := c.pool.Get()
-	defer func() {
-		conn.Close()
-	}()
-
-	psConn := redigo.PubSubConn{Conn: conn}
-	return psConn.Unsubscribe(channels...)
 }
