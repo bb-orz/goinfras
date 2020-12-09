@@ -1,7 +1,7 @@
 package XRedisPubSub
 
 import (
-	redigo "github.com/garyburd/redigo/redis"
+	redigo "github.com/gomodule/redigo/redis"
 	"go.uber.org/zap"
 	"time"
 )
