@@ -19,7 +19,6 @@ type Config struct {
 	ConnectTimeout        int      // 接超时时间,单位秒
 	RetryReads            bool     // 指定是否应在某些错误（如网络）上重试一次受支持的读操作
 	RetryWrites           bool     // 指定是否应在某些错误（如网络）上重试一次受支持的写入操作
-
 }
 
 func DefaultConfig() *Config {
