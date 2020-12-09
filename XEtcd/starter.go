@@ -40,7 +40,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	var err error
 	client, err = NewEtcdClient(context.TODO(), s.cfg, nil)
-	goinfras.FailHandler(err)
+	goinfras.ErrorHandler(err)
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
