@@ -1,6 +1,6 @@
 # XRedisPubSub Starter
 
-> 基于  包
+> 基于 github.com/gomodule/redigo/redis 包
 
 ### redis Documentation
 
