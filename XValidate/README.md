@@ -1,31 +1,67 @@
-# Starter
+# XValidate Starter
 
-> 基于  包
+> 基于 gopkg.in/go-playground/validator.v9 包
 
-### Documentation
+> 验证错误翻译器相关包：
 
-> Documentation 
+>"github.com/go-playground/universal-translator"
+ 
+> github.com/go-playground/locales/zh
 
-> Example 
+> gopkg.in/go-playground/validator.v9/translations/zh
+
+### Validate Documentation
+
+> Documentation https://godoc.org/gopkg.in/go-playground/validator.v9
 
 
 
-### Starter Usage
+### XValidate Starter Usage
 ```
-goinfras.RegisterStarter(X.NewStarter())
-
-```
-
-### X Config Setting
-
-```
-
-```
-
-### X  Usage
+goinfras.RegisterStarter(XValidate.NewStarter())
 
 ```
 
+### XValidate Config Setting
+
+```
+TransZh bool // 是否开启验证结果信息的中文翻译
+```
+
+### XValidate Usage
+
+1、定义验证结构体的tag
+```
+type UserDemo struct {
+	Name       string `validate:"required,alphanum"`
+	Email      string `validate:"required,email"`
+	Password   string `validate:"required,alphanumunicode"`
+	RePassword string `validate:"required,alphanumunicode,eqfield=Password"`
+}
+```
+
+2、使用验证
+```
+userDemo1 := UserDemo{
+    Name:       "abc",
+    Email:      "123456@qq.com",
+    Password:   "123456",
+    RePassword: "123456",
+}
+
+err = XValidate.V(userDemo1)
+So(err, ShouldBeNil)
+
+userDemo2 := UserDemo{
+    Name:       "abc",
+    Email:      "123456",
+    Password:   "123456fff",
+    RePassword: "123456ddd",
+}
+
+err = XValidate.V(userDemo2)
+So(err, ShouldNotBeNil)
+Println("Validate Error:", err)
 ```
 
 ### 关于请求参数验证器
