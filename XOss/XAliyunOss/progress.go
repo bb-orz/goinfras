@@ -9,12 +9,6 @@ type ProgressOss struct {
 	client *aliOss.Client
 }
 
-func XProgressOss() *ProgressOss {
-	p := new(ProgressOss)
-	p.client = XClient()
-	return p
-}
-
 // 上传使用进度条
 func (p *ProgressOss) ProgressUpload(bucketName, objectKeyName, localFilePath string) error {
 	// 获取存储空间

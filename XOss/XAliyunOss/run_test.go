@@ -3,6 +3,7 @@ package XAliyunOss
 import (
 	. "github.com/smartystreets/goconvey/convey"
 	"go.uber.org/zap"
+	"goinfras"
 	"testing"
 )
 
@@ -94,7 +95,7 @@ func TestStarter(t *testing.T) {
 		s := NewStarter()
 		logger, err := zap.NewDevelopment()
 		So(err, ShouldBeNil)
-		sctx := CreateDefaultStarterContext(nil, logger)
+		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
 		s.Init(sctx)
 		Println("Starter Init Successful!")
 		s.Setup(sctx)

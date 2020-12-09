@@ -45,3 +45,10 @@ func XMultipartOss() *MultipartOss {
 	mp.client = XClient()
 	return mp
 }
+
+// 含进度的上传下载操作实例
+func XProgressOss() *ProgressOss {
+	p := new(ProgressOss)
+	p.client = XClient()
+	return p
+}
