@@ -1,6 +1,6 @@
 # Starter
 
-> 基于  包
+> 基于 github.com/jinzhu/gorm 包
 
 ### Documentation
 

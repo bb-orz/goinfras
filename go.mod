@@ -11,7 +11,7 @@ replace (
 	go.uber.org/tools => github.com/uber-go/tools v0.0.0-20190618225709-2cfd321de3ee
 	go.uber.org/zap => github.com/uber-go/zap v1.12.0
 	// 本地开发包目录替换
-	// github.com/gofuncchan/goinfras => /Users/fun/Code/MyProject/goinfras
+	// github.com/bb-orz/goinfras => /Users/fun/Code/MyProject/goinfras
 	golang.org/x/crypto => github.com/golang/crypto v0.0.0-20190325154230-a5d413f7728c
 	golang.org/x/exp => github.com/golang/exp v0.0.0-20191030013958-a1ab85dbe136
 	golang.org/x/image => github.com/golang/image v0.0.0-20191009234506-e7c1f5e7dbb8
@@ -64,14 +64,14 @@ require (
 	github.com/qiniu/api.v7/v7 v7.4.1
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/satori/go.uuid v1.2.0 // indirect
-	github.com/segmentio/ksuid v1.0.2
+	github.com/segmentio/ksuid v1.0.2 // indirect
 	github.com/sirupsen/logrus v1.6.0 // indirect
 	github.com/smartystreets/assertions v1.1.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4
 	github.com/spf13/viper v1.7.1
 	github.com/tebeka/strftime v0.1.4 // indirect
 	github.com/tietang/go-utils v0.1.3 // indirect
-	github.com/tietang/props v2.3.0+incompatible
+	github.com/tietang/props v2.3.0+incompatible // indirect
 	github.com/valyala/fasttemplate v1.1.0 // indirect
 	go.etcd.io/etcd v3.3.20+incompatible
 	go.mongodb.org/mongo-driver v1.3.2
@@ -82,5 +82,6 @@ require (
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
+	gorm.io/gorm v1.20.8
 	sigs.k8s.io/yaml v1.2.0 // indirect
 )
