@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-// 错误处理，err == nil ,return true
+// 错误处理，err为nil则 true
 func ErrorHandler(err error) bool {
 	if err == nil {
 		return true

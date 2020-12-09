@@ -75,7 +75,6 @@ func (app *Application) start() {
 			s.Start(app.Sctx)
 		}
 	}
-
 	// 应用启动时开始监听系统信号
 	NotifySignal(app.Sctx.Logger())
 }

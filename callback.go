@@ -21,7 +21,6 @@ func Register(fn func()) {
 // 应用安装时注册组件关闭函数
 func RegisterStopFunc(logger *zap.Logger) {
 	starters := StarterManager.GetAll()
-
 	for _, s := range starters {
 		typ := reflect.TypeOf(s)
 		logger.Info("【Register Notify Stop】:%s.Stop()", zap.String("Resource Component", typ.String()))
@@ -46,5 +45,4 @@ func NotifySignal(logger *zap.Logger) {
 			os.Exit(0)
 		}
 	}()
-
 }
