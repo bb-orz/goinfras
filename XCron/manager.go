@@ -29,7 +29,7 @@ type Manager struct {
 func NewManager(cfg *Config, logger *zap.Logger) *Manager {
 	cronLogger := &cronLogger{logger: logger}
 	location, err := time.LoadLocation(cfg.Location)
-	goinfras.FailHandler(err)
+	goinfras.ErrorHandler(err)
 
 	c := cron.New(
 		cron.WithSeconds(),          // 提供秒字段的parser，如无该option秒字段不解析
