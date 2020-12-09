@@ -12,12 +12,13 @@ func TestCommonSms(t *testing.T) {
 		err := CreateDefaultClient(nil)
 		So(err, ShouldBeNil)
 
-		sms := XCommonSms(DefaultConfig())
-
-		response, err := sms.SendSmsMsg("", "")
+		response, err := XCommonSms().SendSmsMsg("", "", "", "", "")
 		So(err, ShouldBeNil)
 		Println("Send Sms Status:", response.IsSuccess())
 
+		smsResponse, err := XCommonSms().SendBatchSmsMsg("", "", "", []string{""}, []string{""})
+		So(err, ShouldBeNil)
+		Println("Send Batch Sms Status:", smsResponse.IsSuccess())
 	})
 }
 

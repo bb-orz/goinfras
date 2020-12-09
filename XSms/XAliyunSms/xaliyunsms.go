@@ -25,9 +25,8 @@ func XFClient(f func(c *dysmsapi.Client) error) error {
 	return f(aliyunSmsClient)
 }
 
-func XCommonSms(config *Config) *CommonSms {
+func XCommonSms() *CommonSms {
 	c := new(CommonSms)
 	c.client = XClient()
-	c.cfg = config
 	return c
 }
