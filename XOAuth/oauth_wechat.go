@@ -22,6 +22,7 @@ func NewWechatOAuthManager(cfg *Config) *WechatOAuthManager {
 	}
 }
 
+// 通过前端与用户交互获得的预授权码code后，后端再申请accessToken获得第三方用户信息，再进入本服务的登录或注册流程
 func (oauth *WechatOAuthManager) Authorize(code string) OAuthResult {
 	accessTokenResp, err := oauth.getAccessToken(code)
 	if err != nil || accessTokenResp == nil {

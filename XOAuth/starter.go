@@ -37,25 +37,43 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
-	oAuthManager = new(OAuthManager)
 	if s.cfg.QQSignSwitch {
-		oAuthManager.QQOAuthManager = NewQQOauthManager(s.cfg)
+		qqOM = NewQQOauthManager(s.cfg)
 	}
 	if s.cfg.WechatSignSwitch {
-		oAuthManager.WechatOAuthManager = NewWechatOAuthManager(s.cfg)
+		wechatOM = NewWechatOAuthManager(s.cfg)
 	}
 	if s.cfg.WeiboSignSwitch {
-		oAuthManager.WeiboOAuthManager = NewWeiboOAuthManager(s.cfg)
+		weiboOM = NewWeiboOAuthManager(s.cfg)
 	}
 
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
-	err := goinfras.Check(oAuthManager)
-	if err != nil {
-		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: OAuth Manager Setup Fail!", s.Name()))
-		return false
+	var err error
+	if s.cfg.QQSignSwitch {
+		if err = goinfras.Check(qqOM); err != nil {
+			sctx.Logger().Error(fmt.Sprintf("[%s Starter]: QQ OAuth Manager Setup Fail!", s.Name()))
+			return false
+		}
+		sctx.Logger().Info(fmt.Sprintf("[%s Starter]:QQ OAuth Manager Setup Successful!", s.Name()))
 	}
-	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: OAuth Manager Setup Successful!", s.Name()))
+
+	if s.cfg.WechatSignSwitch {
+		if err = goinfras.Check(wechatOM); err != nil {
+			sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Wechat OAuth Manager Setup Fail!", s.Name()))
+			return false
+		}
+		sctx.Logger().Info(fmt.Sprintf("[%s Starter]:Wechat OAuth Manager Setup Successful!", s.Name()))
+	}
+
+	if s.cfg.WeiboSignSwitch {
+		if err = goinfras.Check(weiboOM); err != nil {
+			sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Weibo OAuth Manager Setup Fail!", s.Name()))
+			return false
+		}
+		sctx.Logger().Info(fmt.Sprintf("[%s Starter]:Weibo OAuth Manager Setup Successful!", s.Name()))
+	}
+
 	return true
 }

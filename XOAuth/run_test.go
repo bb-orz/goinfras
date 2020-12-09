@@ -13,7 +13,7 @@ func TestQQOAuth(t *testing.T) {
 
 		// TODO 先获取预授权码
 		var qqprecode string
-		qqOAuthResult := XManager().QQOAuthManager.Authorize(qqprecode)
+		qqOAuthResult := XQQOAuthManager().Authorize(qqprecode)
 		Println("qqOAuthResult", qqOAuthResult)
 	})
 }
@@ -24,7 +24,7 @@ func TestWeiboOAuth(t *testing.T) {
 
 		// TODO 先获取预授权码
 		var weiboprecode string
-		weiboOAuthResult := XManager().WeiboOAuthManager.Authorize(weiboprecode)
+		weiboOAuthResult := XWeiboOAuthManager().Authorize(weiboprecode)
 		Println("weiboOAuthResult", weiboOAuthResult)
 	})
 }
@@ -35,9 +35,8 @@ func TestWechatOAuth(t *testing.T) {
 
 		// TODO 先获取预授权码
 		var wechatprecode string
-		wechatOAuthResult := XManager().WechatOAuthManager.Authorize(wechatprecode)
+		wechatOAuthResult := XWechatOAuthManager().Authorize(wechatprecode)
 		Println("wechatOAuthResult", wechatOAuthResult)
-
 	})
 }
 
