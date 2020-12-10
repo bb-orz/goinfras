@@ -34,7 +34,6 @@ replace (
 )
 
 require (
-	github.com/elastic/go-elasticsearch/v8 v8.0.0-20201202142044-1e78b5bf06b1
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.296
 	github.com/aliyun/aliyun-oss-go-sdk v2.0.8+incompatible
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
@@ -43,6 +42,7 @@ require (
 	github.com/coreos/etcd v3.3.20+incompatible // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/didi/gendry v1.3.2
+	github.com/elastic/go-elasticsearch/v8 v8.0.0-20201202142044-1e78b5bf06b1
 	github.com/fastly/go-utils v0.0.0-20180712184237-d95a45783239 // indirect
 	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.6.3
@@ -61,11 +61,11 @@ require (
 	github.com/lestrrat-go/strftime v1.0.1 // indirect
 	github.com/nats-io/nats-server/v2 v2.1.7 // indirect
 	github.com/nats-io/nats.go v1.10.0
+	github.com/olivere/elastic/v7 v7.0.22
 	github.com/prometheus/common v0.4.0
 	github.com/qiniu/api.v7/v7 v7.4.1
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/sirupsen/logrus v1.6.0 // indirect
-	github.com/smartystreets/assertions v1.1.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4
 	github.com/spf13/viper v1.7.1
 	github.com/tebeka/strftime v0.1.4 // indirect
