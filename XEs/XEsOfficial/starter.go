@@ -45,11 +45,11 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	var define *Config
 	viper := sctx.Configs()
 	if viper != nil {
-		err = viper.UnmarshalKey("XEs", &define)
+		err = viper.UnmarshalKey("XEsOfficial", &define)
 		goinfras.ErrorHandler(err)
 	}
 	if define != nil {
-		sctx.Logger().Info("Print Cron Config:", zap.Any("CronConfig", *define))
+		sctx.Logger().Info("Print XEsOfficial Config:", zap.Any("XEsOfficialConfig", *define))
 	}
 	s.cfg = define
 }
@@ -67,16 +67,16 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(esClient)
 	if err != nil {
-		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: ElasticSearch Client Setup Fail!", s.Name()))
+		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Official ElasticSearch Client Setup Fail!", s.Name()))
 		return false
 	}
 
 	_, err = esClient.Ping()
 	if err != nil {
-		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: ElasticSearch Client Ping Error:%s", s.Name(), err.Error()))
+		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Official ElasticSearch Client Ping Error:%s", s.Name(), err.Error()))
 		return false
 	} else {
-		sctx.Logger().Info(fmt.Sprintf("[%s Starter]: ElasticSearch Client Setup Successful!", s.Name()))
+		sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Official ElasticSearch Client Setup Successful!", s.Name()))
 		return true
 	}
 
