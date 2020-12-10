@@ -31,6 +31,18 @@ URL         string // 服务地址
 
 ### XEsOlivere Usage
 ```
+// 查找文档是否存在
+XEsOlivere.XCommon().IsDocExists(1,"xxxxxxxx")
 
+// 获取
+XEsOlivere.XCommon().GetDoc(1,"xxxxxxxx")
 
+// 新增文档
+XEsOlivere.XCommon().AddDoc(1,"xxxxxxxx")
+
+// 更新文档
+XEsOlivere.XCommon().UpdateDoc(1,"xxxxxxxx")
+
+// 删除文档
+XEsOlivere.XCommon().DeleteDoc(1,"xxxxxxxx")
 ```

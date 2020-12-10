@@ -1,6 +1,7 @@
 package XEsOlivere
 
 import (
+	"context"
 	"fmt"
 	"go.uber.org/zap"
 	"goinfras"
@@ -53,8 +54,12 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Olivere ElasticSearch Client Setup Fail!", s.Name()))
 		return false
 	}
-
-	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Olivere ElasticSearch Client Setup Successful!", s.Name()))
+	pingService := esClient.Ping(s.cfg.URL)
+	result, _, err := pingService.Do(context.Background())
+	if err != nil {
+		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Olivere ElasticSearch Client Ping Fail:%s", s.Name(), err.Error()))
+		return false
+	}
+	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Olivere ElasticSearch Client Setup Successful! ES Server Info:[ServerName:%s,ClusterName:%s,TagLine:%s,Version:%v]", s.Name(), result.Name, result.ClusterName, result.TagLine, result.Version))
 	return true
-
 }

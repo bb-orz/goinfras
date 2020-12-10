@@ -14,7 +14,7 @@ func XFClient(f func(c *elasticv7.Client) error) error {
 	return f(esClient)
 }
 
-func XCommonES() *EsCommon {
+func XCommon() *EsCommon {
 	c := new(EsCommon)
 	c.client = XClient()
 	return c
