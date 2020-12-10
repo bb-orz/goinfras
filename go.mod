@@ -5,12 +5,13 @@ go 1.14
 replace (
 	cloud.google.com/go => github.com/googleapis/google-cloud-go v0.47.0
 	github.com/coreos/bbolt => go.etcd.io/bbolt v1.3.4
+	github.com/coreos/etcd => go.etcd.io/etcd v3.3.25+incompatible
 	github.com/coreos/go-systemd => github.com/coreos/go-systemd/v22 v22.0.0
 	go.uber.org/atomic => github.com/uber-go/atomic v1.5.0
 	go.uber.org/multierr => github.com/uber-go/multierr v1.4.0
 	go.uber.org/tools => github.com/uber-go/tools v0.0.0-20190618225709-2cfd321de3ee
 	go.uber.org/zap => github.com/uber-go/zap v1.12.0
-	// 本地开发包目录替换
+	// 使用vendor时，本地开发包目录替换
 	// github.com/bb-orz/goinfras => /Users/fun/Code/MyProject/goinfras
 	golang.org/x/crypto => github.com/golang/crypto v0.0.0-20190325154230-a5d413f7728c
 	golang.org/x/exp => github.com/golang/exp v0.0.0-20191030013958-a1ab85dbe136
@@ -38,8 +39,7 @@ require (
 	github.com/aliyun/aliyun-oss-go-sdk v2.0.8+incompatible
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/bmizerany/pq v0.0.0-20131128184720-da2b95e392c1
-	github.com/coreos/bbolt v1.3.4 // indirect
-	github.com/coreos/etcd v3.3.20+incompatible // indirect
+	github.com/coreos/etcd v3.3.25+incompatible // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/didi/gendry v1.3.2
 	github.com/elastic/go-elasticsearch/v8 v8.0.0-20201202142044-1e78b5bf06b1
@@ -69,7 +69,8 @@ require (
 	github.com/smartystreets/goconvey v1.6.4
 	github.com/spf13/viper v1.7.1
 	github.com/tebeka/strftime v0.1.4 // indirect
-	go.etcd.io/etcd v3.3.20+incompatible
+	go.etcd.io/etcd v3.3.25+incompatible
+	go.etcd.io/bbolt v1.3.5
 	go.mongodb.org/mongo-driver v1.3.2
 	go.uber.org/zap v1.10.0
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e

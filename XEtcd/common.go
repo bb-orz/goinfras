@@ -1,10 +1,16 @@
 package XEtcd
 
-type CommonEtcd struct{}
+import (
+	"go.etcd.io/etcd/clientv3"
+)
 
-func NewCommonEtcd() *CommonEtcd {
-	return new(CommonEtcd)
-
+type EtcdCommon struct {
+	client *clientv3.Client
 }
 
-// TODO 常用的etcd操作
+/*简单的get set 操作*/
+func NewEtcdCommon() *EtcdCommon {
+	common := new(EtcdCommon)
+	common.client = XClient()
+	return common
+}
