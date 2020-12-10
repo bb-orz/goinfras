@@ -7,8 +7,10 @@ import (
 	"testing"
 )
 
-func TestEsCommon() {
+func TestEsCommon(t *testing.T) {
+	Convey("Test TestEsCommon", t, func() {
 
+	})
 }
 
 // 测试启动器
