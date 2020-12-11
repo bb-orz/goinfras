@@ -38,7 +38,7 @@ func TestNewCommonMysqlStore(t *testing.T) {
 		Println("User Count:", count)
 
 		rs := UserSchema{}
-		err = XCommon().GetOne("user", map[string]interface{}{"name": "joker"}, nil, &rs)
+		err = XCommon().GetOne("user", map[string]interface{}{"name": "aaaa"}, nil, &rs)
 		So(err, ShouldBeNil)
 		Println("GetOne:", rs)
 
@@ -99,8 +99,7 @@ func TestBaseDaoTx(t *testing.T) {
 		So(err, ShouldBeNil)
 		Println("Delete Id:", deleteId)
 
-		// TODO 解决没有commit也保存的问题
-		//tx.tx.Commit()
+		tx.tx.Commit()
 
 	})
 }
