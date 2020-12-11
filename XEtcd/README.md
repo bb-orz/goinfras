@@ -37,11 +37,11 @@ MaxCallSendMsgSize   int         // 客户端请求发送限制（字节）。�
 
 ### XEtcd Usage
 ```
-sr, err := Xetcd.XClient().Put(context.Background(), "mykeya", "aaaaaaa")
+sr, err := XEtcd.XClient().Put(context.Background(), "mykeya", "aaaaaaa")
 So(err, ShouldBeNil)
 Println("Set Key Response:", sr)
 
-gr, err := Xetcd.XClient().Get(context.Background(), "mykeya")
+gr, err := XEtcd.XClient().Get(context.Background(), "mykeya")
 So(err, ShouldBeNil)
 Println("Get Key Response:", gr)
 
