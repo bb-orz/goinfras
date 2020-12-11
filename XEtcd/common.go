@@ -10,12 +10,6 @@ type EtcdCommon struct {
 	client *clientv3.Client
 }
 
-func XEtcdCommon() *EtcdCommon {
-	common := new(EtcdCommon)
-	common.client = XClient()
-	return common
-}
-
 // 简单设置键值
 func (c *EtcdCommon) Put(key, value string) error {
 	var err error

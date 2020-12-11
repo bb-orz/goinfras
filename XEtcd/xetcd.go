@@ -26,3 +26,9 @@ func XClient() *clientv3.Client {
 func XFClient(f func(c *clientv3.Client) error) error {
 	return f(client)
 }
+
+func XEtcdCommon() *EtcdCommon {
+	common := new(EtcdCommon)
+	common.client = XClient()
+	return common
+}
