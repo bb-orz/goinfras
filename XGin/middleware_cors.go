@@ -8,15 +8,7 @@ import (
 
 // Cors跨域请求处理中间件
 func CORSMiddleware(cfg *CorsConfig) gin.HandlerFunc {
-	if cfg.AllowAllOrigins {
-
-		// 允许所有跨域请求
-		// same as
-		// config := cors.DefaultConfig()
-		// config.AllowAllOrigins = true
-		return cors.Default()
-	} else {
-		// 如Request Header 无携带Origin字段，默认不是跨域请求CORS request
+	if !cfg.AllowAllOrigins {
 		return cors.New(cors.Config{
 			AllowOrigins:     cfg.AllowOrigins,
 			AllowMethods:     cfg.AllowMethods,
@@ -26,4 +18,7 @@ func CORSMiddleware(cfg *CorsConfig) gin.HandlerFunc {
 			MaxAge:           time.Second * time.Duration(cfg.MaxAge),
 		})
 	}
+
+	return cors.Default()
+
 }
