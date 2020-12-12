@@ -22,7 +22,6 @@ func NewESClient(cfg *Config) (*elasticv7.Client, error) {
 		esClient, err := elasticv7.NewClient()
 		return esClient, err
 	}
-
 	olivCfg := &config.Config{
 		URL:         cfg.URL,
 		Username:    cfg.Username,
