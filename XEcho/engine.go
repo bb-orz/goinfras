@@ -5,6 +5,8 @@ import (
 	"go.uber.org/zap"
 )
 
+var echoEngine *echo.Echo
+
 func NewEchoEngine(confg *Config, middlewares ...echo.MiddlewareFunc) *echo.Echo {
 	engine := echo.New()
 	engine.Use(middlewares...)
