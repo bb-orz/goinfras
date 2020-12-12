@@ -5,6 +5,8 @@ import (
 	"github.com/olivere/elastic/v7/config"
 )
 
+var esClient *elasticv7.Client
+
 // 创建默认的ES Client
 func CreateDefaultESClient() error {
 	var err error
