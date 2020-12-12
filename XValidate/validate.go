@@ -9,6 +9,24 @@ import (
 	vtzh "gopkg.in/go-playground/validator.v9/translations/zh"
 )
 
+var validater *validator.Validate
+var translater ut.Translator
+
+// 创建一个默认配置的Manager
+func CreateDefaultValidater(config *Config) error {
+	var err error
+	if config == nil {
+		config = DefaultConfig()
+	}
+
+	if config.TransZh {
+		validater, translater, err = NewZhValidater()
+	} else {
+		validater = NewValidater()
+	}
+	return err
+}
+
 // 默认验证器
 func NewValidater() *validator.Validate {
 	return validator.New()

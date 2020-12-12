@@ -7,6 +7,26 @@ import (
 	"time"
 )
 
+var pool *redis.Pool
+
+// 创建一个默认配置的DB
+func CreateDefaultPool(config *Config, logger *zap.Logger) error {
+	var err error
+	if config == nil {
+		config = DefaultConfig()
+	}
+	pool, err = NewPool(config, logger)
+	return err
+}
+
+// 检查连接池实例
+func CheckPool() bool {
+	if pool != nil {
+		return true
+	}
+	return false
+}
+
 func NewPool(cfg *Config, logger *zap.Logger) (pool *redis.Pool, err error) {
 
 	// 配置并获得一个连接池对象的指针

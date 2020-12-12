@@ -15,6 +15,17 @@ NatsMq，类似于redis式的轻量级消息中间件，用于高吞吐量的应
 应用场景：　寻址、发现、命令和控制（控制面板）、负载均衡、多路可伸缩能力、定位透明、容错等。
 */
 
+var natsMQPool *NatsPool
+
+func CreateDefaultPool(config *Config, logger *zap.Logger) error {
+	var err error
+	if config == nil {
+		config = DefaultConfig()
+	}
+	natsMQPool, err = NewPool(config, logger)
+	return err
+}
+
 // nats连接池值类型
 type NatsPool struct {
 	conns    chan *nats.Conn

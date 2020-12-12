@@ -7,6 +7,18 @@ import (
 	"time"
 )
 
+var db *sql.DB
+
+// 创建一个默认配置的Manager
+func CreateDefaultDB(config *Config) error {
+	var err error
+	if config == nil {
+		config = DefaultConfig()
+	}
+	db, err = NewDB(config)
+	return err
+}
+
 func NewDB(config *Config) (db *sql.DB, err error) {
 	db, err = manager.New(config.DbName, config.DbUser, config.DbPasswd, config.DbHost).Set(
 		manager.SetCharset(config.ChartSet),                                   // 设置编码类型：utf8

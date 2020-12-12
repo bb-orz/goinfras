@@ -5,8 +5,12 @@ import (
 	"github.com/imroc/req"
 )
 
-const wechatGetAccessTokenUrl = "https://api.weixin.qq.com/sns/oauth2/access_token"
-const wechatGetUserInfoUrl = "https://api.weixin.qq.com/sns/userinfo"
+var wechatOM *WechatOAuthManager
+
+const (
+	wechatGetAccessTokenUrl = "https://api.weixin.qq.com/sns/oauth2/access_token"
+	wechatGetUserInfoUrl    = "https://api.weixin.qq.com/sns/userinfo"
+)
 
 // 实现 微信 OAuth2鉴权
 type WechatOAuthManager struct {
@@ -16,6 +20,9 @@ type WechatOAuthManager struct {
 }
 
 func NewWechatOAuthManager(cfg *Config) *WechatOAuthManager {
+	if cfg == nil {
+		cfg = DefaultConfig()
+	}
 	return &WechatOAuthManager{
 		appKey:    cfg.WechatOAuth2AppKey,
 		appSecret: cfg.WechatOAuth2AppSecret,
