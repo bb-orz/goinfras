@@ -6,6 +6,8 @@ import (
 	"net/http"
 )
 
+var esClient *esv8.Client
+
 // 创建默认的ES Client
 func CreateDefaultESClient() error {
 	var err error
