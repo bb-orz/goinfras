@@ -7,6 +7,17 @@ import (
 	"time"
 )
 
+// 实例变量
+var manager *Manager
+
+// 创建一个默认配置的Manager
+func CreateDefaultManager(config *Config, logger *zap.Logger) {
+	if config == nil {
+		config = DefaultConfig()
+	}
+	manager = NewManager(config, logger)
+}
+
 type Task struct {
 	spec string
 	job  cron.Job
