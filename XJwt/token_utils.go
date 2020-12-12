@@ -5,6 +5,16 @@ import (
 	"time"
 )
 
+var tku ITokenUtils
+
+// 创建一个默认配置的TokenUtils
+func CreateDefaultTku(config *Config) {
+	if config == nil {
+		config = DefaultConfig()
+	}
+	tku = NewTokenUtils(config)
+}
+
 type ITokenUtils interface {
 	Encode(user UserClaim) (string, error)
 	Decode(tokenString string) (*CustomerClaim, error)
