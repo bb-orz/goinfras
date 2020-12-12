@@ -4,9 +4,11 @@ Goinfras是一个后端应用基础设施的资源组件启动器，其实现了
 使用goinfras，你只需要在项目中注册所需要的组件，并编写所需要的配置信息，最后让Application启动即可使用。
 
 ### 实现的资源组件：
-- XCron ：定时任务执行器，基于 https://github.com/robfig/cron/v3包
+- XCron ：定时任务执行器，基于 https://github.com/robfig/cron/v3 包
+- XEcho ：Go Web 框架引擎，基于 https://github.com/labstack/echo/v4 包
+- XEs ：ElasticSearch 客户端，基于 https://github.com/olivere/elastic/v7 或 https://github.com/elastic/go-elasticsearch/v8 官方包
 - XEtcd ：分布式配置信息客户端，基于 https://go.etcd.io/etcd/clientv3 包
-- XGin ：Go web 框架引擎，基于 https://github.com/gin-gonic/gin 包
+- XGin ：Go Web 框架引擎，基于 https://github.com/gin-gonic/gin 包
 - XJwt ：Json Web Token，令牌加解码工具，基于 https://github.com/dgrijalva/jwt-go 包
 - XLogger ：高性能日志记录器，基于 https://go.uber.org/zap 包
 - XMail ：网络邮件发送客户端，基于 https://gopkg.in/gomail.v2 包

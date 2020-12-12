@@ -63,6 +63,9 @@ require (
 	github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869 // indirect
 	github.com/jonboulle/clockwork v0.2.2 // indirect
 	github.com/json-iterator/go v1.1.10
+	github.com/labstack/echo v3.3.10+incompatible // indirect
+	github.com/labstack/echo/v4 v4.1.17 // indirect
+	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/lestrrat-go/file-rotatelogs v2.3.0+incompatible
 	github.com/lestrrat-go/strftime v1.0.1 // indirect
 	github.com/nats-io/nats-server/v2 v2.1.7 // indirect
