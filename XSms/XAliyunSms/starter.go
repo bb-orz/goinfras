@@ -51,3 +51,6 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: AliyunSms Client Setup Successful!", s.Name()))
 	return true
 }
+
+// 设置启动组级别
+func (s *starter) PriorityGroup() goinfras.PriorityGroup { return goinfras.ResourcesGroup }

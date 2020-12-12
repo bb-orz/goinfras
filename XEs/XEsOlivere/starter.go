@@ -63,3 +63,6 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Olivere ElasticSearch Client Setup Successful! ES Server Info:[ServerName:%s,ClusterName:%s,TagLine:%s,Version:%v]", s.Name(), result.Name, result.ClusterName, result.TagLine, result.Version))
 	return true
 }
+
+// 设置启动组级别
+func (s *starter) PriorityGroup() goinfras.PriorityGroup { return goinfras.BasicGroup }

@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/go-playground/locales/zh"
 	ut "github.com/go-playground/universal-translator"
+	"goinfras"
 	"gopkg.in/go-playground/validator.v9"
 	vtzh "gopkg.in/go-playground/validator.v9/translations/zh"
 )
@@ -33,3 +34,6 @@ func NewZhValidater() (*validator.Validate, ut.Translator, error) {
 
 	return valid, trans, nil
 }
+
+// 设置启动组级别
+func (s *starter) PriorityGroup() goinfras.PriorityGroup { return goinfras.AppGroup }
