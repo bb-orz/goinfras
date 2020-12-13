@@ -7,8 +7,15 @@ import (
 
 var echoEngine *echo.Echo
 
-func NewEchoEngine(confg *Config, middlewares ...echo.MiddlewareFunc) *echo.Echo {
+func NewEchoEngine(config *Config, middlewares ...echo.MiddlewareFunc) *echo.Echo {
 	engine := echo.New()
+	// Debug模式设置
+	if config.Debug {
+		engine.Debug = true
+	}
+
+	// 设置日志输出
+
 	engine.Use(middlewares...)
 	return engine
 }

@@ -8,6 +8,7 @@ type Config struct {
 }
 
 type EchoConfig struct {
+	Debug      bool   // 调试模式
 	ListenHost string // 服务运行ip
 	ListenPort int    // 服务运行端口
 	Tls        bool   // HTTPS相关配置，开关
@@ -26,7 +27,6 @@ type CorsConfig struct {
 	AllowCredentials bool               `json:"allow_credentials"` // 是否允许打开证书
 	ExposeHeaders    []string           `json:"expose_headers"`    // 定义被允许访问的白名单headers
 	MaxAge           int                `json:"max_age"`           // 定义preflight请求时前请求的结果持续多长时间（以秒为单位）可以缓存。
-
 }
 
 // 默认最小启动配置

@@ -6,8 +6,6 @@ import (
 	"time"
 )
 
-var timeFormat = "2019-11-09T23:02:28.844+0800"
-
 func LoggerMiddleware(logger *zap.Logger) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) (err error) {
