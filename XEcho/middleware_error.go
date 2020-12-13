@@ -5,7 +5,7 @@ import (
 	"go.uber.org/zap"
 )
 
-/*错误处理中间件*/
+/* TODO 错误处理中间件 ,统一处理请求中的所有错误，需自定义错误类型 */
 
 func ErrorMiddleware(logger *zap.Logger) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {

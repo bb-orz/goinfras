@@ -7,16 +7,15 @@ import (
 
 var echoEngine *echo.Echo
 
-func NewEchoEngine(config *Config, middlewares ...echo.MiddlewareFunc) *echo.Echo {
+func NewEchoEngine(config *Config) *echo.Echo {
 	engine := echo.New()
 	// Debug模式设置
 	if config.Debug {
 		engine.Debug = true
 	}
 
-	// 设置日志输出
+	// TODO 自定义engine
 
-	engine.Use(middlewares...)
 	return engine
 }
 
@@ -28,5 +27,6 @@ func CreateDefaultEngine(config *Config, logger *zap.Logger) {
 	if config == nil {
 		config = DefaultConfig()
 	}
-	echoEngine = NewEchoEngine(config, middlewares...)
+	echoEngine = NewEchoEngine(config)
+	echoEngine.Use(middlewares...)
 }
