@@ -9,7 +9,7 @@ import (
 	"testing"
 )
 
-func TestGinEngine(t *testing.T) {
+func TestEchoEngine(t *testing.T) {
 	Convey("Echo Server Run Test", t, func() {
 		config := DefaultConfig()
 		logger, err := zap.NewDevelopment()
