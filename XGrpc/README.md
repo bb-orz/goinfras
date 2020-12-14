@@ -26,5 +26,5 @@ protoc --proto_path=path/to/protofile/rootdir/ --go_out=path/to/gofileout/ --mic
 最后一个是目标文件
 
 示例：
-protoc --proto_path= --go_out= 目标文件
+protoc --proto_path= --go_out=plugins=grpc:. ./test.proto
 ```
