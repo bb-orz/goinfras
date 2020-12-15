@@ -7,6 +7,18 @@ import (
 	"time"
 )
 
+var client *clientv3.Client
+
+// 创建一个默认配置的Manager
+func CreateDefaultClient(config *Config) error {
+	var err error
+	if config == nil {
+		config = DefaultConfig()
+	}
+	client, err = NewEtcdClient(context.TODO(), config, nil)
+	return err
+}
+
 func NewEtcdClient(ctx context.Context, cfg *Config, zapLoggerConf *zap.Config) (cli *clientv3.Client, err error) {
 	EtcdConfig := clientv3.Config{
 		Endpoints:            cfg.Endpoints,                                         // 单机或集群主机地址

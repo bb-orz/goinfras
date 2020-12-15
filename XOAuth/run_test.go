@@ -8,9 +8,9 @@ import (
 )
 
 func TestQQOAuth(t *testing.T) {
-	Convey("TestOAuthManager", t, func() {
-		CreateDefaultManager(nil)
+	Convey("TestQQOAuth", t, func() {
 
+		qqOM = NewQQOauthManager(nil)
 		// TODO 先获取预授权码
 		var qqprecode string
 		qqOAuthResult := XQQOAuthManager().Authorize(qqprecode)
@@ -19,8 +19,8 @@ func TestQQOAuth(t *testing.T) {
 }
 
 func TestWeiboOAuth(t *testing.T) {
-	Convey("TestOAuthManager", t, func() {
-		CreateDefaultManager(nil)
+	Convey("TestWeiboOAuth", t, func() {
+		weiboOM = NewWeiboOAuthManager(nil)
 
 		// TODO 先获取预授权码
 		var weiboprecode string
@@ -30,8 +30,8 @@ func TestWeiboOAuth(t *testing.T) {
 }
 
 func TestWechatOAuth(t *testing.T) {
-	Convey("TestOAuthManager", t, func() {
-		CreateDefaultManager(nil)
+	Convey("TestWechatOAuth", t, func() {
+		wechatOM = NewWechatOAuthManager(nil)
 
 		// TODO 先获取预授权码
 		var wechatprecode string

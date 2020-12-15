@@ -7,9 +7,13 @@ import (
 	"strings"
 )
 
-const qqGetAccessTokenUrl = "https://graph.qq.com/oauth2.0/token"
-const qqOpenIdUrl = "https://graph.qq.com/oauth2.0/me"
-const qqGetUserInfoUrl = "https://graph.qq.com/user/get_user_info"
+var qqOM *QQOAuthManager
+
+const (
+	qqGetAccessTokenUrl = "https://graph.qq.com/oauth2.0/token"
+	qqOpenIdUrl         = "https://graph.qq.com/oauth2.0/me"
+	qqGetUserInfoUrl    = "https://graph.qq.com/user/get_user_info"
+)
 
 // 实现QQOAuth2鉴权
 type QQOAuthManager struct {
@@ -19,6 +23,10 @@ type QQOAuthManager struct {
 }
 
 func NewQQOauthManager(cfg *Config) *QQOAuthManager {
+	if cfg == nil {
+		cfg = DefaultConfig()
+	}
+
 	return &QQOAuthManager{
 		appKey:    cfg.QQOAuth2AppKey,
 		appSecret: cfg.QQOAuth2AppSecret,

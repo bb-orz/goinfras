@@ -72,3 +72,6 @@ func (s *starter) Stop() {
 	// 4.关闭定时任务
 	manager.StopCron()
 }
+
+// 设置启动组级别:
+func (s *starter) PriorityGroup() goinfras.PriorityGroup { return goinfras.AppGroup }

@@ -4,8 +4,6 @@ import (
 	elasticv7 "github.com/olivere/elastic/v7"
 )
 
-var esClient *elasticv7.Client
-
 func XClient() *elasticv7.Client {
 	return esClient
 }

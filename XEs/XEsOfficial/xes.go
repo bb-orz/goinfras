@@ -4,8 +4,6 @@ import (
 	esv8 "github.com/elastic/go-elasticsearch/v8"
 )
 
-var esClient *esv8.Client
-
 func XClient() *esv8.Client {
 	return esClient
 }

@@ -34,31 +34,15 @@ replace (
 )
 
 require (
-<<<<<<< HEAD
-=======
+
 	github.com/aliyun/alibaba-cloud-sdk-go v1.61.296
->>>>>>> dev
 	github.com/aliyun/aliyun-oss-go-sdk v2.0.8+incompatible
 	github.com/baiyubin/aliyun-sts-go-sdk v0.0.0-20180326062324-cfa1a18b161f // indirect
 	github.com/bmizerany/pq v0.0.0-20131128184720-da2b95e392c1
-<<<<<<< HEAD
-	github.com/coreos/bbolt v1.3.4 // indirect
-	github.com/coreos/etcd v3.3.20+incompatible // indirect
-<<<<<<< HEAD
-	github.com/coreos/go-semver v0.3.0 // indirect
-	github.com/coreos/go-systemd v0.0.0-00010101000000-000000000000 // indirect
-	github.com/didi/gendry v1.3.2
-	github.com/garyburd/redigo v1.6.0
-	github.com/go-ini/ini v1.56.0 // indirect
-	github.com/go-sql-driver/mysql v1.5.0
-	github.com/gofuncchan/ginger v0.2.0 // indirect
-=======
-=======
 	github.com/coreos/bbolt v1.3.5 // indirect
 	github.com/coreos/etcd v3.3.25+incompatible // indirect
 	github.com/coreos/go-systemd v0.0.0-20191104093116-d3cd4ed1dbcf // indirect
 	github.com/coreos/go-systemd/v22 v22.1.0 // indirect
->>>>>>> dev
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/didi/gendry v1.3.2
 	github.com/dustin/go-humanize v1.0.0 // indirect
@@ -69,25 +53,23 @@ require (
 	github.com/go-playground/locales v0.13.0
 	github.com/go-playground/universal-translator v0.17.0
 	github.com/go-sql-driver/mysql v1.5.0
->>>>>>> dev
 	github.com/gogo/protobuf v1.3.1 // indirect
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
+	github.com/golang/protobuf v1.4.3
 	github.com/gomodule/redigo v1.8.3
 	github.com/google/uuid v1.1.2 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2 // indirect
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0 // indirect
 	github.com/imroc/req v0.3.0
-<<<<<<< HEAD
-=======
 	github.com/jehiah/go-strftime v0.0.0-20171201141054-1d33003b3869 // indirect
-<<<<<<< HEAD
 	github.com/json-iterator/go v1.1.9
->>>>>>> dev
-=======
 	github.com/jonboulle/clockwork v0.2.2 // indirect
 	github.com/json-iterator/go v1.1.10
->>>>>>> dev
+	github.com/kataras/iris v0.0.2 // indirect
+	github.com/labstack/echo v3.3.10+incompatible // indirect
+	github.com/labstack/echo/v4 v4.1.17
+	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/lestrrat-go/file-rotatelogs v2.3.0+incompatible
 	github.com/lestrrat-go/strftime v1.0.1 // indirect
 	github.com/nats-io/nats-server/v2 v2.1.7 // indirect
@@ -102,16 +84,6 @@ require (
 	github.com/spf13/cobra v1.1.1 // indirect
 	github.com/spf13/viper v1.7.1
 	github.com/tebeka/strftime v0.1.4 // indirect
-<<<<<<< HEAD
-	go.etcd.io/etcd v3.3.20+incompatible
-	go.mongodb.org/mongo-driver v1.3.2 // indirect
-	go.uber.org/zap v1.10.0
-	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e
-	golang.org/x/sys v0.0.0-20200523222454-059865788121 // indirect
-	golang.org/x/tools v0.0.0-20200528185414-6be401e3f76e // indirect
-<<<<<<< HEAD
-=======
-=======
 	github.com/tmc/grpc-websocket-proxy v0.0.0-20200427203606-3cfed13b9966 // indirect
 	go.etcd.io/bbolt v1.3.5 // indirect
 	go.etcd.io/etcd v3.3.25+incompatible
@@ -122,14 +94,13 @@ require (
 	golang.org/x/crypto v0.0.0-20201208171446-5f87f3452ae9 // indirect
 	golang.org/x/lint v0.0.0-20201208152925-83fdc39ff7b5 // indirect
 	golang.org/x/net v0.0.0-20201209123823-ac852fbbde11
-	golang.org/x/sys v0.0.0-20201211002650-1f0c578a6b29 // indirect
+	golang.org/x/sys v0.0.0-20201211090839-8ad439b19e0f // indirect
 	golang.org/x/text v0.3.4 // indirect
 	golang.org/x/time v0.0.0-20201208040808-7e3f01d25324 // indirect
-	golang.org/x/tools v0.0.0-20201211025543-abf6a1d87e11 // indirect
-	google.golang.org/genproto v0.0.0-20201210142538-e3217bee35cc // indirect
-	google.golang.org/grpc v1.34.0 // indirect
-	google.golang.org/protobuf v1.25.0 // indirect
->>>>>>> dev
+	golang.org/x/tools v0.0.0-20201211025543-abf6a1d87e11 // indirect\
+	google.golang.org/genproto v0.0.0-20201211151036-40ec1c210f7a // indirect
+	google.golang.org/grpc v1.34.0
+	google.golang.org/protobuf v1.25.0
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/go-playground/validator.v9 v9.31.0
 	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
@@ -138,10 +109,7 @@ require (
 	gorm.io/driver/postgres v1.0.5
 	gorm.io/driver/sqlite v1.1.4
 	gorm.io/gorm v1.20.8
-<<<<<<< HEAD
->>>>>>> dev
-=======
+
 	honnef.co/go/tools v0.0.1-2020.1.6 // indirect
->>>>>>> dev
 	sigs.k8s.io/yaml v1.2.0 // indirect
 )

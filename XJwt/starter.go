@@ -66,3 +66,6 @@ func (s *starter) Start(sctx *goinfras.StarterContext) {
 }
 
 func (s *starter) Stop() {}
+
+// 设置启动组级别
+func (s *starter) PriorityGroup() goinfras.PriorityGroup { return goinfras.AppGroup }

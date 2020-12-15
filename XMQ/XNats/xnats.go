@@ -2,19 +2,7 @@ package XNats
 
 import (
 	"github.com/nats-io/nats.go"
-	"go.uber.org/zap"
 )
-
-var natsMQPool *NatsPool
-
-func CreateDefaultPool(config *Config, logger *zap.Logger) error {
-	var err error
-	if config == nil {
-		config = DefaultConfig()
-	}
-	natsMQPool, err = NewPool(config, logger)
-	return err
-}
 
 // 资源组件实例调用
 func XPool() *NatsPool {

@@ -64,3 +64,6 @@ func (s *starter) Stop() {
 }
 
 func (s *starter) Priority() int { return goinfras.INT_MAX }
+
+// 设置启动组级别
+func (s *starter) PriorityGroup() goinfras.PriorityGroup { return goinfras.BasicGroup }

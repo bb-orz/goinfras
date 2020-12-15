@@ -5,6 +5,8 @@ import (
 	"github.com/olivere/elastic/v7/config"
 )
 
+var esClient *elasticv7.Client
+
 // 创建默认的ES Client
 func CreateDefaultESClient() error {
 	var err error
@@ -20,7 +22,6 @@ func NewESClient(cfg *Config) (*elasticv7.Client, error) {
 		esClient, err := elasticv7.NewClient()
 		return esClient, err
 	}
-
 	olivCfg := &config.Config{
 		URL:         cfg.URL,
 		Username:    cfg.Username,

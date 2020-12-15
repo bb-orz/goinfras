@@ -5,15 +5,6 @@ import (
 	"go.uber.org/zap"
 )
 
-var redisPubSubPool *redigo.Pool
-
-func CreateDefaultPool(config *Config, logger *zap.Logger) {
-	if config == nil {
-		config = DefaultConfig()
-	}
-	redisPubSubPool = NewRedisPubsubPool(config, logger)
-}
-
 // 资源组件实例调用
 func XPool() *redigo.Pool {
 	return redisPubSubPool

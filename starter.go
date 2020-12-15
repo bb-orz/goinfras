@@ -32,13 +32,13 @@ type Starter interface {
 type PriorityGroup int
 
 const (
-	SystemGroup         PriorityGroup = 30 // 系统级别优先组
-	BasicResourcesGroup PriorityGroup = 20 // 基本资源级别优先组
-	AppGroup            PriorityGroup = 10 // 应用级别优先组
+	BasicGroup     PriorityGroup = 30 // 基础组件级别，适用设置优先启动的组件，如日志等
+	ResourcesGroup PriorityGroup = 20 // 资源组件级别，适用设置项目需要的外围资源组件优先级，如数据库连接池等
+	AppGroup       PriorityGroup = 10 // 应用组件级别，适用设置应用程序启动或运行时启动的组件，如web引擎、数据传输对象验证器、JWT 令牌验证工具等
 
 	INT_MAX          = int(^uint(0) >> 1) // 最优先启动级别
 	INT_MIN          = 0                  // 最末位启动级别
-	DEFAULT_PRIORITY = 10000              // 默认
+	DEFAULT_PRIORITY = 100                // 默认
 )
 
 // 基础空启动器，可便于被其他具体的基础资源嵌入
@@ -65,7 +65,7 @@ func (*BaseStarter) SetStartBlocking() bool { return false }
 func (*BaseStarter) Stop() {}
 
 // 为资源组件设置优先组
-func (s *BaseStarter) PriorityGroup() PriorityGroup { return BasicResourcesGroup }
+func (s *BaseStarter) PriorityGroup() PriorityGroup { return ResourcesGroup }
 
 // 为资源组件设置启动优先值
 func (s *BaseStarter) Priority() int { return DEFAULT_PRIORITY }

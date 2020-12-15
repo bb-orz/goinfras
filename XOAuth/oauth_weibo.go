@@ -5,8 +5,12 @@ import (
 	"github.com/imroc/req"
 )
 
-const weiboGetAccessTokenUrl = "https://api.weibo.com/oauth2/access_token"
-const weiboGetUserInfoUrl = "https://api.weibo.com/2/users/show.json"
+var weiboOM *WeiboOAuthManager
+
+const (
+	weiboGetAccessTokenUrl = "https://api.weibo.com/oauth2/access_token"
+	weiboGetUserInfoUrl    = "https://api.weibo.com/2/users/show.json"
+)
 
 // 实现微博 OAuth2鉴权
 type WeiboOAuthManager struct {
@@ -16,6 +20,11 @@ type WeiboOAuthManager struct {
 }
 
 func NewWeiboOAuthManager(cfg *Config) *WeiboOAuthManager {
+
+	if cfg == nil {
+		cfg = DefaultConfig()
+	}
+
 	return &WeiboOAuthManager{
 		appKey:    cfg.WeiboOAuth2AppKey,
 		appSecret: cfg.WeiboOAuth2AppSecret,

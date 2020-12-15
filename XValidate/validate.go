@@ -4,9 +4,28 @@ import (
 	"errors"
 	"github.com/go-playground/locales/zh"
 	ut "github.com/go-playground/universal-translator"
+	"goinfras"
 	"gopkg.in/go-playground/validator.v9"
 	vtzh "gopkg.in/go-playground/validator.v9/translations/zh"
 )
+
+var validater *validator.Validate
+var translater ut.Translator
+
+// 创建一个默认配置的Manager
+func CreateDefaultValidater(config *Config) error {
+	var err error
+	if config == nil {
+		config = DefaultConfig()
+	}
+
+	if config.TransZh {
+		validater, translater, err = NewZhValidater()
+	} else {
+		validater = NewValidater()
+	}
+	return err
+}
 
 // 默认验证器
 func NewValidater() *validator.Validate {
@@ -33,3 +52,6 @@ func NewZhValidater() (*validator.Validate, ut.Translator, error) {
 
 	return valid, trans, nil
 }
+
+// 设置启动组级别
+func (s *starter) PriorityGroup() goinfras.PriorityGroup { return goinfras.AppGroup }

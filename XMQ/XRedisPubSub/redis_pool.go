@@ -13,6 +13,15 @@ RedisPubSub用于实时性较高的消息推送，并不保证可靠,实现实�
 Tips：原则上用于缓存的redis机器与用于pubsub的redis机器分开较好，如实在用同一个，只需在config配置填写一样即可。
 */
 
+var redisPubSubPool *redigo.Pool
+
+func CreateDefaultPool(config *Config, logger *zap.Logger) {
+	if config == nil {
+		config = DefaultConfig()
+	}
+	redisPubSubPool = NewRedisPubsubPool(config, logger)
+}
+
 func NewRedisPubsubPool(cfg *Config, logger *zap.Logger) *redigo.Pool {
 	// 配置并获得一个连接池对象的指针
 	redisPubSubPool := &redigo.Pool{
