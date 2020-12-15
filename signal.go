@@ -1,10 +1,10 @@
 package goinfras
 
 import (
+	"fmt"
 	"go.uber.org/zap"
 	"os"
 	"os/signal"
-	"reflect"
 	"syscall"
 )
 
@@ -19,14 +19,13 @@ func Register(fn func()) {
 }
 
 // 应用安装时注册组件关闭函数
-func RegisterStopFunc(logger *zap.Logger) {
+func RegisterStarterStopFunc(logger *zap.Logger) {
 	starters := StarterManager.GetAll()
 	for _, s := range starters {
-		typ := reflect.TypeOf(s)
-		logger.Info("【Register Notify Stop】:%s.Stop()", zap.String("Resource Component", typ.String()))
 		Register(func() {
 			s.Stop()
 		})
+		logger.Info(fmt.Sprintf("【%s Starter】: Stop Function Registered.", s.Name()))
 	}
 }
 

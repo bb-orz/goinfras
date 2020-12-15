@@ -19,12 +19,13 @@ func NewApplication(vpcfg *viper.Viper) *Application {
 	return app
 }
 
-// 启动应用程序所有基础资源 （初始化 -> 安装 -> 检查 -> 启动）
+// 启动应用程序所有基础资源 （初始化 -> 安装 -> 检查 -> 启动 -> 监听系统退出信号）
 func (app *Application) Up() {
-	app.init()
-	app.setup()
-	app.check()
-	app.start()
+	app.init()         // 加载所有注册启动器配置
+	app.setup()        // 安装所有注册启动器组件
+	app.check()        // 检查所有注册组件
+	app.start()        // 启动组件实例
+	app.listenSignal() // 监听退出信号，实现优雅关闭所有启动器
 }
 
 // 停止或销毁应用程序所有基础资源
@@ -45,9 +46,6 @@ func (app *Application) setup() {
 	for _, s := range StarterManager.GetAll() {
 		s.Setup(app.Sctx)
 	}
-
-	// 注册资源组件的关闭回调
-	RegisterStopFunc(app.Sctx.Logger())
 }
 
 // 检查组件实例
@@ -75,6 +73,11 @@ func (app *Application) start() {
 			s.Start(app.Sctx)
 		}
 	}
+}
+
+func (app *Application) listenSignal() {
+	// 注册资源组件的关闭回调
+	RegisterStarterStopFunc(app.Sctx.Logger())
 	// 应用启动时开始监听系统信号
 	NotifySignal(app.Sctx.Logger())
 }
