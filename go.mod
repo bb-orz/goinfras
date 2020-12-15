@@ -1,8 +1,11 @@
-module goinfras
+module github.com/bb-orz/goinfras
 
 go 1.14
 
 replace (
+    // 开发时本地代码替换远程包
+	// github.com/bb-orz/goinfras => /Users/fun/Code/MyProject/goinfras
+
 	cloud.google.com/go => github.com/googleapis/google-cloud-go v0.47.0
 	github.com/coreos/bbolt => go.etcd.io/bbolt v1.3.4
 	github.com/coreos/go-systemd => github.com/coreos/go-systemd/v22 v22.0.0
@@ -10,8 +13,6 @@ replace (
 	go.uber.org/multierr => github.com/uber-go/multierr v1.4.0
 	go.uber.org/tools => github.com/uber-go/tools v0.0.0-20190618225709-2cfd321de3ee
 	go.uber.org/zap => github.com/uber-go/zap v1.12.0
-	// 使用vendor时，本地开发包目录替换
-	// github.com/bb-orz/goinfras => /Users/fun/Code/MyProject/goinfras
 	golang.org/x/crypto => github.com/golang/crypto v0.0.0-20190325154230-a5d413f7728c
 	golang.org/x/exp => github.com/golang/exp v0.0.0-20191030013958-a1ab85dbe136
 	golang.org/x/image => github.com/golang/image v0.0.0-20191009234506-e7c1f5e7dbb8

@@ -3,10 +3,10 @@ package XEtcd
 import (
 	"context"
 	"fmt"
+	"github.com/bb-orz/goinfras"
 	. "github.com/smartystreets/goconvey/convey"
 	"go.etcd.io/etcd/clientv3"
 	"go.uber.org/zap"
-	"goinfras"
 	"testing"
 	"time"
 )

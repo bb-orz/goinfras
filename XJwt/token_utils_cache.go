@@ -2,8 +2,8 @@ package XJwt
 
 import (
 	"errors"
+	"github.com/bb-orz/goinfras/XStore/XRedis"
 	"go.uber.org/zap"
-	"goinfras/XStore/XRedis"
 	"time"
 )
 

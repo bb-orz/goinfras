@@ -2,9 +2,9 @@ package XEsOfficial
 
 import (
 	"fmt"
+	"github.com/bb-orz/goinfras"
 	"github.com/elastic/go-elasticsearch/v8/estransport"
 	"go.uber.org/zap"
-	"goinfras"
 	"net/http"
 )
 

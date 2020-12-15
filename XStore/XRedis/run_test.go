@@ -1,9 +1,9 @@
 package XRedis
 
 import (
+	"github.com/bb-orz/goinfras"
 	"github.com/gomodule/redigo/redis"
 	"go.uber.org/zap"
-	"goinfras"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"

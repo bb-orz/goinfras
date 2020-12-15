@@ -2,9 +2,9 @@ package XGorm
 
 import (
 	"database/sql"
+	"github.com/bb-orz/goinfras"
 	. "github.com/smartystreets/goconvey/convey"
 	"go.uber.org/zap"
-	"goinfras"
 	"gorm.io/gorm"
 	"testing"
 	"time"

@@ -2,9 +2,9 @@ package XRedisPubSub
 
 import (
 	"fmt"
+	"github.com/bb-orz/goinfras"
 	. "github.com/smartystreets/goconvey/convey"
 	"go.uber.org/zap"
-	"goinfras"
 	"testing"
 	"time"
 )

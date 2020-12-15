@@ -2,11 +2,11 @@ package XMongo
 
 import (
 	"context"
+	"github.com/bb-orz/goinfras"
 	. "github.com/smartystreets/goconvey/convey"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.uber.org/zap"
-	"goinfras"
 	"testing"
 )
 

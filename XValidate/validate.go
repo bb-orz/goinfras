@@ -2,9 +2,9 @@ package XValidate
 
 import (
 	"errors"
+	"github.com/bb-orz/goinfras"
 	"github.com/go-playground/locales/zh"
 	ut "github.com/go-playground/universal-translator"
-	"goinfras"
 	"gopkg.in/go-playground/validator.v9"
 	vtzh "gopkg.in/go-playground/validator.v9/translations/zh"
 )

@@ -2,9 +2,9 @@ package XGin
 
 import (
 	"fmt"
+	"github.com/bb-orz/goinfras"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
-	"goinfras"
 )
 
 type starter struct {
