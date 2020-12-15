@@ -2,8 +2,8 @@ package XEtcd
 
 import (
 	"context"
+	"github.com/bb-orz/goinfras/XLogger"
 	"go.etcd.io/etcd/clientv3"
-	"goinfras/XLogger"
 )
 
 type EtcdCommon struct {

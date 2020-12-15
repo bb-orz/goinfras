@@ -2,10 +2,10 @@ package XJwt
 
 import (
 	"fmt"
+	"github.com/bb-orz/goinfras"
+	"github.com/bb-orz/goinfras/XStore/XRedis"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
-	"goinfras"
-	"goinfras/XStore/XRedis"
 )
 
 type starter struct {

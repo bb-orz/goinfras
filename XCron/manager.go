@@ -1,9 +1,9 @@
 package XCron
 
 import (
+	"github.com/bb-orz/goinfras"
 	"github.com/robfig/cron/v3"
 	"go.uber.org/zap"
-	"goinfras"
 	"time"
 )
 

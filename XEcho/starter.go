@@ -2,8 +2,8 @@ package XEcho
 
 import (
 	"fmt"
+	"github.com/bb-orz/goinfras"
 	"github.com/labstack/echo/v4"
-	"goinfras"
 )
 
 type starter struct {

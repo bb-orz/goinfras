@@ -1,8 +1,8 @@
 package XGin
 
 import (
+	"github.com/bb-orz/goinfras/XJwt"
 	"github.com/gin-gonic/gin"
-	"goinfras/XJwt"
 	"net/http"
 )
 

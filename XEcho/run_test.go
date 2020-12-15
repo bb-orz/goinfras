@@ -2,10 +2,10 @@ package XEcho
 
 import (
 	"fmt"
+	"github.com/bb-orz/goinfras"
 	"github.com/labstack/echo/v4"
 	. "github.com/smartystreets/goconvey/convey"
 	"go.uber.org/zap"
-	"goinfras"
 	"testing"
 )
 

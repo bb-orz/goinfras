@@ -2,8 +2,8 @@ package XLogger
 
 import (
 	"fmt"
+	"github.com/bb-orz/goinfras"
 	"go.uber.org/zap"
-	"goinfras"
 	"io"
 )
 

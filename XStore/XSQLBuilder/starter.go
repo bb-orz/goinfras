@@ -2,9 +2,9 @@ package XSQLBuilder
 
 import (
 	"fmt"
+	"github.com/bb-orz/goinfras"
 	_ "github.com/go-sql-driver/mysql"
 	"go.uber.org/zap"
-	"goinfras"
 )
 
 type starter struct {

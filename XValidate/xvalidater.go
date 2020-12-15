@@ -1,10 +1,10 @@
 package XValidate
 
 import (
+	"github.com/bb-orz/goinfras/XLogger"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/prometheus/common/log"
 	"go.uber.org/zap"
-	"goinfras/XLogger"
 	"gopkg.in/go-playground/validator.v9"
 )
 

@@ -1,8 +1,8 @@
 package XJwt
 
 import (
+	"github.com/bb-orz/goinfras/XStore/XRedis"
 	"github.com/gomodule/redigo/redis"
-	"goinfras/XStore/XRedis"
 )
 
 type redisCache struct {

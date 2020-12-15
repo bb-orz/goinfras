@@ -1,8 +1,8 @@
 package XEcho
 
 import (
+	"github.com/bb-orz/goinfras/XJwt"
 	"github.com/labstack/echo/v4"
-	"goinfras/XJwt"
 	"net/http"
 )
 

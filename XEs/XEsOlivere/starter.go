@@ -3,8 +3,8 @@ package XEsOlivere
 import (
 	"context"
 	"fmt"
+	"github.com/bb-orz/goinfras"
 	"go.uber.org/zap"
-	"goinfras"
 )
 
 // 实例化资源存储变量
