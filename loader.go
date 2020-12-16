@@ -33,30 +33,25 @@ type RemoteConfigArgs struct {
 func ViperLoader(envCfgArgs *EnvConfigArgs, fileCfgARgs *FileConfigArgs, remoteCfgArgs *RemoteConfigArgs) (*viper.Viper, error) {
 	var err error
 	var viperCfg *viper.Viper
-
 	viperCfg = viper.New()
-
 	// 1. 从环境变量导入配置项
 	if envCfgArgs != nil {
 		if err = loadConfigFromEnv(viperCfg, envCfgArgs); err != nil {
 			return nil, err
 		}
 	}
-
 	// 2. 从配置文件导入配置项
 	if fileCfgARgs != nil {
 		if err = loadConfigFromFile(viperCfg, fileCfgARgs); err != nil {
 			return nil, err
 		}
 	}
-
 	// 3. 从远程配置系统导入配置项
 	if remoteCfgArgs != nil {
 		if err = loadConfigFromRemote(viperCfg, remoteCfgArgs); err != nil {
 			return nil, err
 		}
 	}
-
 	return viperCfg, nil
 }
 
@@ -108,7 +103,6 @@ func loadConfigFromRemote(viperCfg *viper.Viper, cfg *RemoteConfigArgs) error {
 		if err = viperCfg.AddRemoteProvider(cfg.Provider, cfg.Endpoint, cfg.Path); err != nil {
 			return err
 		}
-
 		// 因为在字节流中没有文件扩展名，所以这里需要设置下类型。支持的扩展名有 "json", "toml", "yaml", "yml", "properties", "props", "prop", "env", "dotenv"
 		viperCfg.SetConfigType(cfg.Type)
 
