@@ -33,7 +33,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	fmt.Printf("Print XMongo Config: %v \n", *define)
+	fmt.Printf("XMongo Config: %v \n", *define)
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {

@@ -50,7 +50,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define.CorsConfig = corsDefine
 	}
 	s.cfg = define
-	fmt.Printf("Print XGin Config: %v \n", *define)
+	fmt.Printf("XGin Config: %v \n", *define)
 }
 
 // 启动时：添加中间件，实例化应用，注册项目实现的API

@@ -35,7 +35,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	fmt.Printf("Print XLogger Config: %v \n", *define)
+	fmt.Printf("XLogger Config: %v \n", *define)
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
