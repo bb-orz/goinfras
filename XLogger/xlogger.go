@@ -2,7 +2,6 @@ package XLogger
 
 import (
 	"go.uber.org/zap"
-	"io"
 )
 
 func XCommon() *zap.Logger {
