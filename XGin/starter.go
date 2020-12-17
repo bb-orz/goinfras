@@ -26,6 +26,7 @@ func (s *starter) Name() string {
 // 初始化时：加载配置
 func (s *starter) Init(sctx *goinfras.StarterContext) {
 	var err error
+	var define *Config
 	var ginDefine *GinConfig
 	var corsDefine *CorsConfig
 
@@ -42,16 +43,14 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 
 	// 读配置为空时，默认配置
 	if ginDefine == nil {
-		s.cfg = DefaultConfig()
+		define = DefaultConfig()
 	} else {
-		s.cfg = &Config{}
-		s.cfg.GinConfig = ginDefine
-		s.cfg.CorsConfig = corsDefine
+		define = &Config{}
+		define.GinConfig = ginDefine
+		define.CorsConfig = corsDefine
 	}
-
-	fmt.Printf("Print XGin Config: %v \n", *ginDefine)
-	fmt.Printf("Print CORS Config: %v \n", *corsDefine)
-
+	s.cfg = define
+	fmt.Printf("Print XGin Config: %v \n", *define)
 }
 
 // 启动时：添加中间件，实例化应用，注册项目实现的API
