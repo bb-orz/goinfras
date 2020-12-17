@@ -42,7 +42,7 @@ func DefaultConfig() *Config {
 		PanicLevelSwitch:  false,
 		FatalLevelSwitch:  true,
 		SimpleZapCore:     true,
-		SyncZapCore:       false,
+		SyncZapCore:       true,
 		SyncLogSwitch:     true,
 		StdoutLogSwitch:   true,
 		RotateLogSwitch:   false,
