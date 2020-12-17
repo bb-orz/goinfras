@@ -8,37 +8,6 @@ import (
 	"strings"
 )
 
-// Viper读取环境变量
-/**
- * @Description: Viper读取环境变量
- * @param viperCfg 			Viper实例
- * @param Prefix			指定需读取的环境变量前缀
- * @param Keys				绑定特定环境变量
- * @param AllowEmptyEnv		是否允许读取空值的环境变量
- * @param AutomaticEnv		是否载入所有环境变量，如设置Prefix，则只筛选有前缀的载入
- * @param Replacer			键名字符替换器，用于排除一些前缀符合但不需要的环境变量
- * @return error
- */
-func LoadViperConfigFromEnv(viperCfg *viper.Viper, envPrefix string, envKeys []string, allowEmptyEnv, automaticEnv bool, envKeyReplacer *strings.Replacer) error {
-	viperCfg.AllowEmptyEnv(allowEmptyEnv) // 是否允许环境变量为空值,默认为false
-	if envKeyReplacer != nil {
-		viperCfg.SetEnvKeyReplacer(envKeyReplacer) // 替换一些不需要的变量
-	}
-	if envPrefix != "" {
-		viperCfg.SetEnvPrefix(envPrefix) // 添加需加载系统环境变量的前缀字符串
-	}
-	if len(envKeys) > 0 {
-		err := viperCfg.BindEnv(envKeys...) // 绑定特定环境变量值到viper
-		if err != nil {
-			return err
-		}
-	}
-	if automaticEnv {
-		viperCfg.AutomaticEnv() // 自动载入所有环境变量，如设置SetEnvPrefix，则加载有特定前缀的所有环境变量
-	}
-	return nil
-}
-
 /**
  * @Description: Viper 读取配置文件
  * @param viperCfg 	Viper实例
@@ -96,5 +65,36 @@ func LoadViperConfigFromRemote(viperCfg *viper.Viper, remoteProvider, remoteEndp
 		return errors.New("Only Support etcd/consul K/V System. ")
 	}
 
+	return nil
+}
+
+// Viper读取环境变量
+/**
+ * @Description: Viper读取环境变量
+ * @param viperCfg 			Viper实例
+ * @param envPrefix			指定需读取的环境变量前缀
+ * @param envKeys			绑定特定环境变量
+ * @param envAllowEmpty		是否允许读取空值的环境变量
+ * @param envAutomatic		是否载入所有环境变量，如设置Prefix，则只筛选有前缀的载入
+ * @param envKeyReplacer	键名字符替换器，用于排除一些前缀符合但不需要的环境变量
+ * @return error
+ */
+func LoadViperConfigFromEnv(viperCfg *viper.Viper, envPrefix string, envKeys []string, envAllowEmpty, envAutomatic bool, envKeyReplacer *strings.Replacer) error {
+	viperCfg.AllowEmptyEnv(envAllowEmpty) // 是否允许环境变量为空值,默认为false
+	if envKeyReplacer != nil {
+		viperCfg.SetEnvKeyReplacer(envKeyReplacer) // 替换一些不需要的变量
+	}
+	if envPrefix != "" {
+		viperCfg.SetEnvPrefix(envPrefix) // 添加需加载系统环境变量的前缀字符串
+	}
+	if len(envKeys) > 0 {
+		err := viperCfg.BindEnv(envKeys...) // 绑定特定环境变量值到viper
+		if err != nil {
+			return err
+		}
+	}
+	if envAutomatic {
+		viperCfg.AutomaticEnv() // 自动载入所有环境变量，如设置SetEnvPrefix，则加载有特定前缀的所有环境变量
+	}
 	return nil
 }
