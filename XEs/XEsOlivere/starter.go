@@ -35,7 +35,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		goinfras.ErrorHandler(err)
 	}
 	if define != nil {
-		fmt.Printf("Print XEsOlivere Config: %v", *define)
+		fmt.Printf("Print XEsOlivere Config: %v \n", *define)
 	}
 	s.cfg = define
 }

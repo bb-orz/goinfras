@@ -32,7 +32,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	fmt.Printf("Print XAliyunSms Config: %v", *define)
+	fmt.Printf("Print XAliyunSms Config: %v \n", *define)
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
