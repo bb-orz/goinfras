@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 type starter struct {
@@ -44,12 +43,10 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	// 读配置为空时，默认配置
 	if ginDefine == nil {
 		s.cfg = DefaultConfig()
-
 	} else {
 		s.cfg = &Config{}
 		s.cfg.GinConfig = ginDefine
 		s.cfg.CorsConfig = corsDefine
-		sctx.Logger().Info("Print Cors Config:", zap.Any("CorsConfig", *corsDefine))
 	}
 
 	fmt.Printf("Print XGin Config: %v \n", *ginDefine)
