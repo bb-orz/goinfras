@@ -40,7 +40,7 @@ func simpleInfoCore(cfg *Config, format zapcore.EncoderConfig) zapcore.Core {
 	return zapcore.NewCore(
 		// 日志格式配置
 		zapcore.NewJSONEncoder(format),
-		//日志异步输出配置
+		// 日志异步输出配置
 		zapcore.NewMultiWriteSyncer(writeSyncerList...),
 		// 日志级别
 		levelEnablerFunc,
@@ -68,7 +68,7 @@ func simpleErrorCore(cfg *Config, format zapcore.EncoderConfig) zapcore.Core {
 	return zapcore.NewCore(
 		// 日志格式配置
 		zapcore.NewJSONEncoder(format),
-		//日志异步输出配置
+		// 日志异步输出配置
 		zapcore.NewMultiWriteSyncer(writeSyncerList...),
 		// 日志级别
 		levelEnablerFunc,
