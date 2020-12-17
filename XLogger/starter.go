@@ -3,7 +3,6 @@ package XLogger
 import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
-	"go.uber.org/zap"
 	"io"
 )
 
@@ -36,7 +35,6 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	sctx.Logger().Info("Print Logger Config:", zap.Any("EtcdConfig", *define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
