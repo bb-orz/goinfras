@@ -33,15 +33,12 @@ func RegisterStarterStopFunc(logger *zap.Logger) {
 func NotifySignal(logger *zap.Logger) {
 	sigs := make(chan os.Signal)
 	signal.Notify(sigs, syscall.SIGQUIT, syscall.SIGTERM)
-	go func() {
-		for {
-			c := <-sigs
-			logger.Info("System signal notify:", zap.String("signal", c.String()))
-			for _, fn := range callbacks {
-				fn()
-			}
-			break
-			os.Exit(0)
+	for {
+		c := <-sigs
+		logger.Info("System signal notify:", zap.String("signal", c.String()))
+		for _, fn := range callbacks {
+			fn()
 		}
-	}()
+		os.Exit(0)
+	}
 }

@@ -32,7 +32,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	fmt.Printf("XValidate Config: %v \n", *define)
+	fmt.Printf("XValidate Starter Init: [Config] %v \n", *define)
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
@@ -43,7 +43,6 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	} else {
 		validater = NewValidater()
 	}
-
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {

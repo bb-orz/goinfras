@@ -50,7 +50,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define.CorsConfig = corsDefine
 	}
 	s.cfg = define
-	fmt.Printf("XGin Config: %v \n", *define)
+	fmt.Printf("XGin Starter Init: [Config] %v \n", *define)
 }
 
 // 启动时：添加中间件，实例化应用，注册项目实现的API
@@ -105,7 +105,7 @@ func (s *starter) Start(sctx *goinfras.StarterContext) {
 func (s *starter) Stop() {}
 
 // 默认设置阻塞启动
-func (s *starter) SetStartBlocking() bool { return true }
+func (s *starter) StartBlocking() bool { return true }
 
 // 设置启动组级别
 func (s *starter) PriorityGroup() goinfras.PriorityGroup { return goinfras.AppGroup }

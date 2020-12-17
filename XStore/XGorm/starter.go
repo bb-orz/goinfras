@@ -33,7 +33,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	fmt.Printf("XGORM Config: %v \n", *define)
+	fmt.Printf("XGORM Starter Init: [Config] %v \n", *define)
 }
 
 // 连接数据库

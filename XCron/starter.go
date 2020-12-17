@@ -39,7 +39,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	fmt.Printf("XCron Config: %v \n", *define)
+	fmt.Printf("XCron Starter Init: [Config] %v \n", *define)
 }
 
 // 应用安装阶段创建Cron管理器，并注册为应用组件
