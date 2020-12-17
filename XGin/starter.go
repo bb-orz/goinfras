@@ -52,8 +52,8 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		sctx.Logger().Info("Print Cors Config:", zap.Any("CorsConfig", *corsDefine))
 	}
 
-	fmt.Println(*s.cfg.GinConfig)
-	// sctx.Logger().Info("Print Gin Config:", zap.Any("GinConfig", *ginDefine))
+	fmt.Printf("Print XGin Config: %v", *ginDefine)
+	fmt.Printf("Print CORS Config: %v", *corsDefine)
 
 }
 

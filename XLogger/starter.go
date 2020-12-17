@@ -35,6 +35,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define = DefaultConfig()
 	}
 	s.cfg = define
+	fmt.Printf("Print Logger Config: %v", *define)
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {

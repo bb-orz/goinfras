@@ -3,7 +3,6 @@ package XRedis
 import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
-	"go.uber.org/zap"
 )
 
 type starter struct {
@@ -33,7 +32,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	sctx.Logger().Info("Print Redis Config:", zap.Any("Redis", *define))
+	fmt.Printf("Print XRedis Config: %v", *define)
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {

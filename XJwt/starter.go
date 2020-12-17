@@ -5,7 +5,6 @@ import (
 	"github.com/bb-orz/goinfras"
 	"github.com/bb-orz/goinfras/XStore/XRedis"
 	"github.com/spf13/viper"
-	"go.uber.org/zap"
 )
 
 type starter struct {
@@ -39,7 +38,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	sctx.Logger().Info("Print Jwt Config:", zap.Any("JwtConfig", *define))
+	fmt.Printf("Print XJwt Config: %v", *define)
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {

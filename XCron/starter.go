@@ -3,7 +3,6 @@ package XCron
 import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
-	"go.uber.org/zap"
 )
 
 // 实例化资源存储变量
@@ -40,7 +39,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	sctx.Logger().Info("Print Cron Config:", zap.Any("CronConfig", *define))
+	fmt.Printf("Print XCron Config: %v", *define)
 }
 
 // 应用安装阶段创建Cron管理器，并注册为应用组件

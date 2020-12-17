@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/bb-orz/goinfras"
-	"go.uber.org/zap"
 )
 
 // 实例化资源存储变量
@@ -36,7 +35,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		goinfras.ErrorHandler(err)
 	}
 	if define != nil {
-		sctx.Logger().Info("Print XEsOlivere Config:", zap.Any("XEsOlivereConfig", *define))
+		fmt.Printf("Print XEsOlivere Config: %v", *define)
 	}
 	s.cfg = define
 }

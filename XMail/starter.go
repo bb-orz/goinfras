@@ -3,7 +3,6 @@ package XMail
 import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
-	"go.uber.org/zap"
 )
 
 type starter struct {
@@ -33,7 +32,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	sctx.Logger().Info("Print Mail Config:", zap.Any("MailConfig", *define))
+	fmt.Printf("Print XMail Config: %v", *define)
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {

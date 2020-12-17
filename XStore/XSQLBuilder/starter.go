@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
 	_ "github.com/go-sql-driver/mysql"
-	"go.uber.org/zap"
 )
 
 type starter struct {
@@ -35,7 +34,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	sctx.Logger().Info("Print Mysql Config:", zap.Any("Mysql", *define))
+	fmt.Printf("Print XSQLBuilder Config: %v", *define)
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {

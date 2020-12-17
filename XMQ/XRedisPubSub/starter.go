@@ -3,7 +3,6 @@ package XRedisPubSub
 import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
-	"go.uber.org/zap"
 )
 
 type starter struct {
@@ -33,7 +32,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	sctx.Logger().Info("Print RedisPubSub Config:", zap.Any("RedisPubSubConfig", *define))
+	fmt.Printf("Print XRedisPubSub Config: %v", *define)
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
 	"github.com/elastic/go-elasticsearch/v8/estransport"
-	"go.uber.org/zap"
 	"net/http"
 )
 
@@ -49,7 +48,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		goinfras.ErrorHandler(err)
 	}
 	if define != nil {
-		sctx.Logger().Info("Print XEsOfficial Config:", zap.Any("XEsOfficialConfig", *define))
+		fmt.Printf("Print XEsOfficial Config: %v", *define)
 	}
 	s.cfg = define
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/bb-orz/goinfras"
-	"go.uber.org/zap"
 )
 
 type starter struct {
@@ -34,7 +33,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	sctx.Logger().Info("Print Mongodb Config:", zap.Any("Mongodb", *define))
+	fmt.Printf("Print XMongo Config: %v", *define)
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
