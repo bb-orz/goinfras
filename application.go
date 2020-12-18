@@ -1,7 +1,6 @@
 package goinfras
 
 import (
-	"fmt"
 	"github.com/spf13/viper"
 	"io"
 )
@@ -63,11 +62,7 @@ func (app *Application) setup() {
 // 检查组件实例
 func (app *Application) check() {
 	for _, s := range StarterManager.GetAll() {
-		if !s.Check(app.Sctx) {
-			fmt.Printf("%s Starter Setup Fail：An error was found during the check! ", s.Name())
-		} else {
-			fmt.Printf("%s Starter：Setup Successful!", s.Name())
-		}
+		s.Check(app.Sctx)
 	}
 }
 
