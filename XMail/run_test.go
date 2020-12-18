@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
 	. "github.com/smartystreets/goconvey/convey"
-	"go.uber.org/zap"
 	"gopkg.in/gomail.v2"
 	"io"
 	"testing"
@@ -97,33 +96,11 @@ func TestCommonSendBatchMails(t *testing.T) {
 
 func TestStarter(t *testing.T) {
 	Convey("Test XMail Starter", t, func() {
-		s := NewStarter()
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
+		logger := goinfras.NewCommandLineStarterLogger()
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
+		s := NewStarter()
 		s.Init(sctx)
-		Println("Starter Init Successful!")
 		s.Setup(sctx)
-		Println("Starter Setup Successful!")
-
-		if s.Check(sctx) {
-			Println("Component Check Successful!")
-		} else {
-			Println("Component Check Fail!")
-		}
-
-		err = XCommonMail().SendSimpleMail(
-			"",
-			"",
-			"",
-			"",
-			"",
-			"",
-			"",
-			[]string{""},
-		)
-
-		So(err, ShouldBeNil)
-
+		s.Check(sctx)
 	})
 }
