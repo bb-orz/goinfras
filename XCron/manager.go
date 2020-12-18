@@ -37,7 +37,7 @@ type Manager struct {
 }
 
 func NewManager(cfg *Config) (*Manager, error) {
-	cronLogger := &cronLogger{}
+	cronLogger := NewCronLogger()
 	location, err := time.LoadLocation(cfg.Location)
 	if err != nil {
 		return nil, err

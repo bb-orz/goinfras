@@ -10,6 +10,13 @@ import (
 */
 type cronLogger struct{}
 
+func NewCronLogger() *cronLogger {
+	if XLogger.XCommon() == nil {
+		XLogger.CreateDefaultLogger(nil)
+	}
+	return new(cronLogger)
+}
+
 func (l *cronLogger) Info(msg string, keysAndValues ...interface{}) {
 	XLogger.XCommon().Info("[Cron Log]:", zap.String("msg", msg), zap.Any("KV", keysAndValues))
 }
