@@ -1,11 +1,14 @@
 package XGin
 
+import "github.com/gin-gonic/gin"
+
 type Config struct {
 	*GinConfig
 	*CorsConfig
 }
 
 type GinConfig struct {
+	Mode       string // 模式选择：debug
 	ListenHost string // 服务运行ip
 	ListenPort int    // 服务运行端口
 	Tls        bool   // HTTPS相关配置，开关
@@ -28,6 +31,7 @@ type CorsConfig struct {
 func DefaultConfig() *Config {
 	return &Config{
 		&GinConfig{
+			Mode:       gin.DebugMode,
 			ListenHost: "127.0.0.1",
 			ListenPort: 8090,
 		},

@@ -1,6 +1,7 @@
 package XGin
 
 import (
+	"github.com/bb-orz/goinfras/XLogger"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"net"
@@ -12,7 +13,7 @@ import (
 	"time"
 )
 
-func ZapRecoveryMiddleware(logger *zap.Logger, stack bool) gin.HandlerFunc {
+func ZapRecoveryMiddleware(stack bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		defer func() {
 			if err := recover(); err != nil {
@@ -27,7 +28,7 @@ func ZapRecoveryMiddleware(logger *zap.Logger, stack bool) gin.HandlerFunc {
 
 				httpRequest, _ := httputil.DumpRequest(c.Request, false)
 				if brokenPipe {
-					logger.Error(c.Request.URL.Path,
+					XLogger.XCommon().Error(c.Request.URL.Path,
 						zap.Any("error", err),
 						zap.String("request", string(httpRequest)),
 					)
@@ -37,14 +38,14 @@ func ZapRecoveryMiddleware(logger *zap.Logger, stack bool) gin.HandlerFunc {
 				}
 
 				if stack {
-					logger.Error("[Recovery from panic]",
+					XLogger.XCommon().Error("[Recovery from panic]",
 						zap.Time("time", time.Now()),
 						zap.Any("error", err),
 						zap.String("request", string(httpRequest)),
 						zap.String("stack", string(debug.Stack())),
 					)
 				} else {
-					logger.Error("[Recovery from panic]",
+					XLogger.XCommon().Error("[Recovery from panic]",
 						zap.Time("time", time.Now()),
 						zap.Any("error", err),
 						zap.String("request", string(httpRequest)),

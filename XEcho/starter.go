@@ -94,7 +94,7 @@ func (s *starter) Start(sctx *goinfras.StarterContext) {
 	var addr string
 	var err error
 	addr = fmt.Sprintf("%s:%d", s.cfg.ListenHost, s.cfg.ListenPort)
-	sctx.Logger().SInfo(s.Name(), goinfras.StepStart, fmt.Sprintf("Echo Server Starting ... "))
+	sctx.Logger().SInfo(s.Name(), goinfras.StepStart, fmt.Sprintf("Echo Server Starting ... \n"))
 	if s.cfg.Tls && s.cfg.CertFile != "" && s.cfg.KeyFile != "" {
 		err = echoEngine.StartTLS(addr, s.cfg.CertFile, s.cfg.KeyFile)
 	} else {

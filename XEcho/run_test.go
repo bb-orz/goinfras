@@ -15,15 +15,9 @@ func TestEchoEngine(t *testing.T) {
 	Convey("Echo Server Run Test", t, func() {
 		config := DefaultConfig()
 
-		if XLogger.XCommon() == nil {
-			XLogger.CreateDefaultLogger(nil)
-		}
-		if XJwt.XTokenUtils() == nil {
-			XJwt.CreateDefaultTku(nil)
-		}
-		if XRedis.XCommon() == nil {
-			XRedis.CreateDefaultPool(nil)
-		}
+		XLogger.CreateDefaultLogger(nil)
+		XJwt.CreateDefaultTku(nil)
+		XRedis.CreateDefaultPool(nil)
 
 		// 初始化默认引擎
 		CreateDefaultEngine(nil)
