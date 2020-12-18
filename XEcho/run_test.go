@@ -3,19 +3,24 @@ package XEcho
 import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
+	"github.com/bb-orz/goinfras/XJwt"
+	"github.com/bb-orz/goinfras/XLogger"
+	"github.com/bb-orz/goinfras/XStore/XRedis"
 	"github.com/labstack/echo/v4"
 	. "github.com/smartystreets/goconvey/convey"
-	"go.uber.org/zap"
 	"testing"
 )
 
 func TestEchoEngine(t *testing.T) {
 	Convey("Echo Server Run Test", t, func() {
 		config := DefaultConfig()
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
+
+		if XLogger.XCommon() == nil {
+			XLogger.CreateDefaultLogger(nil)
+		}
+
 		// 初始化默认引擎
-		CreateDefaultEngine(nil, logger)
+		CreateDefaultEngine(nil)
 
 		// 注册API接口
 		RegisterApi(new(SimpleApi))
@@ -28,6 +33,7 @@ func TestEchoEngine(t *testing.T) {
 
 		// 启动
 		var addr string
+		var err error
 		addr = fmt.Sprintf("%s:%d", config.ListenHost, config.ListenPort)
 		if config.Tls && config.CertFile != "" && config.KeyFile != "" {
 			err = XEngine().StartTLS(addr, config.CertFile, config.KeyFile)
@@ -75,25 +81,19 @@ func (s *SimpleApi) Bar(ctx echo.Context) error {
 // 测试启动器
 func TestStarter(t *testing.T) {
 	Convey("Test XEcho Starter", t, func() {
+		XLogger.CreateDefaultLogger(nil)
+		XJwt.CreateDefaultTku(nil)
+		XRedis.CreateDefaultPool(nil)
+
 		s := NewStarter()
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
+		logger := goinfras.NewCommandLineStarterLogger()
+
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
 		s.Init(sctx)
-		Println("Starter Init Successful!")
-
 		// 注册API接口
 		RegisterApi(new(SimpleApi))
-
 		s.Setup(sctx)
-		Println("Starter Setup Successful!")
+		s.Check(sctx)
 		s.Start(sctx)
-		Println("Starter Start Successful!")
-		if s.Check(sctx) {
-			Println("Component Check Successful!")
-		} else {
-			Println("Component Check Fail!")
-		}
-
 	})
 }

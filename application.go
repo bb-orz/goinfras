@@ -21,12 +21,13 @@ func NewApplication(vpcfg *viper.Viper) *Application {
 	return app
 }
 
-func NewApplicationWithStarterLoggerWriter(vpcfg *viper.Viper, writers ...io.Writer) *Application {
+// 创建一个带输出启动日志的应用管理器
+func NewApplicationWithStarterLoggerWriter(vpcfg *viper.Viper, logWriters ...io.Writer) *Application {
 	// 创建启动管理器
 	app := new(Application)
 	app.Sctx = &StarterContext{}
 	app.Sctx.SetConfigs(vpcfg)
-	app.Sctx.SetLogger(NewStarterLoggerWithWriters(writers...))
+	app.Sctx.SetLogger(NewStarterLoggerWithWriters(logWriters...))
 	return app
 }
 

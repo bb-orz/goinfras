@@ -1,12 +1,13 @@
 package XEcho
 
 import (
+	"github.com/bb-orz/goinfras/XLogger"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 	"time"
 )
 
-func LoggerMiddleware(logger *zap.Logger) echo.MiddlewareFunc {
+func LoggerMiddleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) (err error) {
 			start := time.Now()
@@ -23,9 +24,9 @@ func LoggerMiddleware(logger *zap.Logger) echo.MiddlewareFunc {
 			end := time.Now()
 			latency := end.Sub(start)
 			if err != nil {
-				logger.Error(err.Error())
+				XLogger.XCommon().Error(err.Error())
 			} else {
-				logger.Info("[Global Request Log]",
+				XLogger.XCommon().Info("[Global Request Log]",
 					zap.String("host", c.Request().Host),
 					zap.Duration("latency", latency),
 					zap.Int("status", c.Response().Status),

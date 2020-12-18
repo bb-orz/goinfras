@@ -3,7 +3,6 @@ package XJwt
 import (
 	"errors"
 	"github.com/bb-orz/goinfras/XStore/XRedis"
-	"go.uber.org/zap"
 	"time"
 )
 
@@ -15,11 +14,8 @@ func CreateDefaultTkuX(config *Config) error {
 
 	// 检查redis连接池组件或创建默认池
 	if !XRedis.CheckPool() {
-		logger, err := zap.NewDevelopment()
-		if err != nil {
-			return err
-		}
-		err = XRedis.CreateDefaultPool(nil, logger)
+		var err error
+		err = XRedis.CreateDefaultPool(nil)
 		if err != nil {
 			return err
 		}
