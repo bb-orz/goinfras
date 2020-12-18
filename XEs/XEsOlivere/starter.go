@@ -32,35 +32,37 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	viper := sctx.Configs()
 	if viper != nil {
 		err = viper.UnmarshalKey("XEsOlivere", &define)
-		goinfras.ErrorHandler(err)
+		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
-	if define != nil {
-		fmt.Printf("XEsOlivere Starter Init: [Config] %v \n", *define)
+	if define == nil {
+		define = DefaultConfig()
 	}
 	s.cfg = define
+	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %v \n", *define))
 }
 
 // 应用安装阶段创建Cron管理器，并注册为应用组件
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	var err error
 	esClient, err = NewESClient(s.cfg)
-	goinfras.ErrorHandler(err)
+	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Es Olivere Client Setuped! \n"))
+	}
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(esClient)
-	if err != nil {
-		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Olivere ElasticSearch Client Setup Fail!", s.Name()))
-		return false
+	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Es Olivere Client Setup Successful! \n"))
 	}
 	pingService := esClient.Ping(s.cfg.URL)
 	result, _, err := pingService.Do(context.Background())
-	if err != nil {
-		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Olivere ElasticSearch Client Ping Fail:%s", s.Name(), err.Error()))
-		return false
+	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Es Olivere Client Ping Successful! ES Server Info:[ServerName:%s,ClusterName:%s,TagLine:%s,Version:%v]", result.Name, result.ClusterName, result.TagLine, result.Version))
+		return true
 	}
-	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Olivere ElasticSearch Client Setup Successful! ES Server Info:[ServerName:%s,ClusterName:%s,TagLine:%s,Version:%v]", s.Name(), result.Name, result.ClusterName, result.TagLine, result.Version))
-	return true
+	return false
+
 }
 
 // 设置启动组级别
