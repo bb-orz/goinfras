@@ -45,40 +45,39 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	viper := sctx.Configs()
 	if viper != nil {
 		err = viper.UnmarshalKey("XEsOfficial", &define)
-		goinfras.ErrorHandler(err)
+		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
-	if define != nil {
-		fmt.Printf("XEsOfficial Starter Init: [Config] %v \n", *define)
+	if define == nil {
+		define = DefaultConfig()
 	}
 	s.cfg = define
+	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %v \n", *define))
+
 }
 
-// 应用安装阶段创建Cron管理器，并注册为应用组件
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	var err error
 	if s.optCfg == nil {
 		s.optCfg = &OptionalConfig{}
 	}
 	esClient, err = NewESClient(s.cfg, s.optCfg.HttpHeader, s.optCfg.HttpTransport, s.optCfg.Logger, s.optCfg.Selector, s.optCfg.RetryBackoffFunc, s.optCfg.ConnectionPoolFunc)
-	goinfras.ErrorHandler(err)
+	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Es Official Client Setuped! \n"))
+	}
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(esClient)
-	if err != nil {
-		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Official ElasticSearch Client Setup Fail!", s.Name()))
-		return false
+	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Es Official Client Setup Successful! \n"))
 	}
 
 	_, err = esClient.Ping()
-	if err != nil {
-		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Official ElasticSearch Client Ping Error:%s", s.Name(), err.Error()))
-		return false
-	} else {
-		sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Official ElasticSearch Client Setup Successful!", s.Name()))
+	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Es Official Client Ping Successful! \n"))
 		return true
 	}
-
+	return false
 }
 
 // 设置启动组级别:
