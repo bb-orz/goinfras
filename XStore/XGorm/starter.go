@@ -27,31 +27,31 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	viper := sctx.Configs()
 	if viper != nil {
 		err = viper.UnmarshalKey("Gorm", &define)
-		goinfras.ErrorHandler(err)
+		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
 	if define == nil {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	fmt.Printf("XGORM Starter Init: [Config] %v \n", *define)
+	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %v \n", *define))
 }
 
 // 连接数据库
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	var err error
 	db, err = NewORMDb(s.cfg)
-	goinfras.ErrorHandler(err)
+	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Gorm DB Setuped! \n"))
+	}
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(db)
-	if err != nil {
-		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: GORM DB Setup Fail!", s.Name()))
-		return false
+	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Gorm DB Setup Successful! \n"))
+		return true
 	}
-
-	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: GORM DB Setup Successful!", s.Name()))
-	return true
+	return false
 }
 
 func (s *starter) Stop() {
