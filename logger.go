@@ -102,7 +102,7 @@ var defaultLogFormatter = func(param LogFormatterParams) string {
 }
 
 // 启动日志文件输出格式
-var fileLogFormatter = func(param LogFormatterParams) string {
+var commonWriterFormatter = func(param LogFormatterParams) string {
 	return fmt.Sprintf("[%s ] | %v | [%s] >>>>>>  %s",
 		param.Position,
 		param.TimeStamp.Format("2006/01/02 - 15:04:05"),
@@ -110,12 +110,25 @@ var fileLogFormatter = func(param LogFormatterParams) string {
 	)
 }
 
+type IStarterLogger interface {
+	ADebug(msg string)
+	AInfo(msg string)
+	AWarning(msg string)
+	AError(err error)
+	AFail(err error)
+	SDebug(msg string)
+	SInfo(msg string)
+	SWarning(msg string)
+	SError(err error)
+	SFail(err error)
+}
+
 // 启动器日志记录器
 type StarterLogger struct {
 	Outputs []*StarterLoggerOutput
 }
 
-func (l *StarterLogger) ApplicationDebug(msg string) {
+func (l *StarterLogger) ADebug(msg string) {
 	for _, o := range l.Outputs {
 		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
 			Position:  ApplicationPosition,
@@ -127,7 +140,7 @@ func (l *StarterLogger) ApplicationDebug(msg string) {
 	}
 }
 
-func (l *StarterLogger) ApplicationInfo(msg string) {
+func (l *StarterLogger) AInfo(msg string) {
 	for _, o := range l.Outputs {
 		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
 			Position:  ApplicationPosition,
@@ -137,7 +150,7 @@ func (l *StarterLogger) ApplicationInfo(msg string) {
 		}))
 	}
 }
-func (l *StarterLogger) ApplicationWarning(msg string) {
+func (l *StarterLogger) AWarning(msg string) {
 	for _, o := range l.Outputs {
 		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
 			Position:  ApplicationPosition,
@@ -147,7 +160,7 @@ func (l *StarterLogger) ApplicationWarning(msg string) {
 		}))
 	}
 }
-func (l *StarterLogger) ApplicationError(err error) {
+func (l *StarterLogger) AError(err error) {
 	for _, o := range l.Outputs {
 		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
 			Position:  ApplicationPosition,
@@ -157,7 +170,7 @@ func (l *StarterLogger) ApplicationError(err error) {
 		}))
 	}
 }
-func (l *StarterLogger) ApplicationFail(err error) {
+func (l *StarterLogger) AFail(err error) {
 	for _, o := range l.Outputs {
 		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
 			Position:  ApplicationPosition,
@@ -168,7 +181,7 @@ func (l *StarterLogger) ApplicationFail(err error) {
 	}
 }
 
-func (l *StarterLogger) StarterDebug(msg string) {
+func (l *StarterLogger) SDebug(msg string) {
 	for _, o := range l.Outputs {
 		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
 			Position:  StarterPosition,
@@ -180,7 +193,7 @@ func (l *StarterLogger) StarterDebug(msg string) {
 	}
 }
 
-func (l *StarterLogger) StarterInfo(msg string) {
+func (l *StarterLogger) SInfo(msg string) {
 	for _, o := range l.Outputs {
 		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
 			Position:  StarterPosition,
@@ -190,7 +203,7 @@ func (l *StarterLogger) StarterInfo(msg string) {
 		}))
 	}
 }
-func (l *StarterLogger) StarterWarning(msg string) {
+func (l *StarterLogger) SWarning(msg string) {
 	for _, o := range l.Outputs {
 		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
 			Position:  StarterPosition,
@@ -200,7 +213,7 @@ func (l *StarterLogger) StarterWarning(msg string) {
 		}))
 	}
 }
-func (l *StarterLogger) StarterError(err error) {
+func (l *StarterLogger) SError(err error) {
 	for _, o := range l.Outputs {
 		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
 			Position:  StarterPosition,
@@ -210,7 +223,7 @@ func (l *StarterLogger) StarterError(err error) {
 		}))
 	}
 }
-func (l *StarterLogger) StarterFail(err error) {
+func (l *StarterLogger) SFail(err error) {
 	for _, o := range l.Outputs {
 		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
 			Position:  StarterPosition,
@@ -242,8 +255,7 @@ type CommonStarterLogger struct {
 	StarterLogger
 }
 
-func NewCommandStarterLogger(starterLoggerFile string) (*CommonStarterLogger, error) {
-	var err error
+func NewStarterLoggerWithWriters(writers ...io.Writer) *CommonStarterLogger {
 	logger := new(CommonStarterLogger)
 	logger.Outputs = make([]*StarterLoggerOutput, 0)
 
@@ -253,13 +265,12 @@ func NewCommandStarterLogger(starterLoggerFile string) (*CommonStarterLogger, er
 	outputStd.Writers = os.Stdout
 	logger.Outputs = append(logger.Outputs, outputStd)
 
-	outputFile := new(StarterLoggerOutput)
-	outputFile.Formatter = fileLogFormatter
-	// TODO 创建输出文件
-	outputFile.Writers, err = os.Create(starterLoggerFile)
-	if err != nil {
-		return nil, err
+	for _, w := range writers {
+		outputFile := new(StarterLoggerOutput)
+		outputFile.Formatter = commonWriterFormatter
+		outputFile.Writers = w
+		logger.Outputs = append(logger.Outputs, outputFile)
 	}
-	logger.Outputs = append(logger.Outputs, outputFile)
-	return logger, nil
+
+	return logger
 }

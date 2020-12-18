@@ -14,7 +14,7 @@ const (
 type StarterContext map[string]interface{}
 
 // 创建一个默认最少配置启动器上下文
-func CreateDefaultStarterContext(vpcfg *viper.Viper, logger *zap.Logger) *StarterContext {
+func CreateDefaultStarterContext(vpcfg *viper.Viper, logger IStarterLogger) *StarterContext {
 	sctx := &StarterContext{}
 	sctx.SetConfigs(vpcfg)
 	sctx.SetLogger(logger)
@@ -39,6 +39,6 @@ func (s StarterContext) Logger() *zap.Logger {
 	}
 	return p.(*zap.Logger)
 }
-func (s StarterContext) SetLogger(logger *zap.Logger) {
+func (s StarterContext) SetLogger(logger IStarterLogger) {
 	s[KeyLogger] = logger
 }

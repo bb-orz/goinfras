@@ -3,6 +3,7 @@ package goinfras
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"io"
 )
 
 // 应用程序启动管理器
@@ -16,6 +17,16 @@ func NewApplication(vpcfg *viper.Viper) *Application {
 	app := new(Application)
 	app.Sctx = &StarterContext{}
 	app.Sctx.SetConfigs(vpcfg)
+	app.Sctx.SetLogger(NewCommandLineStarterLogger())
+	return app
+}
+
+func NewApplicationWithStarterLoggerWriter(vpcfg *viper.Viper, writers ...io.Writer) *Application {
+	// 创建启动管理器
+	app := new(Application)
+	app.Sctx = &StarterContext{}
+	app.Sctx.SetConfigs(vpcfg)
+	app.Sctx.SetLogger(NewStarterLoggerWithWriters(writers...))
 	return app
 }
 

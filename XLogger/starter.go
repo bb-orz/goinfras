@@ -41,7 +41,6 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	commonLogger = NewCommonLogger(s.cfg, s.Writers...)
 	syncErrorLogger = NewSyncErrorLogger(s.cfg)
-	sctx.SetLogger(commonLogger)
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
