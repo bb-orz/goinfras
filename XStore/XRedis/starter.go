@@ -39,7 +39,7 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	var err error
 	pool, err = NewPool(s.cfg)
 	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
-		sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Redis Pool Setuped! \n"))
+		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Redis Pool Setuped! \n"))
 	}
 }
 
