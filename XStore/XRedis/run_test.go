@@ -3,7 +3,6 @@ package XRedis
 import (
 	"github.com/bb-orz/goinfras"
 	"github.com/gomodule/redigo/redis"
-	"go.uber.org/zap"
 	"testing"
 
 	. "github.com/smartystreets/goconvey/convey"
@@ -11,9 +10,7 @@ import (
 
 func TestNewCommonRedisPool(t *testing.T) {
 	Convey("Redis Dao Test", t, func() {
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
-		err = CreateDefaultPool(nil, logger)
+		err := CreateDefaultPool(nil)
 		So(err, ShouldBeNil)
 		Println("pool ActiveCount:", pool.Stats().ActiveCount, ",pool IdleCount:", pool.Stats().IdleCount)
 
@@ -33,9 +30,7 @@ func TestNewCommonRedisPool(t *testing.T) {
 
 func TestCommonRedisDao(t *testing.T) {
 	Convey("Redis Dao Test", t, func() {
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
-		err = CreateDefaultPool(nil, logger)
+		err := CreateDefaultPool(nil)
 		So(err, ShouldBeNil)
 
 		common := XCommon()
@@ -52,23 +47,15 @@ func TestCommonRedisDao(t *testing.T) {
 
 func TestStarter(t *testing.T) {
 	Convey("TestStarter", t, func() {
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
-		err = CreateDefaultPool(nil, logger)
+		var err error
+		err = CreateDefaultPool(nil)
 		So(err, ShouldBeNil)
 
-		s := NewStarter()
+		logger := goinfras.NewCommandLineStarterLogger()
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
+		s := NewStarter()
 		s.Init(sctx)
-		Println("Starter Init Successful!")
 		s.Setup(sctx)
-		Println("Starter Setup Successful!")
-
-		if s.Check(sctx) {
-			Println("Component Check Successful!")
-		} else {
-			Println("Component Check Fail!")
-		}
-
+		s.Check(sctx)
 	})
 }

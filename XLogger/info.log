@@ -1,0 +1,4 @@
+{"level":"\u001b[35mDEBUG\u001b[0m","time":"2020-12-19 00:58:47.520814","caller":"/Users/fun/Code/MyProject/goinfras/XLogger/run_test.go:32","message":"Log Debug Message..."}
+{"level":"\u001b[34mINFO\u001b[0m","time":"2020-12-19 00:58:47.521079","caller":"/Users/fun/Code/MyProject/goinfras/XLogger/run_test.go:33","message":"Log Info Message..."}
+{"level":"\u001b[33mWARN\u001b[0m","time":"2020-12-19 00:58:47.521101","caller":"/Users/fun/Code/MyProject/goinfras/XLogger/run_test.go:34","message":"Log Warn Message..."}
+{"level":"\u001b[31mERROR\u001b[0m","time":"2020-12-19 00:58:47.521117","caller":"/Users/fun/Code/MyProject/goinfras/XLogger/run_test.go:35","message":"Log Error Message..."}

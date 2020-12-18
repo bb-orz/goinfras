@@ -3,7 +3,6 @@ package XAliyunSms
 import (
 	"github.com/bb-orz/goinfras"
 	. "github.com/smartystreets/goconvey/convey"
-	"go.uber.org/zap"
 	"testing"
 )
 
@@ -27,20 +26,11 @@ func TestStarter(t *testing.T) {
 		err := CreateDefaultClient(nil)
 		So(err, ShouldBeNil)
 
-		s := NewStarter()
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
+		logger := goinfras.NewCommandLineStarterLogger()
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
+		s := NewStarter()
 		s.Init(sctx)
-		Println("Starter Init Successful!")
 		s.Setup(sctx)
-		Println("Starter Setup Successful!")
-
-		if s.Check(sctx) {
-			Println("Component Check Successful!")
-		} else {
-			Println("Component Check Fail!")
-		}
-
+		s.Check(sctx)
 	})
 }

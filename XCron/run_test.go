@@ -3,8 +3,8 @@ package XCron
 import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
+	"github.com/bb-orz/goinfras/XLogger"
 	. "github.com/smartystreets/goconvey/convey"
-	"go.uber.org/zap"
 	"testing"
 	"time"
 )
@@ -23,9 +23,7 @@ func (j JobB) Run() {
 
 func TestCron(t *testing.T) {
 	Convey("Test Cron", t, func() {
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
-		CreateDefaultManager(nil, logger)
+		CreateDefaultManager(nil)
 
 		// 1.定义定时任务
 		fmt.Println("定义第一个定时任务...")
@@ -60,34 +58,21 @@ func TestCron(t *testing.T) {
 // 测试启动器
 func TestStarter(t *testing.T) {
 	Convey("Test XCron Starter", t, func() {
+		XLogger.CreateDefaultLogger(nil)
+
 		// 定义定时任务
-		fmt.Println("定义第一个定时任务...")
 		tasks := make([]*Task, 0)
 		task1 := NewTask("*/1 * * * * *", &JobA{})
 		tasks = append(tasks, task1)
 
 		s := NewStarter(tasks...)
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
+		logger := goinfras.NewCommandLineStarterLogger()
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
 		s.Init(sctx)
-		Println("Starter Init Successful!")
 		s.Setup(sctx)
-		Println("Starter Setup Successful!")
 		s.Start(sctx)
-		Println("Starter Start Successful!")
-		if s.Check(sctx) {
-			Println("Component Check Successful!")
-		} else {
-			Println("Component Check Fail!")
-		}
+		s.Check(sctx)
 		time.Sleep(time.Second * 20)
 		s.Stop()
-		if len(XManager().client.Entries()) == 0 {
-			Println("Starter Stop Successful!")
-		} else {
-			Println("Starter Stop Exception!")
-		}
-
 	})
 }

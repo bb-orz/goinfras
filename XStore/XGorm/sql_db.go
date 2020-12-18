@@ -13,7 +13,7 @@ func newSqlDB(config *Config) (*sql.DB, error) {
 	var db *sql.DB
 	switch config.Dialect {
 	case "mysql":
-		mysqlDSN := fmt.Sprintf("gorm:gorm@tcp(%s:%d)/gorm?charset=%s&parseTime=%t&loc=%s", config.DbHost, config.DbPort, config.ChartSet, config.ParseTime, config.Local)
+		mysqlDSN := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=%t&loc=%s", config.DbUser, config.DbPasswd, config.DbHost, config.DbPort, config.DbName, config.ChartSet, config.ParseTime, config.Local)
 		db, err = sql.Open("mysql", mysqlDSN)
 	case "postgres":
 		postgresDSN := fmt.Sprintf("user=%s password=%s dbname=%s port=%d sslmode=%s TimeZone=%s", config.DbUser, config.DbPasswd, config.DbName, config.DbPort, config.SslMode, config.TimeZone)

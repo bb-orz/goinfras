@@ -1,6 +1,7 @@
 package XEcho
 
 import (
+	"github.com/bb-orz/goinfras/XLogger"
 	"github.com/labstack/echo/v4"
 	"go.uber.org/zap"
 	"net"
@@ -12,7 +13,7 @@ import (
 	"time"
 )
 
-func RecoveryMiddleware(logger *zap.Logger, stack bool) echo.MiddlewareFunc {
+func RecoveryMiddleware(stack bool) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			defer func() {
@@ -28,7 +29,7 @@ func RecoveryMiddleware(logger *zap.Logger, stack bool) echo.MiddlewareFunc {
 
 					httpRequest, _ := httputil.DumpRequest(c.Request(), false)
 					if brokenPipe {
-						logger.Error(c.Request().URL.Path,
+						XLogger.XCommon().Error(c.Request().URL.Path,
 							zap.Any("error", err),
 							zap.String("request", string(httpRequest)),
 						)
@@ -39,14 +40,14 @@ func RecoveryMiddleware(logger *zap.Logger, stack bool) echo.MiddlewareFunc {
 					}
 
 					if stack {
-						logger.Error("[Recovery from panic]",
+						XLogger.XCommon().Error("[Recovery from panic]",
 							zap.Time("time", time.Now()),
 							zap.Any("error", err),
 							zap.String("request", string(httpRequest)),
 							zap.String("stack", string(debug.Stack())),
 						)
 					} else {
-						logger.Error("[Recovery from panic]",
+						XLogger.XCommon().Error("[Recovery from panic]",
 							zap.Time("time", time.Now()),
 							zap.Any("error", err),
 							zap.String("request", string(httpRequest)),

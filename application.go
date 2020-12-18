@@ -3,6 +3,7 @@ package goinfras
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"io"
 )
 
 // 应用程序启动管理器
@@ -16,6 +17,17 @@ func NewApplication(vpcfg *viper.Viper) *Application {
 	app := new(Application)
 	app.Sctx = &StarterContext{}
 	app.Sctx.SetConfigs(vpcfg)
+	app.Sctx.SetLogger(NewCommandLineStarterLogger())
+	return app
+}
+
+// 创建一个带输出启动日志的应用管理器
+func NewApplicationWithStarterLoggerWriter(vpcfg *viper.Viper, logWriters ...io.Writer) *Application {
+	// 创建启动管理器
+	app := new(Application)
+	app.Sctx = &StarterContext{}
+	app.Sctx.SetConfigs(vpcfg)
+	app.Sctx.SetLogger(NewStarterLoggerWithWriters(logWriters...))
 	return app
 }
 
@@ -25,7 +37,7 @@ func (app *Application) Up() {
 	app.setup()        // 安装所有注册启动器组件
 	app.check()        // 检查所有注册组件
 	app.start()        // 启动组件实例
-	app.listenSignal() // 监听退出信号，实现优雅关闭所有启动器
+	app.listenSignal() // 监听退出信号，实现优雅关闭所有启动器 ,阻塞
 }
 
 // 停止或销毁应用程序所有基础资源
@@ -60,15 +72,9 @@ func (app *Application) check() {
 }
 
 func (app *Application) start() {
-	for i, s := range StarterManager.GetAll() {
-		if s.SetStartBlocking() { // 阻塞启动
-			// 如果是最后一个可阻塞的，直接启动并阻塞
-			if i == StarterManager.Len()-1 {
-				s.Start(app.Sctx)
-			} else {
-				// 如果不是，使用goroutine来异步启动，防止阻塞后面starter
-				go s.Start(app.Sctx)
-			}
+	for _, s := range StarterManager.GetAll() {
+		if s.StartBlocking() { // 阻塞的starter另开go程启动
+			go s.Start(app.Sctx)
 		} else { // 非阻塞启动
 			s.Start(app.Sctx)
 		}

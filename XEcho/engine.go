@@ -2,7 +2,6 @@ package XEcho
 
 import (
 	"github.com/labstack/echo/v4"
-	"go.uber.org/zap"
 )
 
 var echoEngine *echo.Echo
@@ -19,10 +18,10 @@ func NewEchoEngine(config *Config) *echo.Echo {
 	return engine
 }
 
-func CreateDefaultEngine(config *Config, logger *zap.Logger) {
+func CreateDefaultEngine(config *Config) {
 	// 1.配置gin中间件
 	middlewares := make([]echo.MiddlewareFunc, 0)
-	middlewares = append(middlewares, LoggerMiddleware(logger), RecoveryMiddleware(logger, false))
+	middlewares = append(middlewares, LoggerMiddleware(), RecoveryMiddleware(false))
 
 	if config == nil {
 		config = DefaultConfig()

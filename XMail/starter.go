@@ -3,7 +3,6 @@ package XMail
 import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
-	"go.uber.org/zap"
 )
 
 type starter struct {
@@ -27,13 +26,13 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	viper := sctx.Configs()
 	if viper != nil {
 		err = viper.UnmarshalKey("Cron", &define)
-		goinfras.ErrorHandler(err)
+		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
 	if define == nil {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	sctx.Logger().Info("Print Mail Config:", zap.Any("MailConfig", *define))
+	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %v \n", *define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
@@ -42,16 +41,16 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	} else {
 		mailDialer = NewAuthDialer(s.cfg.Server, s.cfg.User, s.cfg.Password, s.cfg.Port)
 	}
+	sctx.Logger().SDebug(s.Name(), goinfras.StepSetup, fmt.Sprintf("Mail Dialer Steuped!  \n"))
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(mailDialer)
-	if err != nil {
-		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Mail Dialer Setup Fail!", s.Name()))
-		return false
+	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Mail Dialer Setup Successful! \n"))
+		return true
 	}
-	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Mail Dialer Setup Successful!", s.Name()))
-	return true
+	return false
 }
 
 // 设置启动组级别

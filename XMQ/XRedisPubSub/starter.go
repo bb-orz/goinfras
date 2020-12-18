@@ -3,7 +3,6 @@ package XRedisPubSub
 import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
-	"go.uber.org/zap"
 )
 
 type starter struct {
@@ -27,27 +26,33 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	viper := sctx.Configs()
 	if viper != nil {
 		err = viper.UnmarshalKey("RedisPubSub", &define)
-		goinfras.ErrorHandler(err)
+		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
 	if define == nil {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	sctx.Logger().Info("Print RedisPubSub Config:", zap.Any("RedisPubSubConfig", *define))
+	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %v \n", *define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
-	redisPubSubPool = NewRedisPubsubPool(s.cfg, sctx.Logger())
+	redisPubSubPool = NewRedisPubsubPool(s.cfg)
+	sctx.Logger().SDebug(s.Name(), goinfras.StepSetup, fmt.Sprintf("RedisPubSub Pool Steuped!  \n"))
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
-	err := goinfras.Check(redisPubSubPool)
-	if err != nil {
-		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: RedisPubSub Pool Setup Fail!", s.Name()))
-		return false
+	var err error
+	err = goinfras.Check(redisPubSubPool)
+	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
+		conn := redisPubSubPool.Get()
+		defer conn.Close()
+		_, err = conn.Do("PING", "ping")
+		if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
+			sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("RedisPubSub Pool Setup Successful! \n"))
+			return true
+		}
 	}
-	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: RedisPubSub Pool Setup Successful!", s.Name()))
-	return true
+	return false
 }
 
 func (s *starter) Stop() {

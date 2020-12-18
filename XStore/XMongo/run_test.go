@@ -6,7 +6,6 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.uber.org/zap"
 	"testing"
 )
 
@@ -64,20 +63,11 @@ func TestStarter(t *testing.T) {
 		err := CreateDefaultDB(nil)
 		So(err, ShouldBeNil)
 
-		s := NewStarter()
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
+		logger := goinfras.NewCommandLineStarterLogger()
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
+		s := NewStarter()
 		s.Init(sctx)
-		Println("Starter Init Successful!")
 		s.Setup(sctx)
-		Println("Starter Setup Successful!")
-
-		if s.Check(sctx) {
-			Println("Component Check Successful!")
-		} else {
-			Println("Component Check Fail!")
-		}
-
+		s.Check(sctx)
 	})
 }

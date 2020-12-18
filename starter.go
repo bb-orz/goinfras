@@ -1,6 +1,7 @@
 package goinfras
 
 import (
+	"fmt"
 	"sort"
 )
 
@@ -17,7 +18,7 @@ type Starter interface {
 	// 启动状态检查
 	Check(sctx *StarterContext) bool
 	// 阻塞启动：设置需要后置启动的资源组件，默认为false
-	SetStartBlocking() bool
+	StartBlocking() bool
 	// 资源停止：
 	// 通常在启动时遇到异常时或者启用远程管理时，用于释放资源和终止资源的使用，
 	// 通常要优雅的释放，等待正在进行的任务继续，但不再接受新的任务
@@ -59,7 +60,7 @@ func (*BaseStarter) Start(*StarterContext) {}
 func (*BaseStarter) Check(*StarterContext) bool { return false }
 
 // 阻塞型组件需设置为true
-func (*BaseStarter) SetStartBlocking() bool { return false }
+func (*BaseStarter) StartBlocking() bool { return false }
 
 // 关闭应用时的资源组件清理工作
 func (*BaseStarter) Stop() {}
@@ -107,4 +108,9 @@ func RegisterStarter(s Starter) {
 // 组件启动器排序
 func SortStarters() {
 	sort.Sort(StarterManager)
+	fmt.Println("Sorted Starters:")
+
+	for _, s := range StarterManager.GetAll() {
+		fmt.Println(s.Name(), "Starter Attention!")
+	}
 }

@@ -3,7 +3,6 @@ package XRedis
 import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
-	"go.uber.org/zap"
 )
 
 type starter struct {
@@ -27,29 +26,30 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	viper := sctx.Configs()
 	if viper != nil {
 		err = viper.UnmarshalKey("Redis", &define)
-		goinfras.ErrorHandler(err)
+		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
 	if define == nil {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	sctx.Logger().Info("Print Redis Config:", zap.Any("Redis", *define))
+	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %v \n", *define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	var err error
-	pool, err = NewPool(s.cfg, sctx.Logger())
-	goinfras.ErrorHandler(err)
+	pool, err = NewPool(s.cfg)
+	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
+		sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Redis Pool Setuped! \n"))
+	}
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(pool)
-	if err != nil {
-		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Redis Pool Setup Fail!", s.Name()))
-		return false
+	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Redis Pool Setup Successful! \n"))
+		return true
 	}
-	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Redis Pool Setup Successful!", s.Name()))
-	return true
+	return false
 }
 
 func (s *starter) Stop() {

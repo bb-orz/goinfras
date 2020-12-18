@@ -1,6 +1,7 @@
 package XGin
 
 import (
+	"github.com/bb-orz/goinfras/XLogger"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"time"
@@ -8,7 +9,7 @@ import (
 
 var timeFormat = "2019-11-09T23:02:28.844+0800"
 
-func ZapLoggerMiddleware(logger *zap.Logger) gin.HandlerFunc {
+func ZapLoggerMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
 		path := c.Request.URL.Path
@@ -23,10 +24,10 @@ func ZapLoggerMiddleware(logger *zap.Logger) gin.HandlerFunc {
 		latency := end.Sub(start)
 		if len(c.Errors) > 0 {
 			for _, e := range c.Errors.Errors() {
-				logger.Error(e)
+				XLogger.XCommon().Error(e)
 			}
 		} else {
-			logger.Info("[Global Request Log]",
+			XLogger.XCommon().Info("[Global Request Log]",
 				zap.String("ip", c.ClientIP()),
 				zap.Duration("latency", latency),
 				zap.Int("status", c.Writer.Status()),

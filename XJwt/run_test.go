@@ -5,7 +5,6 @@ import (
 	"github.com/bb-orz/goinfras/XStore/XRedis"
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/spf13/viper"
-	"go.uber.org/zap"
 	"testing"
 	"time"
 )
@@ -44,8 +43,7 @@ func TestTokenUtilsX(t *testing.T) {
 	Convey("Test JWT Token Utils Cache", t, func() {
 		var err error
 		// 测试前先启动XRedis 组件的默认连接池
-		logger, err := zap.NewDevelopment()
-		err = XRedis.CreateDefaultPool(nil, logger)
+		err = XRedis.CreateDefaultPool(nil)
 		So(err, ShouldBeNil)
 		err = CreateDefaultTkuX(nil)
 		So(err, ShouldBeNil)
@@ -85,23 +83,16 @@ func TestStarter(t *testing.T) {
 		newViper := viper.New()
 		newViper.Set("Jwt.PrivateKey", DefaultConfig().PrivateKey)
 		newViper.Set("Jwt.ExpSeconds", DefaultConfig().ExpSeconds)
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
+
+		logger := goinfras.NewCommandLineStarterLogger()
 		sctx := goinfras.CreateDefaultStarterContext(newViper, logger)
 		sctx.SetConfigs(newViper)
 
 		s := NewStarter()
 		s.Init(sctx)
-		Println("Starter Init Successful!")
 		s.Setup(sctx)
-		Println("Starter Setup Successful!")
+		s.Check(sctx)
 		s.Start(sctx)
-		Println("Starter Start Successful!")
-		if s.Check(sctx) {
-			Println("Component Check Successful!")
-		} else {
-			Println("Component Check Fail!")
-		}
 
 		userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker", Avatar: "", Gender: 1}
 

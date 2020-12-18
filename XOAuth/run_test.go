@@ -3,7 +3,6 @@ package XOAuth
 import (
 	"github.com/bb-orz/goinfras"
 	. "github.com/smartystreets/goconvey/convey"
-	"go.uber.org/zap"
 	"testing"
 )
 
@@ -42,19 +41,12 @@ func TestWechatOAuth(t *testing.T) {
 
 func TestStarter(t *testing.T) {
 	Convey("TestStarter", t, func() {
-		s := NewStarter()
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
+		logger := goinfras.NewCommandLineStarterLogger()
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
-		s.Init(sctx)
-		Println("Starter Init Successful!")
-		s.Setup(sctx)
-		Println("Starter Setup Successful!")
 
-		if s.Check(sctx) {
-			Println("Component Check Successful!")
-		} else {
-			Println("Component Check Fail!")
-		}
+		s := NewStarter()
+		s.Init(sctx)
+		s.Setup(sctx)
+		s.Check(sctx)
 	})
 }

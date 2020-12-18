@@ -3,7 +3,6 @@ package XLogger
 import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
-	"go.uber.org/zap"
 	"io"
 )
 
@@ -30,30 +29,32 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	viper := sctx.Configs()
 	if viper != nil {
 		err = viper.UnmarshalKey("Logger", &define)
-		goinfras.ErrorHandler(err)
+		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
 	if define == nil {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	sctx.Logger().Info("Print Logger Config:", zap.Any("EtcdConfig", *define))
+	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %v \n", *define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	commonLogger = NewCommonLogger(s.cfg, s.Writers...)
 	syncErrorLogger = NewSyncErrorLogger(s.cfg)
-	sctx.SetLogger(commonLogger)
+	sctx.Logger().SDebug(s.Name(), goinfras.StepSetup, fmt.Sprintf("Zap Logger Steuped!  \n"))
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
-	var err1, err2 error
-	err1 = goinfras.Check(commonLogger)
-	err2 = goinfras.Check(syncErrorLogger)
-	if err1 != nil || err2 != nil {
-		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Zap Logger Setup Fail!", s.Name()))
+	var err error
+	err = goinfras.Check(commonLogger)
+	if !sctx.PassError(s.Name(), goinfras.StepCheck, err) {
 		return false
 	}
-	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Zap Logger Setup Successful!", s.Name()))
+	err = goinfras.Check(syncErrorLogger)
+	if !sctx.PassError(s.Name(), goinfras.StepCheck, err) {
+		return false
+	}
+	sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Zap Logger Setup Successful! \n"))
 	return true
 }
 

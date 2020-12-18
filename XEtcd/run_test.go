@@ -6,7 +6,6 @@ import (
 	"github.com/bb-orz/goinfras"
 	. "github.com/smartystreets/goconvey/convey"
 	"go.etcd.io/etcd/clientv3"
-	"go.uber.org/zap"
 	"testing"
 	"time"
 )
@@ -70,7 +69,7 @@ func TestEtcdWatch(t *testing.T) {
 		Println("Watch Key:", KeyLevel1)
 		go func() {
 			watchChans := XClient().Watch(context.Background(), KeyLevel1)
-			Println("Watch Key:", KeyLevel1)
+			fmt.Println("Watch Key:", KeyLevel1)
 			for wv := range watchChans {
 				for _, w := range wv.Events {
 					fmt.Println("Key:", string(w.Kv.Key))
@@ -179,20 +178,11 @@ func TestEtcdKeepAlive(t *testing.T) {
 func TestStarter(t *testing.T) {
 	Convey("Test XEtcd Starter", t, func() {
 		s := NewStarter()
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
+		logger := goinfras.NewCommandLineStarterLogger()
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
 		s.Init(sctx)
-		Println("Starter Init Successful!")
 		s.Setup(sctx)
-		Println("Starter Setup Successful!")
-		s.Start(sctx)
-		Println("Starter Start Successful!")
-		if s.Check(sctx) {
-			Println("Component Check Successful!")
-		} else {
-			Println("Component Check Fail!")
-		}
+		s.Check(sctx)
 
 		// 尝试设置和获取键值对
 		sr, err := XClient().Put(context.Background(), "mykeya", "aaaaaaa")

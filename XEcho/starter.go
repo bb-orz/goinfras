@@ -41,57 +41,52 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	viper := sctx.Configs()
 	if viper != nil {
 		err = viper.UnmarshalKey("Echo", &define)
-		goinfras.ErrorHandler(err)
+		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
 
 	// 读配置为空时，默认配置
 	if define == nil {
-		s.cfg = DefaultConfig()
-	} else {
-		s.cfg = define
+		define = DefaultConfig()
 	}
+	s.cfg = define
+	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %v \n", *define))
 }
 
 // 启动时：添加中间件，实例化应用，注册项目实现的API
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
-
 	// New Gin Engine
 	echoEngine = NewEchoEngine(s.cfg)
-
 	// 添加路由前中间件
 	if len(s.preMiddlewares) > 0 {
 		echoEngine.Pre(s.preMiddlewares...)
 	}
-
 	// 默认添加必要的中间件
 	if !s.cfg.UseSelfMiddleware {
 		// 自定义日志记录
-		echoEngine.Use(LoggerMiddleware(sctx.Logger()))
+		echoEngine.Use(LoggerMiddleware())
 		// 自定义错误处理
-		echoEngine.Use(ErrorMiddleware(sctx.Logger()))
+		echoEngine.Use(ErrorMiddleware())
 		// 自定义panic恢复
-		echoEngine.Use(RecoveryMiddleware(sctx.Logger(), true))
+		echoEngine.Use(RecoveryMiddleware(true))
 	}
-
 	// 添加路由后中间件
 	if len(s.useMiddlewares) > 0 {
 		echoEngine.Use(s.useMiddlewares...)
 	}
-
 	// API路由注册
 	for _, v := range GetApis() {
 		v.SetRoutes()
 	}
+	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Echo Engine Setuped! \n"))
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(echoEngine)
-	if err != nil {
-		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Echo Engine Setup Fail!", s.Name()))
-		return false
+	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Echo Engine Setup Successful! \n "))
+		return true
 	}
-	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Echo Engine Setup Successful!", s.Name()))
-	return true
+	return false
 }
 
 // 启动时：运行echo engine
@@ -99,19 +94,19 @@ func (s *starter) Start(sctx *goinfras.StarterContext) {
 	var addr string
 	var err error
 	addr = fmt.Sprintf("%s:%d", s.cfg.ListenHost, s.cfg.ListenPort)
+	sctx.Logger().SInfo(s.Name(), goinfras.StepStart, fmt.Sprintf("Echo Server Starting ... \n"))
 	if s.cfg.Tls && s.cfg.CertFile != "" && s.cfg.KeyFile != "" {
 		err = echoEngine.StartTLS(addr, s.cfg.CertFile, s.cfg.KeyFile)
-		goinfras.ErrorHandler(err)
 	} else {
 		err = echoEngine.Start(addr)
-		goinfras.ErrorHandler(err)
 	}
+	sctx.PassError(s.Name(), goinfras.StepStart, err)
 }
 
 func (s *starter) Stop() {}
 
 // 默认设置阻塞启动
-func (s *starter) SetStartBlocking() bool { return true }
+func (s *starter) StartBlocking() bool { return true }
 
 // 设置启动组级别
 func (s *starter) PriorityGroup() goinfras.PriorityGroup { return goinfras.AppGroup }

@@ -3,7 +3,6 @@ package XValidate
 import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
-	"go.uber.org/zap"
 )
 
 type starter struct {
@@ -27,34 +26,36 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	viper := sctx.Configs()
 	if viper != nil {
 		err = viper.UnmarshalKey("Validate", &define)
-		goinfras.ErrorHandler(err)
+		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
 	if define == nil {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	sctx.Logger().Info("Print Validate Config:", zap.Any("Validate", *define))
+	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %v \n", *define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	var err error
 	if s.cfg.TransZh {
 		validater, translater, err = NewZhValidater()
-		goinfras.ErrorHandler(err)
+		if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
+			sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("XValidate Utils Setuped! \n"))
+		}
 	} else {
 		validater = NewValidater()
 	}
-
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
-	err1 := goinfras.Check(validater)
-	err2 := goinfras.Check(translater)
-
-	if err1 != nil || err2 != nil {
-		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Validater or Translater Setup Fail!", s.Name()))
-		return false
+	var err error
+	err = goinfras.Check(validater)
+	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Validater Setup Successful! \n"))
 	}
-	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Validater and Translater Setup Successful!", s.Name()))
+	err = goinfras.Check(translater)
+	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Translater Setup Successful! \n"))
+	}
 	return true
 }

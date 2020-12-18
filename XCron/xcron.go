@@ -1,9 +1,5 @@
 package XCron
 
-import (
-	"go.uber.org/zap"
-)
-
 // 资源组件实例调用
 func XManager() *Manager {
 	return manager

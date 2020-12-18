@@ -16,7 +16,7 @@ func CreateDefaultLogger(config *Config, syncWriters ...io.Writer) error {
 		config = DefaultConfig()
 	}
 	// 有异步写入器，打开配置开关
-	if len(syncWriters) != 0 {
+	if len(syncWriters) > 0 {
 		config.SimpleZapCore = false
 		config.SyncLogSwitch = true
 		config.SyncZapCore = true

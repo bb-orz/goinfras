@@ -1,6 +1,7 @@
 package XRedis
 
 import (
+	"github.com/bb-orz/goinfras/XLogger"
 	"github.com/gomodule/redigo/redis"
 	"go.uber.org/zap"
 	"strconv"
@@ -10,12 +11,12 @@ import (
 var pool *redis.Pool
 
 // 创建一个默认配置的DB
-func CreateDefaultPool(config *Config, logger *zap.Logger) error {
+func CreateDefaultPool(config *Config) error {
 	var err error
 	if config == nil {
 		config = DefaultConfig()
 	}
-	pool, err = NewPool(config, logger)
+	pool, err = NewPool(config)
 	return err
 }
 
@@ -27,7 +28,7 @@ func CheckPool() bool {
 	return false
 }
 
-func NewPool(cfg *Config, logger *zap.Logger) (pool *redis.Pool, err error) {
+func NewPool(cfg *Config) (pool *redis.Pool, err error) {
 
 	// 配置并获得一个连接池对象的指针
 	pool = &redis.Pool{
@@ -43,13 +44,13 @@ func NewPool(cfg *Config, logger *zap.Logger) (pool *redis.Pool, err error) {
 			redisAddr := cfg.DbHost + ":" + strconv.Itoa(cfg.DbPort)
 			conn, err := redis.Dial("tcp", redisAddr)
 			if err != nil {
-				logger.Error("redis dial fatal", zap.Error(err))
+				XLogger.XCommon().Error("redis dial fatal", zap.Error(err))
 				return nil, err
 			}
 			// 权限认证
 			if cfg.DbAuth {
 				if _, err := conn.Do("Auth", cfg.DbPasswd); err != nil {
-					logger.Error("redis auth fatal", zap.Error(err))
+					XLogger.XCommon().Error("redis auth fatal", zap.Error(err))
 					return nil, err
 				}
 			}
@@ -63,7 +64,7 @@ func NewPool(cfg *Config, logger *zap.Logger) (pool *redis.Pool, err error) {
 			}
 			_, err := conn.Do("Ping")
 			if err != nil {
-				logger.Info("Redis Connect Ping Successful!")
+				XLogger.XCommon().Info("Redis Connect Ping Successful!")
 			}
 			return err
 		},

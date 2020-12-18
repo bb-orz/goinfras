@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 type starter struct {
@@ -27,43 +26,38 @@ func (s *starter) Name() string {
 // 初始化时：加载配置
 func (s *starter) Init(sctx *goinfras.StarterContext) {
 	var err error
+	var define *Config
 	var ginDefine *GinConfig
 	var corsDefine *CorsConfig
 
 	viper := sctx.Configs()
 	if viper != nil {
 		err = viper.UnmarshalKey("Gin", &ginDefine)
-		goinfras.ErrorHandler(err)
+		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
 
 	if viper != nil {
 		err = viper.UnmarshalKey("Cors", &corsDefine)
-		goinfras.ErrorHandler(err)
+		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
 
 	// 读配置为空时，默认配置
 	if ginDefine == nil {
-		s.cfg = DefaultConfig()
-
+		define = DefaultConfig()
 	} else {
-		s.cfg = &Config{}
-		s.cfg.GinConfig = ginDefine
-		s.cfg.CorsConfig = corsDefine
-		sctx.Logger().Info("Print Cors Config:", zap.Any("CorsConfig", *corsDefine))
+		define = &Config{}
+		define.GinConfig = ginDefine
+		define.CorsConfig = corsDefine
 	}
-
-	fmt.Println(*s.cfg.GinConfig)
-	// sctx.Logger().Info("Print Gin Config:", zap.Any("GinConfig", *ginDefine))
-
+	s.cfg = define
+	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %v \n", *define))
 }
 
 // 启动时：添加中间件，实例化应用，注册项目实现的API
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	// 1.配置gin中间件
-	logger := sctx.Logger()
-
 	middlewares := make([]gin.HandlerFunc, 0)
-	middlewares = append(middlewares, ZapLoggerMiddleware(logger), ZapRecoveryMiddleware(logger, false))
+	middlewares = append(middlewares, ZapLoggerMiddleware(), ZapRecoveryMiddleware(false))
 
 	// 如开启cors限制，添加中间件
 	if s.cfg.CorsConfig != nil && !s.cfg.CorsConfig.AllowAllOrigins {
@@ -74,22 +68,25 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	middlewares = append(middlewares, s.middlewares...)
 
 	// 2.New Gin Engine
+	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Gin Engine Creating ...  \n"))
 	ginEngine = NewGinEngine(s.cfg, middlewares...)
 
 	// 3.API路由注册
+	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Gin Engine Register Api Routes...  \n"))
 	for _, v := range GetApis() {
 		v.SetRoutes()
 	}
+	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Gin Engine Setuped! \n"))
+
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(ginEngine)
-	if err != nil {
-		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Gin Engine Setup Fail!", s.Name()))
-		return false
+	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Gin Engine Setup Successful! \n "))
+		return true
 	}
-	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Gin Engine Setup Successful!", s.Name()))
-	return true
+	return false
 }
 
 // 启动时：运行gin engine
@@ -97,19 +94,19 @@ func (s *starter) Start(sctx *goinfras.StarterContext) {
 	var addr string
 	var err error
 	addr = fmt.Sprintf("%s:%d", s.cfg.ListenHost, s.cfg.ListenPort)
+	sctx.Logger().SInfo(s.Name(), goinfras.StepStart, fmt.Sprintf("Gin Server Starting ... \n"))
 	if s.cfg.Tls && s.cfg.CertFile != "" && s.cfg.KeyFile != "" {
 		err = ginEngine.RunTLS(addr, s.cfg.CertFile, s.cfg.KeyFile)
-		goinfras.ErrorHandler(err)
 	} else {
 		err = ginEngine.Run(addr)
-		goinfras.ErrorHandler(err)
 	}
+	sctx.PassError(s.Name(), goinfras.StepStart, err)
 }
 
 func (s *starter) Stop() {}
 
 // 默认设置阻塞启动
-func (s *starter) SetStartBlocking() bool { return true }
+func (s *starter) StartBlocking() bool { return true }
 
 // 设置启动组级别
 func (s *starter) PriorityGroup() goinfras.PriorityGroup { return goinfras.AppGroup }

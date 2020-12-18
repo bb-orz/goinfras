@@ -3,7 +3,6 @@ package XEsOfficial
 import (
 	"github.com/bb-orz/goinfras"
 	. "github.com/smartystreets/goconvey/convey"
-	"go.uber.org/zap"
 	"testing"
 )
 
@@ -11,18 +10,10 @@ import (
 func TestStarter(t *testing.T) {
 	Convey("Test XEs Starter", t, func() {
 		s := NewStarter(nil)
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
+		logger := goinfras.NewCommandLineStarterLogger()
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
 		s.Init(sctx)
-		Println("Starter Init Successful!")
 		s.Setup(sctx)
-		Println("Starter Setup Successful!")
-		if s.Check(sctx) {
-			Println("Starter Check Successful!")
-		} else {
-			Println("Starter Check Fail!")
-		}
-
+		s.Check(sctx)
 	})
 }

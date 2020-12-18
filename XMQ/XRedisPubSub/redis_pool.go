@@ -1,6 +1,7 @@
 package XRedisPubSub
 
 import (
+	"github.com/bb-orz/goinfras/XLogger"
 	redigo "github.com/gomodule/redigo/redis"
 	"go.uber.org/zap"
 	"strconv"
@@ -15,14 +16,14 @@ Tips：原则上用于缓存的redis机器与用于pubsub的redis机器分开较
 
 var redisPubSubPool *redigo.Pool
 
-func CreateDefaultPool(config *Config, logger *zap.Logger) {
+func CreateDefaultPool(config *Config) {
 	if config == nil {
 		config = DefaultConfig()
 	}
-	redisPubSubPool = NewRedisPubsubPool(config, logger)
+	redisPubSubPool = NewRedisPubsubPool(config)
 }
 
-func NewRedisPubsubPool(cfg *Config, logger *zap.Logger) *redigo.Pool {
+func NewRedisPubsubPool(cfg *Config) *redigo.Pool {
 	// 配置并获得一个连接池对象的指针
 	redisPubSubPool := &redigo.Pool{
 		// 最大活动链接数。0为无限
@@ -37,13 +38,13 @@ func NewRedisPubsubPool(cfg *Config, logger *zap.Logger) *redigo.Pool {
 			redisAddr := cfg.DbHost + ":" + strconv.Itoa(cfg.DbPort)
 			conn, err := redigo.Dial("tcp", redisAddr)
 			if err != nil {
-				logger.Error("redis dial fatal:", zap.Error(err))
+				XLogger.XCommon().Error("redis dial fatal:", zap.Error(err))
 				return nil, err
 			}
 			// 权限认证
 			if cfg.DbAuth {
 				if _, err := conn.Do("Auth", cfg.DbPasswd); err != nil {
-					logger.Error("redis auth fatal:", zap.Error(err))
+					XLogger.XCommon().Error("redis auth fatal:", zap.Error(err))
 					conn.Close()
 					return nil, err
 				}
@@ -58,7 +59,7 @@ func NewRedisPubsubPool(cfg *Config, logger *zap.Logger) *redigo.Pool {
 			}
 			_, err := conn.Do("Ping")
 			if err != nil {
-				logger.Warn("Redis PubSub Server Disconnect")
+				XLogger.XCommon().Warn("Redis PubSub Server Disconnect")
 			}
 			return err
 		},

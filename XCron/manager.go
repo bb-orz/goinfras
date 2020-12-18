@@ -1,9 +1,7 @@
 package XCron
 
 import (
-	"github.com/bb-orz/goinfras"
 	"github.com/robfig/cron/v3"
-	"go.uber.org/zap"
 	"time"
 )
 
@@ -11,11 +9,13 @@ import (
 var manager *Manager
 
 // 创建一个默认配置的Manager
-func CreateDefaultManager(config *Config, logger *zap.Logger) {
+func CreateDefaultManager(config *Config) error {
+	var err error
 	if config == nil {
 		config = DefaultConfig()
 	}
-	manager = NewManager(config, logger)
+	manager, err = NewManager(config)
+	return err
 }
 
 type Task struct {
@@ -33,14 +33,15 @@ func NewTask(spec string, job cron.Job) *Task {
 // 定时任务管理器
 type Manager struct {
 	client *cron.Cron
-	logger *zap.Logger
 	tasks  []*Task
 }
 
-func NewManager(cfg *Config, logger *zap.Logger) *Manager {
-	cronLogger := &cronLogger{logger: logger}
+func NewManager(cfg *Config) (*Manager, error) {
+	cronLogger := NewCronLogger()
 	location, err := time.LoadLocation(cfg.Location)
-	goinfras.ErrorHandler(err)
+	if err != nil {
+		return nil, err
+	}
 
 	c := cron.New(
 		cron.WithSeconds(),          // 提供秒字段的parser，如无该option秒字段不解析
@@ -51,31 +52,29 @@ func NewManager(cfg *Config, logger *zap.Logger) *Manager {
 
 	manager := new(Manager)
 	manager.client = c
-	manager.logger = logger
-	return manager
+	return manager, nil
 }
 
 // 注册任务
-func (m *Manager) RegisterTasks(tasks ...*Task) {
+func (m *Manager) RegisterTasks(tasks ...*Task) ([]cron.EntryID, error) {
+	var err error
+	var entryIDs = make([]cron.EntryID, 0)
 	// Add Schedules and Jobs
 	for _, t := range tasks {
-		entryID, err := m.client.AddJob(t.spec, t.job)
+		var entryID cron.EntryID
+		entryID, err = m.client.AddJob(t.spec, t.job)
 		if err != nil {
-			m.logger.Error("[Cron Add Task Error]", zap.Error(err))
+			return entryIDs, err
 		}
-		m.logger.Info("[Cron Add Task]", zap.Int("Entry ID", int(entryID)))
+		entryIDs = append(entryIDs, entryID)
 	}
-	m.logger.Info("Cron Register Tasks Finish!")
+	return entryIDs, nil
 }
 
 // 运行所有任务
 func (m *Manager) RunTasks() {
 	if len(manager.client.Entries()) > 0 {
 		m.client.Start()
-		m.logger.Info("The Cron Tasks Running...")
-		m.logger.Info("Cron Entries:", zap.Any("Tasks", manager.client.Entries()))
-	} else {
-		m.logger.Info("No Cron Entries")
 	}
 }
 
@@ -92,8 +91,6 @@ func (m *Manager) StopCron() {
 
 // 重启所有任务
 func (m *Manager) RestartCron() {
-	m.logger.Info("The Cron Tasks Stopping...")
 	m.StopCron()
-	m.logger.Info("The Cron Tasks Restarting...")
 	m.RunTasks()
 }

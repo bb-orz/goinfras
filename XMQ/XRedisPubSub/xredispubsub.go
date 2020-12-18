@@ -2,7 +2,6 @@ package XRedisPubSub
 
 import (
 	redigo "github.com/gomodule/redigo/redis"
-	"go.uber.org/zap"
 )
 
 // 资源组件实例调用
@@ -32,17 +31,15 @@ func XF(f func(c redigo.Conn) error) error {
 }
 
 // 通用Publisher实例
-func XRedisPublisher(logger *zap.Logger) *redisPublisher {
+func XRedisPublisher() *redisPublisher {
 	publisher := new(redisPublisher)
 	publisher.pool = XPool()
-	publisher.logger = logger
 	return publisher
 }
 
 // 通用Subscriber实例
-func XRedisSubscriber(logger *zap.Logger) *RedisSubscriber {
+func XRedisSubscriber() *RedisSubscriber {
 	subscriber := new(RedisSubscriber)
 	subscriber.pool = XPool()
-	subscriber.logger = logger
 	return subscriber
 }

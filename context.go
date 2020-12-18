@@ -1,8 +1,10 @@
 package goinfras
 
 import (
+	"fmt"
 	"github.com/spf13/viper"
-	"go.uber.org/zap"
+	"runtime"
+	"strconv"
 )
 
 const (
@@ -14,7 +16,7 @@ const (
 type StarterContext map[string]interface{}
 
 // 创建一个默认最少配置启动器上下文
-func CreateDefaultStarterContext(vpcfg *viper.Viper, logger *zap.Logger) *StarterContext {
+func CreateDefaultStarterContext(vpcfg *viper.Viper, logger IStarterLogger) *StarterContext {
 	sctx := &StarterContext{}
 	sctx.SetConfigs(vpcfg)
 	sctx.SetLogger(logger)
@@ -32,13 +34,52 @@ func (s StarterContext) SetConfigs(vpcfg *viper.Viper) {
 	s[KeyConfig] = vpcfg
 }
 
-func (s StarterContext) Logger() *zap.Logger {
+func (s StarterContext) Logger() IStarterLogger {
 	p := s[KeyLogger]
 	if p == nil {
 		panic("日志记录器还没有被初始化")
 	}
-	return p.(*zap.Logger)
+	return p.(IStarterLogger)
 }
-func (s StarterContext) SetLogger(logger *zap.Logger) {
+func (s StarterContext) SetLogger(logger IStarterLogger) {
 	s[KeyLogger] = logger
+}
+
+// 有错误则记录启动器警告日志
+func (s StarterContext) PassWarning(name, step string, err error) {
+	if err != nil {
+		var path string
+		if _, file, line, ok := runtime.Caller(1); ok {
+			path = file + " : " + strconv.Itoa(line)
+		}
+		s.Logger().SWarning(name, step, fmt.Sprintf("Warning: %s >>> [ %s ] \n", err.Error(), path))
+	}
+}
+
+// err == nil 返回 true，否则记录启动器错误日志并返回false
+func (s StarterContext) PassError(name, step string, err error) bool {
+	if err == nil {
+		return true
+	} else {
+		var path string
+		if _, file, line, ok := runtime.Caller(1); ok {
+			path = file + " : " + strconv.Itoa(line)
+		}
+		s.Logger().SError(name, step, fmt.Errorf("ERROR: %s >>> [ %s ] \n", err.Error(), path))
+		return false
+	}
+}
+
+// err == nil,返回true ;err != nil 致命错误处理，直接panic
+func (s StarterContext) PassFail(name, step string, err error) bool {
+	if err == nil {
+		return true
+	} else {
+		var path string
+		if _, file, line, ok := runtime.Caller(1); ok {
+			path = file + " : " + strconv.Itoa(line)
+		}
+		s.Logger().SFail(name, step, fmt.Errorf("FAIL %s >>> [ %s ]", err.Error(), path))
+		panic("")
+	}
 }
