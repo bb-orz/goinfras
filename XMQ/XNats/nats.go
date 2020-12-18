@@ -1,8 +1,8 @@
 package XNats
 
 import (
+	"github.com/bb-orz/goinfras/XLogger"
 	"github.com/nats-io/nats.go"
-	"go.uber.org/zap"
 	"strconv"
 	"strings"
 	"sync"
@@ -17,12 +17,12 @@ NatsMq，类似于redis式的轻量级消息中间件，用于高吞吐量的应
 
 var natsMQPool *NatsPool
 
-func CreateDefaultPool(config *Config, logger *zap.Logger) error {
+func CreateDefaultPool(config *Config) error {
 	var err error
 	if config == nil {
 		config = DefaultConfig()
 	}
-	natsMQPool, err = NewPool(config, logger)
+	natsMQPool, err = NewPool(config)
 	return err
 }
 
@@ -35,7 +35,7 @@ type NatsPool struct {
 	Addr     string
 }
 
-func NewPool(cfg *Config, logger *zap.Logger) (*NatsPool, error) {
+func NewPool(cfg *Config) (*NatsPool, error) {
 	var serverList []string
 	var natsServersUrl string
 
@@ -58,7 +58,7 @@ func NewPool(cfg *Config, logger *zap.Logger) (*NatsPool, error) {
 	}
 
 	//  nats conn 初始化连接池
-	return NewDefaultPool(natsServersUrl, logger)
+	return NewDefaultPool(natsServersUrl)
 }
 
 // 连接处理函数
@@ -100,7 +100,7 @@ func NewNatsConnectPool(addr string, connSize int, dialFunc DialFunc) (*NatsPool
 const DefaultConnSize = 20
 
 // 默认连接池的工厂方法
-func NewDefaultPool(addr string, logger *zap.Logger) (*NatsPool, error) {
+func NewDefaultPool(addr string) (*NatsPool, error) {
 	// 默认的连接处理函数
 	var defaultFunc = func(natsServersUrl string, options ...nats.Option) (*nats.Conn, error) {
 		ops := []nats.Option{
@@ -111,12 +111,12 @@ func NewDefaultPool(addr string, logger *zap.Logger) (*NatsPool, error) {
 			// 断开连接的错误处理
 			nats.DisconnectErrHandler(func(nc *nats.Conn, err error) {
 				if err != nil {
-					logger.Warn("Nats server disconnected Error Reason:" + err.Error())
+					XLogger.XCommon().Warn("Nats server disconnected Error Reason:" + err.Error())
 				}
 			}),
 			// 重连时的错误处理
 			nats.ReconnectHandler(func(nc *nats.Conn) {
-				logger.Warn("Nats server reconnected to " + nc.ConnectedUrl())
+				XLogger.XCommon().Warn("Nats server reconnected to " + nc.ConnectedUrl())
 			}),
 			// 关闭连接时的错误处理
 			nats.ClosedHandler(func(nc *nats.Conn) {}),

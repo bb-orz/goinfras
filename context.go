@@ -52,7 +52,7 @@ func (s StarterContext) PassWarning(name, step string, err error) {
 		if _, file, line, ok := runtime.Caller(1); ok {
 			path = file + " : " + strconv.Itoa(line)
 		}
-		s.Logger().SWarning(name, step, fmt.Sprintf("Warning: %s >>> [ %s ]", err.Error(), path))
+		s.Logger().SWarning(name, step, fmt.Sprintf("Warning: %s >>> [ %s ] \n", err.Error(), path))
 	}
 }
 
@@ -65,7 +65,7 @@ func (s StarterContext) PassError(name, step string, err error) bool {
 		if _, file, line, ok := runtime.Caller(1); ok {
 			path = file + " : " + strconv.Itoa(line)
 		}
-		s.Logger().SError(name, step, fmt.Errorf("ERROR: %s >>> [ %s ]", err.Error(), path))
+		s.Logger().SError(name, step, fmt.Errorf("ERROR: %s >>> [ %s ] \n", err.Error(), path))
 		return false
 	}
 }

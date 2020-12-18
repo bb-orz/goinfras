@@ -5,7 +5,6 @@ import (
 	"github.com/bb-orz/goinfras"
 	"github.com/nats-io/nats.go"
 	. "github.com/smartystreets/goconvey/convey"
-	"go.uber.org/zap"
 	"testing"
 	"time"
 )
@@ -43,9 +42,8 @@ func sendTickerMsg(subjectName string) {
 func TestNatsMQChan(t *testing.T) {
 	Convey("TestNatsMQChan", t, func() {
 		var err error
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
-		err = CreateDefaultPool(nil, logger)
+
+		err = CreateDefaultPool(nil)
 		So(err, ShouldBeNil)
 
 		// 接收
@@ -78,9 +76,7 @@ type person struct {
 func TestNatsMQQueueSubscribe(t *testing.T) {
 	Convey("TestNatsMQQueueSubscribe", t, func() {
 		var err error
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
-		err = CreateDefaultPool(nil, logger)
+		err = CreateDefaultPool(nil)
 		So(err, ShouldBeNil)
 
 		// 4个go程订阅特定消息person的队列组
@@ -130,9 +126,7 @@ func TestNatsMQQueueSubscribe(t *testing.T) {
 func TestNatsMQQueueChanRecv(t *testing.T) {
 	Convey("TestNatsMQQueueChanRecv", t, func() {
 		var err error
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
-		err = CreateDefaultPool(nil, logger)
+		err = CreateDefaultPool(nil)
 		So(err, ShouldBeNil)
 
 		// 4个go程接收统一队列组消息
@@ -173,9 +167,7 @@ func TestNatsMQReqSub(t *testing.T) {
 func testNatsMQRequest(t *testing.T) {
 	Convey("TestNatsMQRequest", t, func() {
 		var err error
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
-		err = CreateDefaultPool(nil, logger)
+		err = CreateDefaultPool(nil)
 		So(err, ShouldBeNil)
 
 		// Request
@@ -198,9 +190,7 @@ func testNatsMQSubscribeReply(t *testing.T) {
 	Convey("TestNatsMQSubscribeReply", t, func() {
 		var err error
 		var subscriber *nats.Subscription
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
-		err = CreateDefaultPool(nil, logger)
+		err = CreateDefaultPool(nil)
 		So(err, ShouldBeNil)
 
 		// 订阅接收到消息后发送回执
@@ -219,20 +209,13 @@ func testNatsMQSubscribeReply(t *testing.T) {
 
 func TestStarter(t *testing.T) {
 	Convey("Test XNats Starter", t, func() {
-		s := NewStarter()
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
+		logger := goinfras.NewCommandLineStarterLogger()
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
-		s.Init(sctx)
-		Println("Starter Init Successful!")
-		s.Setup(sctx)
-		Println("Starter Setup Successful!")
 
-		if s.Check(sctx) {
-			Println("Component Check Successful!")
-		} else {
-			Println("Component Check Fail!")
-		}
+		s := NewStarter()
+		s.Init(sctx)
+		s.Setup(sctx)
+		s.Check(sctx)
 
 		s.Stop()
 		time.Sleep(time.Second * 3)
