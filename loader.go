@@ -67,7 +67,9 @@ func LoadViperConfigFromRemote(viperCfg *viper.Viper, remoteProvider, remoteEndp
 		// unmarshal config
 		var rawVals interface{}
 		err := viperCfg.Unmarshal(&rawVals)
-		ErrorHandler(err)
+		if err != nil {
+			return err
+		}
 
 		// open a goroutine to watch remote changes forever
 		go func() {
@@ -78,14 +80,15 @@ func LoadViperConfigFromRemote(viperCfg *viper.Viper, remoteProvider, remoteEndp
 				// currently, only tested with etcd support
 				err = viperCfg.WatchRemoteConfig()
 				if err != nil {
-					ErrorHandler(err)
 					continue
 				}
 
 				// unmarshal new config into our runtime config struct. you can also use channel
 				// to implement a signal to notify the system of the changes
 				err = viperCfg.Unmarshal(&rawVals)
-				ErrorHandler(err)
+				if err != nil {
+					continue
+				}
 			}
 		}()
 

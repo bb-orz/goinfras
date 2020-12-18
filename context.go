@@ -1,8 +1,10 @@
 package goinfras
 
 import (
+	"fmt"
 	"github.com/spf13/viper"
-	"go.uber.org/zap"
+	"runtime"
+	"strconv"
 )
 
 const (
@@ -32,13 +34,52 @@ func (s StarterContext) SetConfigs(vpcfg *viper.Viper) {
 	s[KeyConfig] = vpcfg
 }
 
-func (s StarterContext) Logger() *zap.Logger {
+func (s StarterContext) Logger() IStarterLogger {
 	p := s[KeyLogger]
 	if p == nil {
 		panic("日志记录器还没有被初始化")
 	}
-	return p.(*zap.Logger)
+	return p.(IStarterLogger)
 }
 func (s StarterContext) SetLogger(logger IStarterLogger) {
 	s[KeyLogger] = logger
+}
+
+// 有错误则记录启动器警告日志
+func (s StarterContext) PassWarning(err error) {
+	if err != nil {
+		var path string
+		if _, file, line, ok := runtime.Caller(1); ok {
+			path = file + " : " + strconv.Itoa(line)
+		}
+		s.Logger().SWarning(fmt.Sprintf("Warning: %s >>> [ %s ]", err.Error(), path))
+	}
+}
+
+// err == nil 返回 true，否则记录启动器错误日志并返回false
+func (s StarterContext) PassError(err error) bool {
+	if err == nil {
+		return true
+	} else {
+		var path string
+		if _, file, line, ok := runtime.Caller(1); ok {
+			path = file + " : " + strconv.Itoa(line)
+		}
+		s.Logger().SError(fmt.Errorf("ERROR: %s >>> [ %s ]", err.Error(), path))
+		return false
+	}
+}
+
+// err == nil,返回true ;err != nil 致命错误处理，直接panic
+func (s StarterContext) PassFail(err error) bool {
+	if err == nil {
+		return true
+	} else {
+		var path string
+		if _, file, line, ok := runtime.Caller(1); ok {
+			path = file + " : " + strconv.Itoa(line)
+		}
+		s.Logger().SFail(fmt.Errorf("FAIL %s >>> [ %s ]", err.Error(), path))
+		panic("")
+	}
 }

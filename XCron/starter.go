@@ -33,37 +33,40 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	viper := sctx.Configs()
 	if viper != nil {
 		err = viper.UnmarshalKey("Cron", &define)
-		goinfras.ErrorHandler(err)
+		sctx.PassWarning(err)
 	}
 	if define == nil {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	fmt.Printf("XCron Starter Init: [Config] %v \n", *define)
+	sctx.Logger().SDebug(fmt.Sprintf("[XCron Init] Config: %v \n", *define))
 }
 
 // 应用安装阶段创建Cron管理器，并注册为应用组件
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
+	var err error
 	// 1.创建Cron执行管理器并设置资源
-	manager = NewManager(s.cfg, sctx.Logger())
+	manager, err = NewManager(s.cfg)
 	// 2.创建后可立即注册定时运行任务
-	manager.RegisterTasks(s.Tasks...)
+	entryIDS, err := manager.RegisterTasks(s.Tasks...)
+	if sctx.PassError(err) {
+		sctx.Logger().SInfo(fmt.Sprintf("[XCron Setup] Tasks EntryIDs: %v \n", entryIDS))
+	}
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(manager)
-	if err != nil {
-		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Cron Manager Setup Fail!", s.Name()))
-		return false
+	if sctx.PassError(err) {
+		sctx.Logger().SInfo(fmt.Sprintf("[XCron Check]: Cron Manager Setup Successful! \n"))
 	}
-	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Cron Manager Setup Successful!", s.Name()))
-	return true
+	return false
 }
 
 // 应用开始运行时，执行任务
 func (s *starter) Start(sctx *goinfras.StarterContext) {
 	// 3.运行定时任务
 	manager.RunTasks()
+	sctx.Logger().SInfo(fmt.Sprintf("[XCron Start]: Cron Running Tasks... \n"))
 }
 
 // 应用停机时，优雅关闭

@@ -29,7 +29,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	viper := sctx.Configs()
 	if viper != nil {
 		err = viper.UnmarshalKey("Logger", &define)
-		goinfras.ErrorHandler(err)
+		sctx.PassWarning(err)
 	}
 	if define == nil {
 		define = DefaultConfig()
@@ -44,14 +44,17 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
-	var err1, err2 error
-	err1 = goinfras.Check(commonLogger)
-	err2 = goinfras.Check(syncErrorLogger)
-	if err1 != nil || err2 != nil {
-		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Zap Logger Setup Fail!", s.Name()))
+	var err error
+	err = goinfras.Check(commonLogger)
+	if !sctx.PassError(err) {
 		return false
 	}
-	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Zap Logger Setup Successful!", s.Name()))
+	err = goinfras.Check(syncErrorLogger)
+	if !sctx.PassError(err) {
+		return false
+	}
+
+	sctx.Logger().SInfo(fmt.Sprintf("[%s Starter]: Zap Logger Setup Successful!", s.Name()))
 	return true
 }
 
