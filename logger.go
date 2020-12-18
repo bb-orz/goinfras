@@ -35,10 +35,12 @@ const (
 	blue = "\033[97;44m"
 	cyan = "\033[97;46m"
 
-	whitef  = "\033[37m"
-	yellowf = "\033[33m"
-	bluef   = "\033[34m"
-	greenf  = "\033[32m"
+	whitef   = "\033[37m"
+	yellowf  = "\033[33m"
+	bluef    = "\033[34m"
+	greenf   = "\033[32m"
+	redf     = "\033[31m"
+	magentaf = "\033[35m"
 
 	green   = "\033[97;42m"
 	white   = "\033[90;47m"
@@ -84,13 +86,13 @@ func (p *LogFormatterParams) LogPositionColor() string {
 func (p *LogFormatterParams) LogStepColor() string {
 	switch p.Step {
 	case StepInit:
-		return whitef
+		return white
 	case StepSetup:
-		return yellowf
+		return yellow
 	case StepStart:
-		return bluef
+		return blue
 	case StepCheck:
-		return greenf
+		return green
 	default:
 		return cyan
 	}
@@ -100,15 +102,15 @@ func (p *LogFormatterParams) LogStepColor() string {
 func (p *LogFormatterParams) LogLevelColor() string {
 	switch p.LogLevel {
 	case DebugLevel:
-		return green
+		return greenf
 	case InfoLevel:
-		return white
+		return whitef
 	case WarningLevel:
-		return yellow
+		return yellowf
 	case ErrorLevel:
-		return red
+		return redf
 	case FailLevel:
-		return magenta
+		return magentaf
 	default:
 		return white
 	}
@@ -128,7 +130,7 @@ var defaultLogFormatter = func(param LogFormatterParams) string {
 	logLevelColor = param.LogLevelColor()
 	resetColor = param.ResetColor()
 
-	return fmt.Sprintf("[%s %s %s %s] | %s %s %s | %v | %s [%s] >>>>>>  %s %s",
+	return fmt.Sprintf("[%s %s %s %s] | %s %s %s | %v | %s [%s] >>>>>> %s %s \n",
 		positionColor, param.Name, param.Position, resetColor,
 		stepColor, param.Step, resetColor,
 		param.TimeStamp.Format("2006/01/02 - 15:04:05"),

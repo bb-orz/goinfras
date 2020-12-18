@@ -38,15 +38,15 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	if s.cfg.QQSignSwitch {
 		qqOM = NewQQOauthManager(s.cfg)
-		sctx.Logger().SDebug(s.Name(), goinfras.StepSetup, fmt.Sprintf("QQ OAuth Manager Steuped!  \n"))
+		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("QQ OAuth Manager Steuped!  \n"))
 	}
 	if s.cfg.WechatSignSwitch {
 		wechatOM = NewWechatOAuthManager(s.cfg)
-		sctx.Logger().SDebug(s.Name(), goinfras.StepSetup, fmt.Sprintf("Wechat OAuth Manager Steuped!  \n"))
+		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Wechat OAuth Manager Steuped!  \n"))
 	}
 	if s.cfg.WeiboSignSwitch {
 		weiboOM = NewWeiboOAuthManager(s.cfg)
-		sctx.Logger().SDebug(s.Name(), goinfras.StepSetup, fmt.Sprintf("Weibo OAuth Manager Steuped!  \n"))
+		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Weibo OAuth Manager Steuped!  \n"))
 	}
 
 }
