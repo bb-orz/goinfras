@@ -35,12 +35,13 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	fmt.Printf("XLogger Starter Init: [Config] %v \n", *define)
+	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %v \n", *define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	commonLogger = NewCommonLogger(s.cfg, s.Writers...)
 	syncErrorLogger = NewSyncErrorLogger(s.cfg)
+	sctx.Logger().SDebug(s.Name(), goinfras.StepSetup, fmt.Sprintf("Zap Logger Steuped!  \n"))
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
@@ -53,8 +54,7 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	if !sctx.PassError(s.Name(), goinfras.StepCheck, err) {
 		return false
 	}
-
-	sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("[%s Starter]: Zap Logger Setup Successful!", s.Name()))
+	sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Zap Logger Setup Successful! \n"))
 	return true
 }
 

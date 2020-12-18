@@ -51,21 +51,13 @@ func TestNewSyncErrorLogger(t *testing.T) {
 // 测试启动器
 func TestStarter(t *testing.T) {
 	Convey("Test XLogger Starter", t, func() {
-		s := NewStarter()
-		logger, err := zap.NewDevelopment()
-		So(err, ShouldBeNil)
+		logger := goinfras.NewCommandLineStarterLogger()
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
+		s := NewStarter()
 		s.Init(sctx)
-		Println("Starter Init Successful!")
 		s.Setup(sctx)
-		Println("Starter Setup Successful!")
-		s.Start(sctx)
-		Println("Starter Start Successful!")
-		if s.Check(sctx) {
-			Println("Component Check Successful!")
-		} else {
-			Println("Component Check Fail!")
-		}
+		s.Check(sctx)
+
 		XCommon().Info("Test Logger Info", zap.Any("info", "information"))
 		s.Stop()
 		time.Sleep(time.Second * 3)
