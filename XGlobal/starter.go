@@ -3,7 +3,6 @@ package XGlobal
 import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
-	"go.uber.org/zap"
 )
 
 type starter struct {
@@ -27,13 +26,13 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	viper := sctx.Configs()
 	if viper != nil {
 		err = viper.UnmarshalKey("Global", &define)
-		goinfras.ErrorHandler(err)
+		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
 	if define == nil {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	sctx.Logger().Info("Print Global Config:", zap.Any("GlobalConfig", *define))
+	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %v \n", *define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
@@ -41,16 +40,16 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	sctx.Configs().Set("AppName", global.AppName)
 	sctx.Configs().Set("ServerName", global.ServerName)
 	sctx.Configs().Set("Env", global.Env)
+	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Global Constant Setuped! \n"))
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(global)
-	if err != nil {
-		sctx.Logger().Error(fmt.Sprintf("[%s Starter]: Global Config And Common Function Setup Fail!", s.Name()))
-		return false
+	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Global function and Constant Setup Successful! \n"))
+		return true
 	}
-	sctx.Logger().Info(fmt.Sprintf("[%s Starter]: Global Config And Common Function Setup Successful!", s.Name()))
-	return true
+	return false
 }
 
 // 设置启动组级别
