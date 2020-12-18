@@ -61,7 +61,6 @@ func TestStarter(t *testing.T) {
 		XLogger.CreateDefaultLogger(nil)
 
 		// 定义定时任务
-		fmt.Println("定义第一个定时任务...")
 		tasks := make([]*Task, 0)
 		task1 := NewTask("*/1 * * * * *", &JobA{})
 		tasks = append(tasks, task1)
@@ -70,23 +69,10 @@ func TestStarter(t *testing.T) {
 		logger := goinfras.NewCommandLineStarterLogger()
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
 		s.Init(sctx)
-		Println("Starter Init Successful!")
 		s.Setup(sctx)
-		Println("Starter Setup Successful!")
 		s.Start(sctx)
-		Println("Starter Start Successful!")
-		if s.Check(sctx) {
-			Println("Component Check Successful!")
-		} else {
-			Println("Component Check Fail!")
-		}
+		s.Check(sctx)
 		time.Sleep(time.Second * 20)
 		s.Stop()
-		if len(XManager().client.Entries()) == 0 {
-			Println("Starter Stop Successful!")
-		} else {
-			Println("Starter Stop Exception!")
-		}
-
 	})
 }

@@ -46,18 +46,18 @@ func (s StarterContext) SetLogger(logger IStarterLogger) {
 }
 
 // 有错误则记录启动器警告日志
-func (s StarterContext) PassWarning(err error) {
+func (s StarterContext) PassWarning(name, step string, err error) {
 	if err != nil {
 		var path string
 		if _, file, line, ok := runtime.Caller(1); ok {
 			path = file + " : " + strconv.Itoa(line)
 		}
-		s.Logger().SWarning(fmt.Sprintf("Warning: %s >>> [ %s ]", err.Error(), path))
+		s.Logger().SWarning(name, step, fmt.Sprintf("Warning: %s >>> [ %s ]", err.Error(), path))
 	}
 }
 
 // err == nil 返回 true，否则记录启动器错误日志并返回false
-func (s StarterContext) PassError(err error) bool {
+func (s StarterContext) PassError(name, step string, err error) bool {
 	if err == nil {
 		return true
 	} else {
@@ -65,13 +65,13 @@ func (s StarterContext) PassError(err error) bool {
 		if _, file, line, ok := runtime.Caller(1); ok {
 			path = file + " : " + strconv.Itoa(line)
 		}
-		s.Logger().SError(fmt.Errorf("ERROR: %s >>> [ %s ]", err.Error(), path))
+		s.Logger().SError(name, step, fmt.Errorf("ERROR: %s >>> [ %s ]", err.Error(), path))
 		return false
 	}
 }
 
 // err == nil,返回true ;err != nil 致命错误处理，直接panic
-func (s StarterContext) PassFail(err error) bool {
+func (s StarterContext) PassFail(name, step string, err error) bool {
 	if err == nil {
 		return true
 	} else {
@@ -79,7 +79,7 @@ func (s StarterContext) PassFail(err error) bool {
 		if _, file, line, ok := runtime.Caller(1); ok {
 			path = file + " : " + strconv.Itoa(line)
 		}
-		s.Logger().SFail(fmt.Errorf("FAIL %s >>> [ %s ]", err.Error(), path))
+		s.Logger().SFail(name, step, fmt.Errorf("FAIL %s >>> [ %s ]", err.Error(), path))
 		panic("")
 	}
 }
