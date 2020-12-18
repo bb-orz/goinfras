@@ -18,6 +18,12 @@ func TestEchoEngine(t *testing.T) {
 		if XLogger.XCommon() == nil {
 			XLogger.CreateDefaultLogger(nil)
 		}
+		if XJwt.XTokenUtils() == nil {
+			XJwt.CreateDefaultTku(nil)
+		}
+		if XRedis.XCommon() == nil {
+			XRedis.CreateDefaultPool(nil)
+		}
 
 		// 初始化默认引擎
 		CreateDefaultEngine(nil)
