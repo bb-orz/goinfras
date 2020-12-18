@@ -14,13 +14,13 @@ type Config struct {
 
 func DefaultConfig() *Config {
 	return &Config{
-		false,
+		true,
 		"",
 		"",
-		false,
+		true,
 		"",
 		"",
-		false,
+		true,
 		"",
 		"",
 	}
