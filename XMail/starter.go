@@ -25,7 +25,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	var define *Config
 	viper := sctx.Configs()
 	if viper != nil {
-		err = viper.UnmarshalKey("Cron", &define)
+		err = viper.UnmarshalKey("Mail", &define)
 		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
 	if define == nil {

@@ -20,35 +20,25 @@ func NewStarter(middlewares ...gin.HandlerFunc) *starter {
 }
 
 func (s *starter) Name() string {
-	return "Xgin"
+	return "XGin"
 }
 
 // 初始化时：加载配置
 func (s *starter) Init(sctx *goinfras.StarterContext) {
 	var err error
 	var define *Config
-	var ginDefine *GinConfig
-	var corsDefine *CorsConfig
 
 	viper := sctx.Configs()
 	if viper != nil {
-		err = viper.UnmarshalKey("Gin", &ginDefine)
-		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
-	}
-
-	if viper != nil {
-		err = viper.UnmarshalKey("Cors", &corsDefine)
+		err = viper.UnmarshalKey("Gin", &define)
 		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
 
 	// 读配置为空时，默认配置
-	if ginDefine == nil {
+	if define == nil {
 		define = DefaultConfig()
-	} else {
-		define = &Config{}
-		define.GinConfig = ginDefine
-		define.CorsConfig = corsDefine
 	}
+
 	s.cfg = define
 	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %v \n", *define))
 }
@@ -58,11 +48,6 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	// 1.配置gin中间件
 	middlewares := make([]gin.HandlerFunc, 0)
 	middlewares = append(middlewares, ZapLoggerMiddleware(), ZapRecoveryMiddleware(false))
-
-	// 如开启cors限制，添加中间件
-	if s.cfg.CorsConfig != nil && !s.cfg.CorsConfig.AllowAllOrigins {
-		middlewares = append(middlewares, CORSMiddleware(s.cfg.CorsConfig))
-	}
 
 	// 其他由用户启动器传递的中间件
 	middlewares = append(middlewares, s.middlewares...)

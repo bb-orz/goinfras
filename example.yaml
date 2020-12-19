@@ -1,0 +1,285 @@
+# 应用基本配置
+Global:
+  Env:         debug               #环境
+  AppName:     MyApp              #应用名
+  ServerName:  example.com       #服务域名
+
+# Gin web 引擎配置
+Gin:
+  Mode:       debug            # 运行模式设置
+  ListenHost: "127.0.0.1"      # 服务运行ip
+  ListenPort: 8090             # 服务运行端口
+  Tls:        false            # HTTPS相关配置，开关
+  CertFile:   ""               # HTTPS相关配置，证书文件
+  KeyFile:    ""               # HTTPS相关配置，私匙文件
+
+# Echo web 引擎配置
+Echo:
+  Debug             : true           # 调试模式
+  ListenHost        : "127.0.0.1"    # 服务运行ip
+  ListenPort        : 8089           # 服务运行端口
+  Tls               : false         # HTTPS相关配置，开关
+  CertFile          : ""            # HTTPS相关配置，证书文件
+  KeyFile           : ""            # HTTPS相关配置，私匙文件
+  UseSelfMiddleware : false         # 该启动器默认提供Logger、Recovery、Error三个初始化的中间件，如需重新自定义，设置为true
+
+# 定时任务配置
+Cron:
+  Location: Local
+
+# 第三方OAuth配置
+OAuth:
+  WechatSignSwitch: false
+  WechatOAuth2AppKey: ""
+  WechatOAuth2AppSecret: ""
+  WeiboSignSwitch: false
+  WeiboOAuth2AppKey: ""
+  WeiboOAuth2AppSecret: ""
+  QQSignSwitch: false
+  QQOAuth2AppKey: ""
+  QQOAuth2AppSecret: ""
+
+# Etcd配置
+Etcd:
+  Endpoints           :     # etcd服务节点列表
+    - "127.0.0.1:2379"
+    - "127.0.0.1:2380"
+  TLS                 : ""          # 加密配置 tls.Config
+  Username            : ""          # 用户名
+  Password            : ""          # 用户密码
+  PermitWithoutStream : false       # 如为true则设置后将允许客户端在没有任何活动流（RPC）的情况下向服务器发送keepalive ping。
+  RejectOldCluster    : false       # 如果true,则拒绝针对过时的群集创建客户端。
+  AutoSyncInterval    : 0           # 更新其最新成员端点的时间间隔。 0禁用自动同步。 默认情况下，自动同步被禁用。
+  DialTimeout         : 0           # 未能建立连接超时。
+  DialKeepAliveTime   : 0           # 客户端ping服务器以查看传输是否活动的时间。
+  DialKeepAliveTimeout: 0           # 客户端等待keep-alive探测响应的时间。如果此时未收到响应，则连接将关闭。
+  MaxCallRecvMsgSize  : 0           # 客户端响应接收限制。如果为0，则默认为“math.MaxInt32”，因为范围响应可能会明显超过请求发送限制。请确保“MaxCallRecvMsgSize”>=服务器端默认发送/接收限制。（--etcd的“max request bytes”标志或“embed.Config.MaxRequestBytes”）。
+  MaxCallSendMsgSize  : 0           # 客户端请求发送限制（字节）。如果为0，则默认为2.0 MiB（2*1024*1024）。请确保“MaxCallSendMsgSize”<服务器端默认发送/接收限制。 （“--max request bytes”标记为etcd或“embed.Config.MaxRequestBytes”）。
+
+# zap日志配置
+Logger:
+  AppName: ""
+  AppVersion: ""
+  DevEnv: true
+  DebugLevelSwitch:    false      #调试日志级别开关
+  InfoLevelSwitch:    true        #信息日志级别开关
+  WarnLevelSwitch:    true        #警告日志级别开关
+  ErrorLevelSwitch:    true       #错误日志级别开关
+  DPanicLevelSwitch:    true      #调试时恐慌日志级别开关panic()
+  PanicLevelSwitch:    false      #恐慌日志级别开关 panic()
+  FatalLevelSwitch:    true       #致命日志级别开关,os.Exit(1)
+  # 选择日志记录方案
+  SimpleZapCore:        true      # 简单日志输出:stdout + info.log + error.log
+  RotateZapCore:        false     # 归档日志输出:stdout + info[date].log + error[date].log
+  SyncZapCore:          false     # 远程异步日志输出:stdout + (mq/sql db/ nosql db)
+  # 标准输出设置
+  StdoutLogSwitch:       true     #标准输出开关
+  # 文件日志输出设置
+  LogDir:               ./log     #日志文件输出文件目录
+  # 归档文件日志输出设置
+  RetateLogSwitch:       false     #按日期归档输出开关
+  MaxDayCount:            30      #日志数据最多保留的日志天数
+  WithRotationTime:       1       #多久做一次归档，单位天
+
+  # 异步日志输出设置
+  SyncLogSwitch:          false    # 异步日志输出开关
+
+  # mongo日志输出设置
+  MongoLogSwitch:         false               #启用mongo数据库记录日志数据的开关
+  MongoLogCollection:     ginger_log         #mongo的日志数据collection
+  MongoLogExpire:         0               #mongo日志指定时间间隔后自动过期,0为不设置
+
+# mysql数据库配置
+Mysql:
+  DbHost                  : "127.0.0.1"        # 主机地址
+  DbPort                  : 3306        # 主机端口
+  DbUser                  : "dev"        # 用户名
+  DbPasswd                : "123456"        # 密码
+  DbName                  : "dev_db"        # 数据库名
+  ConnMaxLifetime         : 60        # 每个连接最长生命周期，单位秒
+  MaxIdleConns            : 100        # 连接池最大闲置连接数
+  MaxOpenConns            : 200        # 连接池最大连接数
+  ChartSet                : "utf8"        # 传输字符编码
+  AllowCleartextPasswords : true        # 开发环境中设置允许明文密码通信
+  InterpolateParams       : true        # 设置允许占位符参数
+  Timeout                 : 5        # 连接请求的超时时间，单位秒
+  ReadTimeout             : 30        # 读超时时间，单位秒
+  ParseTime               : true        # 将数据库的datetime时间格式转换为go time包数据类型
+  PING                    : true        # 连接时PING测试
+
+# Gorm 配置
+Gorm:
+  Dialect                  : "mysql"        # 数据库驱动类型:mysql/postgres
+  DbHost                   : "127.0.0.1"        # 主机地址
+  DbPort                   : 3306        # 主机端口
+  DbUser                   : "dev"        # 用户名
+  DbPasswd                 : "123456"        # 密码
+  DbName                   : "dev_db"        # 数据库名
+  ChartSet                 : "utf8"        # 字符集
+  ParseTime                : true        # 将数据库的datetime时间格式转换为go time包数据类型
+  Local                    : "Local"        # 本地时区设置
+  ConnMaxLifetime          : 100        # 设置了连接可复用的最大时间
+  MaxOpenConns             : 100        # 设置打开数据库连接的最大数量
+  MaxIdleConns             : 10        # 设置连接池中空闲连接的最大数量
+  DefaultStringSize        : 256        # For Mysql，字符串字段默认长度
+  DisableDatetimePrecision : true        # For Mysql，是否禁用datetime precision，这在MySQL5.6之前不受支持
+  DontSupportRenameIndex   : true        # For Mysql，是否重命名索引，重命名索引在MySQL 5.7和MariaDB之前不支持
+  DontSupportRenameColumn  : true        # For Mysql，是否可以重命名列，MySQL 8和MariaDB之前不支持重命名列
+  SkipInitializeWithVersion: false        # For Mysql，是否基于当前MySQL版本自动配置
+  PreferSimpleProtocol     : true        # For PostgresSQL，禁用隐式准备语句用法
+  TimeZone                 : "Asia/Shanghai"        # For PostgresSQL，时区
+  SslMode                  : "disable"        # For PostgresSQL，SSL模式
+
+
+# mongodb数据库配置
+Mongodb:
+  DbHosts               :
+    - "127.0.0.1:27017"
+  DbUser                : ""
+  DbPasswd              : ""
+  Database              : "dev_db"
+  ReplicaSet            : ""         # 指定群集的副本集名称。如果指定，集群将被视为副本集，驱动程序将自动发现集中的所有服务器，从通过ApplyURI或SetHosts指定的节点开始。副本集中的所有节点必须具有相同的副本集名称，否则客户端不会将它们视为该集的一部分。
+  PasswordSet           : true         # 对于GSSAPI，如果指定了密码，则此值必须为true，即使密码是空字符串，并且 如果未指定密码，则为false，表示应从运行的上下文中获取密码 过程。对于其他机制，此字段将被忽略。
+  LocalThreshold        : 15         # 指定“延迟窗口”的宽度：在为一个操作选择多个合适的服务器时，这是最短和最长平均往返时间之间可接受的非负增量。延迟窗口中的服务器是随机选择的。默认值为15毫秒。
+  Compressors           : nil         # 通信数据压缩器,可多选
+  Direct                : true         # 是否单机直连
+  HeartbeatInterval     : 10         # 定期连接心跳检查,不设置默认10s
+  MinPoolSize           : 100         # 最小连接池连接数
+  MaxPoolSize           : 1000         # 最大连接池连接数
+  MaxConnIdleTime       : 120         # 连接池闲置连结束最大保持时间,0时表示无限制保持闲置连接状态
+  AutoEncryptionOptions : false         # 作用于collection的自动加密
+  ConnectTimeout        : 20         # 接超时时间,单位秒
+  RetryReads            : true         # 指定是否应在某些错误（如网络）上重试一次受支持的读操作
+  RetryWrites           : true         # 指定是否应在某些错误（如网络）上重试一次受支持的写入操作
+
+# Redis配置
+Redis:
+  DbHost      : "127.0.0.1"         # 主机地址
+  DbPort      : 6379         # 主机端口
+  DbAuth      : false         # 是否开启鉴权
+  DbPasswd    : ""         # 鉴权密码
+  MaxActive   : 0         # 最大活动链接数。0为无限
+  MaxIdle     : 50         # 最大闲置链接数，0为无限
+  IdleTimeout : 60         # 闲置链接超时时间
+
+# Redis PubSub配置，尽量与Redis缓存服务器分开
+RedisPubSub:
+  Switch: false     #redisMq开关
+  DbHost: localhost #redis主机
+  DbPort: 6379      #端口号
+  DbAuth: FALSE     #是否开启鉴权
+  DbPasswd: 123456  #鉴权密码
+  MaxActive: 0      #最大活动链接数。0为无限
+  MaxIdle: 0       #最大闲置链接数，0为无限
+  IdleTimeout: 0   #闲置链接超时时间
+
+# NatsMq配置
+NatsMq:
+  Switch: false     #natsMq开关
+  NatsServer:
+    -
+      Host: ""      #nats-server的主机地址
+      Port: 0       #nats-server的服务端口
+      AuthSwitch:   false     #是否开启鉴权
+      UserName: ""  #鉴权用户名
+      Password: ""  #鉴权密码
+
+# 七牛云对象存储配置
+QiniuOss:
+  Switch: false
+  AccessKey: ""
+  SecretKey: ""
+  Bucket: ""
+  UseHTTPS: false                       #是否使用https域名
+  UseCdnDomains: false                  #上传是否使用CDN上传加速
+  UpTokenExpires: 7200                  #上传凭证2小时有效期
+  CallbackURL: ""                       #上传回调地址
+  CallbackBodyType: "application/json"  #上传回调信息格式
+  EndUser: ""                           #唯一宿主标识
+  FsizeMin: 1024                        #限定上传文件大小最小值，单位Byte。
+  FsizeLimit: 10485760                  #限定上传文件大小最大值，单位Byte。超过限制上传文件大小的最大值会被判为上传失败，返回 413 状态码。
+  MimeLimit: "image/jpeg;image/png;image/gif"  #限定上传类型
+
+# 阿里云对象存储配置
+AliyunOss:
+  Switch: false
+  AccessKeyId: ""
+  AccessKeySecret: ""
+  BucketName: ""
+  Endpoint: "http://oss-cn-shenzhen.aliyuncs.com" #CDN空间机房
+  UseCname: false             #是否使用自定义域名CNAME
+  ConnTimeout:  10            #请求超时时间，包括连接超时、Socket读写超时，单位秒,默认连接超时30秒，读写超时60秒
+  RwTimeout: 120
+  SecurityToken: ""           #临时用户的SecurityToken
+  EnableMD5: false            #是否开启MD5校验。推荐使用CRC校验，CRC的效率高于MD5
+  EnableCRC: true             #是否开启CRC校验
+  Proxy: ""                   #代理服务器，如http://8.8.8.8:3128
+  AuthProxy: ""               #带账号密码的代理服务器
+
+# 阿里云短信服务
+AliyunSms:
+  EndPoint     : "dysmsapi.aliyuncs.com"     # 必须，服务器节点
+  AccessKeyId  : ""     # 必须，主账号AccessKey的ID。
+  AccessSecret : ""     # 必须，主账号秘钥。
+
+# ElasticSearch 官方客户端配置
+EsOfficial:
+  # 自建服务的配置信息
+  Addresses : ""                  # es服务的集群节点设置.
+  Username  : ""                  # 基于 HTTP Basic Authentication 的用户名
+  Password  : ""                  # 基于 HTTP Basic Authentication 的密码鉴权
+
+  # elastic.io 云服务的配置信息，覆盖自建服务的配置
+  CloudID : ""                    # elastic.io服务的CloudID (https://elastic.co/cloud)，需注册后获取
+  APIKey  : ""                    # Base64-encoded token for authorization; if set, overrides username and password.
+
+  # PEM-encoded 加密传输鉴权令牌.
+  # When set, an empty certificate pool will be created, and the certificates will be appended to it.
+  # The option is only valid when the transport is not specified, or when it's http.Transport.
+  CACert :
+
+  # API请求重试配置设置
+  RetryOnStatus        :         # List of status codes for retry. Default: 502, 503, 504.
+    - 502
+    - 503
+    - 504
+  DisableRetry         :  false  # 禁用重试，Default: false.
+  EnableRetryOnTimeout :  false  # 启用重试超时设置，Default: false.
+  MaxRetries           :  5       # 最多重试次数，Default: 3.
+  # 服务节点查找周期设置
+  DiscoverNodesOnStart  : fasle   # 是否初始化客户端时查找节点. Default: false.
+  DiscoverNodesInterval : 10      # 是否周期型查找节点. Default: disabled.
+  # Metrics度量：聚合查询设置
+  EnableMetrics     :  fasle     # 是否启用Metrics度量度量，类聚合查询
+  EnableDebugLogger :  fasle     # 是否在debug时启用日志记录
+
+# ElasticSearch 第三方热门包客户端配置
+EsOlivere:
+  URL        :  ""               # 服务地址
+  Username   :  ""               # 鉴权用户名
+  Password   :  ""               # 鉴权密码
+  Sniff      :  false            # 启用或禁用嗅探器。
+  Healthcheck:  false            # 启用连接健康检查
+  Infolog    :  ""               # Info级别日志记录文件路径
+  Errorlog   :  ""               # Error级别日志记录文件路径
+  Tracelog   :  ""               # Trace级别日志记录文件路径
+
+# Validate验证器
+Validate:
+  TransZh: true # 是否开启验证结果信息的中文翻译
+
+
+# 邮件服务
+Mail:
+  NoAuth   : true                    # 使用本地SMTP服务器发送电子邮件。
+  NoSmtp   : false                   # 使用API​​或后缀发送电子邮件。
+  Server   : ""                      # 使用外部SMTP服务器
+  Port     :                         # 外部SMTP服务端口
+  User     : ""                      # 你的三方邮箱地址
+  Password : ""                      # 你的邮箱密码
+
+# Json Web Token
+Jwt:
+  UseCache   :  true          # 是否打开redis缓存
+  PrivateKey :  "keykeykeykey"  # jwt编码私钥
+  ExpSeconds :  3600          # jwt编码超时时间

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	_ "github.com/bmizerany/pq"
 	_ "github.com/go-sql-driver/mysql"
+	"time"
 )
 
 // 创建一个sql.DB的mysql数据库连接
@@ -21,9 +22,9 @@ func newSqlDB(config *Config) (*sql.DB, error) {
 	}
 
 	if db != nil {
-		db.SetConnMaxLifetime(config.ConnMaxLifetime) // 设置了连接可复用的最大时间
-		db.SetMaxIdleConns(config.MaxIdleConns)       // 设置连接池中空闲连接的最大数量
-		db.SetMaxOpenConns(config.MaxOpenConns)       // 设置打开数据库连接的最大数量
+		db.SetConnMaxLifetime(time.Duration(config.ConnMaxLifetime) * time.Second) // 设置了连接可复用的最大时间
+		db.SetMaxIdleConns(config.MaxIdleConns)                                    // 设置连接池中空闲连接的最大数量
+		db.SetMaxOpenConns(config.MaxOpenConns)                                    // 设置打开数据库连接的最大数量
 
 		err = db.Ping()
 		if err != nil {
