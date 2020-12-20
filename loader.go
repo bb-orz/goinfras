@@ -46,18 +46,18 @@ var (
 
 // 运行初始化时解析命令行参数到viper实例
 func init() {
-	pflag.StringP(ConfigFilePathFlag, "f", "../config/config.yaml", "Config file,like: ../config/config.yaml")
+	pflag.StringP(ConfigFilePathFlag, "f", "../config/config.yaml", "Config file,like: -f ../config/config.yaml")
 
-	pflag.StringP(RemoteProviderFlag, "P", "", "Remote K/V config system provider，support etcd/consul")
+	pflag.StringP(RemoteProviderFlag, "P", "", "Remote K/V config system provider，support etcd/consul. like: -P=etcd ")
 	pflag.StringP(RemoteEndpointFlag, "E", "", "Remote K/V config system endpoint，etcd requires http://ip:port  consul requires ip:port")
-	pflag.StringP(RemoteKVPathFlag, "K", "", "Remote K/V config path，path is the path in the k/v store to retrieve configuration,like: /configs/myapp.json")
-	pflag.StringP(RemoteTypeFlag, "T", "", "Support: 'json', 'toml', 'yaml', 'yml', 'properties', 'props', 'prop', 'env', 'dotenv'")
+	pflag.StringP(RemoteKVPathFlag, "K", "", "Remote K/V config path，path is the path in the k/v store to retrieve configuration,like: -K /configs/myapp.json")
+	pflag.StringP(RemoteTypeFlag, "T", "", "Support: 'json', 'toml', 'yaml', 'yml', 'properties', 'props', 'prop', 'env', 'dotenv'. like: -T=json ")
 	pflag.DurationP(RemoteWatchDurationFlag, "D", -1, "Currently, only tested with etcd support")
 
-	pflag.BoolP(EnvAutomaticFlag, "a", false, "是否自动读取全部环境变量")
-	pflag.BoolP(EnvAllowEmptyFlag, "e", false, "是否允许读取环境变量空值")
-	pflag.StringP(EnvPrefixFlag, "p", "", "读取特定前缀的环境变量")
-	pflag.StringSliceP(EnvKeysFlag, "k", []string{}, "读取指定键的环境变量")
+	pflag.BoolP(EnvAutomaticFlag, "a", false, "like: -a=true")
+	pflag.BoolP(EnvAllowEmptyFlag, "e", false, "like: -e=false")
+	pflag.StringP(EnvPrefixFlag, "p", "", "like: -p=goinfras_   ")
+	pflag.StringSliceP(EnvKeysFlag, "k", []string{}, "")
 
 	pflag.Parse()
 	// 实例化viper

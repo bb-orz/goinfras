@@ -41,6 +41,131 @@ Goinfras是一个后端应用基础设施的资源组件启动器，其实现了
 ##### Step 1：注册您所需要的启动器
 
 ```
+import (
+	"github.com/bb-orz/goinfras"
+	"github.com/bb-orz/goinfras/XCron"
+	"github.com/bb-orz/goinfras/XEtcd"
+	"github.com/bb-orz/goinfras/XLogger"
+	"github.com/bb-orz/goinfras/XMQ/XNats"
+	"github.com/bb-orz/goinfras/XMQ/XRedisPubSub"
+	"github.com/bb-orz/goinfras/XOAuth"
+	"github.com/bb-orz/goinfras/XOss/XAliyunOss"
+	"github.com/bb-orz/goinfras/XOss/XQiniuOss"
+	"github.com/bb-orz/goinfras/XStore/XGorm"
+	"github.com/bb-orz/goinfras/XStore/XMongo"
+	"github.com/bb-orz/goinfras/XStore/XRedis"
+	"github.com/bb-orz/goinfras/XValidate"
+	"github.com/gin-gonic/gin"
+
+	_ "github.com/bb-orz/goinfras-sample/simple/restful" // 自动载入Restful API模块
+	"github.com/bb-orz/goinfras/XGin"
+)
+
+// 注册应用组件启动器，把基础设施各资源组件化
+func RegisterStarter() {
+	
+	goinfras.RegisterStarter(XLogger.NewStarter())
+
+	// 注册Cron定时任务
+	// 可以自定义一些定时任务给starter启动
+	goinfras.RegisterStarter(XCron.NewStarter())
+
+	// 注册ETCD
+	goinfras.RegisterStarter(XEtcd.NewStarter())
+
+	// 注册mongodb启动器
+	goinfras.RegisterStarter(XMongo.NewStarter())
+
+	// 注册mysql启动器
+	goinfras.RegisterStarter(XGorm.NewStarter())
+	// 注册Redis连接池
+	goinfras.RegisterStarter(XRedis.NewStarter())
+	// 注册Oss
+	goinfras.RegisterStarter(XAliyunOss.NewStarter())
+	goinfras.RegisterStarter(XQiniuOss.NewStarter())
+	// 注册Mq
+	goinfras.RegisterStarter(XNats.NewStarter())
+	goinfras.RegisterStarter(XRedisPubSub.NewStarter())
+	// 注册Oauth Manager
+	goinfras.RegisterStarter(XOAuth.NewStarter())
+
+
+	// 注册gin web 服务启动器
+	// TODO add your gin middlewares
+	middlewares := make([]gin.HandlerFunc, 0)
+	goinfras.RegisterStarter(XGin.NewStarter(middlewares...))
+
+	// 注册验证器
+	goinfras.RegisterStarter(XValidate.NewStarter())
+
+	// 对资源组件启动器进行排序
+	goinfras.SortStarters()
+
+}
+```
+
+##### Step 2：创建应用并启动
+
+```
+var app *goinfras.Application // 应用实例
+
+func main() {
+	// 初始化Viper配置加载器，导入配置，启动参数由命令行flag输入
+	fmt.Println("Viper Config Loading  ......")
+	viperCfg := goinfras.ViperLoader()
+
+	// 注册应用组件启动器
+	fmt.Println("Register Starters  ......")
+	RegisterStarter()
+
+	// 创建应用程序启动管理器
+	app = goinfras.NewApplication(viperCfg)
+
+	// 运行应用,启动已注册的资源组件
+	fmt.Println("Application Starting ......")
+	app.Up()
+}
+```
+##### Step 3：选择您的web引擎：gin/echo,定义相应的接口并在包初始化时注册接口路由
+
+```
+func init() {
+	// 初始化时自动注册该API到Gin Engine
+	XGin.RegisterApi(new(SimpleApi))
+}
+
+type SimpleApi struct {
+	service1 services.IService1
+}
+
+// SetRouter由Gin Engine 启动时调用
+func (s *SimpleApi) SetRoutes() {
+	s.service1 = services.GetService1()
+
+	engine := XGin.XEngine()
+
+	engine.GET("simple/foo", s.Foo)
+	engine.GET("simple/bar", s.Bar)
+}
+
+func (s *SimpleApi) Foo(ctx *gin.Context) {
+	email := ctx.Param("email")
+	// 调用服务
+	err := s.service1.Foo(services.InDTO{Email: email})
+
+	// 处理错误
+	fmt.Println(err)
+}
+
+func (s *SimpleApi) Bar(ctx *gin.Context) {
+	email := ctx.Param("email")
+	// 调用服务
+	err := s.service1.Bar(services.InDTO{Email: email})
+
+	// 处理错误
+	fmt.Println(err)
+}
+
 
 ```
 
