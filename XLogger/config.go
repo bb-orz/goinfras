@@ -2,34 +2,40 @@ package XLogger
 
 // 日志配置
 type Config struct {
-	AppName           string // 记录日志的应用名称
-	AppVersion        string // 版本
-	DevEnv            bool   // 是否开发环境运行
-	AddCaller         bool   // 是否注释每条信息所在文件名和行号
-	DebugLevelSwitch  bool   // Debug级别日志记录开关
-	InfoLevelSwitch   bool   // Info级别日志记录开关
-	WarnLevelSwitch   bool   // Warn级别日志记录开关
-	ErrorLevelSwitch  bool   // Error级别日志记录开关
-	DPanicLevelSwitch bool   // DPanic级别日志记录开关
-	PanicLevelSwitch  bool   // Panic级别日志记录开关
-	FatalLevelSwitch  bool   // Fatal级别日志记录开关
-	LogDir            string // 日志记录目录
+	AppName    string // 记录日志的应用名称
+	AppVersion string // 版本
+	DevEnv     bool   // 是否开发环境运行
+	AddCaller  bool   // 是否注释每条信息所在文件名和行号
 
-	// 选择记录核心
-	SimpleZapCore bool // 是否启用简单的日志记录器核心:只输出到stdout和file
-	RotateZapCore bool // 是否启用归档日志核心
-	SyncZapCore   bool // 是否启用异步日志记录器核心：输出到外部储存系统
+	// 开启可用的日志级别
+	DisableDebugLevelSwitch  bool // 禁用Debug级别日志记录，默认false
+	DisableInfoLevelSwitch   bool // 禁用Info级别日志记录，默认false
+	DisableWarnLevelSwitch   bool // 禁用Warn级别日志记录，默认false
+	DisableErrorLevelSwitch  bool // 禁用Error级别日志记录，默认false
+	DisableDPanicLevelSwitch bool // 禁用DPanic级别日志记录，默认false
+	DisablePanicLevelSwitch  bool // 禁用Panic级别日志记录，默认false
+	DisableFatalLevelSwitch  bool // 禁用Fatal级别日志记录，默认false
 
-	// 输出开关
-	SyncLogSwitch   bool // 添加异步输出的开关
-	StdoutLogSwitch bool // 标准输出日志开关
-	RotateLogSwitch bool // 是否启用归档日志记录器核心:只输出到stdout和归档日期file
+	// 标准日志记录核心
+	EnableStdZapCore bool // 是否启用标准输出核心,默认false
 
-	WithRotationTime   int    // 日志多久做一次归档
-	MaxDayCount        int    // 归档日志最多保留多久
-	MongoLogSwitch     bool   // mongo存储日志开关
-	MongoLogCollection string // mongo集合名称
-	MongoLogExpire     int    // mongo日志超时时间
+	// 文件日志记录核心
+	EnableFileZapCore bool   // 是否启用简单文件日志记录器核心,默认false
+	FileLogName       string // 日志记录文件路径
+	SyncErrorLogName  string // 异步日志错误记录器日志文件路径
+
+	// 归档文件记录核心
+	EnableRotateZapCore bool   // 是否启用归档文件日志核心,默认false
+	RotateLogDir        string // 归档日志记录目录
+	RotateLogBaseName   string // 归档日志记录基本文件名
+	WithRotationTime    uint   // 日志多久做一次归档,以天为单位
+	MaxDayCount         uint   // 归档日志最多保留多久,以天为单位
+
+	// 异步输出日志到mongo数据库记录核心
+	EnableMongoLogZapCore bool   // 是否启用异步日志记录器核心：输出到外部储存系统,默认false
+	MongoLogDbName        string // mongo数据库名称
+	MongoLogCollection    string // mongo集合名称
+	MongoLogExpire        int    // mongo日志超时时间,以天为单位
 }
 
 // 默认最小启动配置
@@ -40,21 +46,34 @@ func DefaultConfig() *Config {
 		DevEnv:     true,
 		AddCaller:  true,
 
-		DebugLevelSwitch:  false,
-		InfoLevelSwitch:   true,
-		WarnLevelSwitch:   true,
-		ErrorLevelSwitch:  true,
-		DPanicLevelSwitch: true,
-		PanicLevelSwitch:  false,
-		FatalLevelSwitch:  true,
+		// 禁用的日志级别
+		DisableDebugLevelSwitch:  false, // 禁用Debug级别日志记录，默认false
+		DisableInfoLevelSwitch:   false, // 禁用Info级别日志记录，默认false
+		DisableWarnLevelSwitch:   false, // 禁用Warn级别日志记录，默认false
+		DisableErrorLevelSwitch:  false, // 禁用Error级别日志记录，默认false
+		DisableDPanicLevelSwitch: false, // 禁用DPanic级别日志记录，默认false
+		DisablePanicLevelSwitch:  false, // 禁用Panic级别日志记录，默认false
+		DisableFatalLevelSwitch:  false, // 禁用Fatal级别日志记录，默认false
 
-		SimpleZapCore: false,
-		SyncZapCore:   true,
-		RotateZapCore: false,
+		// 标准日志记录核心
+		EnableStdZapCore: true, // 是否启用标准输出核心,默认false
 
-		SyncLogSwitch:   true,
-		StdoutLogSwitch: true,
-		RotateLogSwitch: false,
-		LogDir:          "../../log",
+		// 文件日志记录核心
+		EnableFileZapCore: false,              // 是否启用简单文件日志记录器核心,默认false
+		FileLogName:       "./common.log",     // 日志记录文件路径
+		SyncErrorLogName:  "./sync_error.log", // 日志记录文件路径
+
+		// 归档文件记录核心
+		EnableRotateZapCore: false,    // 是否启用归档文件日志核心,默认false
+		RotateLogDir:        "./log/", // 归档日志记录目录
+		WithRotationTime:    1,        // 日志多久做一次归档,以天为单位
+		MaxDayCount:         365,      // 归档日志最多保留多久,以天为单位
+
+		// 异步输出日志记录核心
+		EnableMongoLogZapCore: false,     // 是否启用异步日志记录器核心：输出到外部储存系统,默认false
+		MongoLogDbName:        "zap_log", // mongo存储日志开关
+		MongoLogCollection:    "zap_log", // mongo集合名称
+		MongoLogExpire:        365,       // mongo日志超时时间,以天为单位
+
 	}
 }
