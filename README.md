@@ -35,6 +35,9 @@ Goinfras是一个后端应用基础设施的资源组件启动器，其实现了
 
 
 ### 用例
+ß
+> 简单项目模板项目： https://github.com/bb-orz/goinfras-sample
+
 
 使用启动器项目，您只需做如下步骤：
 
@@ -191,6 +194,162 @@ func main() {
    -  -p : ENV config flag, env prefix,like: -p=goinfras_
    -  -k : ENV config flag, env keys,like: -k=aaa -k=bbb
    
+   
+   
+##### Step5:构建并启动
+```
+cd {YourProject}/app
+go build
+
+
+// 启动
+./app -f=../config/example.yaml
+
+==================StdOut====================
+Viper Config Loading  ......
+Viper File Config Was Loaded  ......
+Register Starters  ......
+Sorted Starters:
+XLogger Starter Attention!
+XAliyunOss Starter Attention!
+XEtcd Starter Attention!
+XMongo Starter Attention!
+XGorm Starter Attention!
+XRedis Starter Attention!
+XCron Starter Attention!
+XQiniuOss Starter Attention!
+XNats Starter Attention!
+XRedisPubSub Starter Attention!
+XOAuth Starter Attention!
+XGin Starter Attention!
+XValidate Starter Attention!
+Application Starting ......
+[ XLogger Starter ] |  Init  | 2020/12/21 - 16:43:12 |  [Debug] >>>>>> Config: {  true false false false false false false false false false false   false   1 30 false  ginger_log 0}
+
+[ XAliyunOss Starter ] |  Init  | 2020/12/21 - 16:43:12 |  [Debug] >>>>>> Config: { 10 120 false true     http://oss-cn-shenzhen.aliyuncs.com false }
+
+[ XEtcd Starter ] |  Init  | 2020/12/21 - 16:43:12 |  [Debug] >>>>>> Config: {[127.0.0.1:2379 127.0.0.1:2380]   false false 0 0 0 0 0 0}
+
+[ XMongo Starter ] |  Init  | 2020/12/21 - 16:43:12 |  [Debug] >>>>>> Config: {[127.0.0.1:27017]   dev_db  true 15 [nil] true 10 100 1000 120 false 20 true true}
+
+[ XGorm Starter ] |  Init  | 2020/12/21 - 16:43:12 |  [Debug] >>>>>> Config: {mysql 127.0.0.1 3306 dev 123456 dev_db utf8 true Local 3600 100 10 256 true true true false true Asia/Shanghai disable}
+
+[ XRedis Starter ] |  Init  | 2020/12/21 - 16:43:12 |  [Debug] >>>>>> Config: {127.0.0.1 6379 false  0 50 60}
+
+[ XCron Starter ] |  Init  | 2020/12/21 - 16:43:12 |  [Debug] >>>>>> Config: {Local}
+
+[ XQiniuOss Starter ] |  Init  | 2020/12/21 - 16:43:12 |  [Debug] >>>>>> Config: {   false false 7200  application/json  1024 0 image/jpeg;image/png;image/gif}
+
+[ XNats Starter ] |  Init  | 2020/12/21 - 16:43:12 |  [Debug] >>>>>> Config: {true [{127.0.0.1 4222 false  }]}
+
+[ XRedisPubSub Starter ] |  Init  | 2020/12/21 - 16:43:12 |  [Debug] >>>>>> Config: {false localhost 6379 false 123456 0 0 0}
+
+[ XOAuth Starter ] |  Init  | 2020/12/21 - 16:43:12 |  [Debug] >>>>>> Config: {false   false   false  }
+
+[ XGin Starter ] |  Init  | 2020/12/21 - 16:43:12 |  [Debug] >>>>>> Config: {debug 127.0.0.1 8090 false  }
+
+[ XValidate Starter ] |  Init  | 2020/12/21 - 16:43:12 |  [Debug] >>>>>> Config: {true}
+
+[ XLogger Starter ] |  Setup  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Zap Commond Logger Setuped!
+
+[ XLogger Starter ] |  Setup  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Zap SyncError Logger Setuped!
+
+[ XAliyunOss Starter ] |  Setup  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Aliyun Oss Client Setuped!
+
+[ XEtcd Starter ] |  Setup  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Etcd V3 Client Setuped!
+
+[ XMongo Starter ] |  Setup  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> MongoDB Client Setuped!
+
+[ XGorm Starter ] |  Setup  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Gorm DB Setuped!
+
+[ XRedis Starter ] |  Setup  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Redis Pool Setuped!
+
+[ XCron Starter ] |  Setup  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Tasks EntryIDs: []
+
+[ XQiniuOss Starter ] |  Setup  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Qiniu Oss Client Setuped!
+
+[ XNats Starter ] |  Setup  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Nats Pool Setuped!
+
+[ XRedisPubSub Starter ] |  Setup  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> RedisPubSub Pool Setuped!
+
+[ XGin Starter ] |  Setup  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Gin Engine Creating ...
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[ XGin Starter ] |  Setup  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Gin Engine Register Api Routes...
+
+[GIN-debug] GET    /simple/foo               --> github.com/bb-orz/goinfras-sample/simple/restful.(*SimpleApi).Foo-fm (3 handlers)
+[GIN-debug] GET    /simple/bar               --> github.com/bb-orz/goinfras-sample/simple/restful.(*SimpleApi).Bar-fm (3 handlers)
+[ XGin Starter ] |  Setup  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Gin Engine Setuped!
+
+[ XValidate Starter ] |  Setup  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> XValidate Utils Setuped!
+
+[ XLogger Starter ] |  Check  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Zap Logger Setup Successful!
+
+[ XAliyunOss Starter ] |  Check  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Aliyun Oss Client Setup Successful!
+
+[ XEtcd Starter ] |  Check  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Etcd V3 Client Setup Successful!
+
+[ XEtcd Starter ] |  Check  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Etcd V3 Client Setup Successful!
+
+[ XEtcd Starter ] |  Check  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Etcd V3 Client Status: {cluster_id:14841639068965178418 member_id:10276657743932975437 revision:95 raft_term:109  3.4.13 45056 10276657743932975437 330 109 {} [56 202 2 72 128 224 2] 0}
+
+[ XMongo Starter ] |  Check  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> MongoDB Client Setup Successful!
+
+[ XGorm Starter ] |  Check  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Gorm DB Setup Successful!
+
+[ XRedis Starter ] |  Check  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Redis Pool Setup Successful!
+
+[ XCron Starter ] |  Check  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Cron Manager Setup Successful!
+
+[ XQiniuOss Starter ] |  Check  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Qiniu Oss Client Setup Successful!
+
+[ XNats Starter ] |  Check  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Nats Pool Setup Successful!
+
+[ XRedisPubSub Starter ] |  Check  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> RedisPubSub Pool Setup Successful!
+
+[ XGin Starter ] |  Check  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Gin Engine Setup Successful!
+
+[ XValidate Starter ] |  Check  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Validater Setup Successful!
+
+[ XValidate Starter ] |  Check  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Translater Setup Successful!
+
+[ XCron Starter ] |  Start  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Cron Running Tasks...
+
+[ XLogger Starter ] |  Stop  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> 【XLogger Starter】: Stop Function Registered.
+
+[ XAliyunOss Starter ] |  Stop  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> 【XAliyunOss Starter】: Stop Function Registered.
+
+[ XEtcd Starter ] |  Stop  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> 【XEtcd Starter】: Stop Function Registered.
+
+[ XMongo Starter ] |  Stop  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> 【XMongo Starter】: Stop Function Registered.
+
+[ XGorm Starter ] |  Stop  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> 【XGorm Starter】: Stop Function Registered.
+
+[ XRedis Starter ] |  Stop  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> 【XRedis Starter】: Stop Function Registered.
+
+[ XCron Starter ] |  Stop  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> 【XCron Starter】: Stop Function Registered.
+
+[ XQiniuOss Starter ] |  Stop  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> 【XQiniuOss Starter】: Stop Function Registered.
+
+[ XNats Starter ] |  Stop  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> 【XNats Starter】: Stop Function Registered.
+
+[ XRedisPubSub Starter ] |  Stop  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> 【XRedisPubSub Starter】: Stop Function Registered.
+
+[ XOAuth Starter ] |  Stop  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> 【XOAuth Starter】: Stop Function Registered.
+
+[ XGin Starter ] |  Stop  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> 【XGin Starter】: Stop Function Registered.
+
+[ XValidate Starter ] |  Stop  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> 【XValidate Starter】: Stop Function Registered.
+
+[ XGin Starter ] |  Start  | 2020/12/21 - 16:43:12 |  [Info] >>>>>> Gin Server Starting ...
+
+[GIN-debug] Listening and serving HTTP on 127.0.0.1:8090
+
+
+```   
    
 ### 工具
 

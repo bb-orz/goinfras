@@ -41,11 +41,11 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	var err error
 	commonLogger, err = NewCommonLogger(s.cfg, s.Outputs...)
 	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Zap Commond Logger Steuped!  \n"))
+		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Zap Commond Logger Setuped!  \n"))
 	}
 	syncErrorLogger, err = NewSyncErrorLogger(s.cfg)
 	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Zap SyncError Logger Steuped!  \n"))
+		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Zap SyncError Logger Setuped!  \n"))
 	}
 }
 
