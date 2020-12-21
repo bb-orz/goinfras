@@ -48,7 +48,7 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	} else {
 		tku = NewTokenUtils(s.cfg)
 	}
-	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("JWT TokenUtils Steuped!  \n"))
+	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("JWT TokenUtils Setuped!  \n"))
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {

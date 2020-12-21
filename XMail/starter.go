@@ -41,7 +41,7 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	} else {
 		mailDialer = NewAuthDialer(s.cfg.Server, s.cfg.User, s.cfg.Password, s.cfg.Port)
 	}
-	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Mail Dialer Steuped!  \n"))
+	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Mail Dialer Setuped!  \n"))
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {

@@ -21,7 +21,6 @@ goinfras.Register(XEtcd.NewStarter()
 ### ETCD Config Setting
 ```
 Endpoints            []string    // etcd服务节点列表
-TLS                  *tls.Config // 加密配置
 Username             string      // 用户名
 Password             string      // 用户密码
 PermitWithoutStream  bool        // 如为true则设置后将允许客户端在没有任何活动流（RPC）的情况下向服务器发送keepalive ping。

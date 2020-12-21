@@ -44,7 +44,6 @@ Etcd:
   Endpoints           :     # etcd服务节点列表
     - "127.0.0.1:2379"
     - "127.0.0.1:2380"
-  TLS                 : ""          # 加密配置 tls.Config
   Username            : ""          # 用户名
   Password            : ""          # 用户密码
   PermitWithoutStream : false       # 如为true则设置后将允许客户端在没有任何活动流（RPC）的情况下向服务器发送keepalive ping。

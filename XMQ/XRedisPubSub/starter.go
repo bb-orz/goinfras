@@ -37,7 +37,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	redisPubSubPool = NewRedisPubsubPool(s.cfg)
-	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("RedisPubSub Pool Steuped!  \n"))
+	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("RedisPubSub Pool Setuped!  \n"))
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
