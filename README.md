@@ -104,29 +104,8 @@ func RegisterStarter() {
 }
 ```
 
-##### Step 2：创建应用并启动
 
-```
-var app *goinfras.Application // 应用实例
-
-func main() {
-	// 初始化Viper配置加载器，导入配置，启动参数由命令行flag输入
-	fmt.Println("Viper Config Loading  ......")
-	viperCfg := goinfras.ViperLoader()
-
-	// 注册应用组件启动器
-	fmt.Println("Register Starters  ......")
-	RegisterStarter()
-
-	// 创建应用程序启动管理器
-	app = goinfras.NewApplication(viperCfg)
-
-	// 运行应用,启动已注册的资源组件
-	fmt.Println("Application Starting ......")
-	app.Up()
-}
-```
-##### Step 3：选择您的web引擎：gin/echo,定义相应的接口并在包初始化时注册接口路由
+##### Step 2：选择您的web引擎：gin/echo,定义相应的接口并在包初始化时注册接口路由
 
 ```
 func init() {
@@ -170,6 +149,49 @@ func (s *SimpleApi) Bar(ctx *gin.Context) {
 ```
 
 
+
+##### Step 3：创建应用并启动
+
+```
+var app *goinfras.Application // 应用实例
+
+func main() {
+	// 初始化Viper配置加载器，导入配置，启动参数由命令行flag输入
+	fmt.Println("Viper Config Loading  ......")
+	viperCfg := goinfras.ViperLoader()
+
+	// 注册应用组件启动器
+	fmt.Println("Register Starters  ......")
+	RegisterStarter()
+
+	// 创建应用程序启动管理器
+	app = goinfras.NewApplication(viperCfg)
+
+	// 运行应用,启动已注册的资源组件
+	fmt.Println("Application Starting ......")
+	app.Up()
+}
+```
+
+
+##### Step4：确定你的配置信息，可通过环境变量、配置文件或远程配置中心设置
+> 本项目提供模板配置文件供参考：example.yaml
+
+运行goinfras的项目需注意：
+
+- 使用goinfras.ViperLoader()，载入初始viper配置实例时，默认接收以下命令行参数，获取viper实例初始配置：
+   -  -f ：Config file flag,like: -f ../config/config.yaml
+   -  -P : Remote K/V config flag, system provider，support etcd/consul. like: -P=etcd
+   -  -E : Remote K/V config flag, system endpoint，etcd requires http://ip:port  consul requires ip:port
+   -  -K : Remote K/V config flag, k is the path in the k/v store to retrieve configuration,like: -K /configs/myapp.json"
+   -  -T : Remote K/V config flag, upport: 'json', 'toml', 'yaml', 'yml', 'properties', 'props', 'prop', 'env', 'dotenv'. like: -T=json
+   -  -D : Remote K/V config flag, Currently, only tested with etcd support
+   -  -a : ENV config flag, enable automatic, like: -a=true
+   -  -e : ENV config flag, allow env  empty,like: -e=false
+   -  -p : ENV config flag, env prefix,like: -p=goinfras_
+   -  -k : ENV config flag, env keys,like: -k=aaa -k=bbb
+   
+   
 ### 工具
 
 待更新...
