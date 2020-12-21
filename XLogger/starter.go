@@ -3,19 +3,18 @@ package XLogger
 import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
-	"io"
 )
 
 type starter struct {
 	goinfras.BaseStarter
 	cfg     *Config
-	Writers []io.Writer
+	Outputs []LoggerOutput
 }
 
-func NewStarter(writer ...io.Writer) *starter {
+func NewStarter(outputs ...LoggerOutput) *starter {
 	starter := new(starter)
 	starter.cfg = &Config{}
-	starter.Writers = writer
+	starter.Outputs = outputs
 	return starter
 }
 
@@ -39,9 +38,15 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
-	commonLogger = NewCommonLogger(s.cfg, s.Writers...)
-	syncErrorLogger = NewSyncErrorLogger(s.cfg)
-	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Zap Logger Steuped!  \n"))
+	var err error
+	commonLogger, err = NewCommonLogger(s.cfg, s.Outputs...)
+	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Zap Commond Logger Steuped!  \n"))
+	}
+	syncErrorLogger, err = NewSyncErrorLogger(s.cfg)
+	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Zap SyncError Logger Steuped!  \n"))
+	}
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {

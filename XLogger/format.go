@@ -5,8 +5,8 @@ import (
 	"time"
 )
 
-// zap 日志格式的配置
-func commonFormatConfig() zapcore.EncoderConfig {
+// zap 默认日志格式的配置
+func defaultFormatConfig() zapcore.EncoderConfig {
 	return zapcore.EncoderConfig{
 		TimeKey:        "time",
 		LevelKey:       "level",
