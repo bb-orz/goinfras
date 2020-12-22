@@ -1,8 +1,10 @@
 # 应用基本配置
 Global:
-  Env:         debug               #环境
-  AppName:     MyApp              #应用名
-  ServerName:  example.com       #服务域名
+  Env      : "debug"         # 允许环境：dev、testing、product
+  Host     : "example.com"   # 主机地址
+  Endpoint : "localhost"     # 节点
+  AppName  : "goinfras_app"  # 应用名
+  Version  : "v1.0.0"        # 应用版本
 
 # Gin web 引擎配置
 Gin:
