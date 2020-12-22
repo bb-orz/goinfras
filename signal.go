@@ -24,7 +24,7 @@ func RegisterStarterStopFunc(logger IStarterLogger) {
 		Register(func() {
 			s.Stop()
 		})
-		logger.SInfo(s.Name(), StepStop, fmt.Sprintf("【%s Starter】: Stop Function Registered. \n", s.Name()))
+		logger.SInfo(s.Name(), StepStop, fmt.Sprintf("【%s Starter】: Stop Callback Function Registered. \n", s.Name()))
 	}
 }
 
