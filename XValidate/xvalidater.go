@@ -3,7 +3,6 @@ package XValidate
 import (
 	"github.com/bb-orz/goinfras/XLogger"
 	ut "github.com/go-playground/universal-translator"
-	"github.com/prometheus/common/log"
 	"go.uber.org/zap"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -32,7 +31,8 @@ func V(s interface{}) (err error) {
 		if ok {
 			for _, e := range errs {
 				// 错误类型翻译打印
-				log.Error(e.Translate(XTranslater()))
+				// log.Error(e.Translate(XTranslater()))
+				e.Translate(XTranslater())
 			}
 		}
 		return err

@@ -3,9 +3,9 @@ package XEcho
 import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
+	"github.com/bb-orz/goinfras/XCache/XRedis"
 	"github.com/bb-orz/goinfras/XJwt"
 	"github.com/bb-orz/goinfras/XLogger"
-	"github.com/bb-orz/goinfras/XStore/XRedis"
 	"github.com/labstack/echo/v4"
 	. "github.com/smartystreets/goconvey/convey"
 	"testing"

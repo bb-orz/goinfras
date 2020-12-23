@@ -2,7 +2,7 @@ package XJwt
 
 import (
 	"errors"
-	"github.com/bb-orz/goinfras/XStore/XRedis"
+	"github.com/bb-orz/goinfras/XCache/XRedis"
 	"time"
 )
 
