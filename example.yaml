@@ -14,6 +14,7 @@ Gin:
   Tls:        false            # HTTPS相关配置，开关
   CertFile:   ""               # HTTPS相关配置，证书文件
   KeyFile:    ""               # HTTPS相关配置，私匙文件
+  RecoveryDebugStack: true     # RecoveryStack中间件日志记录开启debug.Stack()
 
 # Echo web 引擎配置
 Echo:

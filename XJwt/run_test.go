@@ -2,7 +2,7 @@ package XJwt
 
 import (
 	"github.com/bb-orz/goinfras"
-	"github.com/bb-orz/goinfras/XStore/XRedis"
+	"github.com/bb-orz/goinfras/XCache/XRedis"
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/spf13/viper"
 	"testing"

@@ -47,7 +47,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	// 1.配置gin中间件
 	middlewares := make([]gin.HandlerFunc, 0)
-	middlewares = append(middlewares, ZapLoggerMiddleware(), ZapRecoveryMiddleware(false))
+	middlewares = append(middlewares, ZapLoggerMiddleware(), ZapRecoveryMiddleware(s.cfg.RecoveryDebugStack))
 
 	// 其他由用户启动器传递的中间件
 	middlewares = append(middlewares, s.middlewares...)
