@@ -74,6 +74,7 @@ require (
 	github.com/nats-io/nats-server/v2 v2.1.7 // indirect
 	github.com/nats-io/nats.go v1.10.0
 	github.com/olivere/elastic/v7 v7.0.22
+	github.com/pmylund/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.8.0 // indirect
 	github.com/prometheus/common v0.15.0
 	github.com/qiniu/api.v7/v7 v7.4.1

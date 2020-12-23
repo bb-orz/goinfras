@@ -1,0 +1,61 @@
+package XGocache
+
+import (
+	"fmt"
+	"github.com/bb-orz/goinfras"
+)
+
+type starter struct {
+	goinfras.BaseStarter
+	cfg *Config
+}
+
+func NewStarter() *starter {
+	starter := new(starter)
+	starter.cfg = &Config{}
+	return starter
+}
+
+func (s *starter) Name() string {
+	return "XGocache"
+}
+
+func (s *starter) Init(sctx *goinfras.StarterContext) {
+	var err error
+	var define *Config
+	viper := sctx.Configs()
+	if viper != nil {
+		err = viper.UnmarshalKey("Gocache", &define)
+		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
+	}
+	if define == nil {
+		define = DefaultConfig()
+	}
+	s.cfg = define
+	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %v \n", *define))
+}
+
+func (s *starter) Setup(sctx *goinfras.StarterContext) {
+	var err error
+	goCache = NewCache(s.cfg)
+	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("GoCache instance Setuped! \n"))
+	}
+}
+
+func (s *starter) Check(sctx *goinfras.StarterContext) bool {
+	err := goinfras.Check(goCache)
+	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("GoCache instance Setup Successful! \n"))
+		return true
+	}
+	return false
+}
+
+func (s *starter) Stop() {
+	goCache.Flush()
+	goCache = nil
+}
+
+// 设置启动组级别
+func (s *starter) PriorityGroup() goinfras.PriorityGroup { return goinfras.ResourcesGroup }

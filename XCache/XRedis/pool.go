@@ -31,7 +31,7 @@ func CheckPool() bool {
 func NewPool(cfg *Config) (pool *redis.Pool, err error) {
 
 	// 配置并获得一个连接池对象的指针
-	pool = &redis.Pool{
+	rPool := &redis.Pool{
 		// 最大活动链接数。0为无限
 		MaxActive: int(cfg.MaxActive),
 		// 最大闲置链接数，0为无限
@@ -71,5 +71,5 @@ func NewPool(cfg *Config) (pool *redis.Pool, err error) {
 	}
 
 	// 一般启动后不关闭连接池
-	return pool, nil
+	return rPool, nil
 }
