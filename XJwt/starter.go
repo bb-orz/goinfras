@@ -43,12 +43,18 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	// 如果redis 连接池组件已安装，则缓存token到redis服务器
-	if s.cfg.UseCache && XRedis.CheckPool() {
-		tku = NewTokenUtilsX(s.cfg)
-	} else {
+	if !s.cfg.UseCache {
 		tku = NewTokenUtils(s.cfg)
+		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("JWT TokenUtils Not Cache Setuped!  \n"))
+	} else {
+		if XRedis.CheckPool() {
+			tku = NewTokenUtilsWithRedisCache(s.cfg)
+			sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("JWT TokenUtils With Redis Cache Setuped!  \n"))
+		} else {
+			tku = NewTokenUtilsWithGoCache(s.cfg)
+			sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("JWT TokenUtils With GoCache Setuped!  \n"))
+		}
 	}
-	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("JWT TokenUtils Setuped!  \n"))
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {

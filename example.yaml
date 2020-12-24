@@ -77,7 +77,7 @@ Logger:
   # 标准输出设置
   StdoutLogSwitch:       true     #标准输出开关
   # 文件日志输出设置
-  LogDir:               ./log     #日志文件输出文件目录
+  LogDir:               ./log/runtime.log     #日志文件输出文件目录
   # 归档文件日志输出设置
   RetateLogSwitch:       false     #按日期归档输出开关
   MaxDayCount:            30      #日志数据最多保留的日志天数
@@ -154,6 +154,12 @@ Mongodb:
   RetryReads            : true         # 指定是否应在某些错误（如网络）上重试一次受支持的读操作
   RetryWrites           : true         # 指定是否应在某些错误（如网络）上重试一次受支持的写入操作
 
+# Gocache 配置
+Gocache:
+  DefaultExpiration: 0              # time.Duration 默认超时时间，小于1则长期有效
+  CleanupInterval:  -1              # time.Duration 内存清理间隔时间，小于1则长期有效
+  DumpFileName: "./cache/keys.json"    # 缓存keys导出文件位置，停机时自动备份
+
 # Redis配置
 Redis:
   DbHost      : "127.0.0.1"         # 主机地址
@@ -166,7 +172,6 @@ Redis:
 
 # Redis PubSub配置，尽量与Redis缓存服务器分开
 RedisPubSub:
-  Switch: false     #redisMq开关
   DbHost: localhost #redis主机
   DbPort: 6379      #端口号
   DbAuth: FALSE     #是否开启鉴权
@@ -177,18 +182,15 @@ RedisPubSub:
 
 # NatsMq配置
 NatsMq:
-  Switch: false     #natsMq开关
   NatsServer:
     -
       Host: ""      #nats-server的主机地址
       Port: 0       #nats-server的服务端口
-      AuthSwitch:   false     #是否开启鉴权
-      UserName: ""  #鉴权用户名
-      Password: ""  #鉴权密码
+      UserName: ""  # 鉴权用户名,为空直接连接
+      Password: ""  # 鉴权密码,为空直接连接
 
 # 七牛云对象存储配置
 QiniuOss:
-  Switch: false
   AccessKey: ""
   SecretKey: ""
   Bucket: ""
@@ -204,7 +206,6 @@ QiniuOss:
 
 # 阿里云对象存储配置
 AliyunOss:
-  Switch: false
   AccessKeyId: ""
   AccessKeySecret: ""
   BucketName: ""
@@ -282,6 +283,7 @@ Mail:
 
 # Json Web Token
 Jwt:
-  UseCache   :  true          # 是否打开redis缓存
-  PrivateKey :  "keykeykeykey"  # jwt编码私钥
-  ExpSeconds :  3600          # jwt编码超时时间
+  UseCache   :  true                      # 是否打开redis缓存
+  PrivateKey :  "keykeykeykey"            # jwt编码私钥
+  ExpSeconds :  3600                      # jwt编码超时时间
+  TokenCacheKeyPrefix: "user.jwt.token."  # 缓存令牌键名前缀

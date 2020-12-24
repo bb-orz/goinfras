@@ -37,10 +37,14 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	var err error
-	goCache = NewCache(s.cfg)
-	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("GoCache instance Setuped! \n"))
+	goCache, err = NewCacheForm(s.cfg)
+	if sctx.PassWarning(s.Name(), goinfras.StepSetup, err) {
+		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("GoCache From DumpItems instance Setuped! \n"))
+	} else {
+		goCache = NewCache(s.cfg)
+		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("GoCache New instance Setuped! \n"))
 	}
+
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
@@ -53,6 +57,7 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 }
 
 func (s *starter) Stop() {
+	_ = DumpItems(s.cfg)
 	goCache.Flush()
 	goCache = nil
 }
