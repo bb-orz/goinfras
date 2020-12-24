@@ -46,13 +46,16 @@ func (s StarterContext) SetLogger(logger IStarterLogger) {
 }
 
 // 有错误则记录启动器警告日志
-func (s StarterContext) PassWarning(name, step string, err error) {
-	if err != nil {
+func (s StarterContext) PassWarning(name, step string, err error) bool {
+	if err == nil {
+		return true
+	} else {
 		var path string
 		if _, file, line, ok := runtime.Caller(1); ok {
 			path = file + " : " + strconv.Itoa(line)
 		}
 		s.Logger().SWarning(name, step, fmt.Sprintf("Warning: %s >>> [ %s ] \n", err.Error(), path))
+		return false
 	}
 }
 

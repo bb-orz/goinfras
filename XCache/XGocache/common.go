@@ -1,4 +1,3 @@
 package XGocache
 
-type CommonGoCache struct {
-}
+type CommonGoCache struct{}
