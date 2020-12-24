@@ -283,6 +283,7 @@ Mail:
 
 # Json Web Token
 Jwt:
-  UseCache   :  true          # 是否打开redis缓存
-  PrivateKey :  "keykeykeykey"  # jwt编码私钥
-  ExpSeconds :  3600          # jwt编码超时时间
+  UseCache   :  true                      # 是否打开redis缓存
+  PrivateKey :  "keykeykeykey"            # jwt编码私钥
+  ExpSeconds :  3600                      # jwt编码超时时间
+  TokenCacheKeyPrefix: "user.jwt.token."  # 缓存令牌键名前缀
