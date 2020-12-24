@@ -1,7 +1,6 @@
 package XRedisPubSub
 
 type Config struct {
-	Switch      bool   // 开关
 	DbHost      string // 主机地址
 	DbPort      int    // 主机端口
 	DbAuth      bool   // 权限认证开关
@@ -13,7 +12,6 @@ type Config struct {
 
 func DefaultConfig() *Config {
 	return &Config{
-		true,
 		"127.0.0.1",
 		6379,
 		false,

@@ -44,7 +44,7 @@ func NewPool(cfg *Config) (*NatsPool, error) {
 		if server.Host == "" {
 			natsUrl = nats.DefaultURL
 		} else {
-			if server.AuthSwitch {
+			if server.UserName != "" && server.Password != "" {
 				natsUrl += server.UserName + ":" + server.Password + "@"
 			}
 			natsUrl += server.Host + ":" + strconv.Itoa(server.Port)
