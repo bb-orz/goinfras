@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-var timeFormat = "2019-11-09T23:02:28.844+0800"
+const timeFormat = "2006-01-02 15:04:05"
 
 func ZapLoggerMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -22,22 +22,17 @@ func ZapLoggerMiddleware() gin.HandlerFunc {
 
 		end := time.Now()
 		latency := end.Sub(start)
-		if len(c.Errors) > 0 {
-			for _, e := range c.Errors.Errors() {
-				XLogger.XCommon().Error(e)
-			}
-		} else {
-			XLogger.XCommon().Info("[Global Request Log]",
-				zap.String("ip", c.ClientIP()),
-				zap.Duration("latency", latency),
-				zap.Int("status", c.Writer.Status()),
-				zap.String("method", c.Request.Method),
-				zap.String("path", path),
-				zap.String("query", query),
-				zap.String("post", postForm),
-				zap.String("body", string(reqBody)),
-				// zap.String("trace_id", traceId),
-			)
-		}
+
+		// 访问日志，记录响应时间、客户端请求信息等
+		XLogger.XCommon().Info("[Global Request Log]",
+			zap.String("ip", c.ClientIP()),
+			zap.Duration("latency", latency),
+			zap.Int("status", c.Writer.Status()),
+			zap.String("method", c.Request.Method),
+			zap.String("path", path),
+			zap.String("query", query),
+			zap.String("post", postForm),
+			zap.String("body", string(reqBody)),
+		)
 	}
 }

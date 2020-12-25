@@ -59,9 +59,9 @@ func DefaultConfig() *Config {
 		EnableStdZapCore: true, // 是否启用标准输出核心,默认false
 
 		// 文件日志记录核心
-		EnableFileZapCore: false,              // 是否启用简单文件日志记录器核心,默认false
-		FileLogName:       "./common.log",     // 日志记录文件路径
-		SyncErrorLogName:  "./sync_error.log", // 日志记录文件路径
+		EnableFileZapCore: false,                  // 是否启用简单文件日志记录器核心,默认false
+		FileLogName:       "./log/common.log",     // 日志记录文件路径
+		SyncErrorLogName:  "./log/sync_error.log", // 日志记录文件路径
 
 		// 归档文件记录核心
 		EnableRotateZapCore: false,    // 是否启用归档文件日志核心,默认false
@@ -71,7 +71,7 @@ func DefaultConfig() *Config {
 
 		// 异步输出日志记录核心
 		EnableMongoLogZapCore: false,     // 是否启用异步日志记录器核心：输出到外部储存系统,默认false
-		MongoLogDbName:        "zap_log", // mongo存储日志开关
+		MongoLogDbName:        "zap_log", // mongo存储日志数据库名称
 		MongoLogCollection:    "zap_log", // mongo集合名称
 		MongoLogExpire:        365,       // mongo日志超时时间,以天为单位
 

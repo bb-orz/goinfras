@@ -13,9 +13,9 @@ import (
 func TestNewTokenUtils(t *testing.T) {
 	Convey("Test JWT Token Utils", t, func() {
 		var err error
-		CreateDefaultTkuX(nil)
+		CreateDefaultTku(nil)
 
-		userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker", Avatar: "", Gender: 1}
+		userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker", Avatar: ""}
 
 		Println("Token Service Encode:")
 		token, err := XTokenUtils().Encode(userClaim)
@@ -39,20 +39,20 @@ func TestNewTokenUtils(t *testing.T) {
 }
 
 // Redis 缓存加解码
-func TestTokenUtilsX(t *testing.T) {
+func TestTokenUtilsRedisCache(t *testing.T) {
 	Convey("Test JWT Token Utils Cache", t, func() {
 		var err error
 		// 测试前先启动XRedis 组件的默认连接池
 		err = XRedis.CreateDefaultPool(nil)
 		So(err, ShouldBeNil)
-		err = CreateDefaultTkuX(nil)
+		err = CreateDefaultTkuWithRedisCache(nil)
 		So(err, ShouldBeNil)
 
 		// 打印redis pool 状态
 		Println("pool ActiveCount:", XRedis.XPool().Stats().ActiveCount, ",pool IdleCount:", XRedis.XPool().Stats().IdleCount)
 
 		// 启动带redis缓存的token加解码工具
-		userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker", Avatar: "", Gender: 1}
+		userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker", Avatar: ""}
 
 		Println("Token Service Encode And Save:")
 		token, err := XTokenUtils().Encode(userClaim)
@@ -94,7 +94,7 @@ func TestStarter(t *testing.T) {
 		s.Check(sctx)
 		s.Start(sctx)
 
-		userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker", Avatar: "", Gender: 1}
+		userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker", Avatar: ""}
 
 		Println("Token Service Encode:")
 		token, err := XTokenUtils().Encode(userClaim)

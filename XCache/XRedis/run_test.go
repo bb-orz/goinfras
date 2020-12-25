@@ -33,13 +33,12 @@ func TestCommonRedisDao(t *testing.T) {
 		err := CreateDefaultPool(nil)
 		So(err, ShouldBeNil)
 
-		common := XCommon()
-
-		reply1, err := common.R("Set", "name", "joker")
+		command := XCommand()
+		reply1, err := command.R("Set", "name", "joker")
 		So(err, ShouldBeNil)
 		Println("Set reply:", reply1)
 
-		reply2, err := redis.String(common.R("Get", "name"))
+		reply2, err := redis.String(command.R("Get", "name"))
 		So(err, ShouldBeNil)
 		Println("Get reply:", reply2)
 	})

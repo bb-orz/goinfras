@@ -3,6 +3,7 @@ package XGocache
 import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
+	"github.com/bb-orz/goinfras/XCache"
 )
 
 type starter struct {
@@ -44,6 +45,10 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 		goCache = NewCache(s.cfg)
 		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("GoCache New instance Setuped! \n"))
 	}
+
+	// 设置通用缓存操作
+	XCache.SettingCommonCache(NewCommonGocache())
+	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("GoCache Common Cache Setuped! \n"))
 
 }
 

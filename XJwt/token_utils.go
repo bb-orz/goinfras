@@ -25,7 +25,6 @@ type UserClaim struct {
 	Id     string `json:id`
 	Name   string `json:name`
 	Avatar string `json:avatar`
-	Gender uint8  `json:gender`
 }
 
 // 聚合jwt内部实现的Claims
