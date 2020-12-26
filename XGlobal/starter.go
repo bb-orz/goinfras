@@ -26,7 +26,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	if viper != nil {
 		err = viper.UnmarshalKey("Global", &define)
 		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
-		sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %v \n", define))
+		sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
 	}
 	s.cfg = Global(define)
 }

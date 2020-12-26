@@ -3,7 +3,7 @@ package XJwt
 import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
-	"github.com/bb-orz/goinfras/XCache/XRedis"
+	"github.com/bb-orz/goinfras/XCache"
 	"github.com/spf13/viper"
 )
 
@@ -38,7 +38,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %v \n", *define))
+	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", *define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
@@ -47,12 +47,10 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 		tku = NewTokenUtils(s.cfg)
 		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("JWT TokenUtils Not Cache Setuped!  \n"))
 	} else {
-		if XRedis.CheckPool() {
-			tku = NewTokenUtilsWithRedisCache(s.cfg)
-			sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("JWT TokenUtils With Redis Cache Setuped!  \n"))
-		} else {
-			tku = NewTokenUtilsWithGoCache(s.cfg)
-			sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("JWT TokenUtils With GoCache Setuped!  \n"))
+		// 检查通用缓存
+		if XCache.CheckXCommon() {
+			tku = NewTokenUtilsWithCache(s.cfg)
+			sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("JWT TokenUtils With Cache Setuped!  \n"))
 		}
 	}
 }

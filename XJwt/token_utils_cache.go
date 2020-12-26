@@ -2,13 +2,14 @@ package XJwt
 
 import (
 	"errors"
+	"fmt"
+	"github.com/bb-orz/goinfras/XCache"
 	"github.com/bb-orz/goinfras/XCache/XGocache"
-	"github.com/pmylund/go-cache"
 	"time"
 )
 
 // 创建一个默认配置的带redis缓存的TokenUtils
-func CreateDefaultTkuWithGoCache(config *Config) {
+func CreateDefaultTkuWithCache(config *Config) {
 	if config == nil {
 		config = DefaultConfig()
 	}
@@ -18,25 +19,25 @@ func CreateDefaultTkuWithGoCache(config *Config) {
 		XGocache.CreateDefaultCache(nil)
 	}
 
-	tku = NewTokenUtilsWithGoCache(config)
+	tku = NewTokenUtilsWithCache(config)
 }
 
-type tokenUtilsGoCache struct {
+type tokenUtilsCache struct {
 	tokenUtils
-	goCache   *cache.Cache // 使用go-cache 缓存
-	keyPrefix string       // 键名前缀
+	CommonCache XCache.ICommonCache // 使用CommonCache 缓存
+	keyPrefix   string              // 键名前缀
 }
 
-func NewTokenUtilsWithGoCache(config *Config) *tokenUtilsGoCache {
-	ts := new(tokenUtilsGoCache)
+func NewTokenUtilsWithCache(config *Config) *tokenUtilsCache {
+	ts := new(tokenUtilsCache)
 	ts.privateKey = []byte(config.PrivateKey)
-	ts.expTime = time.Now().Add(time.Second * time.Duration(config.ExpSeconds))
-	ts.goCache = XGocache.X()
+	ts.expTime = time.Second * time.Duration(config.ExpSeconds)
+	ts.CommonCache = XCache.XCommon()
 	ts.keyPrefix = config.TokenCacheKeyPrefix
 	return ts
 }
 
-func (tks *tokenUtilsGoCache) Encode(user UserClaim) (string, error) {
+func (tks *tokenUtilsCache) Encode(user UserClaim) (string, error) {
 	var err error
 	// 编码
 	token, err := tks.encode(user)
@@ -48,14 +49,14 @@ func (tks *tokenUtilsGoCache) Encode(user UserClaim) (string, error) {
 	if user.Id == "" {
 		return "", errors.New("Empty UserId is not allowed! ")
 	}
-	exp := tks.expTime.Sub(time.Now())
+
 	key := tks.keyPrefix + user.Id
-	tks.goCache.Set(key, token, exp)
+	err = tks.CommonCache.SetWithExp(key, token, tks.expTime)
 
 	return token, nil
 }
 
-func (tks *tokenUtilsGoCache) Decode(tokenString string) (*CustomerClaim, error) {
+func (tks *tokenUtilsCache) Decode(tokenString string) (*CustomerClaim, error) {
 	// 如不能解码，直接返回err
 	claim, err := tks.decode(tokenString)
 	if err != nil {
@@ -64,9 +65,9 @@ func (tks *tokenUtilsGoCache) Decode(tokenString string) (*CustomerClaim, error)
 	key := tks.keyPrefix + claim.UserClaim.Id
 	var val interface{}
 	var b bool
-	if val, b = tks.goCache.Get(key); b {
+	if val, b = tks.CommonCache.Get(key); b {
 		// redis 鉴定缓存数据
-		cacheToken := val.(string)
+		cacheToken := fmt.Sprintf("%s", val)
 		if cacheToken != tokenString {
 			return nil, errors.New("Token string is invalid with cache data ")
 		}

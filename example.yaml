@@ -60,36 +60,39 @@ Etcd:
 
 # zap日志配置
 Logger:
-  AppName: ""
+  AppName:    ""
   AppVersion: ""
-  DevEnv: true
-  DebugLevelSwitch:    false      #调试日志级别开关
-  InfoLevelSwitch:    true        #信息日志级别开关
-  WarnLevelSwitch:    true        #警告日志级别开关
-  ErrorLevelSwitch:    true       #错误日志级别开关
-  DPanicLevelSwitch:    true      #调试时恐慌日志级别开关panic()
-  PanicLevelSwitch:    false      #恐慌日志级别开关 panic()
-  FatalLevelSwitch:    true       #致命日志级别开关,os.Exit(1)
-  # 选择日志记录方案
-  SimpleZapCore:        true      # 简单日志输出:stdout + info.log + error.log
-  RotateZapCore:        false     # 归档日志输出:stdout + info[date].log + error[date].log
-  SyncZapCore:          false     # 远程异步日志输出:stdout + (mq/sql db/ nosql db)
-  # 标准输出设置
-  StdoutLogSwitch:       true     #标准输出开关
-  # 文件日志输出设置
-  LogDir:               ./log/runtime.log     #日志文件输出文件目录
-  # 归档文件日志输出设置
-  RetateLogSwitch:       false     #按日期归档输出开关
-  MaxDayCount:            30      #日志数据最多保留的日志天数
-  WithRotationTime:       1       #多久做一次归档，单位天
+  DevEnv:     true
+  AddCaller:  true
 
-  # 异步日志输出设置
-  SyncLogSwitch:          false    # 异步日志输出开关
+  # 禁用的日志级别
+  DisableDebugLevelSwitch:  false # 禁用Debug级别日志记录，默认false
+  DisableInfoLevelSwitch:   false # 禁用Info级别日志记录，默认false
+  DisableWarnLevelSwitch:   false # 禁用Warn级别日志记录，默认false
+  DisableErrorLevelSwitch:  false # 禁用Error级别日志记录，默认false
+  DisableDPanicLevelSwitch: false # 禁用DPanic级别日志记录，默认false
+  DisablePanicLevelSwitch:  false # 禁用Panic级别日志记录，默认false
+  DisableFatalLevelSwitch:  false # 禁用Fatal级别日志记录，默认false
 
-  # mongo日志输出设置
-  MongoLogSwitch:         false               #启用mongo数据库记录日志数据的开关
-  MongoLogCollection:     ginger_log         #mongo的日志数据collection
-  MongoLogExpire:         0               #mongo日志指定时间间隔后自动过期,0为不设置
+  # 标准日志记录核心
+  EnableStdZapCore: true # 是否启用标准输出核心,默认false
+
+  # 文件日志记录核心
+  EnableFileZapCore: false              # 是否启用简单文件日志记录器核心,默认false
+  FileLogName:       "./log/common.log"     # 日志记录文件路径
+  SyncErrorLogName:  "./log/sync_error.log" # 日志记录文件路径
+
+  # 归档文件记录核心
+  EnableRotateZapCore: false    # 是否启用归档文件日志核心,默认false
+  RotateLogDir:        "./log/" # 归档日志记录目录
+  WithRotationTime:    1        # 日志多久做一次归档,以天为单位
+  MaxDayCount:         365      # 归档日志最多保留多久,以天为单位
+
+  # 异步输出日志记录核心
+  EnableMongoLogZapCore: false     # 是否启用异步日志记录器核心：输出到外部储存系统,默认false
+  MongoLogDbName:        "zap_log" # mongo存储日志数据库名
+  MongoLogCollection:    "zap_log" # mongo集合名称
+  MongoLogExpire:        365       # mongo日志超时时间,以天为单位
 
 # mysql数据库配置
 Mysql:

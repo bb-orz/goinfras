@@ -5,18 +5,18 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-type CommonRedisDao struct {
+type RedisCommand struct {
 	pool *redis.Pool
 }
 
 // 从Redis连接池获取一个连接
-func (p *CommonRedisDao) GetRedisConn() redis.Conn {
+func (p *RedisCommand) GetRedisConn() redis.Conn {
 	conn := p.pool.Get()
 	return conn
 }
 
 // 单次执行命令的R函数,执行完命令自动关闭连接
-func (p *CommonRedisDao) R(command string, args ...interface{}) (reply interface{}, err error) {
+func (p *RedisCommand) R(command string, args ...interface{}) (reply interface{}, err error) {
 	conn := p.GetRedisConn()
 	defer func() {
 		conn.Flush()
@@ -30,7 +30,7 @@ func (p *CommonRedisDao) R(command string, args ...interface{}) (reply interface
 type CommandPipe [][]interface{}
 type ReplysPipe []interface{}
 
-func (p *CommonRedisDao) P(commands CommandPipe) (ReplysPipe, error) {
+func (p *RedisCommand) P(commands CommandPipe) (ReplysPipe, error) {
 	conn := p.GetRedisConn()
 	defer func() {
 		conn.Flush()

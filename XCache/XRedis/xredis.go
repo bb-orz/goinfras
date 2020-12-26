@@ -13,9 +13,9 @@ func XFPool(f func(p *redis.Pool) error) error {
 	return f(pool)
 }
 
-// Redis通用操作实例
-func XCommon() *CommonRedisDao {
-	dao := new(CommonRedisDao)
+// Redis命令封装操作实例
+func XCommand() *RedisCommand {
+	dao := new(RedisCommand)
 	dao.pool = XPool()
 	return dao
 }

@@ -3,6 +3,7 @@ package XRedis
 import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
+	"github.com/bb-orz/goinfras/XCache"
 )
 
 type starter struct {
@@ -32,7 +33,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		define = DefaultConfig()
 	}
 	s.cfg = define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %v \n", *define))
+	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", *define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
@@ -41,6 +42,11 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
 		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Redis Pool Setuped! \n"))
 	}
+
+	// 设置通用缓存操作
+	XCache.SettingCommonCache(NewCommonRedisCache())
+	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Redis Common Cache Setuped! \n"))
+
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
