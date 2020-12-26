@@ -29,9 +29,9 @@ func (*CommonGocache) Replace(k string, v interface{}) error {
 	return X().Replace(k, v, 0)
 }
 
-// 添加一个不存在或已超时的键值，带超时
+// 添加一个不存在或已超时的键值，带超时,单位s
 func (*CommonGocache) AddWithExp(k string, v interface{}, exp time.Duration) error {
-	return X().Add(k, v, exp)
+	return X().Add(k, v, time.Duration(exp)*time.Second)
 }
 
 // 获取一个带过期时间的键值
@@ -39,15 +39,15 @@ func (*CommonGocache) GetWithExp(k string) (interface{}, time.Time, bool) {
 	return X().GetWithExpiration(k)
 }
 
-// 更新或添加一个键值，无论是否已存在，带超时
+// 更新或添加一个键值，无论是否已存在，带超时,单位s
 func (*CommonGocache) SetWithExp(k string, v interface{}, exp time.Duration) error {
-	X().Set(k, v, exp)
+	X().Set(k, v, time.Duration(exp)*time.Second)
 	return nil
 }
 
-// 更新一个已存在且未过期的键值，不满足条件则报错，带超时
+// 更新一个已存在且未过期的键值，不满足条件则报错，带超时,单位s
 func (*CommonGocache) ReplaceWithExp(k string, v interface{}, exp time.Duration) error {
-	return X().Replace(k, v, exp)
+	return X().Replace(k, v, time.Duration(exp)*time.Second)
 }
 
 // 自增int64

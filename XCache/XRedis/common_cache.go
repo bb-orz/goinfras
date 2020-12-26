@@ -34,6 +34,26 @@ func (*CommonRedisCache) Get(k string) (interface{}, bool) {
 	return reply, true
 }
 
+// 获取一个字符键值
+func (*CommonRedisCache) GetString(k string) (string, error) {
+	return redis.String(XCommand().R("GET", k))
+}
+
+// 获取一个整型键值
+func (*CommonRedisCache) GetInt(k string) (int, error) {
+	return redis.Int(XCommand().R("GET", k))
+}
+
+// 获取一个布尔键值
+func (*CommonRedisCache) GetBool(k string) (bool, error) {
+	return redis.Bool(XCommand().R("GET", k))
+}
+
+// 获取一个浮点数键值
+func (*CommonRedisCache) GetFloat64(k string) (float64, error) {
+	return redis.Float64(XCommand().R("GET", k))
+}
+
 // 更新或添加一个键值，无论是否已存在
 func (*CommonRedisCache) Set(k string, v interface{}) error {
 	isOK, err := redis.String(XCommand().R("SET", k, v))
@@ -62,7 +82,7 @@ func (*CommonRedisCache) Replace(k string, v interface{}) error {
 
 // 添加一个不存在或已超时的键值，带超时
 func (*CommonRedisCache) AddWithExp(k string, v interface{}, exp time.Duration) error {
-	isOK, err := redis.String(XCommand().R("SET", k, v, "EX", exp, "NX"))
+	isOK, err := redis.String(XCommand().R("SET", k, v, "EX", int64(exp), "NX"))
 	if err != nil {
 		return err
 	}
@@ -87,9 +107,61 @@ func (*CommonRedisCache) GetWithExp(k string) (interface{}, time.Time, bool) {
 	return reply, expTime, true
 }
 
+// 获取一个字符键值
+func (*CommonRedisCache) GetStringWithExp(k string) (string, int64, error) {
+	v, err := redis.String(XCommand().R("GET", k))
+	if err != nil {
+		return v, -1, err
+	}
+	expSecond, err := redis.Int64(XCommand().R("TTL", k))
+	if err != nil || expSecond < 0 {
+		return v, expSecond, err
+	}
+	return v, expSecond, nil
+}
+
+// 获取一个整型键值
+func (*CommonRedisCache) GetIntWithExp(k string) (int, int64, error) {
+	v, err := redis.Int(XCommand().R("GET", k))
+	if err != nil {
+		return v, -1, err
+	}
+	expSecond, err := redis.Int64(XCommand().R("TTL", k))
+	if err != nil || expSecond < 0 {
+		return v, expSecond, err
+	}
+	return v, expSecond, nil
+}
+
+// 获取一个布尔键值
+func (*CommonRedisCache) GetBoolWithExp(k string) (bool, int64, error) {
+	v, err := redis.Bool(XCommand().R("GET", k))
+	if err != nil {
+		return v, -1, err
+	}
+	expSecond, err := redis.Int64(XCommand().R("TTL", k))
+	if err != nil || expSecond < 0 {
+		return v, expSecond, err
+	}
+	return v, expSecond, nil
+}
+
+// 获取一个浮点数键值
+func (*CommonRedisCache) GetFloat64WithExp(k string) (float64, int64, error) {
+	v, err := redis.Float64(XCommand().R("GET", k))
+	if err != nil {
+		return v, -1, err
+	}
+	expSecond, err := redis.Int64(XCommand().R("TTL", k))
+	if err != nil || expSecond < 0 {
+		return v, expSecond, err
+	}
+	return v, expSecond, nil
+}
+
 // 更新或添加一个键值，无论是否已存在，带超时
 func (*CommonRedisCache) SetWithExp(k string, v interface{}, exp time.Duration) error {
-	isOK, err := redis.String(XCommand().R("SET", k, v, "EX", exp))
+	isOK, err := redis.String(XCommand().R("SET", k, v, "EX", int64(exp)))
 	if err != nil {
 		return err
 	}
@@ -102,7 +174,7 @@ func (*CommonRedisCache) SetWithExp(k string, v interface{}, exp time.Duration) 
 
 // 更新一个已存在且未过期的键值，不满足条件则报错，带超时
 func (*CommonRedisCache) ReplaceWithExp(k string, v interface{}, exp time.Duration) error {
-	isOK, err := redis.String(XCommand().R("SET", k, v, "EX", exp, "XX"))
+	isOK, err := redis.String(XCommand().R("SET", k, v, "EX", int64(exp), "XX"))
 	if err != nil {
 		return err
 	}
