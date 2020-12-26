@@ -35,14 +35,14 @@ type CustomerClaim struct {
 
 // 实现token服务
 type tokenUtils struct {
-	privateKey []byte    // 编解码私钥，在生产环境中，该私钥请使用生成器生成，并妥善保管，此处使用简单字符串。
-	expTime    time.Time // 超时秒数
+	privateKey []byte        // 编解码私钥，在生产环境中，该私钥请使用生成器生成，并妥善保管，此处使用简单字符串。
+	expTime    time.Duration // 超时时间
 }
 
 func NewTokenUtils(config *Config) *tokenUtils {
 	ts := new(tokenUtils)
 	ts.privateKey = []byte(config.PrivateKey)
-	ts.expTime = time.Now().Add(time.Second * time.Duration(config.ExpSeconds))
+	ts.expTime = time.Second * time.Duration(config.ExpSeconds)
 	return ts
 }
 
@@ -51,7 +51,8 @@ func (tks *tokenUtils) encode(user UserClaim) (string, error) {
 	// privateKey, _ := base64.URLEncoding.DecodeString(string(privateKey))
 
 	// 设置Claim
-	customer := CustomerClaim{user, &jwt.StandardClaims{ExpiresAt: tks.expTime.Unix()}}
+	espTime := time.Now().Add(tks.expTime).Unix()
+	customer := CustomerClaim{user, &jwt.StandardClaims{ExpiresAt: espTime}}
 
 	// 生成token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, customer)

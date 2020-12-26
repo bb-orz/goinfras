@@ -2,6 +2,8 @@ package XJwt
 
 import (
 	"github.com/bb-orz/goinfras"
+	"github.com/bb-orz/goinfras/XCache"
+	"github.com/bb-orz/goinfras/XCache/XGocache"
 	"github.com/bb-orz/goinfras/XCache/XRedis"
 	. "github.com/smartystreets/goconvey/convey"
 	"github.com/spf13/viper"
@@ -20,12 +22,12 @@ func TestNewTokenUtils(t *testing.T) {
 		Println("Token Service Encode:")
 		token, err := XTokenUtils().Encode(userClaim)
 		So(err, ShouldBeNil)
-		Println("Token String", token)
+		Printf("Token String:%+v \n", token)
 
 		Println("Token Service Decode:")
 		claim, err := XTokenUtils().Decode(token)
 		So(err, ShouldBeNil)
-		Println("Token Claim:", claim)
+		Printf("Token Claim:%+v \n", claim)
 
 		exp := DefaultConfig().ExpSeconds + 1
 		time.Sleep(time.Duration(exp) * time.Second)
@@ -45,8 +47,9 @@ func TestTokenUtilsRedisCache(t *testing.T) {
 		// 测试前先启动XRedis 组件的默认连接池
 		err = XRedis.CreateDefaultPool(nil)
 		So(err, ShouldBeNil)
-		err = CreateDefaultTkuWithRedisCache(nil)
-		So(err, ShouldBeNil)
+		XCache.SettingCommonCache(XRedis.NewCommonRedisCache())
+
+		CreateDefaultTkuWithCache(nil)
 
 		// 打印redis pool 状态
 		Println("pool ActiveCount:", XRedis.XPool().Stats().ActiveCount, ",pool IdleCount:", XRedis.XPool().Stats().IdleCount)
@@ -64,14 +67,49 @@ func TestTokenUtilsRedisCache(t *testing.T) {
 		claim, err := XTokenUtils().Decode(token)
 		Println("Validate Error:", err)
 		So(err, ShouldBeNil)
-		Println("Token Claim:", claim)
+		Printf("Token Claim:%+v \n", claim)
 
 		exp := DefaultConfig().ExpSeconds + 1
 		time.Sleep(time.Duration(exp) * time.Second)
 
 		claim, err = XTokenUtils().Decode(token)
 		So(err, ShouldNotBeNil)
-		Println("Exp Token Claim:", claim)
+		Printf("Exp Token Claim:%+v \n", claim)
+
+	})
+}
+
+// go-cache 缓存加解码
+func TestTokenUtilsGoCache(t *testing.T) {
+	Convey("Test JWT Token Utils Cache", t, func() {
+		var err error
+		// 测试前先启动XRedis 组件的默认连接池
+		XGocache.CreateDefaultCache(nil)
+		XCache.SettingCommonCache(XGocache.NewCommonGocache())
+
+		CreateDefaultTkuWithCache(nil)
+
+		// 启动带redis缓存的token加解码工具
+		userClaim := UserClaim{Id: "qwertwerhadfsgsadfg", Name: "joker", Avatar: ""}
+
+		Println("Token Service Encode And Save:")
+		token, err := XTokenUtils().Encode(userClaim)
+		So(err, ShouldBeNil)
+		Println("Token String", token)
+
+		Println("Token Service Decode And Validate:")
+
+		claim, err := XTokenUtils().Decode(token)
+		Println("Validate Error:", err)
+		So(err, ShouldBeNil)
+		Printf("Token Claim:%+v \n", claim)
+
+		exp := DefaultConfig().ExpSeconds + 1
+		time.Sleep(time.Duration(exp) * time.Second)
+
+		claim, err = XTokenUtils().Decode(token)
+		So(err, ShouldNotBeNil)
+		Printf("Exp Token Claim:%+v \n", claim)
 
 	})
 }

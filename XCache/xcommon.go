@@ -13,6 +13,13 @@ func XCommon() ICommonCache {
 	return commonCache
 }
 
+func CheckXCommon() bool {
+	if commonCache != nil {
+		return true
+	}
+	return false
+}
+
 type ICommonCache interface {
 	Add(k string, v interface{}) error     // 添加一个不存在或已超时的键值
 	Get(k string) (interface{}, bool)      // 获取一个键值
