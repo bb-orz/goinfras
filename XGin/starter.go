@@ -26,7 +26,7 @@ func (s *starter) Name() string {
 // 初始化时：加载配置
 func (s *starter) Init(sctx *goinfras.StarterContext) {
 	var err error
-	var define *Config
+	var define Config
 
 	viper := sctx.Configs()
 	if viper != nil {
@@ -34,13 +34,8 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
 
-	// 读配置为空时，默认配置
-	if define == nil {
-		define = DefaultConfig()
-	}
-
-	s.cfg = define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", *define))
+	s.cfg = &define
+	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
 }
 
 // 启动时：添加中间件，实例化应用，注册项目实现的API

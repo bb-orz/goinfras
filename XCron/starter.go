@@ -29,17 +29,15 @@ func (s *starter) Name() string {
 // 应用初始化时加载配置数据
 func (s *starter) Init(sctx *goinfras.StarterContext) {
 	var err error
-	var define *Config
+	var define Config
 	viper := sctx.Configs()
 	if viper != nil {
 		err = viper.UnmarshalKey("Cron", &define)
 		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
-	if define == nil {
-		define = DefaultConfig()
-	}
-	s.cfg = define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", *define))
+
+	s.cfg = &define
+	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
 }
 
 // 应用安装阶段创建Cron管理器，并注册为应用组件

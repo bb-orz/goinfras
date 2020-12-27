@@ -15,7 +15,6 @@ import (
 
 func ZapRecoveryMiddleware(stack bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		defer func() {
 			if err := recover(); err != nil {
 				var brokenPipe bool
