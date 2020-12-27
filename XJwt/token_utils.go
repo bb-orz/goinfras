@@ -1,6 +1,7 @@
 package XJwt
 
 import (
+	"errors"
 	"github.com/dgrijalva/jwt-go"
 	"time"
 )
@@ -18,6 +19,15 @@ func CreateDefaultTku(config *Config) {
 type ITokenUtils interface {
 	Encode(user UserClaim) (string, error)
 	Decode(tokenString string) (*CustomerClaim, error)
+	Remove(tokenString string) error
+}
+
+// 检查连接池实例
+func CheckTku() bool {
+	if tku != nil {
+		return true
+	}
+	return false
 }
 
 // JWT中携带的用户个人信息
@@ -85,4 +95,8 @@ func (tks *tokenUtils) Encode(user UserClaim) (string, error) {
 
 func (tks *tokenUtils) Decode(tokenString string) (*CustomerClaim, error) {
 	return tks.decode(tokenString)
+}
+
+func (tks *tokenUtils) Remove(tokenString string) error {
+	return errors.New("No Cache To Remove Token ")
 }

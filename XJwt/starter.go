@@ -24,7 +24,7 @@ func (s *starter) Name() string {
 
 func (s *starter) Init(sctx *goinfras.StarterContext) {
 	var err error
-	var define *Config
+	var define Config
 
 	// 先从viper读取配置信息
 	viperConfig := sctx.Configs()
@@ -33,12 +33,8 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
 
-	// Viper读取不到配置时，default设置
-	if define == nil {
-		define = DefaultConfig()
-	}
-	s.cfg = define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", *define))
+	s.cfg = &define
+	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {

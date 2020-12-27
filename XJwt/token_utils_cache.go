@@ -77,3 +77,18 @@ func (tks *tokenUtilsCache) Decode(tokenString string) (*CustomerClaim, error) {
 
 	return claim, nil
 }
+
+func (tks *tokenUtilsCache) Remove(tokenString string) error {
+	// 如不能解码，直接返回err
+	claim, err := tks.decode(tokenString)
+	if err != nil {
+		return err
+	}
+	key := tks.keyPrefix + claim.UserClaim.Id
+
+	b := tks.CommonCache.Delete(key)
+	if !b {
+		return errors.New("Remove Token Cache Fail ")
+	}
+	return nil
+}
