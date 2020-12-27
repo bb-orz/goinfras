@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/bb-orz/goinfras"
 	"github.com/bb-orz/goinfras/XCache"
-	"github.com/spf13/viper"
 )
 
 type starter struct {
@@ -26,13 +25,11 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	var err error
 	var define Config
 
-	// 先从viper读取配置信息
-	viperConfig := sctx.Configs()
-	if viperConfig != nil {
+	viper := sctx.Configs()
+	if viper != nil {
 		err = viper.UnmarshalKey("Jwt", &define)
 		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
-
 	s.cfg = &define
 	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
 }
