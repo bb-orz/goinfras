@@ -16,6 +16,57 @@ Gin:
   KeyFile:    ""               # HTTPS相关配置，私匙文件
   RecoveryDebugStack: true     # RecoveryStack中间件日志记录开启debug.Stack()
 
+GinCors:
+  # AllowOrigins is a list of origins a cross-domain request can be executed from.
+  # If the special "*" value is present in the list, all origins will be allowed.
+  # Default value is []
+  AllowAllOrigins: true
+
+  # AllowOriginFunc is a custom function to validate the origin. It take the origin
+  # as argument and returns true if allowed or false otherwise. If this option is
+  # set, the content of AllowOrigins is ignored.
+  AllowOrigins:
+    - ""
+
+  # AllowMethods is a list of methods the client is allowed to use with
+  # cross-domain requests. Default value is simple methods (GET and POST)
+  AllowMethods:
+    - "PUT"
+    - "POST"
+    - "GET"
+    - "PATCH"
+    - "DELETE"
+
+  # AllowHeaders is list of non simple headers the client is allowed to use with
+  # cross-domain requests.
+  AllowHeaders:
+    - "Origin"
+
+  # AllowCredentials indicates whether the request can include user credentials like
+  # cookies, HTTP authentication or client side SSL certificates.
+  AllowCredentials: false
+
+  # ExposedHeaders indicates which headers are safe to expose to the API of a CORS
+  # API specification
+  ExposeHeaders:
+    - "Content-Length"
+
+  # MaxAge indicates how long (in seconds) the results of a preflight request
+  # can be cached
+  MaxAge: 60
+
+  # Allows to add origins like http://some-domain/*, https://api.* or http://some.*.subdomain.com
+  AllowWildcard: true
+
+  # Allows usage of popular browser extensions schemas
+  AllowBrowserExtensions: false
+
+  # Allows usage of WebSocket protocol
+  AllowWebSockets: false
+
+  # Allows usage of file:// schema (dangerous!) use it only when you 100% sure it's needed
+  AllowFiles: true
+
 # Echo web 引擎配置
 Echo:
   Debug: true           # 调试模式
