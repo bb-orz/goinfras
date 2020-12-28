@@ -45,6 +45,17 @@ func (s StarterContext) SetLogger(logger IStarterLogger) {
 	s[KeyLogger] = logger
 }
 
+func (s StarterContext) Item(key string) interface{} {
+	p := s[key]
+	if p == nil {
+		panic("该启动器上下文设置项未设置")
+	}
+	return p
+}
+func (s StarterContext) SetItem(key string, item interface{}) {
+	s[key] = item
+}
+
 // 有错误则记录启动器警告日志
 func (s StarterContext) PassWarning(name, step string, err error) bool {
 	if err == nil {
