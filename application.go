@@ -5,6 +5,14 @@ import (
 	"io"
 )
 
+// 应用运行实例
+var appRuntime *Application
+
+// 获取应用实例的方法,通过App实例可在项目内部获取启动器上下文，包括启动配置信息等
+func XApp() *Application {
+	return appRuntime
+}
+
 // 应用程序启动管理器
 type Application struct {
 	Sctx *StarterContext // 应用启动器上下文
@@ -13,21 +21,21 @@ type Application struct {
 // 创建应用程序启动管理器
 func NewApplication(vpcfg *viper.Viper) *Application {
 	// 创建启动管理器
-	app := new(Application)
-	app.Sctx = &StarterContext{}
-	app.Sctx.SetConfigs(vpcfg)
-	app.Sctx.SetLogger(NewCommandLineStarterLogger())
-	return app
+	appRuntime = new(Application)
+	appRuntime.Sctx = &StarterContext{}
+	appRuntime.Sctx.SetConfigs(vpcfg)
+	appRuntime.Sctx.SetLogger(NewCommandLineStarterLogger())
+	return appRuntime
 }
 
 // 创建一个带输出启动日志的应用管理器
 func NewApplicationWithStarterLoggerWriter(vpcfg *viper.Viper, logWriters ...io.Writer) *Application {
 	// 创建启动管理器
-	app := new(Application)
-	app.Sctx = &StarterContext{}
-	app.Sctx.SetConfigs(vpcfg)
-	app.Sctx.SetLogger(NewStarterLoggerWithWriters(logWriters...))
-	return app
+	appRuntime = new(Application)
+	appRuntime.Sctx = &StarterContext{}
+	appRuntime.Sctx.SetConfigs(vpcfg)
+	appRuntime.Sctx.SetLogger(NewStarterLoggerWithWriters(logWriters...))
+	return appRuntime
 }
 
 // 启动应用程序所有基础资源 （初始化 -> 安装 -> 检查 -> 启动 -> 监听系统退出信号）
