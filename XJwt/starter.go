@@ -31,7 +31,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 		sctx.PassWarning(s.Name(), goinfras.StepInit, err)
 	}
 	s.cfg = &define
-	sctx.Logger().Debug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
+	sctx.Logger().Debug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v ", define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {

@@ -18,7 +18,7 @@ const (
 	StepSetup = "Setup"
 	StepStart = "Start"
 	StepCheck = "Check"
-	StepStop  = "Stop"
+	StepStop  = "Hook"
 )
 
 // 日志等级命名常量
@@ -39,7 +39,7 @@ const (
 	redf     = "\033[31m"
 	magentaf = "\033[35m"
 
-	white   = "\033[90;47m"
+	white   = "\033[30;47m"
 	green   = "\033[97;42m"
 	blue    = "\033[97;44m"
 	cyan    = "\033[97;46m"
@@ -129,8 +129,8 @@ var defaultLogFormatter = func(param LogFormatterParams) string {
 	logLevelColor = param.LogLevelColor()
 	resetColor = param.ResetColor()
 
-	return fmt.Sprintf("[%s %s %s %s] | %s %s %s | %v | >>> %s [%s]\t%s %s \n",
-		positionColor, param.Name, param.Position, resetColor,
+	return fmt.Sprintf("%s %9s %s %s %6s %s | %v |%s [%s]\t>>> %s %s \n",
+		positionColor, param.Name, resetColor,
 		stepColor, param.Step, resetColor,
 		param.TimeStamp.Format("2006/01/02 - 15:04:05"),
 		logLevelColor, param.LogLevel, param.Message, resetColor,
@@ -139,7 +139,7 @@ var defaultLogFormatter = func(param LogFormatterParams) string {
 
 // 启动日志文件输出格式
 var commonWriterFormatter = func(param LogFormatterParams) string {
-	return fmt.Sprintf("[%s %s] | %s | %v | >>> [%s]\t%s \n",
+	return fmt.Sprintf("| %s %s | %s | %v |[%s]\t>>> %s \n",
 		param.Name,
 		param.Position,
 		param.Step,

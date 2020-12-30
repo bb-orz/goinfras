@@ -2,7 +2,6 @@ package XGorm
 
 import (
 	"database/sql"
-	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
@@ -27,7 +26,6 @@ func NewORMDb(config *Config) (*gorm.DB, error) {
 	// 先创建一个*sql.DB 连接池
 	sqlDBPool, err = newSqlDB(config)
 
-	fmt.Println(config.Dialect)
 	switch config.Dialect {
 	case "mysql":
 		db, err = gorm.Open(mysql.New(mysql.Config{
