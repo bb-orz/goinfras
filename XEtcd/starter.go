@@ -31,14 +31,14 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	}
 
 	s.cfg = &define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
+	sctx.Logger().Debug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	var err error
 	client, err = NewEtcdClient(context.TODO(), s.cfg, nil)
 	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Etcd V3 Client Setuped! \n"))
+		sctx.Logger().Info(s.Name(), goinfras.StepSetup, "Etcd V3 Client Setuped! ")
 	}
 }
 
@@ -46,13 +46,13 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	var err error
 	err = goinfras.Check(client)
 	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Etcd V3 Client Setup Successful! \n"))
+		sctx.Logger().OK(s.Name(), goinfras.StepCheck, "Etcd V3 Client Setup Successful! ")
 	}
 
 	status, err := client.Status(context.TODO(), s.cfg.Endpoints[0])
 	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Etcd V3 Client Setup Successful! \n"))
-		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Etcd V3 Client Status: %v \n", *status))
+		sctx.Logger().OK(s.Name(), goinfras.StepCheck, "Etcd V3 Client Setup Successful! ")
+		sctx.Logger().OK(s.Name(), goinfras.StepCheck, fmt.Sprintf("Etcd V3 Client Status: %+v ", *status))
 		return true
 	}
 	return false

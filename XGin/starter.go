@@ -35,7 +35,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	}
 
 	s.cfg = &define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
+	sctx.Logger().Debug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
 }
 
 // 启动时：添加中间件，实例化应用，注册项目实现的API
@@ -48,22 +48,22 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	middlewares = append(middlewares, s.middlewares...)
 
 	// 2.New Gin Engine
-	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Gin Engine Creating ...  \n"))
+	sctx.Logger().OK(s.Name(), goinfras.StepSetup, "Gin Engine Creating ...  ")
 	ginEngine = NewGinEngine(s.cfg, middlewares...)
 
 	// 3.API路由注册
-	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Gin Engine Register Api Routes...  \n"))
+	sctx.Logger().OK(s.Name(), goinfras.StepSetup, "Gin Engine Register Api Routes...  ")
 	for _, v := range GetApis() {
 		v.SetRoutes()
 	}
-	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Gin Engine Setuped! \n"))
+	sctx.Logger().OK(s.Name(), goinfras.StepSetup, "Gin Engine Setuped! ")
 
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(ginEngine)
 	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Gin Engine Setup Successful! \n "))
+		sctx.Logger().OK(s.Name(), goinfras.StepCheck, "Gin Engine Setup Successful! ")
 		return true
 	}
 	return false
@@ -74,7 +74,7 @@ func (s *starter) Start(sctx *goinfras.StarterContext) {
 	var addr string
 	var err error
 	addr = fmt.Sprintf("%s:%d", s.cfg.ListenHost, s.cfg.ListenPort)
-	sctx.Logger().SInfo(s.Name(), goinfras.StepStart, fmt.Sprintf("Gin Server Starting ... \n"))
+	sctx.Logger().OK(s.Name(), goinfras.StepStart, "Gin Server Starting ... ")
 	if s.cfg.Tls && s.cfg.CertFile != "" && s.cfg.KeyFile != "" {
 		err = ginEngine.RunTLS(addr, s.cfg.CertFile, s.cfg.KeyFile)
 	} else {

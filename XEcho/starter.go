@@ -45,7 +45,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	}
 
 	s.cfg = &define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
+	sctx.Logger().Debug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
 }
 
 // 启动时：添加中间件，实例化应用，注册项目实现的API
@@ -73,13 +73,13 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	for _, v := range GetApis() {
 		v.SetRoutes()
 	}
-	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Echo Engine Setuped! \n"))
+	sctx.Logger().Info(s.Name(), goinfras.StepSetup, "Echo Engine Setuped! ")
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(echoEngine)
 	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Echo Engine Setup Successful! \n "))
+		sctx.Logger().OK(s.Name(), goinfras.StepCheck, "Echo Engine Setup Successful! ")
 		return true
 	}
 	return false
@@ -90,7 +90,7 @@ func (s *starter) Start(sctx *goinfras.StarterContext) {
 	var addr string
 	var err error
 	addr = fmt.Sprintf("%s:%d", s.cfg.ListenHost, s.cfg.ListenPort)
-	sctx.Logger().SInfo(s.Name(), goinfras.StepStart, fmt.Sprintf("Echo Server Starting ... \n"))
+	sctx.Logger().OK(s.Name(), goinfras.StepStart, "Echo Server Starting ...")
 	if s.cfg.Tls && s.cfg.CertFile != "" && s.cfg.KeyFile != "" {
 		err = echoEngine.StartTLS(addr, s.cfg.CertFile, s.cfg.KeyFile)
 	} else {

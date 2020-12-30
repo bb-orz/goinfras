@@ -30,21 +30,21 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	}
 
 	s.cfg = &define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
+	sctx.Logger().Debug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	if s.cfg.QQSignSwitch {
 		qqOM = NewQQOauthManager(s.cfg)
-		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("QQ OAuth Manager Setuped!  \n"))
+		sctx.Logger().Info(s.Name(), goinfras.StepSetup, "QQ OAuth Manager Setuped!  ")
 	}
 	if s.cfg.WechatSignSwitch {
 		wechatOM = NewWechatOAuthManager(s.cfg)
-		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Wechat OAuth Manager Setuped!  \n"))
+		sctx.Logger().Info(s.Name(), goinfras.StepSetup, "Wechat OAuth Manager Setuped! ")
 	}
 	if s.cfg.WeiboSignSwitch {
 		weiboOM = NewWeiboOAuthManager(s.cfg)
-		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Weibo OAuth Manager Setuped!  \n"))
+		sctx.Logger().Info(s.Name(), goinfras.StepSetup, "Weibo OAuth Manager Setuped!  ")
 	}
 
 }
@@ -54,21 +54,21 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	if s.cfg.QQSignSwitch {
 		err = goinfras.Check(qqOM)
 		if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-			sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("QQ OAuth Manager Steup Successful! \n"))
+			sctx.Logger().OK(s.Name(), goinfras.StepCheck, "QQ OAuth Manager Steup Successful! ")
 		}
 	}
 
 	if s.cfg.WechatSignSwitch {
 		err = goinfras.Check(wechatOM)
 		if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-			sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Wechat OAuth Manager Steup Successful! \n"))
+			sctx.Logger().OK(s.Name(), goinfras.StepCheck, "Wechat OAuth Manager Steup Successful! ")
 		}
 	}
 
 	if s.cfg.WeiboSignSwitch {
 		err = goinfras.Check(weiboOM)
 		if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-			sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Weibo OAuth Manager Steup Successful! \n"))
+			sctx.Logger().OK(s.Name(), goinfras.StepCheck, "Weibo OAuth Manager Steup Successful! ")
 		}
 	}
 

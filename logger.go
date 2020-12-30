@@ -9,8 +9,7 @@ import (
 
 // 记录位置命名常量
 const (
-	ApplicationPosition = "Application"
-	StarterPosition     = "Starter"
+	StarterPosition = "Starter"
 )
 
 // 启动步骤常量
@@ -26,15 +25,13 @@ const (
 const (
 	DebugLevel   = "Debug"
 	InfoLevel    = "Info"
+	OKLevel      = "OK"
 	WarningLevel = "Warning"
 	ErrorLevel   = "Error"
 	FailLevel    = "Fail"
 )
 
 const (
-	blue = "\033[97;44m"
-	cyan = "\033[97;46m"
-
 	whitef   = "\033[37m"
 	yellowf  = "\033[33m"
 	bluef    = "\033[34m"
@@ -42,8 +39,10 @@ const (
 	redf     = "\033[31m"
 	magentaf = "\033[35m"
 
-	green   = "\033[97;42m"
 	white   = "\033[90;47m"
+	green   = "\033[97;42m"
+	blue    = "\033[97;44m"
+	cyan    = "\033[97;46m"
 	yellow  = "\033[90;43m"
 	red     = "\033[1;97;41m"
 	magenta = "\033[1;97;45m"
@@ -73,12 +72,10 @@ type LogFormatterParams struct {
 // 日志输出位置颜色标示
 func (p *LogFormatterParams) LogPositionColor() string {
 	switch p.Position {
-	case ApplicationPosition:
-		return blue
 	case StarterPosition:
-		return cyan
+		return white
 	default:
-		return cyan
+		return magenta
 	}
 }
 
@@ -86,15 +83,15 @@ func (p *LogFormatterParams) LogPositionColor() string {
 func (p *LogFormatterParams) LogStepColor() string {
 	switch p.Step {
 	case StepInit:
-		return white
-	case StepSetup:
 		return yellow
+	case StepSetup:
+		return cyan
 	case StepStart:
 		return blue
 	case StepCheck:
 		return green
 	default:
-		return cyan
+		return red
 	}
 }
 
@@ -102,9 +99,11 @@ func (p *LogFormatterParams) LogStepColor() string {
 func (p *LogFormatterParams) LogLevelColor() string {
 	switch p.LogLevel {
 	case DebugLevel:
-		return greenf
+		return bluef
 	case InfoLevel:
 		return whitef
+	case OKLevel:
+		return greenf
 	case WarningLevel:
 		return yellowf
 	case ErrorLevel:
@@ -130,7 +129,7 @@ var defaultLogFormatter = func(param LogFormatterParams) string {
 	logLevelColor = param.LogLevelColor()
 	resetColor = param.ResetColor()
 
-	return fmt.Sprintf("[%s %s %s %s] | %s %s %s | %v | %s [%s] >>>>>> %s %s \n",
+	return fmt.Sprintf("[%s %s %s %s] | %s %s %s | %v | >>> %s [%s]\t%s %s \n",
 		positionColor, param.Name, param.Position, resetColor,
 		stepColor, param.Step, resetColor,
 		param.TimeStamp.Format("2006/01/02 - 15:04:05"),
@@ -140,7 +139,7 @@ var defaultLogFormatter = func(param LogFormatterParams) string {
 
 // 启动日志文件输出格式
 var commonWriterFormatter = func(param LogFormatterParams) string {
-	return fmt.Sprintf("[%s %s] | %s | %v | [%s] >>>>>>  %s",
+	return fmt.Sprintf("[%s %s] | %s | %v | >>> [%s]\t%s \n",
 		param.Name,
 		param.Position,
 		param.Step,
@@ -150,16 +149,12 @@ var commonWriterFormatter = func(param LogFormatterParams) string {
 }
 
 type IStarterLogger interface {
-	ADebug(msg string)
-	AInfo(msg string)
-	AWarning(msg string)
-	AError(err error)
-	AFail(err error)
-	SDebug(name, step, msg string)
-	SInfo(name, step, msg string)
-	SWarning(name, step, msg string)
-	SError(name, step string, err error)
-	SFail(name, step string, err error)
+	Debug(name, step, msg string)
+	Info(name, step, msg string)
+	OK(name, step, msg string)
+	Warning(name, step, msg string)
+	Error(name, step string, err error)
+	Fail(name, step string, err error)
 }
 
 // 启动器日志记录器
@@ -167,60 +162,7 @@ type StarterLogger struct {
 	Outputs []*StarterLoggerOutput
 }
 
-func (l *StarterLogger) ADebug(msg string) {
-	for _, o := range l.Outputs {
-		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
-			Position:  ApplicationPosition,
-			LogLevel:  DebugLevel,
-			TimeStamp: time.Now(),
-			Message:   msg,
-			// 是否增加caller
-		}))
-	}
-}
-
-func (l *StarterLogger) AInfo(msg string) {
-	for _, o := range l.Outputs {
-		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
-			Position:  ApplicationPosition,
-			LogLevel:  InfoLevel,
-			TimeStamp: time.Now(),
-			Message:   msg,
-		}))
-	}
-}
-func (l *StarterLogger) AWarning(msg string) {
-	for _, o := range l.Outputs {
-		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
-			Position:  ApplicationPosition,
-			LogLevel:  WarningLevel,
-			TimeStamp: time.Now(),
-			Message:   msg,
-		}))
-	}
-}
-func (l *StarterLogger) AError(err error) {
-	for _, o := range l.Outputs {
-		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
-			Position:  ApplicationPosition,
-			LogLevel:  ErrorLevel,
-			TimeStamp: time.Now(),
-			Message:   err.Error(),
-		}))
-	}
-}
-func (l *StarterLogger) AFail(err error) {
-	for _, o := range l.Outputs {
-		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
-			Position:  ApplicationPosition,
-			LogLevel:  FailLevel,
-			TimeStamp: time.Now(),
-			Message:   err.Error(),
-		}))
-	}
-}
-
-func (l *StarterLogger) SDebug(name, step, msg string) {
+func (l *StarterLogger) Debug(name, step, msg string) {
 	for _, o := range l.Outputs {
 		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
 			Position:  StarterPosition,
@@ -234,7 +176,7 @@ func (l *StarterLogger) SDebug(name, step, msg string) {
 	}
 }
 
-func (l *StarterLogger) SInfo(name, step, msg string) {
+func (l *StarterLogger) Info(name, step, msg string) {
 	for _, o := range l.Outputs {
 		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
 			Position:  StarterPosition,
@@ -246,7 +188,21 @@ func (l *StarterLogger) SInfo(name, step, msg string) {
 		}))
 	}
 }
-func (l *StarterLogger) SWarning(name, step, msg string) {
+
+func (l *StarterLogger) OK(name, step, msg string) {
+	for _, o := range l.Outputs {
+		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
+			Position:  StarterPosition,
+			Name:      name,
+			LogLevel:  OKLevel,
+			Step:      step,
+			TimeStamp: time.Now(),
+			Message:   msg,
+		}))
+	}
+}
+
+func (l *StarterLogger) Warning(name, step, msg string) {
 	for _, o := range l.Outputs {
 		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
 			Position:  StarterPosition,
@@ -258,7 +214,7 @@ func (l *StarterLogger) SWarning(name, step, msg string) {
 		}))
 	}
 }
-func (l *StarterLogger) SError(name, step string, err error) {
+func (l *StarterLogger) Error(name, step string, err error) {
 	for _, o := range l.Outputs {
 		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
 			Position:  StarterPosition,
@@ -270,7 +226,7 @@ func (l *StarterLogger) SError(name, step string, err error) {
 		}))
 	}
 }
-func (l *StarterLogger) SFail(name, step string, err error) {
+func (l *StarterLogger) Fail(name, step string, err error) {
 	for _, o := range l.Outputs {
 		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
 			Position:  StarterPosition,

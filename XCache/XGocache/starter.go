@@ -31,29 +31,29 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	}
 
 	s.cfg = &define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
+	sctx.Logger().Debug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	var err error
 	goCache, err = NewCacheForm(s.cfg)
 	if sctx.PassWarning(s.Name(), goinfras.StepSetup, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("GoCache From DumpItems instance Setuped! \n"))
+		sctx.Logger().Info(s.Name(), goinfras.StepSetup, "GoCache From DumpItems instance Setuped!")
 	} else {
 		goCache = NewCache(s.cfg)
-		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("GoCache New instance Setuped! \n"))
+		sctx.Logger().Info(s.Name(), goinfras.StepSetup, "GoCache New instance Setuped! ")
 	}
 
 	// 设置通用缓存操作
 	XCache.SettingCommonCache(NewCommonGocache())
-	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("GoCache Common Cache Setuped! \n"))
+	sctx.Logger().Info(s.Name(), goinfras.StepSetup, "GoCache Common Cache Setuped! ")
 
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(goCache)
 	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("GoCache instance Setup Successful! \n"))
+		sctx.Logger().OK(s.Name(), goinfras.StepCheck, "GoCache instance Setup Successful! ")
 		return true
 	}
 	return false

@@ -30,21 +30,21 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	}
 
 	s.cfg = &define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
+	sctx.Logger().Debug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	var err error
 	aliyunOssClient, err = NewClient(s.cfg)
 	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Aliyun Oss Client Setuped! \n"))
+		sctx.Logger().Info(s.Name(), goinfras.StepSetup, "Aliyun Oss Client Setuped! ")
 	}
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(aliyunOssClient)
 	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Aliyun Oss Client Setup Successful! \n"))
+		sctx.Logger().OK(s.Name(), goinfras.StepCheck, "Aliyun Oss Client Setup Successful! ")
 		return true
 	}
 	return false
