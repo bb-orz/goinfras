@@ -65,7 +65,7 @@ func (s StarterContext) PassWarning(name, step string, err error) bool {
 		if _, file, line, ok := runtime.Caller(1); ok {
 			path = file + " : " + strconv.Itoa(line)
 		}
-		s.Logger().SWarning(name, step, fmt.Sprintf("Warning: %s >>> [ %s ] \n", err.Error(), path))
+		s.Logger().Warning(name, step, fmt.Sprintf("%s | [PATH] >>>\t%s  \n", err.Error(), path))
 		return false
 	}
 }
@@ -79,7 +79,7 @@ func (s StarterContext) PassError(name, step string, err error) bool {
 		if _, file, line, ok := runtime.Caller(1); ok {
 			path = file + " : " + strconv.Itoa(line)
 		}
-		s.Logger().SError(name, step, fmt.Errorf("ERROR: %s >>> [ %s ] \n", err.Error(), path))
+		s.Logger().Error(name, step, fmt.Errorf("%s | [PATH] >>>\t%s \n", err.Error(), path))
 		return false
 	}
 }
@@ -93,7 +93,7 @@ func (s StarterContext) PassFail(name, step string, err error) bool {
 		if _, file, line, ok := runtime.Caller(1); ok {
 			path = file + " : " + strconv.Itoa(line)
 		}
-		s.Logger().SFail(name, step, fmt.Errorf("FAIL %s >>> [ %s ]", err.Error(), path))
+		s.Logger().Fail(name, step, fmt.Errorf("%s | [PATH] >>>\t%s \n", err.Error(), path))
 		panic("")
 	}
 }

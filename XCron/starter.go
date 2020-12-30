@@ -37,7 +37,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	}
 
 	s.cfg = &define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
+	sctx.Logger().Debug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v ", define))
 }
 
 // 应用安装阶段创建Cron管理器，并注册为应用组件
@@ -48,14 +48,14 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	// 2.创建后可立即注册定时运行任务
 	entryIDS, err := manager.RegisterTasks(s.Tasks...)
 	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Tasks EntryIDs: %v \n", entryIDS))
+		sctx.Logger().Info(s.Name(), goinfras.StepSetup, fmt.Sprintf("Tasks EntryIDs: %v ", entryIDS))
 	}
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(manager)
 	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Cron Manager Setup Successful! \n"))
+		sctx.Logger().OK(s.Name(), goinfras.StepCheck, "Cron Manager Setup Successful! ")
 	}
 	return false
 }
@@ -64,7 +64,7 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 func (s *starter) Start(sctx *goinfras.StarterContext) {
 	// 3.运行定时任务
 	manager.RunTasks()
-	sctx.Logger().SInfo(s.Name(), goinfras.StepStart, fmt.Sprintf("Cron Running Tasks... \n"))
+	sctx.Logger().OK(s.Name(), goinfras.StepStart, "Cron Running Tasks... ")
 }
 
 // 应用停机时，优雅关闭

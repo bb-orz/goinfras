@@ -24,7 +24,7 @@ func RegisterStarterStopFunc(logger IStarterLogger) {
 		Register(func() {
 			s.Stop()
 		})
-		logger.SInfo(s.Name(), StepStop, fmt.Sprintf("【%s Starter】: Stop Callback Function Registered. \n", s.Name()))
+		logger.Info(s.Name(), StepStop, "Stop Callback Function Registered. ")
 	}
 }
 
@@ -34,7 +34,7 @@ func NotifySignal(logger IStarterLogger) {
 	signal.Notify(sigs, syscall.SIGQUIT, syscall.SIGTERM)
 	for {
 		c := <-sigs
-		logger.SInfo("Application", StepStop, fmt.Sprintf("System signal notify: %s \n", c.String()))
+		logger.Info("Application", StepStop, fmt.Sprintf("System signal notify: %s \n", c.String()))
 		for _, fn := range callbacks {
 			fn()
 		}

@@ -49,8 +49,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	}
 
 	s.cfg = &define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
-
+	sctx.Logger().Debug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v ", define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
@@ -60,19 +59,19 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	}
 	esClient, err = NewESClient(s.cfg, s.optCfg.HttpHeader, s.optCfg.HttpTransport, s.optCfg.Logger, s.optCfg.Selector, s.optCfg.RetryBackoffFunc, s.optCfg.ConnectionPoolFunc)
 	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Es Official Client Setuped! \n"))
+		sctx.Logger().Info(s.Name(), goinfras.StepSetup, "Es Official Client Setuped! ")
 	}
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(esClient)
 	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Es Official Client Setup Successful! \n"))
+		sctx.Logger().OK(s.Name(), goinfras.StepCheck, "Es Official Client Setup Successful! ")
 	}
 
 	_, err = esClient.Ping()
 	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Es Official Client Ping Successful! \n"))
+		sctx.Logger().OK(s.Name(), goinfras.StepCheck, "Es Official Client Ping Successful! ")
 		return true
 	}
 	return false

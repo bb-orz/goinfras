@@ -30,7 +30,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	}
 
 	s.cfg = &define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
+	sctx.Logger().Debug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v ", define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
@@ -39,13 +39,13 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	} else {
 		mailDialer = NewAuthDialer(s.cfg.Server, s.cfg.User, s.cfg.Password, s.cfg.Port)
 	}
-	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Mail Dialer Setuped!  \n"))
+	sctx.Logger().Info(s.Name(), goinfras.StepSetup, "Mail Dialer Setuped! ")
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(mailDialer)
 	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Mail Dialer Setup Successful! \n"))
+		sctx.Logger().OK(s.Name(), goinfras.StepCheck, "Mail Dialer Setup Successful! ")
 		return true
 	}
 	return false

@@ -36,7 +36,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	}
 
 	s.cfg = &define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
+	sctx.Logger().Debug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v ", define))
 }
 
 // 应用安装阶段创建Cron管理器，并注册为应用组件
@@ -44,19 +44,19 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	var err error
 	esClient, err = NewESClient(s.cfg)
 	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Es Olivere Client Setuped! \n"))
+		sctx.Logger().Info(s.Name(), goinfras.StepSetup, "Es Olivere Client Setuped! ")
 	}
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(esClient)
 	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Es Olivere Client Setup Successful! \n"))
+		sctx.Logger().OK(s.Name(), goinfras.StepCheck, "Es Olivere Client Setup Successful! ")
 	}
 	pingService := esClient.Ping(s.cfg.URL)
 	result, _, err := pingService.Do(context.Background())
 	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Es Olivere Client Ping Successful! ES Server Info:[ServerName:%s,ClusterName:%s,TagLine:%s,Version:%v]", result.Name, result.ClusterName, result.TagLine, result.Version))
+		sctx.Logger().OK(s.Name(), goinfras.StepCheck, fmt.Sprintf("Es Olivere Client Ping Successful! ES Server Info:[ServerName:%s,ClusterName:%s,TagLine:%s,Version:%v]", result.Name, result.ClusterName, result.TagLine, result.Version))
 		return true
 	}
 	return false

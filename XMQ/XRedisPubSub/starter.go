@@ -30,12 +30,12 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	}
 
 	s.cfg = &define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
+	sctx.Logger().Debug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v ", define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	redisPubSubPool = NewRedisPubsubPool(s.cfg)
-	sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("RedisPubSub Pool Setuped!  \n"))
+	sctx.Logger().Info(s.Name(), goinfras.StepSetup, "RedisPubSub Pool Setuped! ")
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
@@ -46,7 +46,7 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 		defer conn.Close()
 		_, err = conn.Do("PING", "ping")
 		if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-			sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("RedisPubSub Pool Setup Successful! \n"))
+			sctx.Logger().OK(s.Name(), goinfras.StepCheck, "RedisPubSub Pool Setup Successful! ")
 			return true
 		}
 	}

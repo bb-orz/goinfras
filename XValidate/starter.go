@@ -30,7 +30,7 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	}
 
 	s.cfg = &define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
+	sctx.Logger().Debug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v ", define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
@@ -38,7 +38,7 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	if s.cfg.TransZh {
 		validater, translater, err = NewZhValidater()
 		if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
-			sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("XValidate Utils Setuped! \n"))
+			sctx.Logger().Info(s.Name(), goinfras.StepSetup, "XValidate Utils Setuped! ")
 		}
 	} else {
 		validater = NewValidater()
@@ -49,11 +49,11 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	var err error
 	err = goinfras.Check(validater)
 	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Validater Setup Successful! \n"))
+		sctx.Logger().OK(s.Name(), goinfras.StepCheck, "Validator Setup Successful! ")
 	}
 	err = goinfras.Check(translater)
 	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Translater Setup Successful! \n"))
+		sctx.Logger().OK(s.Name(), goinfras.StepCheck, "Translator Setup Successful! ")
 	}
 	return true
 }

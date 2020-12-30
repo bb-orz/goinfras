@@ -32,18 +32,18 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	}
 
 	s.cfg = &define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
+	sctx.Logger().Debug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v ", define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	var err error
 	commonLogger, err = NewCommonLogger(s.cfg, s.Outputs...)
 	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Zap Commond Logger Setuped!  \n"))
+		sctx.Logger().Info(s.Name(), goinfras.StepSetup, "Zap Commond Logger Setuped! ")
 	}
 	syncErrorLogger, err = NewSyncErrorLogger(s.cfg)
 	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Zap SyncError Logger Setuped!  \n"))
+		sctx.Logger().Info(s.Name(), goinfras.StepSetup, "Zap SyncError Logger Setuped! ")
 	}
 }
 
@@ -57,7 +57,7 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	if !sctx.PassError(s.Name(), goinfras.StepCheck, err) {
 		return false
 	}
-	sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Zap Logger Setup Successful! \n"))
+	sctx.Logger().OK(s.Name(), goinfras.StepCheck, "Zap Logger Setup Successful!")
 	return true
 }
 

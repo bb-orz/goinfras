@@ -30,21 +30,21 @@ func (s *starter) Init(sctx *goinfras.StarterContext) {
 	}
 
 	s.cfg = &define
-	sctx.Logger().SDebug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v \n", define))
+	sctx.Logger().Debug(s.Name(), goinfras.StepInit, fmt.Sprintf("Config: %+v ", define))
 }
 
 func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	var err error
 	aliyunSmsClient, err = NewAliyunSmsClient(s.cfg)
 	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepSetup, fmt.Sprintf("Aliyun Sms Client Setuped! \n"))
+		sctx.Logger().Info(s.Name(), goinfras.StepSetup, "Aliyun Sms Client Setuped! ")
 	}
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	err := goinfras.Check(aliyunSmsClient)
 	if sctx.PassError(s.Name(), goinfras.StepCheck, err) {
-		sctx.Logger().SInfo(s.Name(), goinfras.StepCheck, fmt.Sprintf("Aliyun Sms Client Setup Successful! \n"))
+		sctx.Logger().OK(s.Name(), goinfras.StepCheck, "Aliyun Sms Client Setup Successful! ")
 		return true
 	}
 	return false
