@@ -32,13 +32,9 @@ Goinfras是一个后端应用基础设施的资源组件启动器，其实现了
 - XValidate ：高性能数据传输对象验证器，基于 https://gopkg.in/go-playground/validator.v9 包
 - ...
 
-### 架构图
-
-待更新...
-
 
 ### 用例
-ß
+
 > 简单项目模板项目： https://github.com/bb-orz/goapp-sample
 
 > 通用账户项目模板： https://github.com/bb-orz/goapp-account
