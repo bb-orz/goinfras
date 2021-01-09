@@ -240,4 +240,6 @@ Application Starting ......
    
 ### 工具
 
-待更新...
+> gt  https://github.com/bb-orz/gt
+
+gt 是一个go应用脚手架生成工具，它会帮助您初始化一个应用程序脚手架，其内置一些代码生成命令，可帮您生成model/domain/service/restful/rpc/starter等代码模板，极大的提高您的开发效率。
