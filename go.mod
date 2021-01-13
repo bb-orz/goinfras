@@ -4,7 +4,7 @@ go 1.14
 
 replace (
 	// 开发时本地代码替换远程包
-	// github.com/bb-orz/goinfras => /Users/fun/Code/MyProject/goinfras
+	// github.com/bb-orz/goinfras => /Users/fun/Code/GoProjects/goinfras
 
 	cloud.google.com/go => github.com/googleapis/google-cloud-go v0.47.0
 	github.com/coreos/bbolt => go.etcd.io/bbolt v1.3.4
