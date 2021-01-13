@@ -26,11 +26,11 @@ func NewCommonLogger(cfg *Config, outputs ...LoggerOutput) (*zap.Logger, error) 
 	var appName, version, caller zap.Option
 	// Option：基本日志字段
 	if cfg.AppName != "" {
-		appName = zap.Fields(zap.String("app", cfg.AppName))
+		appName = zap.Fields(zap.String("App", cfg.AppName))
 		optionList = append(optionList, appName)
 	}
 	if cfg.AppVersion != "" {
-		version = zap.Fields(zap.String("version", cfg.AppVersion))
+		version = zap.Fields(zap.String("Version", cfg.AppVersion))
 		optionList = append(optionList, version)
 	}
 
@@ -100,11 +100,11 @@ func NewSyncErrorLogger(cfg *Config) (*zap.Logger, error) {
 	var appName, version, caller zap.Option
 	// Option：基本日志字段
 	if cfg.AppName != "" {
-		appName = zap.Fields(zap.String("app", cfg.AppName))
+		appName = zap.Fields(zap.String("App", cfg.AppName))
 		optionList = append(optionList, appName)
 	}
 	if cfg.AppVersion != "" {
-		version = zap.Fields(zap.String("version", cfg.AppVersion))
+		version = zap.Fields(zap.String("Version", cfg.AppVersion))
 		optionList = append(optionList, version)
 	}
 
