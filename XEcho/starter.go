@@ -99,8 +99,6 @@ func (s *starter) Start(sctx *goinfras.StarterContext) {
 	sctx.PassError(s.Name(), goinfras.StepStart, err)
 }
 
-func (s *starter) Stop() {}
-
 // 默认设置阻塞启动
 func (s *starter) StartBlocking() bool { return true }
 

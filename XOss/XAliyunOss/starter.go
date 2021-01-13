@@ -50,5 +50,10 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	return false
 }
 
+func (s *starter) Stop() error {
+	aliyunOssClient = nil
+	return nil
+}
+
 // 设置启动组级别
 func (s *starter) PriorityGroup() goinfras.PriorityGroup { return goinfras.ResourcesGroup }

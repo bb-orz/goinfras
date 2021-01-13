@@ -52,9 +52,9 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	return false
 }
 
-func (s *starter) Stop() {
+func (s *starter) Stop() error {
 	d, _ := db.DB()
-	d.Close()
+	return d.Close()
 }
 
 // 设置启动组级别

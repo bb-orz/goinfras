@@ -61,10 +61,12 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	return true
 }
 
-func (s *starter) Stop() {
+func (s *starter) Stop() error {
 	// 关闭前刷入日志数据
-	commonLogger.Sync()
-	syncErrorLogger.Sync()
+	var err error
+	err = commonLogger.Sync()
+	err = syncErrorLogger.Sync()
+	return err
 }
 
 func (s *starter) Priority() int { return goinfras.INT_MAX }

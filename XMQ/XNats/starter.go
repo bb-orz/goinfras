@@ -54,8 +54,10 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	return false
 }
 
-func (s *starter) Stop() {
+func (s *starter) Stop() error {
 	natsMQPool.Close()
+	natsMQPool = nil
+	return nil
 }
 
 // 设置启动组级别

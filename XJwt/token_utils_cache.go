@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/bb-orz/goinfras/XCache"
 	"github.com/bb-orz/goinfras/XCache/XGocache"
+	"strconv"
 	"time"
 )
 
@@ -46,11 +47,11 @@ func (tks *tokenUtilsCache) Encode(user UserClaim) (string, error) {
 	}
 
 	// 将token缓存到redis
-	if user.Id == "" {
+	if user.Id <= 0 {
 		return "", errors.New("Empty UserId is not allowed! ")
 	}
 
-	key := tks.keyPrefix + user.Id
+	key := tks.keyPrefix + strconv.Itoa(int(user.Id))
 	err = tks.CommonCache.SetWithExp(key, token, tks.expTime)
 
 	return token, nil
@@ -62,7 +63,7 @@ func (tks *tokenUtilsCache) Decode(tokenString string) (*CustomerClaim, error) {
 	if err != nil {
 		return claim, err
 	}
-	key := tks.keyPrefix + claim.UserClaim.Id
+	key := tks.keyPrefix + strconv.Itoa(int(claim.UserClaim.Id))
 	var val interface{}
 	var b bool
 	if val, b = tks.CommonCache.Get(key); b {
@@ -84,7 +85,7 @@ func (tks *tokenUtilsCache) Remove(tokenString string) error {
 	if err != nil {
 		return err
 	}
-	key := tks.keyPrefix + claim.UserClaim.Id
+	key := tks.keyPrefix + strconv.Itoa(int(claim.UserClaim.Id))
 
 	b := tks.CommonCache.Delete(key)
 	if !b {

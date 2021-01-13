@@ -51,8 +51,8 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	return false
 }
 
-func (s *starter) Stop() {
-	_ = client.Disconnect(context.TODO())
+func (s *starter) Stop() error {
+	return client.Disconnect(context.TODO())
 }
 
 // 设置启动组级别
