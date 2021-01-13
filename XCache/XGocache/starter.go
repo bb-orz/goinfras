@@ -59,10 +59,14 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	return false
 }
 
-func (s *starter) Stop() {
-	_ = DumpItems(s.cfg)
+func (s *starter) Stop() error {
+	if err := DumpItems(s.cfg); err != nil {
+		return err
+	}
+	fmt.Println("Gocache DumpItems Successful!")
 	goCache.Flush()
 	goCache = nil
+	return nil
 }
 
 // 设置启动组级别

@@ -218,7 +218,7 @@ Mongodb:
 # Gocache 配置
 Gocache:
   DefaultExpiration: 0              # time.Duration 默认超时时间，小于1则长期有效
-  CleanupInterval:  -1              # time.Duration 内存清理间隔时间，小于1则长期有效
+  CleanupInterval:  0              # time.Duration 内存清理间隔时间，小于1则长期有效
   DumpFileName: "./cache/keys.json"    # 缓存keys导出文件位置，停机时自动备份
 
 # Redis配置

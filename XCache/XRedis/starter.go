@@ -55,8 +55,8 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	return false
 }
 
-func (s *starter) Stop() {
-	pool.Close()
+func (s *starter) Stop() error {
+	return pool.Close()
 }
 
 // 设置启动组级别

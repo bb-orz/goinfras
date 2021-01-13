@@ -1,6 +1,7 @@
 package XGocache
 
 import (
+	"github.com/bb-orz/goinfras"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/pmylund/go-cache"
 	"os"
@@ -44,7 +45,7 @@ func CreateDefaultCacheFrom(config *Config) error {
 // 从文件读取
 func NewCacheForm(cfg *Config) (*cache.Cache, error) {
 	dumpFileName := cfg.DumpFileName
-	dumpFile, err := os.OpenFile(dumpFileName, os.O_CREATE|os.O_RDWR, os.ModePerm)
+	dumpFile, err := goinfras.OpenFile(dumpFileName, os.O_CREATE|os.O_RDWR, os.ModePerm)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +63,7 @@ func NewCacheForm(cfg *Config) (*cache.Cache, error) {
 func DumpItems(cfg *Config) error {
 	items := goCache.Items()
 	dumpFileName := cfg.DumpFileName
-	dumpFile, err := os.OpenFile(dumpFileName, os.O_CREATE|os.O_RDWR, os.ModePerm)
+	dumpFile, err := goinfras.OpenFile(dumpFileName, os.O_CREATE|os.O_RDWR, os.ModePerm)
 	if err != nil {
 		return err
 	}

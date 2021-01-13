@@ -68,9 +68,11 @@ func (s *starter) Start(sctx *goinfras.StarterContext) {
 }
 
 // 应用停机时，优雅关闭
-func (s *starter) Stop() {
+func (s *starter) Stop() error {
 	// 4.关闭定时任务
 	manager.StopCron()
+	manager = nil
+	return nil
 }
 
 // 设置启动组级别:

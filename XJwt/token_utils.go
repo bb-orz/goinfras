@@ -32,9 +32,10 @@ func CheckTku() bool {
 
 // JWT中携带的用户个人信息
 type UserClaim struct {
-	Id     string `json:id`
-	Name   string `json:name`
-	Avatar string `json:avatar`
+	Id     uint   `json:"id"`
+	No     string `json:"no"`
+	Name   string `json:"name"`
+	Avatar string `json:"avatar"`
 }
 
 // 聚合jwt内部实现的Claims

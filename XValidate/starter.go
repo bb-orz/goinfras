@@ -57,3 +57,8 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	}
 	return true
 }
+
+func (s *starter) Stop() error {
+	validater = nil
+	return nil
+}

@@ -85,8 +85,6 @@ func (app *Application) start() {
 }
 
 func (app *Application) listenSignal() {
-	// 注册资源组件的关闭回调
-	RegisterStarterStopFunc(app.Sctx.Logger())
 	// 应用启动时开始监听系统信号
 	NotifySignal(app.Sctx.Logger())
 }

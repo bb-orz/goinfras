@@ -75,5 +75,12 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 	return true
 }
 
+func (s *starter) Stop() error {
+	qqOM = nil
+	wechatOM = nil
+	weiboOM = nil
+	return nil
+}
+
 // 设置启动组级别
 func (s *starter) PriorityGroup() goinfras.PriorityGroup { return goinfras.AppGroup }
