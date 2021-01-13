@@ -67,7 +67,7 @@ func (tks *tokenUtilsCache) Decode(tokenString string) (*CustomerClaim, error) {
 	var val interface{}
 	var b bool
 	if val, b = tks.CommonCache.Get(key); b {
-		// redis 鉴定缓存数据
+		// 鉴定缓存数据
 		cacheToken := fmt.Sprintf("%s", val)
 		if cacheToken != tokenString {
 			return nil, errors.New("Token string is invalid with cache data ")

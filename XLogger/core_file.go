@@ -1,20 +1,20 @@
 package XLogger
 
 import (
+	"github.com/bb-orz/goinfras"
 	"go.uber.org/zap/zapcore"
+	"io"
 	"os"
 )
 
 // 文件记录核心
 func NewFileSyncCore(cfg *Config) (zapcore.Core, error) {
 	var err error
-	var file *os.File
+	var file io.Writer
 	// 创建日志文件
 	fileLogName := cfg.FileLogName
 
-	// 追加方式打开
-	file, err = os.OpenFile(fileLogName, os.O_RDWR|os.O_CREATE|os.O_APPEND, os.ModePerm)
-	if err != nil {
+	if file, err = goinfras.OpenFile(fileLogName, os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModePerm); err != nil {
 		return nil, err
 	}
 
@@ -33,13 +33,11 @@ func NewFileSyncCore(cfg *Config) (zapcore.Core, error) {
 // 异步日志记录错误文件记录核心
 func NewFileSyncErrorCore(cfg *Config) (zapcore.Core, error) {
 	var err error
-	var file *os.File
+	var file io.Writer
 	// 创建日志文件
 	syncErrorLogName := cfg.SyncErrorLogName
 
-	// 追加方式打开
-	file, err = os.OpenFile(syncErrorLogName, os.O_RDWR|os.O_CREATE|os.O_APPEND, os.ModePerm)
-	if err != nil {
+	if file, err = goinfras.OpenFile(syncErrorLogName, os.O_CREATE|os.O_RDWR|os.O_APPEND, os.ModePerm); err != nil {
 		return nil, err
 	}
 

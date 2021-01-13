@@ -29,7 +29,7 @@ func NotifySignal(logger IStarterLogger) {
 		for _, s := range starters {
 			err := s.Stop()
 			if err != nil {
-				logger.Warning("Application", StepStop, err.Error())
+				logger.Warning("Application", StepStop, fmt.Sprintf("%s Starter Stop Error:%s", s.Name(), err.Error()))
 			}
 			logger.OK("Application", StepStop, fmt.Sprintf("%s Starter Stopped ", s.Name()))
 		}

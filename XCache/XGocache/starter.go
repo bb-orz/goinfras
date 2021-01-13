@@ -60,13 +60,12 @@ func (s *starter) Check(sctx *goinfras.StarterContext) bool {
 }
 
 func (s *starter) Stop() error {
-	goCache.Flush()
 	if err := DumpItems(s.cfg); err != nil {
 		return err
 	}
-
+	fmt.Println("Gocache DumpItems Successful!")
+	goCache.Flush()
 	goCache = nil
-	fmt.Println("GoCache Stopped!")
 	return nil
 }
 
