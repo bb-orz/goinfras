@@ -4,6 +4,7 @@ import (
 	aliOss "github.com/aliyun/aliyun-oss-go-sdk/oss"
 )
 
+var defaultBucket string
 var aliyunOssClient *aliOss.Client
 
 // 创建一个默认配置的Manager

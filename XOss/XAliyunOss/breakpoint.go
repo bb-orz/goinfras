@@ -11,7 +11,11 @@ type BreakPointOss struct {
 	client *aliOss.Client
 }
 
-func (bp *BreakPointOss) BreakPointUpload(bucketName, objectKeyName, localFilePath string) error {
+func (bp *BreakPointOss) BreakPointUpload(objectKeyName, localFilePath string) error {
+	return bp.BreakPointUploadToBucket(defaultBucket, objectKeyName, localFilePath)
+}
+
+func (bp *BreakPointOss) BreakPointUploadToBucket(bucketName, objectKeyName, localFilePath string) error {
 	// 获取存储空间。
 	bucket, err := bp.client.Bucket(bucketName)
 	if err != nil {
@@ -25,7 +29,11 @@ func (bp *BreakPointOss) BreakPointUpload(bucketName, objectKeyName, localFilePa
 	return nil
 }
 
-func (bp *BreakPointOss) BreakPointDownload(bucketName, objectKeyName, dstFilePath string) error {
+func (bp *BreakPointOss) BreakPointDownload(objectKeyName, dstFilePath string) error {
+	return bp.BreakPointDownloadFromBucket(defaultBucket, objectKeyName, dstFilePath)
+}
+
+func (bp *BreakPointOss) BreakPointDownloadFromBucket(bucketName, objectKeyName, dstFilePath string) error {
 	// 获取存储空间。
 	bucket, err := bp.client.Bucket(bucketName)
 	if err != nil {

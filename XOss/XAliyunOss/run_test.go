@@ -12,29 +12,29 @@ func TestCommonOss(t *testing.T) {
 		So(err, ShouldBeNil)
 
 		// 一些通用的简单操作
-		err = XCommonOss().UploadString("", "", "")
+		err = XCommonOss().UploadString("", "")
 		So(err, ShouldBeNil)
 
 		err = XCommonOss().AppendUpload("", "", "")
 		So(err, ShouldBeNil)
 
-		err = XCommonOss().Uploadfile("", "", "")
+		err = XCommonOss().Uploadfile("", "")
 		So(err, ShouldBeNil)
 
-		err = XCommonOss().DownLoadFile("", "", "")
+		err = XCommonOss().DownLoadFile("", "")
 		So(err, ShouldBeNil)
 
-		err = XCommonOss().LimitConditionDownload("", "", "")
+		err = XCommonOss().LimitConditionDownload("", "")
 		So(err, ShouldBeNil)
 
-		err = XCommonOss().CompressDownload("", "", "")
+		err = XCommonOss().CompressDownload("", "")
 		So(err, ShouldBeNil)
 
-		rs1, err := XCommonOss().RangeDownload("", "", 0, 10)
+		rs1, err := XCommonOss().RangeDownload("", 0, 10)
 		So(err, ShouldBeNil)
 		Println(rs1)
 
-		rs2, err := XCommonOss().StreamDownload("", "")
+		rs2, err := XCommonOss().StreamDownload("")
 		So(err, ShouldBeNil)
 		Println(rs2)
 
@@ -47,9 +47,9 @@ func TestBreakPointOss(t *testing.T) {
 		So(err, ShouldBeNil)
 
 		// 一些通用的简单操作
-		err = XBreakPointOss().BreakPointUpload("", "", "")
+		err = XBreakPointOss().BreakPointUpload("", "")
 		So(err, ShouldBeNil)
-		err = XBreakPointOss().BreakPointDownload("", "", "")
+		err = XBreakPointOss().BreakPointDownload("", "")
 		So(err, ShouldBeNil)
 
 	})
@@ -61,11 +61,11 @@ func TestMultipartOss(t *testing.T) {
 		So(err, ShouldBeNil)
 
 		// 一些通用的简单操作
-		result, err := XMultipartOss().MultipartUpload("", "", "")
+		result, err := XMultipartOss().MultipartUpload("", "")
 		So(err, ShouldBeNil)
 		Println(result)
 
-		err = XMultipartOss().CancelMultipartUpload("", "")
+		err = XMultipartOss().CancelMultipartUpload("")
 		So(err, ShouldBeNil)
 
 	})
@@ -77,10 +77,10 @@ func TestProgressOss(t *testing.T) {
 		So(err, ShouldBeNil)
 
 		// 一些通用的简单操作
-		err = XProgressOss().ProgressUpload("", "", "")
+		err = XProgressOss().ProgressUpload("", "")
 		So(err, ShouldBeNil)
 
-		err = XProgressOss().ProgressDownload("", "", "")
+		err = XProgressOss().ProgressDownload("", "")
 		So(err, ShouldBeNil)
 
 	})

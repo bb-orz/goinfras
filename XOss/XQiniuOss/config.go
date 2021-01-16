@@ -3,11 +3,13 @@ package XQiniuOss
 type Config struct {
 	AccessKey        string // 开发者key
 	SecretKey        string // 开发者secret
-	Bucket           string // 存储库名
+	DefaultBucket    string // 存储库名
+	ReturnBody       string // 返回信息格式
 	UseHTTPS         bool   // 是否使用https域名
 	UseCdnDomains    bool   // 上传是否使用CDN上传加速
 	UpTokenExpires   int    // 上传凭证有效期
 	CallbackURL      string // 上传回调地址
+	CallbackBody     string // 上传回调信息格式
 	CallbackBodyType string // 上传回调信息格式
 	EndUser          string // 唯一宿主标识
 	FsizeMin         int    // 限定上传文件大小最小值，单位Byte。
@@ -20,10 +22,12 @@ func DefaultConfig() *Config {
 		"",
 		"",
 		"",
+		`{"key":"$(key)","hash":"$(etag)","fsize":$(fsize),"bucket":"$(bucket)","name":"$(x:name)"}`,
 		false,
 		false,
 		7200,
 		"",
+		`{"key":"$(key)","hash":"$(etag)","fsize":$(fsize),"bucket":"$(bucket)","name":"$(x:name)"}`,
 		"",
 		"",
 		1024,

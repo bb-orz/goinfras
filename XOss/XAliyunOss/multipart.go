@@ -27,7 +27,11 @@ type MultipartOss struct {
 	client *aliOss.Client
 }
 
-func (mp *MultipartOss) MultipartUpload(bucketName, objectKeyName, localFilePath string) (*aliOss.CompleteMultipartUploadResult, error) {
+func (mp *MultipartOss) MultipartUpload(objectKeyName, localFilePath string) (*aliOss.CompleteMultipartUploadResult, error) {
+	return mp.MultipartUploadToBucket(defaultBucket, objectKeyName, localFilePath)
+}
+
+func (mp *MultipartOss) MultipartUploadToBucket(bucketName, objectKeyName, localFilePath string) (*aliOss.CompleteMultipartUploadResult, error) {
 	// 获取存储空间。
 	bucket, err := mp.client.Bucket(bucketName)
 	if err != nil {
@@ -75,8 +79,12 @@ func (mp *MultipartOss) MultipartUpload(bucketName, objectKeyName, localFilePath
 	return &uploadResult, nil
 }
 
+func (mp *MultipartOss) CancelMultipartUpload(objectKeyName string) error {
+	return mp.CancelMultipartUploadToBucket(defaultBucket, objectKeyName)
+}
+
 // 取消分片上传
-func (mp *MultipartOss) CancelMultipartUpload(bucketName, objectKeyName string) error {
+func (mp *MultipartOss) CancelMultipartUploadToBucket(bucketName, objectKeyName string) error {
 	// 获取存储空间。
 	bucket, err := mp.client.Bucket(bucketName)
 	if err != nil {

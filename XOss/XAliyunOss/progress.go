@@ -9,8 +9,12 @@ type ProgressOss struct {
 	client *aliOss.Client
 }
 
+func (p *ProgressOss) ProgressUpload(objectKeyName, localFilePath string) error {
+	return p.ProgressUploadToBucket(defaultBucket, objectKeyName, localFilePath)
+}
+
 // 上传使用进度条
-func (p *ProgressOss) ProgressUpload(bucketName, objectKeyName, localFilePath string) error {
+func (p *ProgressOss) ProgressUploadToBucket(bucketName, objectKeyName, localFilePath string) error {
 	// 获取存储空间
 	bucket, err := p.client.Bucket(bucketName)
 	if err != nil {
@@ -24,8 +28,12 @@ func (p *ProgressOss) ProgressUpload(bucketName, objectKeyName, localFilePath st
 	return nil
 }
 
+func (p *ProgressOss) ProgressDownload(objectKeyName, dstFilePath string) error {
+	return p.ProgressDownloadFromBucket(defaultBucket, objectKeyName, dstFilePath)
+}
+
 // 下载使用进度条
-func (p *ProgressOss) ProgressDownload(bucketName, objectKeyName, dstFilePath string) error {
+func (p *ProgressOss) ProgressDownloadFromBucket(bucketName, objectKeyName, dstFilePath string) error {
 	// 获取存储空间
 	bucket, err := p.client.Bucket(bucketName)
 	if err != nil {

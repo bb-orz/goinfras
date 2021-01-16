@@ -23,14 +23,17 @@ type ProgressRecord struct {
 	Progresses []storage.BlkputRet `json:"progresses"`
 }
 
+func (client *QnClient) BreakPointUpload(fileKey, localFilePath, recordDir string) (storage.PutRet, error) {
+	return client.BreakPointUploadToBucket(client.cfg.DefaultBucket, fileKey, localFilePath, recordDir)
+}
+
 /*
 @param bucket string 指定上传的bucket
 @param fileKey string 文件唯一key
 @param localFilePath string 本地文件路径
 @param recordKey string 指定的进度文件保存目录，实际情况下，请确保该目录存在，而且只用于记录进度文件
-
 */
-func (client *QnClient) BreakPointUpload(bucket, fileKey, localFilePath, recordDir string) (storage.PutRet, error) {
+func (client *QnClient) BreakPointUploadToBucket(bucket, fileKey, localFilePath, recordDir string) (storage.PutRet, error) {
 	var err error
 	ret := storage.PutRet{}
 
