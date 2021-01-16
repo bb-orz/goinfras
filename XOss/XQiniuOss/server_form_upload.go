@@ -6,13 +6,17 @@ import (
 	"github.com/qiniu/api.v7/v7/storage"
 )
 
+func (client *QnClient) FormUploadWithLocalFile(localFilePath, fileKey string) (storage.PutRet, error) {
+	return client.FormUploadWithLocalFileToBucket(client.cfg.DefaultBucket, localFilePath, fileKey)
+}
+
 /*
 表单上传
 @param bucket string 指定上传的bucket
 @param fileKey string 文件唯一key
 @param localFilePath string 本地文件路径
 */
-func (client *QnClient) FormUploadWithLocalFile(bucket, localFilePath, fileKey string) (storage.PutRet, error) {
+func (client *QnClient) FormUploadWithLocalFileToBucket(bucket, localFilePath, fileKey string) (storage.PutRet, error) {
 	putPolicy := storage.PutPolicy{
 		Scope:      bucket,
 		ReturnBody: `{"key":"$(key)","hash":"$(etag)","fsize":$(fsize),"bucket":"$(bucket)","name":"$(x:name)"}`,
@@ -44,8 +48,12 @@ func (client *QnClient) FormUploadWithLocalFile(bucket, localFilePath, fileKey s
 	return ret, err
 }
 
+func (client *QnClient) FormUploadWithByteSlice(fileKey string, data []byte) (storage.PutRet, error) {
+	return client.FormUploadWithByteSliceToBucket(client.cfg.DefaultBucket, fileKey, data)
+}
+
 // 字节数组上传
-func (client *QnClient) FormUploadWithByteSlice(bucket, fileKey string, data []byte) (storage.PutRet, error) {
+func (client *QnClient) FormUploadWithByteSliceToBucket(bucket, fileKey string, data []byte) (storage.PutRet, error) {
 	putPolicy := storage.PutPolicy{
 		Scope:      bucket,
 		ReturnBody: `{"key":"$(key)","hash":"$(etag)","fsize":$(fsize),"bucket":"$(bucket)","name":"$(x:name)"}`,

@@ -12,13 +12,13 @@ func TestQiniuOssClientUpload(t *testing.T) {
 		CreateDefaultClient(nil)
 
 		// TODO
-		upToken := XClient().SimpleUpload("")
+		upToken := XClient().SimpleUpload()
 		Println("Client Upload Token:", upToken)
 
-		token := XClient().OverwriteUpload("", "")
+		token := XClient().OverwriteUpload("")
 		Println("Client Overwrite Upload Token:", token)
 
-		callbackUploadToken := XClient().CallbackUpload("")
+		callbackUploadToken := XClient().CallbackUpload()
 		Println("Client Callback Upload Token:", callbackUploadToken)
 
 	})
@@ -29,7 +29,7 @@ func TestQiniuOssServerBreakPointUpload(t *testing.T) {
 	Convey("TestQiniuOssServerBreakPointUpload", t, func() {
 		CreateDefaultClient(nil)
 
-		putRet, err := XClient().BreakPointUpload("", "", "", "")
+		putRet, err := XClient().BreakPointUpload("", "", "")
 		So(err, ShouldBeNil)
 		Println("BreakPointUpload Key:", putRet.Key)
 		Println("BreakPointUpload PersistentID:", putRet.PersistentID)
@@ -44,7 +44,7 @@ func TestQiniuOssServerFormUpload(t *testing.T) {
 		CreateDefaultClient(nil)
 
 		// 服务器表单上传
-		putRet1, err := XClient().FormUploadWithLocalFile("", "", "")
+		putRet1, err := XClient().FormUploadWithLocalFile("", "")
 		So(err, ShouldBeNil)
 		Println("FormUploadWithLocalFile Key:", putRet1.Key)
 		Println("FormUploadWithLocalFile PersistentID:", putRet1.PersistentID)
@@ -52,7 +52,7 @@ func TestQiniuOssServerFormUpload(t *testing.T) {
 
 		// 服务器字节数组上传
 		var data []byte
-		putRet2, err := XClient().FormUploadWithByteSlice("", "", data)
+		putRet2, err := XClient().FormUploadWithByteSlice("", data)
 		So(err, ShouldBeNil)
 		Println("FormUploadWithByteSlice Key:", putRet2.Key)
 		Println("FormUploadWithByteSlice PersistentID:", putRet2.PersistentID)
@@ -66,7 +66,7 @@ func TestQiniuOssServerMultipartUpload(t *testing.T) {
 	Convey("TestQiniuOssServerMultipartUpload", t, func() {
 		CreateDefaultClient(nil)
 
-		putRet, err := XClient().MultipartUpload("", "", "")
+		putRet, err := XClient().MultipartUpload("", "")
 		So(err, ShouldBeNil)
 		Println("MultipartUpload Key:", putRet.Key)
 		Println("MultipartUpload PersistentID:", putRet.PersistentID)

@@ -10,8 +10,12 @@ type CommonAliyunOss struct {
 	client *aliOss.Client
 }
 
+func (c *CommonAliyunOss) UploadString(objectKeyName, objectValue string) error {
+	return c.UploadStringToBucket(defaultBucket, objectKeyName, objectValue)
+}
+
 // 上传普通数据
-func (c *CommonAliyunOss) UploadString(bucketName, objectKeyName, objectValue string) error {
+func (c *CommonAliyunOss) UploadStringToBucket(bucketName, objectKeyName, objectValue string) error {
 	// 获取存储空间
 	bucket, err := c.client.Bucket(bucketName)
 	if err != nil {
@@ -30,8 +34,12 @@ func (c *CommonAliyunOss) UploadString(bucketName, objectKeyName, objectValue st
 	return bucket.PutObject(objectKeyName, strings.NewReader(objectValue), storageType, objectAcl)
 }
 
+func (c *CommonAliyunOss) AppendUpload(objectKeyName string, appendContents ...string) error {
+	return c.AppendUploadToBucket(defaultBucket, objectKeyName, appendContents...)
+}
+
 // 追加上传
-func (c *CommonAliyunOss) AppendUpload(bucketName, objectKeyName string, appendContents ...string) error {
+func (c *CommonAliyunOss) AppendUploadToBucket(bucketName, objectKeyName string, appendContents ...string) error {
 	// 获取存储空间。
 	bucket, err := c.client.Bucket(bucketName)
 	if err != nil {
@@ -50,8 +58,12 @@ func (c *CommonAliyunOss) AppendUpload(bucketName, objectKeyName string, appendC
 	return nil
 }
 
+func (c *CommonAliyunOss) Uploadfile(objectKeyName, localFilePath string) error {
+	return c.UploadfileToBucket(defaultBucket, objectKeyName, localFilePath)
+}
+
 // 上传普通文件
-func (c *CommonAliyunOss) Uploadfile(bucketName, objectKeyName, localFilePath string) error {
+func (c *CommonAliyunOss) UploadfileToBucket(bucketName, objectKeyName, localFilePath string) error {
 
 	// 获取存储空间。
 	bucket, err := c.client.Bucket(bucketName)
@@ -63,8 +75,12 @@ func (c *CommonAliyunOss) Uploadfile(bucketName, objectKeyName, localFilePath st
 	return bucket.PutObjectFromFile(objectKeyName, localFilePath)
 }
 
+func (c *CommonAliyunOss) StreamDownload(objectKeyName string) ([]byte, error) {
+	return c.StreamDownloadFromBucket(defaultBucket, objectKeyName)
+}
+
 // 流下载
-func (c *CommonAliyunOss) StreamDownload(bucketName, objectKeyName string) ([]byte, error) {
+func (c *CommonAliyunOss) StreamDownloadFromBucket(bucketName, objectKeyName string) ([]byte, error) {
 	// 获取存储空间。
 	bucket, err := c.client.Bucket(bucketName)
 	if err != nil {
@@ -88,8 +104,12 @@ func (c *CommonAliyunOss) StreamDownload(bucketName, objectKeyName string) ([]by
 	return data, nil
 }
 
+func (c *CommonAliyunOss) RangeDownload(objectKeyName string, start, end int64) ([]byte, error) {
+	return c.RangeDownloadFromBucket(defaultBucket, objectKeyName, start, end)
+}
+
 // 仅需要文件中的部分数据，您可以使用范围下载
-func (c *CommonAliyunOss) RangeDownload(bucketName, objectKeyName string, start, end int64) ([]byte, error) {
+func (c *CommonAliyunOss) RangeDownloadFromBucket(bucketName, objectKeyName string, start, end int64) ([]byte, error) {
 	// 获取存储空间。
 	bucket, err := c.client.Bucket(bucketName)
 	if err != nil {
@@ -113,8 +133,12 @@ func (c *CommonAliyunOss) RangeDownload(bucketName, objectKeyName string, start,
 	return data, nil
 }
 
+func (c *CommonAliyunOss) DownLoadFile(objectKeyName, dstFilePath string) error {
+	return c.DownLoadFileFromBucket(defaultBucket, objectKeyName, dstFilePath)
+}
+
 // 下载文件到本地
-func (c *CommonAliyunOss) DownLoadFile(bucketName, objectKeyName, dstFilePath string) error {
+func (c *CommonAliyunOss) DownLoadFileFromBucket(bucketName, objectKeyName, dstFilePath string) error {
 	// 获取存储空间。
 	bucket, err := c.client.Bucket(bucketName)
 	if err != nil {
@@ -130,8 +154,12 @@ func (c *CommonAliyunOss) DownLoadFile(bucketName, objectKeyName, dstFilePath st
 	return nil
 }
 
+func (c *CommonAliyunOss) CompressDownload(objectKeyName, dstFilePath string) error {
+	return c.CompressDownloadFromBucket(defaultBucket, objectKeyName, dstFilePath)
+}
+
 // 文件压缩下载
-func (c *CommonAliyunOss) CompressDownload(bucketName, objectKeyName, dstFilePath string) error {
+func (c *CommonAliyunOss) CompressDownloadFromBucket(bucketName, objectKeyName, dstFilePath string) error {
 	// 获取存储空间。
 	bucket, err := c.client.Bucket(bucketName)
 	if err != nil {
@@ -147,6 +175,11 @@ func (c *CommonAliyunOss) CompressDownload(bucketName, objectKeyName, dstFilePat
 	return nil
 }
 
+func (c *CommonAliyunOss) LimitConditionDownload(objectKeyName, dstFilePath string, options ...aliOss.Option) error {
+	return c.LimitConditionDownloadFromBucket(defaultBucket, objectKeyName, dstFilePath, options...)
+
+}
+
 // 限定条件下载
 /*
 传入options条件参数：
@@ -157,7 +190,7 @@ IfUnmodifiedSince		如果指定的时间等于或者晚于文件实际修改时�
 IfMatch					如果指定的ETag和OSS文件的ETag匹配，则正常传输文件，否则返回错误（412 Precondition failed）。		oss.IfMatch
 IfNoneMatch				如果指定的ETag和OSS文件的ETag不匹配，则正常传输文件，否则返回错误（304 Not modified）。				oss.IfNoneMatch
 */
-func (c *CommonAliyunOss) LimitConditionDownload(bucketName, objectKeyName, dstFilePath string, options ...aliOss.Option) error {
+func (c *CommonAliyunOss) LimitConditionDownloadFromBucket(bucketName, objectKeyName, dstFilePath string, options ...aliOss.Option) error {
 	// 获取存储空间。
 	bucket, err := c.client.Bucket(bucketName)
 	if err != nil {

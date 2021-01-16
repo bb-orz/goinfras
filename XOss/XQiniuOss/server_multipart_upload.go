@@ -5,13 +5,17 @@ import (
 	"github.com/qiniu/api.v7/v7/storage"
 )
 
+func (client *QnClient) MultipartUpload(localFilePath, fileKey string) (storage.PutRet, error) {
+	return client.MultipartUploadToBucket(client.cfg.DefaultBucket, localFilePath, fileKey)
+}
+
 /*
 分块上传
 @param bucket string 指定上传的bucket
 @param fileKey string 文件唯一key
 @param localFilePath string 本地文件路径
 */
-func (client *QnClient) MultipartUpload(bucket, localFilePath, fileKey string) (storage.PutRet, error) {
+func (client *QnClient) MultipartUploadToBucket(bucket, localFilePath, fileKey string) (storage.PutRet, error) {
 	putPolicy := storage.PutPolicy{
 		Scope: bucket,
 	}

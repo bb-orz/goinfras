@@ -39,6 +39,8 @@ func (s *starter) Setup(sctx *goinfras.StarterContext) {
 	if sctx.PassError(s.Name(), goinfras.StepSetup, err) {
 		sctx.Logger().Info(s.Name(), goinfras.StepSetup, "Aliyun Oss Client Setuped! ")
 	}
+	defaultBucket = s.cfg.DefaultBucket
+	sctx.Logger().Info(s.Name(), goinfras.StepSetup, fmt.Sprintf("Aliyun Oss Default Bucket is %s", defaultBucket))
 }
 
 func (s *starter) Check(sctx *goinfras.StarterContext) bool {

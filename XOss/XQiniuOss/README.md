@@ -39,13 +39,13 @@ MimeLimit        string // 限定上传类型
 1 、 客户端上传下载
 ```
 var upToken string
-upToken = XQiniuOss.XClient().SimpleUpload("bucket")
+upToken = XQiniuOss.XClient().SimpleUpload()
 Println("Client Upload Token:", upToken)
 
-upToken := XQiniuOss.XClient().OverwriteUpload("bucket", "keyToOverwrite")
+upToken := XQiniuOss.XClient().OverwriteUpload("keyToOverwrite")
 Println("Client Overwrite Upload Token:", upToken)
 
-callbackUploadToken := XQiniuOss.XClient().CallbackUpload("bucket")
+callbackUploadToken := XQiniuOss.XClient().CallbackUpload()
 Println("Client Callback Upload Token:", callbackUploadToken)
 
 ```
@@ -53,7 +53,7 @@ Println("Client Callback Upload Token:", callbackUploadToken)
 
 2、 服务端断点上传
 ```
-putRet, err := XQiniuOss.XClient().BreakPointUpload("bucket", "fileKey", "localFilePath", "recordDir")
+putRet, err := XQiniuOss.XClient().BreakPointUpload("fileKey", "localFilePath", "recordDir")
 So(err, ShouldBeNil)
 Println("BreakPointUpload Key:", putRet.Key)
 Println("BreakPointUpload PersistentID:", putRet.PersistentID)
@@ -64,7 +64,7 @@ Println("BreakPointUpload Hash:", putRet.Hash)
 3、服务端表单上传
 ```
 // 服务器表单上传
-putRet1, err := XQiniuOss.XClient().FormUploadWithLocalFile("bucket", "localFilePath", "fileKey")
+putRet1, err := XQiniuOss.XClient().FormUploadWithLocalFile("localFilePath", "fileKey")
 So(err, ShouldBeNil)
 Println("FormUploadWithLocalFile Key:", putRet1.Key)
 Println("FormUploadWithLocalFile PersistentID:", putRet1.PersistentID)
@@ -72,7 +72,7 @@ Println("FormUploadWithLocalFile Hash:", putRet1.Hash)
 
 // 服务器字节数组上传
 var data []byte
-putRet2, err := XQiniuOss.XClient().FormUploadWithByteSlice("bucket", "fileKey", data)
+putRet2, err := XQiniuOss.XClient().FormUploadWithByteSlice("fileKey", data)
 So(err, ShouldBeNil)
 Println("FormUploadWithByteSlice Key:", putRet2.Key)
 Println("FormUploadWithByteSlice PersistentID:", putRet2.PersistentID)
@@ -82,7 +82,7 @@ Println("FormUploadWithByteSlice Hash:", putRet2.Hash)
 4、服务端分块上传
 
 ```
-putRet, err := XQiniuOss.XClient().MultipartUpload("bucket", "localFilePath", "fileKey")
+putRet, err := XQiniuOss.XClient().MultipartUpload("localFilePath", "fileKey")
 So(err, ShouldBeNil)
 Println("MultipartUpload Key:", putRet.Key)
 Println("MultipartUpload PersistentID:", putRet.PersistentID)
