@@ -6,8 +6,8 @@ import (
 	"github.com/qiniu/api.v7/v7/storage"
 )
 
-func (client *QnClient) FormUploadWithLocalFile(localFilePath, fileKey string) (storage.PutRet, error) {
-	return client.FormUploadWithLocalFileToBucket(client.cfg.DefaultBucket, localFilePath, fileKey)
+func (client *QnClient) FormUploadWithLocalFile(fileKey, localFilePath string) (storage.PutRet, error) {
+	return client.FormUploadWithLocalFileToBucket(client.cfg.DefaultBucket, fileKey, localFilePath)
 }
 
 /*
@@ -16,7 +16,7 @@ func (client *QnClient) FormUploadWithLocalFile(localFilePath, fileKey string) (
 @param fileKey string 文件唯一key
 @param localFilePath string 本地文件路径
 */
-func (client *QnClient) FormUploadWithLocalFileToBucket(bucket, localFilePath, fileKey string) (storage.PutRet, error) {
+func (client *QnClient) FormUploadWithLocalFileToBucket(bucket, fileKey, localFilePath string) (storage.PutRet, error) {
 	putPolicy := storage.PutPolicy{
 		Scope:      bucket,
 		ReturnBody: `{"key":"$(key)","hash":"$(etag)","fsize":$(fsize),"bucket":"$(bucket)","name":"$(x:name)"}`,

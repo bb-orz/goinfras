@@ -24,7 +24,10 @@ func NewApplication(vpcfg *viper.Viper) *Application {
 	appRuntime = new(Application)
 	appRuntime.Sctx = &StarterContext{}
 	appRuntime.Sctx.SetConfigs(vpcfg)
-	appRuntime.Sctx.SetLogger(NewCommandLineStarterLogger())
+	global := NewGlobal(vpcfg)
+	appRuntime.Sctx.SetGlobal(global)
+	env := global.GetEnv()
+	appRuntime.Sctx.SetLogger(NewCommandLineStarterLogger(env))
 	return appRuntime
 }
 
@@ -34,7 +37,10 @@ func NewApplicationWithStarterLoggerWriter(vpcfg *viper.Viper, logWriters ...io.
 	appRuntime = new(Application)
 	appRuntime.Sctx = &StarterContext{}
 	appRuntime.Sctx.SetConfigs(vpcfg)
-	appRuntime.Sctx.SetLogger(NewStarterLoggerWithWriters(logWriters...))
+	global := NewGlobal(vpcfg)
+	appRuntime.Sctx.SetGlobal(global)
+	env := global.GetEnv()
+	appRuntime.Sctx.SetLogger(NewStarterLoggerWithWriters(env, logWriters...))
 	return appRuntime
 }
 

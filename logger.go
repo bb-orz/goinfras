@@ -160,19 +160,22 @@ type IStarterLogger interface {
 // 启动器日志记录器
 type StarterLogger struct {
 	Outputs []*StarterLoggerOutput
+	env     string
 }
 
 func (l *StarterLogger) Debug(name, step, msg string) {
-	for _, o := range l.Outputs {
-		_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
-			Position:  StarterPosition,
-			Name:      name,
-			LogLevel:  DebugLevel,
-			Step:      step,
-			TimeStamp: time.Now(),
-			Message:   msg,
-			// 可增加caller
-		}))
+	if l.env == "debug" {
+		for _, o := range l.Outputs {
+			_, _ = fmt.Fprint(o.Writers, o.Formatter(LogFormatterParams{
+				Position:  StarterPosition,
+				Name:      name,
+				LogLevel:  DebugLevel,
+				Step:      step,
+				TimeStamp: time.Now(),
+				Message:   msg,
+				// 可增加caller
+			}))
+		}
 	}
 }
 
@@ -245,13 +248,14 @@ type CommandLineStarterLogger struct {
 }
 
 // 针对终端输出的默认启动日志记录器
-func NewCommandLineStarterLogger() *CommandLineStarterLogger {
+func NewCommandLineStarterLogger(env string) *CommandLineStarterLogger {
 	logger := new(CommandLineStarterLogger)
 	output := new(StarterLoggerOutput)
 	output.Formatter = defaultLogFormatter
 	output.Writers = os.Stdout
 	logger.Outputs = make([]*StarterLoggerOutput, 0)
 	logger.Outputs = append(logger.Outputs, output)
+	logger.env = env
 	return logger
 }
 
@@ -260,7 +264,7 @@ type CommonStarterLogger struct {
 	StarterLogger
 }
 
-func NewStarterLoggerWithWriters(writers ...io.Writer) *CommonStarterLogger {
+func NewStarterLoggerWithWriters(env string, writers ...io.Writer) *CommonStarterLogger {
 	logger := new(CommonStarterLogger)
 	logger.Outputs = make([]*StarterLoggerOutput, 0)
 
@@ -277,5 +281,6 @@ func NewStarterLoggerWithWriters(writers ...io.Writer) *CommonStarterLogger {
 		logger.Outputs = append(logger.Outputs, outputFile)
 	}
 
+	logger.env = env
 	return logger
 }
