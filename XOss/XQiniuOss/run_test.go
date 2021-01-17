@@ -3,6 +3,8 @@ package XQiniuOss
 import (
 	"github.com/bb-orz/goinfras"
 	. "github.com/smartystreets/goconvey/convey"
+	"io/ioutil"
+	"os"
 	"testing"
 )
 
@@ -29,7 +31,7 @@ func TestQiniuOssServerBreakPointUpload(t *testing.T) {
 	Convey("TestQiniuOssServerBreakPointUpload", t, func() {
 		CreateDefaultClient(nil)
 
-		putRet, err := XClient().BreakPointUpload("", "", "")
+		putRet, err := XClient().BreakPointUpload("README.md", "./README.md", "./")
 		So(err, ShouldBeNil)
 		Println("BreakPointUpload Key:", putRet.Key)
 		Println("BreakPointUpload PersistentID:", putRet.PersistentID)
@@ -44,7 +46,7 @@ func TestQiniuOssServerFormUpload(t *testing.T) {
 		CreateDefaultClient(nil)
 
 		// 服务器表单上传
-		putRet1, err := XClient().FormUploadWithLocalFile("", "")
+		putRet1, err := XClient().FormUploadWithLocalFile("README_Form_upload.md", "./README.md")
 		So(err, ShouldBeNil)
 		Println("FormUploadWithLocalFile Key:", putRet1.Key)
 		Println("FormUploadWithLocalFile PersistentID:", putRet1.PersistentID)
@@ -52,7 +54,10 @@ func TestQiniuOssServerFormUpload(t *testing.T) {
 
 		// 服务器字节数组上传
 		var data []byte
-		putRet2, err := XClient().FormUploadWithByteSlice("", data)
+		file, err := os.OpenFile("./README.md", os.O_RDWR, os.ModePerm)
+		So(err, ShouldBeNil)
+		data, err = ioutil.ReadAll(file)
+		putRet2, err := XClient().FormUploadWithByteSlice("bytes.md", data)
 		So(err, ShouldBeNil)
 		Println("FormUploadWithByteSlice Key:", putRet2.Key)
 		Println("FormUploadWithByteSlice PersistentID:", putRet2.PersistentID)
@@ -66,7 +71,7 @@ func TestQiniuOssServerMultipartUpload(t *testing.T) {
 	Convey("TestQiniuOssServerMultipartUpload", t, func() {
 		CreateDefaultClient(nil)
 
-		putRet, err := XClient().MultipartUpload("", "")
+		putRet, err := XClient().MultipartUpload("README_multipart_upload.md", "./README.md")
 		So(err, ShouldBeNil)
 		Println("MultipartUpload Key:", putRet.Key)
 		Println("MultipartUpload PersistentID:", putRet.PersistentID)
