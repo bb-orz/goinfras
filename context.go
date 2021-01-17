@@ -10,6 +10,7 @@ import (
 const (
 	KeyConfig = "_vpcfg"
 	KeyLogger = "_logger"
+	KeyGlobal = "_global"
 )
 
 // 资源启动器上下文，用来在服务资源初始化、安装、启动和停止的生命周期中变量和对象的传递
@@ -43,6 +44,17 @@ func (s StarterContext) Logger() IStarterLogger {
 }
 func (s StarterContext) SetLogger(logger IStarterLogger) {
 	s[KeyLogger] = logger
+}
+
+func (s StarterContext) Global() Global {
+	p := s[KeyGlobal]
+	if p == nil {
+		panic("全局变量没有加载")
+	}
+	return p.(Global)
+}
+func (s StarterContext) SetGlobal(g Global) {
+	s[KeyGlobal] = g
 }
 
 func (s StarterContext) Item(key string) interface{} {
