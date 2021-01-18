@@ -258,7 +258,7 @@ QiniuOss:
   ReturnBody: '{"key":"$(key)","hash":"$(etag)","fsize":$(fsize),"bucket":"$(bucket)","name":"$(x:name)"}'
   UseHTTPS: false                       #是否使用https域名
   UseCdnDomains: false                  #上传是否使用CDN上传加速
-  UpTokenExpires: 7200                  #上传凭证2小时有效期
+  UpTokenExpires: 3600                  #上传凭证1小时有效期
   CallbackURL: ""                       #上传回调地址
   CallbackBody: '{"key":"$(key)","hash":"$(etag)","fsize":$(fsize),"bucket":"$(bucket)","name":"$(x:name)"}'
   CallbackBodyType: "application/json"  #上传回调信息格式

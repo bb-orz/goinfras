@@ -1,14 +1,16 @@
 package goinfras
 
-import "github.com/spf13/viper"
+import (
+	"github.com/spf13/viper"
+)
 
 // 初始全局配置
 const (
-	Env      = "Env"      // 允许环境：dev、testing、product
-	Host     = "Host"     // 主机地址
-	Endpoint = "Endpoint" // 节点
-	AppName  = "AppName"  // 应用名
-	Version  = "Version"  // 应用版本
+	Env      = "env"      // 允许环境：dev、testing、product
+	Host     = "host"     // 主机地址
+	Endpoint = "endpoint" // 节点
+	AppName  = "appname"  // 应用名
+	Version  = "version"  // 应用版本
 )
 
 func NewGlobal(vpcfg *viper.Viper) Global {
