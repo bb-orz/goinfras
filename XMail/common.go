@@ -28,9 +28,9 @@ type CommonMail struct {
  * @param sendFunc 发送处理函数,闭包执行非本服务器的API发送邮件
  * @return error
  */
-func (c *CommonMail) SendMailNoSMTP(from, subject, body, bodyType string, to []string, sendFunc gomail.SendFunc) error {
+func (c *CommonMail) SendMailNoSMTP(subject, body, bodyType string, to []string, sendFunc gomail.SendFunc) error {
 	msg := gomail.NewMessage()
-	msg.SetHeader("From", from)
+	msg.SetHeader("From", c.dialer.Username)
 	msg.SetHeader("To", to...)
 	msg.SetHeader("Subject", subject)
 	msg.SetBody(bodyType, body)
@@ -52,12 +52,11 @@ func (c *CommonMail) SendMailNoSMTP(from, subject, body, bodyType string, to []s
  * @param attach 附件文件资源地址
  * @return error
  */
-func (c *CommonMail) SendSimpleMail(from, ccAddress, ccName, subject, body, bodyType, attach string, to []string) error {
+func (c *CommonMail) SendSimpleMail(subject, body, bodyType, attach string, to []string) error {
 	m := gomail.NewMessage()
-	m.SetHeader("From", from)
+	m.SetHeader("From", c.dialer.Username)
 	m.SetHeader("To", to...)
 	m.SetHeader("Subject", subject)
-	m.SetAddressHeader("Cc", ccAddress, ccName)
 	m.SetBody(bodyType, body)
 
 	return c.dialer.DialAndSend(m)
@@ -78,10 +77,10 @@ type NewsLetterReceiver struct {
  * @param bodyType 邮件主体格式：BodyTypePlain(文本格式)或BodyTypeHTML(HTML格式)
  * @return error
  */
-func (c *CommonMail) SendNewsLetter(receivers []NewsLetterReceiver, from, subject, body, bodyType string) error {
+func (c *CommonMail) SendNewsLetter(receivers []NewsLetterReceiver, subject, body, bodyType string) error {
 	msg := gomail.NewMessage()
 	for _, r := range receivers {
-		msg.SetHeader("From", from)
+		msg.SetHeader("From", c.dialer.Username)
 		msg.SetAddressHeader("To", r.Address, r.Name)
 		msg.SetHeader("Subject", "Newsletter #1")
 		msg.SetBody(bodyType, body)

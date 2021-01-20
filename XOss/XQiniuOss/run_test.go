@@ -85,7 +85,7 @@ func TestStarter(t *testing.T) {
 	Convey("TestStarter", t, func() {
 		CreateDefaultClient(nil)
 
-		logger := goinfras.NewCommandLineStarterLogger()
+		logger := goinfras.NewCommandLineStarterLogger("debug")
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
 		s := NewStarter()
 		s.Init(sctx)

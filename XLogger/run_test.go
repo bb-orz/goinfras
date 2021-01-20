@@ -36,7 +36,7 @@ func TestNewSyncErrorLogger(t *testing.T) {
 // 测试启动器
 func TestStarter(t *testing.T) {
 	Convey("Test XLogger Starter", t, func() {
-		logger := goinfras.NewCommandLineStarterLogger()
+		logger := goinfras.NewCommandLineStarterLogger("debug")
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
 		s := NewStarter()
 		s.Init(sctx)

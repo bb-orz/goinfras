@@ -178,7 +178,7 @@ func TestEtcdKeepAlive(t *testing.T) {
 func TestStarter(t *testing.T) {
 	Convey("Test XEtcd Starter", t, func() {
 		s := NewStarter()
-		logger := goinfras.NewCommandLineStarterLogger()
+		logger := goinfras.NewCommandLineStarterLogger("debug")
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
 		s.Init(sctx)
 		s.Setup(sctx)

@@ -65,7 +65,7 @@ func TestPublisher(t *testing.T) {
 
 func TestStarter(t *testing.T) {
 	Convey("Test XRedisPubSub Starter", t, func() {
-		logger := goinfras.NewCommandLineStarterLogger()
+		logger := goinfras.NewCommandLineStarterLogger("debug")
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
 		s := NewStarter()
 		s.Init(sctx)

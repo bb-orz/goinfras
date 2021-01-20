@@ -66,7 +66,7 @@ func TestStarter(t *testing.T) {
 		tasks = append(tasks, task1)
 
 		s := NewStarter(tasks...)
-		logger := goinfras.NewCommandLineStarterLogger()
+		logger := goinfras.NewCommandLineStarterLogger("debug")
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
 		s.Init(sctx)
 		s.Setup(sctx)
