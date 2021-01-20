@@ -14,7 +14,7 @@ func TestCommonSendNoSMTPMail(t *testing.T) {
 	Convey("Test Common Mail", t, func() {
 		CreateDefaultManager(nil)
 
-		err := XCommonMail().SendMailNoSMTP("goinras@xxx.com", "test", "test XMail", BodyTypePlain, []string{"gofuncchan@163.com"}, func(from string, to []string, msg io.WriterTo) error {
+		err := XCommonMail().SendMailNoSMTP("test", "test XMail", BodyTypePlain, []string{"gofuncchan@163.com"}, func(from string, to []string, msg io.WriterTo) error {
 			fmt.Println("From:", from)
 			fmt.Println("To:", to)
 			fmt.Println("Msg:", msg)
@@ -32,18 +32,15 @@ func TestCommonSendNoSMTPMail(t *testing.T) {
 // 发送简单邮件，测试前请先设置默认配置信息
 func TestCommonSendSimpleMail(t *testing.T) {
 	Convey("Test Common Mail", t, func() {
-		CreateDefaultManager(nil)
+		CreateDefaultAuthManager(nil)
 
 		// 发送
 		err := XCommonMail().SendSimpleMail(
+			"test",
+			"send simple mail test",
+			"text/plain",
 			"",
-			"",
-			"",
-			"",
-			"",
-			"",
-			"",
-			[]string{""},
+			[]string{"1740183109@qq.com"},
 		)
 		So(err, ShouldBeNil)
 
@@ -66,7 +63,7 @@ func TestCommonSendNewsLetter(t *testing.T) {
 			},
 		}
 
-		err := XCommonMail().SendNewsLetter(receivers, "infras@xxx.com", "test new letter email", "test new letter email", BodyTypePlain)
+		err := XCommonMail().SendNewsLetter(receivers, "test new letter email", "test new letter email", BodyTypePlain)
 		So(err, ShouldBeNil)
 	})
 }
@@ -96,7 +93,7 @@ func TestCommonSendBatchMails(t *testing.T) {
 
 func TestStarter(t *testing.T) {
 	Convey("Test XMail Starter", t, func() {
-		logger := goinfras.NewCommandLineStarterLogger()
+		logger := goinfras.NewCommandLineStarterLogger("debug")
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
 		s := NewStarter()
 		s.Init(sctx)

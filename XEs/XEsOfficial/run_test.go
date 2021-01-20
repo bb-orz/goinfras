@@ -10,7 +10,7 @@ import (
 func TestStarter(t *testing.T) {
 	Convey("Test XEs Starter", t, func() {
 		s := NewStarter(nil)
-		logger := goinfras.NewCommandLineStarterLogger()
+		logger := goinfras.NewCommandLineStarterLogger("debug")
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
 		s.Init(sctx)
 		s.Setup(sctx)

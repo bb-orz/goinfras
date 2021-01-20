@@ -122,7 +122,7 @@ func TestStarter(t *testing.T) {
 		newViper.Set("Jwt.PrivateKey", DefaultConfig().PrivateKey)
 		newViper.Set("Jwt.ExpSeconds", DefaultConfig().ExpSeconds)
 
-		logger := goinfras.NewCommandLineStarterLogger()
+		logger := goinfras.NewCommandLineStarterLogger("debug")
 		sctx := goinfras.CreateDefaultStarterContext(newViper, logger)
 		sctx.SetConfigs(newViper)
 

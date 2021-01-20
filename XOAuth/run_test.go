@@ -41,7 +41,7 @@ func TestWechatOAuth(t *testing.T) {
 
 func TestStarter(t *testing.T) {
 	Convey("TestStarter", t, func() {
-		logger := goinfras.NewCommandLineStarterLogger()
+		logger := goinfras.NewCommandLineStarterLogger("debug")
 		sctx := goinfras.CreateDefaultStarterContext(nil, logger)
 
 		s := NewStarter()
