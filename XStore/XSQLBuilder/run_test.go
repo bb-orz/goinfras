@@ -41,7 +41,7 @@ func TestNewCommonMysqlStore(t *testing.T) {
 		So(err, ShouldBeNil)
 		Println("GetOne:", rs)
 
-		rsList := make([]interface{}, 0)
+		var rsList interface{}
 		XCommon().GetMulti("user", map[string]interface{}{"name": "aaaa"}, nil, rsList)
 		So(err, ShouldBeNil)
 		Println("GetMulti:", rsList)
