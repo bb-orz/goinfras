@@ -45,7 +45,7 @@ func (m *CommonDao) GetOne(tableName string, where map[string]interface{}, selec
 @param selectField 	[]string				查询选择返回的字段
 @param results 		interface{}				带表结构存储结果的指针数组，接收返回的数据，接收results应与table schema struct相对应
 */
-func (m *CommonDao) GetMulti(tableName string, where map[string]interface{}, selectField []string, results []interface{}) error {
+func (m *CommonDao) GetMulti(tableName string, where map[string]interface{}, selectField []string, results interface{}) error {
 	if nil == m.db {
 		return errors.New("*sql.DB object couldn't be nil")
 	}
