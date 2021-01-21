@@ -82,7 +82,7 @@ func (c *CommonMail) SendNewsLetter(receivers []NewsLetterReceiver, subject, bod
 	for _, r := range receivers {
 		msg.SetHeader("From", c.dialer.Username)
 		msg.SetAddressHeader("To", r.Address, r.Name)
-		msg.SetHeader("Subject", "Newsletter #1")
+		msg.SetHeader("Subject", "Newsletter #1 ")
 		msg.SetBody(bodyType, body)
 
 		sendCloser, err := XDialer().Dial()
