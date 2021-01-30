@@ -129,7 +129,7 @@ var defaultLogFormatter = func(param LogFormatterParams) string {
 	logLevelColor = param.LogLevelColor()
 	resetColor = param.ResetColor()
 
-	return fmt.Sprintf("%s %9s %s %s %6s %s | %v |%s [%s]\t>>> %s %s \n",
+	return fmt.Sprintf("%s %-12s %s %s %-6s %s | %v |%s [%s]\t>>> %s %s \n",
 		positionColor, param.Name, resetColor,
 		stepColor, param.Step, resetColor,
 		param.TimeStamp.Format("2006/01/02 - 15:04:05"),
